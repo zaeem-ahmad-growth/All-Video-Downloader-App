@@ -162,7 +162,7 @@
   - `plans` · object with 2 keys:
     - `note` · string · e.g. `"Premium removes all ads. Prices as Google Play shows them in Pakistan."`
     - `items[]` · array of 2 objects with keys `p`, `price`, `sku`
-- **[graphics-manifest.json](../research/aso-pipeline/graphics-manifest.json)** · 159 KB · JSON, array of 16:
+- **[graphics-manifest.json](../research/aso-pipeline/graphics-manifest.json)** · 156 KB · JSON, array of 16:
   - `(root)[]` · array of 16 objects:
     - `num` · number · e.g. `1`
     - `slug` · string · e.g. `"01-qr-code-scanner"`
@@ -359,7 +359,7 @@ A cache of 1268 .json files named by a hash of the request that produced them: r
 
 ## research/tiksta-title-check/
 
-6 files · 429 KB
+6 files · 427 KB
 
 - **[payload.json](../research/tiksta-title-check/payload.json)** · 301 KB · JSON, object with 6 keys:
   - `data` · object with 12 keys:
@@ -429,7 +429,7 @@ A cache of 1268 .json files named by a hash of the request that produced them: r
     - `has` · boolean · e.g. `false`
   - `tikstaSerp[]` · array of 10 string · e.g. `["TikTok - Videos, Shop & LIVE","TkStar - Followers Likes Views","TikTok Lite - Faster TikTok","TikBoost - Followers & Likes"]`
   - `tikstaNamed` · number · e.g. `0`
-- **[playcheck.json](../research/tiksta-title-check/playcheck.json)** · 113 KB · JSON, object with 3 keys:
+- **[playcheck.json](../research/tiksta-title-check/playcheck.json)** · 111 KB · JSON, object with 3 keys:
   - `collectedAt` · string · e.g. `"2026-09-16T11:41:23.7794628Z"`
   - `serps` · object with 16 keys:
     - `reels downloader[]` · array of 30 string · e.g. `["instagram.video.downloader.story.saver.ig.insaver","instagram.video.downloader.story.saver.ig","com.sensei.social","video.downloader.videodownloader"]`
@@ -460,7 +460,7 @@ A cache of 1268 .json files named by a hash of the request that produced them: r
     - `ratings` · string · e.g. `"295431"`
     - `first` · string · e.g. `"2024-05-29"`
     - `last` · string · e.g. `"2026-09-14"`
-- **[playcheck.ps1](../research/tiksta-title-check/playcheck.ps1)** · 4 KB · PowerShell script, 50 lines.  Reads nothing on disk; writes `playcheck.json`.
+- **[playcheck.ps1](../research/tiksta-title-check/playcheck.ps1)** · 3 KB · PowerShell script, 50 lines.  Reads nothing on disk; writes `playcheck.json`.
 - **[score.ps1](../research/tiksta-title-check/score.ps1)** · 4 KB · PowerShell script, 53 lines.  Functions: `normT`, `phraseN`, `words`, `allIn`, `cov`, `score`. Reads `payload.json`, `tiksta-long.txt`; writes nothing on disk.
 - **[tiksta-long.txt](../research/tiksta-title-check/tiksta-long.txt)** · 3 KB · full text:
 

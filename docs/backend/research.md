@@ -2115,10 +2115,10 @@ Tiksta is an independent app and is not affiliated with, endorsed by or sponsore
 - [research/aso-pipeline/data.json](../../research/aso-pipeline/data.json) · 283 KB
 - [research/aso-pipeline/discover.json](../../research/aso-pipeline/discover.json) · 160 KB
 - [research/aso-pipeline/dossier-parts.json](../../research/aso-pipeline/dossier-parts.json) · 94 KB
-- [research/aso-pipeline/graphics-manifest.json](../../research/aso-pipeline/graphics-manifest.json) · 159 KB
+- [research/aso-pipeline/graphics-manifest.json](../../research/aso-pipeline/graphics-manifest.json) · 156 KB
 - [research/aso-pipeline/graphics-src.json](../../research/aso-pipeline/graphics-src.json) · 72 KB
 - [research/aso-pipeline/raw.json](../../research/aso-pipeline/raw.json) · 2862 KB
 - [research/tiksta-title-check/payload.json](../../research/tiksta-title-check/payload.json) · 301 KB
-- [research/tiksta-title-check/playcheck.json](../../research/tiksta-title-check/playcheck.json) · 113 KB
+- [research/tiksta-title-check/playcheck.json](../../research/tiksta-title-check/playcheck.json) · 111 KB
 
 Raw response caches (not listed file by file): `research/aso-pipeline/cache/`.
