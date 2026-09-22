@@ -1,0 +1,11813 @@
+# ASO Playbook: code and data
+
+> **Generated file: do not edit by hand.** Produced by `node tools/export-docs.js` (GitHub runs it after every push).
+> Everything behind the [ASO Playbook](../../tabs/02-aso-playbook/index.html) tab in one place: how the page is put together, the full source of the code that draws it, and the full data it reads. **Load it when a question or change concerns how this tab works** (its calculations, data, filters or behaviour); wording-only edits do not need it. The visible text is in [docs/tabs/02-aso-playbook.md](../tabs/02-aso-playbook.md); where the data came from is in [research.md](research.md).
+
+## How the page is put together
+
+- Markup: [tabs/02-aso-playbook/index.html](../../tabs/02-aso-playbook/index.html) (201 lines), `<body data-page="playbook">`
+- Drawn by [assets/app.js](../../assets/app.js) from [assets/data.js](../../assets/data.js); styles in [assets/site.css](../../assets/site.css); tab bar from [assets/nav.js](../../assets/nav.js)
+- Sections and the functions that fill them: see the [code map](../code-map.md#02-aso-playbook)
+
+## Code
+
+### Shared setup: constants and helpers (assets/app.js L1-42)
+
+```js
+// Shared script for the ASO Playbook, PlayStore Metadata and Features Comparison pages.
+// Each page sets <body data-page="playbook|metadata|features"> and only that page's render functions run.
+// The data comes from data.js (PAYLOAD), which every one of those pages loads first.
+(function () {
+  const PAGE = document.body.dataset.page;
+  const D = PAYLOAD.data, L = PAYLOAD.listing, F = PAYLOAD.features, AS = PAYLOAD.assets;
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const A = D.apps.map(a => ({ id: a[0], t: a[1], dev: a[2], i: a[3], s: a[4], r: a[5], rel: a[6], upd: a[7], b: a[8], cat: a[9], ads: a[10], iap: a[11] }));
+  const COMP = D.compIdx;
+  const PROF = D.profiles.filter(p => !p.mine), MYP = D.profiles.find(p => p.mine);
+  const SHORT = ['InShot', 'Gamma Play', 'QR Code Scanner', 'Story Saver', 'InSaver', 'Hub (DOSA)', 'Fast Saver', 'AppTool', 'Saver & Player Studio', 'DevBay', 'Sky Vision', 'Attractive Apps', 'Markhoor', 'Mobile Notepad', 'Vidow', 'Vidpal'];
+  const MN = { US: 'United States', BR: 'Brazil', DE: 'Germany', ES: 'Spain', IT: 'Italy', AU: 'Australia', AE: 'UAE', IN: 'India' };
+  const TIER = { A: 'Core', B: 'Adjacent', C: 'Peripheral', D: 'Off-intent' };
+  const TIER_PILL = { A: 'p-good', B: 'p-acc', C: 'p-warn', D: 'p-risk' };
+  const SRC = { core: 'Core list', plat: 'Platform list', adj: 'Adjacent list', per: 'Peripheral list', ac: 'Play autocomplete' };
+  const CAT = { downloader: 'Video downloader', platform: 'Platform-specific downloader', saver: 'Story / status saver', browser: 'Browser', player: 'Video player', editor: 'Video editor', audio: 'Audio / MP3', vault: 'Vault', other: 'Other' };
+  const fmt = n => n == null ? '—' : n >= 1e9 ? +(n / 1e9).toFixed(1) + 'B' : n >= 1e6 ? +(n / 1e6).toFixed(n >= 1e7 ? 0 : 1) + 'M' : n >= 1e3 ? +(n / 1e3).toFixed(n >= 1e4 ? 0 : 1) + 'K' : String(n);
+  const band = r => r <= 3 ? 'b1' : r <= 10 ? 'b2' : r <= 20 ? 'b3' : 'b4';
+  const US = D.board.US;
+  const totalSerps = Object.values(D.board).reduce((s, rows) => s + rows.length, 0);
+  const tmPill = r => r.tm ? ' <span class="tm" title="Names another company’s product">™ platform</span>' : r.cleared ? ' <span class="pill p-acc" title="Platform-name flag lifted after the Google Play title check">reels · checked on Play</span>' : '';
+  let state = { gl: 'US', all: false, sort: 'P', dir: -1, tier: 'all', q: '', strips: 20, cd: 0, cdAll: false };
+  try { const s = localStorage.getItem('avd-gl'); if (s && D.board[s]) state.gl = s; } catch (e) {}
+  const rows = () => D.board[state.gl];
+  const slotClass = idx => { if (idx < 0) return 'none'; if (COMP.includes(idx)) return 'comp'; const a = A[idx]; if (a.b) return 'brand'; return a.cat === 'downloader' || a.cat === 'platform' ? 'niche' : ['saver', 'browser', 'player', 'editor', 'audio', 'vault'].includes(a.cat) ? 'adj' : 'off'; };
+  const compRanks = r => COMP.map((c, k) => ({ k, rank: c >= 0 ? r.ids.indexOf(c) + 1 : 0 })).filter(x => x.rank > 0).sort((a, b) => a.rank - b.rank);
+  const compTop10 = r => compRanks(r).filter(x => x.rank <= 10).length;
+  const compNames = r => { const cr = compRanks(r); return cr.length ? cr.slice(0, 5).map(x => `<span class="nowrap"><b>${esc(SHORT[x.k])}</b> #${x.rank}</span>`).join('<br>') + (cr.length > 5 ? `<br><span class="muted">+${cr.length - 5} more</span>` : '') : '<span class="muted">None in results</span>'; };
+  const entryCell = r => { const e = r.entryIdx != null ? A[r.entryIdx] : null; return r.entry == null ? '—' : `<b>${r.entry < 1000 ? 'under 1K' : fmt(r.entry)}</b><div class="small muted" style="max-width:190px">${esc(e ? e.t : '')} · #${r.entryRank}</div>`; };
+  const rkCell = (rank, idx, q) => rank ? `<span class="rk ${band(rank)}" data-a="${idx}" data-r="${rank}" data-q="${esc(q)}">${rank}</span>` : '<span class="rk b0" aria-label="not in results">·</span>';
+
+  // ---------- tooltip ----------
+  const tip = document.getElementById('tip');
+  document.addEventListener('mouseover', e => {
+    const el = e.target.closest && e.target.closest('[data-a]'); if (!el) { tip.hidden = true; return; }
+    const a = A[+el.dataset.a]; if (!a) return;
+    tip.innerHTML = `<b>${esc(a.t)}</b><br>${esc(a.dev)} · ${fmt(a.i)} installs${a.s ? ' · ★ ' + a.s.toFixed(1) : ''}<br><span class="tmono">${a.b ? 'Brand' : COMP.includes(+el.dataset.a) ? 'Tracked competitor' : CAT[a.cat]}${el.dataset.r ? ' · #' + el.dataset.r + ' for “' + esc(el.dataset.q) + '”' : ''}</span>`;
+    tip.hidden = false;
+  });
+  document.addEventListener('mousemove', e => { if (tip.hidden) return; tip.style.left = Math.min(e.clientX + 14, innerWidth - 300) + 'px'; tip.style.top = (e.clientY + 16) + 'px'; });
+
+  // ---------- header ----------
+```
+
+### `renderHeader()` (assets/app.js L43-69)
+
+```js
+  function renderHeader() {
+    const date = new Date(D.collectedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    document.getElementById('p-date').textContent = 'Collected ' + date;
+    document.getElementById('p-chips').innerHTML = [`${US.length} US keywords`, '8 markets', `${totalSerps} live result lists`, `${A.length} apps profiled`, '16 tracked competitors', '0 events & offers running', '0 fetch failures'].map(c => `<span class="chip">${c}</span>`).join('');
+    const top = US[0];
+    const leader = PROF.slice().sort((a, b) => b.perMarket.US.top10 - a.perMarket.US.top10)[0];
+    const audit = PROF.slice(10);
+    const auditTop10 = audit.reduce((s, p) => s + D.markets.reduce((x, gl) => x + p.perMarket[gl].top10, 0), 0);
+    const mk = D.marketSummary.slice().sort((a, b) => a.medianEntry - b.medianEntry);
+    const pvd = US.find(r => r.q === 'private video downloader');
+    document.getElementById('p-verdict').innerHTML = `There is no brand wall in this category — ${D.marketSummary.find(m => m.gl === 'US').avgNonBrand} of every top 10 are independent apps — but the bar is high: the median entry bar is ${fmt(D.marketSummary.find(m => m.gl === 'US').medianEntry)} installs. <strong>${esc(leader.title)}</strong> by ${esc(leader.developer)} holds ${leader.perMarket.US.top10} US top-10 placements. Your listing ranks for none of the ${US.length} US keywords and shares its exact title with Sky Vision’s app. The opening: <strong>“${esc(pvd ? pvd.q : top.q)}”</strong>${pvd ? `, where a ${fmt(pvd.entry)}-install app already sits at #${pvd.entryRank}` : ''}, carried by the editor, MP3 extraction and PIN vault that almost no competitor lists.`;
+    document.getElementById('p-findings').innerHTML = [
+      `<strong>Your listing is invisible in search.</strong> It does not appear in any of the ${totalSerps} result lists across eight markets.`,
+      `<strong>The audit apps don’t rank either.</strong> Sky Vision, Attractive Apps Valley, Markhoor, Mobile Notepad, Vidow and Vidpal hold ${auditTop10} top-10 placements between them across all eight markets — their installs come from outside keyword search.`,
+      `<strong>Generic phrasing leads the board.</strong> ${US.slice(0, 4).map(r => `“${esc(r.q)}”`).join(', ')} top the US priority list; platform-name searches score high too but carry trademark risk.`,
+      `<strong>No one runs Events &amp; offers.</strong> None of the 16 competitors shows a card in the US, Brazil, Germany or India.`,
+      `<strong>India is the easiest market.</strong> The median entry bar is ${fmt(mk[0].medianEntry)} installs in ${MN[mk[0].gl]} against ${fmt(D.marketSummary.find(m => m.gl === 'US').medianEntry)} in the US.`,
+    ].map(x => `<li>${x}</li>`).join('');
+    document.getElementById('p-tiles').innerHTML = [
+      [`P${top.P}`, `“${esc(top.q)}” · #1 US priority`],
+      [`${leader.perMarket.US.top10}`, `US top-10 placements · ${esc(leader.developer)}`],
+      [pvd ? fmt(pvd.entry) : '—', `entry bar on “private video downloader”`],
+      ['0', 'keywords your listing ranks for'],
+    ].map(([n, l]) => `<div class="tile"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+    document.getElementById('p-method').innerHTML = `<strong>Method, ${date}:</strong> Google Play web search (English) scraped live for ${US.length} keywords in the United States and the first 40 of those in Brazil, Germany, Spain, Italy, Australia, the UAE and India — ${totalSerps} result lists, 30 deep. Keywords came from a core downloader list, a platform-name list, an adjacent editing and vault list, a peripheral list and Play autocomplete; YouTube keywords and phrases with adult-site or piracy intent were removed. Full listing metadata was fetched for every app in any top 10 plus the 16 tracked competitors — ${A.length} apps. Events &amp; offers were read from each competitor’s listing page in four markets. Demand comes from Play autocomplete, typed out letter by letter.`;
+  }
+```
+
+### `renderMarketSel()` (assets/app.js L70-75)
+
+```js
+  function renderMarketSel() {
+    const sel = document.getElementById('market-sel');
+    sel.innerHTML = D.markets.map(m => `<option value="${m}"${m === state.gl ? ' selected' : ''}>${m} · ${MN[m]}</option>`).join('');
+    sel.addEventListener('change', () => { state.gl = sel.value; try { localStorage.setItem('avd-gl', state.gl); } catch (e) {} renderScoped(); });
+  }
+```
+
+### `renderCategories()` (assets/app.js L76-87)
+
+```js
+  function renderCategories() {
+    const counts = {}; let total = 0; const devs = {};
+    rows().forEach(r => r.ids.slice(0, 10).forEach(idx => {
+      if (idx < 0) return; total++;
+      const a = A[idx]; const k = COMP.includes(idx) ? 'Tracked competitors' : a.b ? 'Platform brands' : CAT[a.cat];
+      counts[k] = (counts[k] || 0) + 1; devs[a.dev] = (devs[a.dev] || 0) + 1;
+    }));
+    const list = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    document.getElementById('cat-share').innerHTML = `<thead><tr><th>Who holds the slot</th><th class="num">Slots</th><th>Share</th></tr></thead><tbody>` + list.map(([k, n]) => `<tr><td>${esc(k)}</td><td class="num">${n}</td><td style="min-width:150px"><div class="sharebar"><div class="track"><div class="fill" style="width:${(100 * n / total).toFixed(1)}%;${k === 'Tracked competitors' ? 'background:var(--s-comp)' : k === 'Platform brands' ? 'background:var(--s-brand)' : ''}"></div></div><span class="small num">${Math.round(100 * n / total)}%</span></div></td></tr>`).join('') + '</tbody>';
+    document.getElementById('cat-devs').innerHTML = `<thead><tr><th>Developer</th><th class="num">Top-10 slots</th></tr></thead><tbody>` + Object.entries(devs).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([d, n]) => `<tr><td>${esc(d)}</td><td class="num">${n}</td></tr>`).join('') + '</tbody>';
+  }
+```
+
+### `renderCompetitors()` (assets/app.js L88-103)
+
+```js
+  function renderCompetitors() {
+    const gl = state.gl;
+    const list = PROF.map((p, k) => ({ p, k })).sort((a, b) => b.p.perMarket[gl].top10 - a.p.perMarket[gl].top10 || b.p.perMarket[gl].any - a.p.perMarket[gl].any);
+    document.getElementById('comp-table').innerHTML = `<thead><tr><th>App</th><th class="num">Top-10 · in results</th><th class="num">Best rank</th><th class="num">Installs</th><th class="num">Rating</th><th>Updated</th><th>Monetisation</th><th>Title phrases</th><th>Source</th></tr></thead><tbody>` +
+      list.map(({ p, k }) => { const m = p.perMarket[gl]; return `<tr>
+        <td style="min-width:230px"><div class="comp-name">${esc(p.title)}</div><div class="small muted">${esc(p.developer)} · <a href="https://play.google.com/store/apps/details?id=${esc(p.id)}&hl=en&gl=US" target="_blank" rel="noopener">listing ↗</a></div></td>
+        <td class="num"><span class="bignum">${m.top10}</span> <span class="muted">· ${m.any}</span></td>
+        <td class="num">${m.best ? '#' + m.best : '—'}</td>
+        <td class="num">${esc(p.installsLabel || fmt(p.installs))}</td>
+        <td class="num">${p.score ? p.score.toFixed(1) : '—'}${p.ratings ? `<div class="small muted">${fmt(p.ratings)} ratings</div>` : ''}</td>
+        <td class="nowrap small">${esc(p.updated || '—')}</td>
+        <td class="small">${p.ads ? '<span class="pill p-warn">Ads</span> ' : '<span class="pill p-good">No ads</span> '}${p.iap ? `<div class="muted">${esc(p.iap)}</div>` : ''}</td>
+        <td style="min-width:170px"><b class="num">${p.titleKw.length}</b><div class="kwlist">${p.titleKw.map(q => `<span>${esc(q)}</span>`).join('')}</div></td>
+        <td class="small">${k >= 10 ? '<span class="pill p-acc">Feature audit</span>' : '<span class="pill p-mute">Live search</span>'}</td></tr>`; }).join('') + '</tbody>';
+  }
+```
+
+### `renderCompDetailSelect()` (assets/app.js L104-109)
+
+```js
+  function renderCompDetailSelect() {
+    const sel = document.getElementById('cd-select');
+    sel.innerHTML = PROF.map((p, k) => `<option value="${k}">${esc(p.title)} — ${esc(p.developer)}</option>`).join('');
+    sel.addEventListener('change', () => { state.cd = +sel.value; state.cdAll = false; renderCompDetail(); });
+    document.getElementById('cd-more').addEventListener('click', () => { state.cdAll = !state.cdAll; renderCompDetail(); });
+  }
+```
+
+### `renderCompDetail()` (assets/app.js L110-138)
+
+```js
+  function renderCompDetail() {
+    const p = PROF[state.cd], k = state.cd, cid = COMP[k];
+    document.getElementById('cd-meta').innerHTML = `
+      <div class="meta-field"><div class="field-label"><span>Title</span><span>${p.titleLen} / 30</span></div><p><b>${esc(p.title)}</b></p></div>
+      <div class="meta-field"><div class="field-label"><span>Short description</span><span>${p.summaryLen} / 80</span></div><p>${esc(p.summary)}</p></div>
+      <div class="meta-field"><div class="field-label"><span>Full description</span><span>${p.descLen.toLocaleString('en-US')} / 4,000 · ${p.descWords} words</span></div>
+        <details class="desc"><summary>Show the full description</summary><pre>${esc(p.description)}</pre></details></div>`;
+    const dens = p.kwDens.slice().sort((a, b) => b.n - a.n);
+    const claims = D.claims.filter(([c]) => p.claims[c]).map(([, l]) => l);
+    document.getElementById('cd-side').innerHTML = `
+      <div class="panel" style="padding:16px 18px"><h3 style="margin-bottom:8px">Events &amp; offers</h3><p class="small muted">No events or offers on the listing in the US, Brazil, Germany or India.</p></div>
+      <div class="panel" style="padding:16px 18px"><h3 style="margin-bottom:8px">Listing facts</h3><table><tbody>
+        <tr><td>Installs</td><td class="num">${esc(p.installsLabel)}</td></tr><tr><td>Rating</td><td class="num">${p.score ? p.score.toFixed(2) + ' · ' + fmt(p.ratings) : '—'}</td></tr>
+        <tr><td>Released · updated</td><td class="num">${esc(p.released || '—')} · ${esc(p.updated || '—')}</td></tr><tr><td>Monetisation</td><td class="num">${p.ads ? 'Ads' : 'No ads'} · ${esc(p.iap || 'no IAP')}</td></tr>
+        <tr><td>Screenshots · video</td><td class="num">${p.shots} · ${p.video ? 'yes' : 'no'}</td></tr><tr><td>Category</td><td class="num">${esc(p.genre)}</td></tr>
+      </tbody></table></div>
+      <div class="panel" style="padding:16px 18px"><h3 style="margin-bottom:8px">Features its listing claims</h3><div class="kwlist">${claims.map(c => `<span>${esc(c)}</span>`).join('') || '<span>none detected</span>'}</div></div>
+      <div class="panel" style="padding:16px 18px"><h3 style="margin-bottom:8px">Top board phrases in its description</h3>${dens.length ? `<table><thead><tr><th>Phrase</th><th class="num">Uses</th><th class="num">Density</th></tr></thead><tbody>${dens.map(d => `<tr><td class="kw">${esc(d.q)}</td><td class="num">${d.n}</td><td class="num">${d.d}%</td></tr>`).join('')}</tbody></table>` : '<p class="small muted">None of the top 14 US keywords appears as a phrase.</p>'}</div>`;
+    const kws = new Map();
+    D.markets.forEach(gl => D.board[gl].forEach(r => { const rank = r.comps[k]; if (!rank) return; const e = kws.get(r.q) || { q: r.q, ranks: {} }; e.ranks[gl] = rank; kws.set(r.q, e); }));
+    const list = [...kws.values()].map(e => ({ ...e, us: US.find(r => r.q === e.q), best: Math.min(...Object.values(e.ranks)) })).sort((a, b) => (a.ranks.US || 99) - (b.ranks.US || 99) || a.best - b.best);
+    const t10 = list.filter(e => e.best <= 10).length;
+    document.getElementById('cd-kw-h').textContent = list.length ? `${p.title} ranks for ${list.length} keywords · ${t10} with a top-10 position somewhere` : `${p.title} does not rank for any tracked keyword in the eight markets`;
+    const shown = state.cdAll ? list : list.slice(0, 25);
+    document.getElementById('cd-more').textContent = list.length > 25 ? (state.cdAll ? 'Show the top 25 only' : `Show all ${list.length} keywords`) : '';
+    document.getElementById('cd-kw').innerHTML = list.length ? `<thead><tr><th>Keyword</th><th>Tier</th><th class="num">US priority</th>${D.markets.map(m => `<th class="ch">${m}</th>`).join('')}</tr></thead><tbody>` +
+      shown.map(e => `<tr><td class="kwc"><span class="kw">${esc(e.q)}</span>${e.us ? tmPill(e.us) : ''}</td><td>${e.us ? `<span class="pill ${TIER_PILL[e.us.tier]}">${TIER[e.us.tier]}</span>` : ''}</td><td class="num small">${e.us ? e.us.P : '—'}</td>${D.markets.map(gl => { const measured = D.board[gl].some(r => r.q === e.q); return `<td>${measured ? rkCell(e.ranks[gl], cid, e.q) : '<span class="small muted">n/m</span>'}</td>`; }).join('')}</tr>`).join('') + '</tbody>' : '';
+  }
+```
+
+### `renderEvents()` (assets/app.js L139-146)
+
+```js
+  function renderEvents() {
+    const checked = PROF.concat([MYP]);
+    const any = checked.filter(p => PAYLOAD.offersChecked[p.id]);
+    document.getElementById('events-body').innerHTML = `<div class="callout-open"><h3 style="margin-bottom:6px">${any.length ? any.length + ' listings run events or offers' : 'No competitor runs events or offers'}</h3>
+      <p class="sub">All ${checked.length} listings — the 16 competitors and yours — were checked in the United States, Brazil, Germany and India. ${any.length ? '' : 'Not one shows an “Events & offers” card, so any dated card you publish (a feature launch, a trial, a seasonal event) has the promotional space to itself.'}</p>
+      <div class="kwlist" style="margin-top:10px">${checked.map(p => `<span>${esc(p.mine ? 'Your app' : p.developer)} · ${PAYLOAD.offersChecked[p.id] ? 'running' : 'none'}</span>`).join('')}</div></div>`;
+  }
+```
+
+### `renderMatrix()` (assets/app.js L147-153)
+
+```js
+  function renderMatrix() {
+    const list = state.all ? rows() : rows().slice(0, 30);
+    document.getElementById('matrix-table').innerHTML = `<thead><tr><th>Keyword</th><th class="num">Priority</th>${COMP.map((c, i) => `<th class="ch" title="${esc(c >= 0 ? A[c].t : '')}">${esc(SHORT[i])}</th>`).join('')}</tr></thead><tbody>` +
+      list.map(r => `<tr><td class="kwc"><span class="kw">${esc(r.q)}</span>${tmPill(r)}</td><td class="num small">${r.P}</td>${COMP.map((c, k) => `<td>${rkCell(r.comps[k], c, r.q)}</td>`).join('')}</tr>`).join('') +
+      `</tbody><tfoot><tr><td class="kwc">Top-10 placements</td><td></td>${COMP.map((c, k) => `<td>${list.filter(r => r.comps[k] && r.comps[k] <= 10).length}</td>`).join('')}</tr></tfoot>`;
+  }
+```
+
+### `renderStrips()` (assets/app.js L154-161)
+
+```js
+  function renderStrips() {
+    document.getElementById('strip-legend').innerHTML = [['comp', 'Tracked competitors'], ['brand', 'Brand'], ['niche', 'Video downloader'], ['adj', 'Saver, browser, player, editor'], ['off', 'Other'], ['none', 'Beyond Play’s results']].map(([c, l]) => `<span><i class="sw slot ${c}" style="height:14px"></i>${l}</span>`).join('');
+    const list = rows().slice(0, state.strips);
+    const ruler = `<div class="strip-ruler"><span>Keyword</span><div class="slots ruler-slots">${Array.from({ length: 30 }, (_, i) => (i === 10 ? '<span></span>' : '') + `<span>${i === 0 || i === 9 || i === 10 || i === 19 || i === 29 ? i + 1 : ''}</span>`).join('')}</div></div>`;
+    document.getElementById('strips').innerHTML = ruler + list.map(r => `<div class="strip-row"><div class="strip-head"><div class="strip-kw"><span class="kw">${esc(r.q)}</span><span class="meta">P${r.P} · ${r.depth} results · ${r.c10} competitors in top 10</span></div><div class="slots">${Array.from({ length: 30 }, (_, i) => { const idx = i < r.ids.length ? r.ids[i] : -1; return (i === 10 ? '<span class="slot gap"></span>' : '') + `<span class="slot ${i < r.ids.length ? slotClass(idx) : 'none'}"${idx >= 0 ? ` data-a="${idx}" data-r="${i + 1}" data-q="${esc(r.q)}"` : ''}></span>`; }).join('')}</div></div></div>`).join('');
+    document.getElementById('strips-more').textContent = state.strips >= rows().length ? '' : `Show ${Math.min(rows().length, state.strips + 20) - state.strips} more searches`;
+  }
+```
+
+### `renderTierChips()` (assets/app.js L162-167)
+
+```js
+  function renderTierChips() {
+    const el = document.getElementById('tier-chips');
+    el.innerHTML = [['all', 'All tiers'], ['A', 'Core'], ['B', 'Adjacent'], ['C', 'Peripheral'], ['tm', '™ Platform names']].map(([k, l]) => `<button type="button" data-t="${k}" aria-pressed="${state.tier === k}">${l}</button>`).join('');
+    el.onclick = e => { const b = e.target.closest('button'); if (!b) return; state.tier = b.dataset.t; renderTierChips(); renderBoard(); };
+    document.getElementById('kw-search').oninput = e => { state.q = e.target.value.trim().toLowerCase(); renderBoard(); };
+  }
+```
+
+### `renderBoard()` (assets/app.js L168-181)
+
+```js
+  function renderBoard() {
+    const cols = [['q', 'Keyword'], ['P', 'Priority'], ['R', 'Relevance'], ['nb', 'Winnable'], ['demand', 'Demand'], ['vol', 'Volume proxy'], ['entry', 'Entry bar'], ['c10', 'Competitors top 10'], ['depth', 'Results']];
+    let list = rows().filter(r => (state.tier === 'all' || (state.tier === 'tm' ? r.tm : r.tier === state.tier)) && (!state.q || r.q.includes(state.q)));
+    list = list.slice().sort((a, b) => { const x = a[state.sort], y = b[state.sort]; if (state.sort === 'q') return state.dir * x.localeCompare(y); return state.dir * ((x == null ? -1 : x) - (y == null ? -1 : y)); });
+    const maxP = Math.max(...rows().map(r => r.P));
+    document.getElementById('board').innerHTML = `<thead><tr>${cols.map(([k, l]) => `<th${k !== 'q' ? ' class="num"' : ''} aria-sort="${state.sort === k ? (state.dir < 0 ? 'descending' : 'ascending') : 'none'}"><button type="button" data-k="${k}">${l}</button></th>`).join('')}</tr></thead><tbody>` +
+      list.map(r => `<tr><td style="min-width:220px"><span class="kw">${esc(r.q)}</span><div class="kwmeta"><span class="pill ${TIER_PILL[r.tier]}">${TIER[r.tier]}</span><span class="pill p-mute">${SRC[r.src]}</span>${tmPill(r)}</div></td>
+        <td><div class="pbar"><div class="track"><div class="fill" style="width:${(100 * r.P / maxP).toFixed(1)}%"></div></div><b>${r.P}</b></div></td>
+        <td class="num">${Math.round(r.R * 100)}</td><td class="num">${r.nb}<span class="muted">/10</span></td>
+        <td class="num">${r.demand}<div class="small muted">${r.demandAt ? `after “${esc(r.demandAt)}”` : 'not suggested'}</div></td>
+        <td class="num">${fmt(r.vol)}</td><td class="num">${entryCell(r)}</td><td class="num">${r.c10}<span class="muted">/16</span></td><td class="num">${r.depth}</td></tr>`).join('') + '</tbody>';
+    document.querySelectorAll('#board th button').forEach(b => b.onclick = () => { const k = b.dataset.k; if (state.sort === k) state.dir *= -1; else { state.sort = k; state.dir = k === 'q' ? 1 : -1; } renderBoard(); });
+  }
+```
+
+### `renderMarkets()` (assets/app.js L182-197)
+
+```js
+  function renderMarkets() {
+    document.getElementById('mkt-cards').innerHTML = D.marketSummary.map(m => `<div class="mkt"><h3>${MN[m.gl]} <small>${m.gl}</small></h3><dl>
+      <dt>Non-brand apps in top 10</dt><dd>${m.avgNonBrand} / 10</dd><dt>Median entry bar</dt><dd>${fmt(m.medianEntry)}</dd><dt>Competitor top-10s</dt><dd>${m.compTop10}</dd><dt>Avg results per search</dt><dd>${m.avgDepth}</dd></dl>
+      <div class="small muted">Top keywords</div><div class="kwlist">${m.best.slice(0, 3).map(b => `<span>${esc(b.q)} · P${b.P}</span>`).join('')}</div></div>`).join('');
+    const kws = D.secondary;
+    const P = (gl, q) => D.board[gl].find(x => x.q === q) || null;
+    const maxP = Math.max(...D.markets.flatMap(gl => kws.map(q => (P(gl, q) || { P: 0 }).P)));
+    const sorted = kws.filter(q => P('US', q)).sort((a, b) => P('US', b).P - P('US', a).P);
+    document.getElementById('mkt-heat').innerHTML = `<thead><tr><th>Keyword</th>${D.markets.map(m => `<th class="ch">${m}</th>`).join('')}</tr></thead><tbody>` +
+      sorted.map(q => { const vals = D.markets.map(gl => (P(gl, q) || { P: 0 }).P); const best = Math.max(...vals); return `<tr><td class="kwc"><span class="kw">${esc(q)}</span>${tmPill(P('US', q))}</td>${vals.map(v => `<td class="h${v === best ? ' best' : ''}" style="background:color-mix(in srgb, var(--accent) ${Math.round(8 + 45 * v / maxP)}%, transparent)">${v}</td>`).join('')}</tr>`; }).join('') + '</tbody>';
+    const counts = PROF.map((p, k) => D.markets.map(gl => D.board[gl].filter(r => kws.includes(r.q) && r.comps[k] && r.comps[k] <= 10).length));
+    const maxC = Math.max(1, ...counts.flat());
+    document.getElementById('mkt-comp').innerHTML = `<thead><tr><th>Competitor</th>${D.markets.map(m => `<th class="ch">${m}</th>`).join('')}</tr></thead><tbody>` +
+      PROF.map((p, k) => `<tr><td class="kwc"><b>${esc(SHORT[k])}</b><div class="small muted">${esc(p.title)}</div></td>${counts[k].map(n => `<td class="h" style="background:color-mix(in srgb, var(--s-comp) ${Math.round(4 + 50 * n / maxC)}%, transparent)">${n}</td>`).join('')}</tr>`).join('') + '</tbody>';
+  }
+```
+
+### `ladderPhases()` (assets/app.js L198-207)
+
+```js
+  function ladderPhases(list, ex = /without ads/) {
+    const used = new Set();
+    const take = (pred, n) => { const out = list.filter(r => !r.tm && (r.tier === 'A' || r.tier === 'B') && !used.has(r.q) && !ex.test(r.q) && pred(r)).slice(0, n); out.forEach(r => used.add(r.q)); return out; };
+    return [
+      ['Phase 0', 'launch → 10K · weeks 0–6', take(r => r.R >= 0.9 && r.entry != null && r.entry < 60000, 6), 'A non-brand app under 60K installs already holds a top-10 slot here.'],
+      ['Phase 1', '10K → 100K', take(r => r.R >= 0.85 && r.entry != null && r.entry < 200000, 6), 'The smallest app in the top 10 has under 200K installs.'],
+      ['Phase 2', '100K → 1M', take(r => r.R >= 0.85 && r.entry != null && r.entry < 800000, 6), 'Entry bars in the hundreds of thousands: a scaled app is needed.'],
+      ['Phase 3', '1M+', take(r => r.R >= 0.8, 6), 'Head terms held by 10M+ apps.'],
+    ];
+  }
+```
+
+### `renderLadder()` (assets/app.js L208-212)
+
+```js
+  function renderLadder() {
+    document.getElementById('ladder-list').innerHTML = ladderPhases(rows()).map(([ph, sub, list, why]) => `<div class="rung"><div class="ph">${ph}<small>${sub}</small></div><div><ul>${list.map(r => `<li>${esc(r.q)} <i>P${r.P} · ${r.c10} comp.</i></li>`).join('') || '<li>none at this bar</li>'}</ul><p class="proof">${why} ${list[0] && list[0].entry ? `Smallest non-brand app on “${esc(list[0].q)}”: ${esc((A[list[0].entryIdx] || {}).t || '')} with ${fmt(list[0].entry)} installs at #${list[0].entryRank}.` : ''}</p></div></div>`).join('');
+  }
+
+  // ---------- listing helpers ----------
+```
+
+### `coverageOf()` (assets/app.js L221-229)
+
+```js
+  function coverageOf(q, f) {
+    const longN = phraseN(f.long, q);
+    if (phraseN(f.title, q)) return { key: 'title', label: 'Title · exact phrase', w: 1, longN };
+    if (allIn(q, wordSet(f.title))) return { key: 'titlew', label: 'Title · all words', w: 0.85, longN };
+    if (phraseN(f.short, q)) return { key: 'short', label: 'Short · exact phrase', w: 0.7, longN };
+    if (allIn(q, wordSet(f.title + ' ' + f.short))) return { key: 'tsw', label: 'Title + short · all words', w: 0.7, longN };
+    if (longN) return { key: 'long', label: `Full description ×${longN}`, w: 0.3, longN };
+    return { key: 'none', label: 'Not used', w: 0, longN };
+  }
+```
+
+### `highlight()` (assets/app.js L236-241)
+
+```js
+  function highlight(text, kws) {
+    let html = esc(text); const marks = [];
+    const hold = h => { marks.push(h); return ` ${marks.length - 1} `; };
+    [...kws].sort((a, b) => b.length - a.length).forEach(k => { const pat = k.split(' ').map(reEsc).join('\\s+').replace(/\\s\+and\\s\+/g, '\\s+(?:and|&amp;)\\s+'); html = html.replace(new RegExp('\\b' + pat + '\\b', 'gi'), m => hold(`<mark class="kwm">${m}</mark>`)); });
+    return html.replace(/ (\d+) /g, (_, i) => marks[+i]);
+  }
+```
+
+### `longHtml()` (assets/app.js L242-254)
+
+```js
+  function longHtml(text, kws) {
+    let html = '', inList = false;
+    for (const raw of text.split('\n')) {
+      const line = raw.replace(/\s+$/, '');
+      if (/^[●•]/.test(line)) { if (!inList) { html += '<ul>'; inList = true; } html += `<li>${highlight(line.replace(/^[●•]\s*/, ''), kws)}</li>`; continue; }
+      if (inList) { html += '</ul>'; inList = false; }
+      if (!line.trim()) continue;
+      if (/^## /.test(line)) html += `<h4>${highlight(line.slice(3), kws)}</h4>`;
+      else if (/^[A-Z0-9 &?:,'’\-!]+$/.test(line) && /[A-Z]{3}/.test(line)) html += `<h4>${highlight(line, kws)}</h4>`;
+      else html += `<p>${highlight(line, kws)}</p>`;
+    }
+    return html + (inList ? '</ul>' : '');
+  }
+```
+
+### `renderListing()` (assets/app.js L257-282)
+
+```js
+  function renderListing() {
+    const cur = L.titles.find(t => t.current);
+    document.getElementById('titles').innerHTML = L.rec.map((t, i) => { const top = US.slice(0, 12).filter(r => (t.exact || []).includes(r.q)); return `<div class="topt${i === 0 ? ' rec' : ''}"><div class="tag">${i === 0 ? 'Recommended title' : 'Alternative ' + i}</div><div class="tt">${esc(t.t)}</div>${meter(t.len, 30)}<div class="why">Covers every word of ${t.hits.length} board keywords (score ${t.score}${cur ? `, against ${cur.score} for the current title` : ''}). ${top.length ? `Carries ${top.map(r => `“${esc(r.q)}” (#${US.indexOf(r) + 1})`).join(' and ')} as an exact phrase.` : ''}</div><div class="covered">${t.hits.slice(0, 8).map(h => `<span>${esc(h)}</span>`).join('')}</div></div>`; }).join('');
+    document.getElementById('title-table').innerHTML = `<thead><tr><th>Title</th><th class="num">Chars</th><th class="num">Score</th><th class="num">Keywords</th><th>Status</th></tr></thead><tbody>` + L.titles.map(t => `<tr${t.current ? ' style="background:var(--accent-soft)"' : ''}><td><b>${esc(t.t)}</b></td><td class="num">${t.len}</td><td class="num">${t.score}</td><td class="num">${t.hits.length}</td><td>${t.current ? '<span class="pill p-warn">current · same title as Sky Vision</span>' : t.taken ? '<span class="pill p-risk">in use by another app</span>' : '<span class="pill p-good">available</span>'}</td></tr>`).join('') + '</tbody>';
+    const fk = FINAL.map(r => r.q);
+    document.getElementById('listing-card').innerHTML = `
+      <div class="apphead"><img src="${AS.icon.file}" alt="" width="56" height="56" style="border-radius:14px;box-shadow:0 0 0 1px var(--line)"><div><div class="t">${esc(PROP.title)}</div><div class="d">${esc(L.current.developer)} · ${esc(L.current.genre)}</div></div></div>
+      <div class="field"><div class="field-label"><span>Title</span><span>${PROP.title.length} / 30</span></div><p>${highlight(PROP.title, fk)}</p></div>
+      <div class="field"><div class="field-label"><span>Short description</span><span>${PROP.short.length} / 80</span></div><p>${highlight(PROP.short, fk)}</p>${L.shorts[1] ? `<p class="small muted" style="margin-top:6px">Alternative (${L.shorts[1].len}/80): ${esc(L.shorts[1].s)}</p>` : ''}</div>
+      <div class="field longdesc"><div class="field-label"><span>Full description</span><span>${PROP.long.length.toLocaleString('en-US')} / 4,000</span></div>${longHtml(L.long.replace(/\{name\}/g, REC.t), fk)}</div>`;
+    const wc = nWords(PROP.long);
+    const phr = US.filter(r => r.tier !== 'D' && !r.tm && phraseN(PROP.long, r.q)).map(r => ({ r, n: phraseN(PROP.long, r.q), d: 100 * phraseN(PROP.long, r.q) * nWords(r.q) / wc })).sort((x, y) => y.n - x.n || y.r.P - x.r.P).slice(0, 14);
+    const strong = x => FINAL.filter(r => ['title', 'titlew', 'short', 'tsw'].includes(coverageOf(r.q, x).key)).length;
+    document.getElementById('listing-side').innerHTML = `
+      <div class="panel"><h3>Measured against the current listing</h3><table><thead><tr><th></th><th class="num">Current</th><th class="num">Proposed</th></tr></thead><tbody>
+        <tr><td>Priority coverage</td><td class="num">${prioCoverage(CUR).toFixed(0)}%</td><td class="num"><b>${prioCoverage(PROP).toFixed(0)}%</b></td></tr>
+        <tr><td>Finalized keywords used</td><td class="num">${FINAL.filter(r => coverageOf(r.q, CUR).key !== 'none').length} / 24</td><td class="num"><b>${FINAL.filter(r => coverageOf(r.q, PROP).key !== 'none').length} / 24</b></td></tr>
+        <tr><td>…in title or short</td><td class="num">${strong(CUR)}</td><td class="num"><b>${strong(PROP)}</b></td></tr>
+        <tr><td>Title shared with another app</td><td class="num">yes</td><td class="num"><b>no</b></td></tr>
+        <tr><td>Full description</td><td class="num">${CUR.long.length.toLocaleString('en-US')}</td><td class="num">${PROP.long.length.toLocaleString('en-US')}</td></tr>
+      </tbody></table></div>
+      <div class="panel"><h3>Board phrases in the proposed description</h3><p class="small muted" style="margin-bottom:6px">${wc} words · platform-name phrases excluded from this count</p><table><thead><tr><th>Phrase</th><th class="num">Uses</th><th class="num">Density</th></tr></thead><tbody>${phr.map(x => `<tr><td class="kw">${esc(x.r.q)}</td><td class="num">${x.n}</td><td class="num">${x.d.toFixed(1)}%</td></tr>`).join('')}</tbody></table></div>
+      <div class="panel"><h3>Every claim maps to the Product Dossier</h3><ul class="checks"><li>Paste or share a link · quality picker · parallel downloads with pause, resume, retry</li><li>Foreground service for large background downloads</li><li>9-tool video cutter, including extract audio and watermark</li><li>Vault with PIN, biometrics and a security question</li><li>Status saver · 9 languages with RTL</li><li>Platforms named are the seven downloaded end to end on a device</li></ul><p class="small muted" style="margin-top:8px">Left out on purpose: platform names in the title and short description, “free”, “without ads” (the app contains ads), YouTube, and “no watermark”.</p></div>`;
+  }
+
+  // ---------- TAB 2 · metadata ----------
+```
+
+### `renderMetadata()` (assets/app.js L297-478)
+
+```js
+  function renderMetadata(vk) {
+    const V = VER[vk], f = V.f, B = V.B, FIN = V.FIN, nF = FIN.length, isT = vk === 'tiksta';
+    const fk = B.filter(r => r.tier !== 'D').map(r => r.q), strongKeys = ['title', 'titlew', 'short', 'tsw'];
+    const used = B.filter(r => r.tier !== 'D' && coverageOf(r.q, f).key !== 'none');
+    const withC = used.filter(r => compRanks(r).length > 0);
+    const all = [f.title, f.short, f.long].join('\n'), brands = brandsIn(all);
+    const pill = s => s === 'met' ? '<span class="pill p-good">✓ Met</span>' : s === 'not' ? '<span class="pill p-risk">✕ Not met</span>' : '<span class="pill p-mute">• Recorded</span>';
+    const pWas = r => r.cleared ? `<div class="small muted">was ${r.P0}</div>` : '';
+    const strong = x => FIN.filter(r => strongKeys.includes(coverageOf(r.q, x).key)).length;
+
+    document.getElementById('m-src').textContent = isT ? 'Proposed metadata · Tiksta' : 'Live Google Play listing';
+    const facts = isT
+      ? ['Proposed · not yet live', `Replaces “${esc(CUR.title)}”`, esc(L.current.developer), esc(L.current.genre), L.current.ads ? 'Contains ads' : 'No ads', L.current.iap ? 'In-app purchases ' + esc(L.current.iap) : 'No in-app purchases', `${brands.length} brand names in the text`]
+      : [esc(L.current.developer), esc(L.current.genre), L.current.installs + ' installs', L.current.ads ? 'Contains ads' : 'No ads', L.current.iap ? 'In-app purchases ' + esc(L.current.iap) : 'No in-app purchases', `${AS.screenshots.length} screenshots`, 'Feature graphic 1024×500', 'No promo video', 'No events & offers'];
+    document.getElementById('m-app').innerHTML = `<img src="${AS.icon.file}" alt="App icon" width="92" height="92">
+      <div style="flex:1 1 360px;min-width:0"><h1>${esc(f.title)}</h1>
+        <div class="m-facts">${facts.map(c => `<span class="chip">${c}</span>`).join('')}</div>
+        <div class="m-links"><a href="${esc(L.current.url)}" target="_blank" rel="noopener">${isT ? 'Live listing it replaces ↗' : 'Google Play listing ↗'}</a>${L.current.privacy ? `<a href="${esc(L.current.privacy)}" target="_blank" rel="noopener">Privacy policy ↗</a>` : ''}${L.current.site ? `<a href="${esc(L.current.site)}" target="_blank" rel="noopener">Developer site ↗</a>` : ''}<span class="muted">${esc(L.current.id)}</span></div></div>`;
+    const tiles = [[`${f.title.length}<small>/30</small>`, 'title characters'], [`${f.short.length}<small>/80</small>`, 'short description characters'], [`${f.long.length.toLocaleString('en-US')}<small>/4,000</small>`, 'full description characters'], [`${used.length}<small>/${B.length}</small>`, 'board keywords targeted'], [`${FIN.filter(r => coverageOf(r.q, f).key !== 'none').length}<small>/${nF}</small>`, 'finalized keywords targeted']]
+      .concat([isT ? [`${strong(f)}<small>/${nF}</small>`, 'finalized keywords in the title or short description'] : [`${AS.screenshots.length}<small>/8</small>`, 'phone screenshot slots used']]);
+    document.getElementById('m-tiles').innerHTML = tiles.map(([n, l]) => `<div class="tile"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+    document.getElementById('m-tiles').style.gridTemplateColumns = 'repeat(auto-fit,minmax(150px,1fr))';
+
+    document.getElementById('m-assets-top').innerHTML = `<figure class="fgfig"><img src="${AS.feature.file}" alt="Feature graphic" loading="lazy"><figcaption>Feature graphic · 1024 × 500 · <a href="${esc(AS.feature.src)}" target="_blank" rel="noopener">original ↗</a></figcaption></figure>
+      <figure class="fgfig" style="max-width:220px"><img src="${AS.icon.file}" alt="App icon" loading="lazy" style="border-radius:22%"><figcaption>App icon · 512 × 512 · <a href="${esc(AS.icon.src)}" target="_blank" rel="noopener">original ↗</a></figcaption></figure>`;
+    document.getElementById('m-shots').innerHTML = AS.screenshots.map((s, i) => `<figure><img src="${s.file}" alt="Store screenshot ${i + 1}" loading="lazy"><figcaption>Slot ${i + 1} · <a href="${esc(s.src)}" target="_blank" rel="noopener">original ↗</a></figcaption></figure>`).join('');
+    const ac = [['met', 'App icon', '512 × 512 PNG, as Play requires.'], ['met', 'Feature graphic', 'Exactly 1024 × 500, as Play requires.'], [AS.screenshots.length >= 8 ? 'met' : 'rec', 'Phone screenshots', `${AS.screenshots.length} of 8 slots used, all 9:16. The editor and the vault are not yet shown.`], ['rec', 'Device captures in the dossier', 'The dossier’s test captures are 720 × 1600 (1 : 2.22); Play allows at most 1 : 2, so they need framing before upload.'], ['rec', 'Promo video', 'None on the listing.']];
+    document.getElementById('m-asset-checks').innerHTML = `<thead><tr><th>Status</th><th>Asset</th><th>Detail</th></tr></thead><tbody>` + ac.map(([s, a, d]) => `<tr><td>${pill(s)}</td><td><b>${esc(a)}</b></td><td>${esc(d)}</td></tr>`).join('') + '</tbody>';
+
+    // ---- title, short and full description
+    document.getElementById('m-cur-kicker').textContent = isT ? 'Metadata · United States · proposed for Tiksta' : 'Metadata · United States';
+    document.getElementById('m-cur-sub').textContent = isT
+      ? 'A new version positioned as a reels downloader. The title joins the brand, the category’s top keyword and a low-competition term. The strongest rankable keywords sit in the first two paragraphs, and the features follow as short sections with bullets. No brand names appear anywhere.'
+      : 'The listing’s metadata as live on Google Play. Every keyword it targets from the playbook’s US board is marked.';
+    const opt = document.getElementById('m-options');
+    opt.hidden = !isT;
+    if (isT) {
+      const row = q => B.find(r => r.q === q) || {};
+      const vd = row('video downloader'), rda = row('reels downloader app'), svd = row('social video downloader');
+      const why = [
+        `“Video Downloader” is the category’s top keyword (priority ${vd.P}). “Reels” adds the positioning and a low bar: the smallest app in the top 10 for “reels downloader app” has ${fmt(rda.entry)} installs.`,
+        `Keeps “social video downloader” as an exact phrase: ${svd.c10} competitors in its top 10, smallest app ${fmt(svd.entry)} installs. Drops the reels positioning.`,
+        `Carries every word of “reels downloader app” (priority ${rda.P}) but gives up the exact phrase “video downloader”.`,
+      ];
+      const exactIn = t => B.filter(r => r.tier !== 'D' && !r.tm && (phraseN(t, r.q) || allIn(r.q, wordSet(t)))).sort((a, b) => b.P - a.P).map(r => r.q);
+      opt.innerHTML = `<div class="titles">${TK.titles.map((t, i) => { const fx = { title: t, short: TK.short, long: TK.long }, hits = exactIn(t); return `<div class="topt${i === 0 ? ' rec' : ''}"><div class="tag">${i === 0 ? 'Recommended title' : 'Alternative ' + i}</div><div class="tt">${esc(t)}</div>${meter(t.length, 30)}<div class="why">${esc(why[i])} With the short and full description below, it reaches ${prioCoverage(fx, B).toFixed(0)}% priority coverage.</div><div class="covered">${hits.slice(0, 8).map(h => `<span>${esc(h)}</span>`).join('')}</div></div>`; }).join('')}</div>`;
+    }
+    const phr = B.filter(r => r.tier !== 'D' && phraseN(f.long, r.q)).map(r => ({ r, n: phraseN(f.long, r.q), d: 100 * phraseN(f.long, r.q) * nWords(r.q) / nWords(f.long) })).sort((x, y) => y.n - x.n || y.r.P - x.r.P);
+    document.getElementById('m-listing').innerHTML = `
+      <div class="apphead"><img src="${AS.icon.file}" alt="" width="56" height="56" style="border-radius:14px;box-shadow:0 0 0 1px var(--line)"><div><div class="t">${esc(f.title)}</div><div class="d">${esc(L.current.developer)} · ${esc(L.current.genre)}</div></div></div>
+      <div class="field"><div class="field-label"><span>Title</span><span>${f.title.length} / 30</span></div><p>${highlight(f.title, fk)}</p></div>
+      <div class="field"><div class="field-label"><span>Short description</span><span>${f.short.length} / 80</span></div><p>${highlight(f.short, fk)}</p>${isT && TK.shortAlt ? `<p class="small muted" style="margin-top:6px">Alternative (${TK.shortAlt.length}/80): ${esc(TK.shortAlt)}</p>` : ''}</div>
+      <div class="field longdesc"><div class="field-label"><span>Full description</span><span>${f.long.length.toLocaleString('en-US')} / 4,000</span></div>${longHtml(f.long, fk)}</div>`;
+    const side = [`<div class="panel"><h3>Board keywords in the full description</h3><p class="small muted" style="margin-bottom:6px">${nWords(f.long)} words</p><table><thead><tr><th>Phrase</th><th class="num">Uses</th><th class="num">Density</th><th>Tier</th></tr></thead><tbody>${phr.map(x => `<tr><td class="kw">${esc(x.r.q)}</td><td class="num">${x.n}</td><td class="num">${x.d.toFixed(1)}%</td><td><span class="pill ${TIER_PILL[x.r.tier]}">${TIER[x.r.tier]}</span></td></tr>`).join('')}</tbody></table></div>`,
+      `<div class="panel"><h3>Finalized keywords by field</h3><table><tbody>${[['In the title', ['title', 'titlew']], ['Title + short description', ['short', 'tsw']], ['Full description', ['long']], ['Not in this version', ['none']]].map(([lab, keys]) => { const list = FIN.filter(r => keys.includes(coverageOf(r.q, f).key)); return `<tr><td class="nowrap">${lab}</td><td class="num"><b>${list.length}</b></td></tr><tr><td colspan="2" class="small muted" style="border-top:0;padding-top:0">${list.map(r => esc(r.q)).join(' · ') || '—'}</td></tr>`; }).join('')}</tbody></table></div>`];
+    if (isT) side.push(`<div class="panel"><h3>Measured against the live listing</h3><p class="small muted" style="margin-bottom:6px">Both scored on the re-scored US board</p><table><thead><tr><th></th><th class="num">Live</th><th class="num">Tiksta</th></tr></thead><tbody>
+        <tr><td>Priority coverage</td><td class="num">${prioCoverage(CUR, B).toFixed(0)}%</td><td class="num"><b>${prioCoverage(f, B).toFixed(0)}%</b></td></tr>
+        <tr><td>Finalized keywords used</td><td class="num">${FIN.filter(r => coverageOf(r.q, CUR).key !== 'none').length} / ${nF}</td><td class="num"><b>${FIN.filter(r => coverageOf(r.q, f).key !== 'none').length} / ${nF}</b></td></tr>
+        <tr><td>…in title or short</td><td class="num">${strong(CUR)}</td><td class="num"><b>${strong(f)}</b></td></tr>
+        <tr><td>Reels keywords used</td><td class="num">${B.filter(r => r.cleared && coverageOf(r.q, CUR).key !== 'none').length}</td><td class="num"><b>${B.filter(r => r.cleared && coverageOf(r.q, f).key !== 'none').length}</b></td></tr>
+        <tr><td>Brand names in the text</td><td class="num">${brandsIn([CUR.title, CUR.short, CUR.long].join('\n')).length}</td><td class="num"><b>${brands.length}</b></td></tr>
+        <tr><td>Full description</td><td class="num">${CUR.long.length.toLocaleString('en-US')}</td><td class="num">${f.long.length.toLocaleString('en-US')}</td></tr>
+      </tbody></table></div>`);
+    document.getElementById('m-side').innerHTML = side.join('');
+    const copy = document.getElementById('m-copy');
+    copy.hidden = !isT;
+    if (isT) copy.innerHTML = `<details class="desc"><summary>Plain text to paste into Play Console</summary><div class="copyf">${[['Title', f.title, 1], ['Short description', f.short, 2], ['Full description', f.long, 24]].map(([l, v, rowsN]) => `<label><span class="field-label"><span>${l}</span><span>${v.length.toLocaleString('en-US')} characters</span></span><textarea readonly rows="${rowsN}" spellcheck="false">${esc(v)}</textarea></label>`).join('')}</div></details>`;
+
+    // ---- every keyword this metadata targets
+    const groups = [['In the title', ['title', 'titlew']], ['Title + short description', ['short', 'tsw']], ['Full description', ['long']]];
+    const trow = r => { const ct = compTitlesWith(r.q); return `<tr><td style="min-width:190px"><span class="kw">${esc(r.q)}</span><div class="kwmeta"><span class="pill ${TIER_PILL[r.tier]}">${TIER[r.tier]}</span>${tmPill(r)}</div></td><td><span class="pill p-mute">${SRC[r.src]}</span></td><td class="num">${r.P}${pWas(r)}</td><td class="num">${Math.round(r.R * 100)}</td><td class="num">${r.demand}</td><td class="num">${compTop10(r)}<span class="muted"> / 16</span></td><td class="small" style="min-width:170px">${ct.length ? `<b>${ct.length}</b> · ${ct.map(x => esc(SHORT[x.i])).join(', ')}` : '<span class="muted">none</span>'}</td><td class="small">${entryCell(r)}</td></tr>`; };
+    document.getElementById('m-targets-sub').textContent = 'All board keywords carried by the title, short description and full description, grouped by field, with how many competitors hold a top-10 rank and which competitors carry the keyword in their own title.' + (isT ? ' Reels keywords show their re-scored priority.' : '');
+    document.getElementById('m-targets-table').innerHTML = `<thead><tr><th>Keyword</th><th>Source</th><th class="num">Priority</th><th class="num">Relevance</th><th class="num">Demand</th><th class="num">Competitors in top 10</th><th>In competitors’ titles</th><th>Smallest app in top 10</th></tr></thead><tbody>` +
+      groups.map(([label, keys]) => { const list = used.filter(r => keys.includes(coverageOf(r.q, f).key)).sort((x, y) => y.P - x.P); return list.length ? `<tr class="grp"><td colspan="8">${label} · ${list.length}</td></tr>` + list.map(trow).join('') : ''; }).join('') + '</tbody>';
+    document.getElementById('m-targets-note').textContent = `This metadata targets ${used.length} of the ${B.length} US board keywords. Competitors hold top-10 ranks on ${used.filter(r => compTop10(r) > 0).length} of them, and ${used.filter(r => compTitlesWith(r.q).length).length} sit word for word in at least one competitor’s title.`;
+
+    // ---- keywords that name another company's product: shown only when the text names one
+    const plat = B.filter(r => r.tm).sort((a, b) => b.P - a.P);
+    const showPlat = brands.length > 0 || plat.some(r => coverageOf(r.q, f).key !== 'none');
+    document.getElementById('m-platform').hidden = !showPlat;
+    document.getElementById('jl-platform').hidden = !showPlat;
+    document.getElementById('m-platform-table').innerHTML = !showPlat ? '' : `<thead><tr><th>Keyword</th><th class="num">Priority</th><th class="num">Demand</th><th class="num">Entry bar</th><th>Competitors ranking (US)</th><th>In your metadata</th></tr></thead><tbody>` +
+      plat.map(r => `<tr><td style="min-width:200px"><span class="kw">${esc(r.q)}</span>${tmPill(r)}</td><td class="num">${r.P}</td><td class="num">${r.demand}<div class="small muted">${r.demandAt ? `after “${esc(r.demandAt)}”` : 'not suggested'}</div></td><td class="num">${entryCell(r)}</td><td class="small" style="min-width:170px">${compNames(r)}</td><td>${covPill(coverageOf(r.q, f))}</td></tr>`).join('') + '</tbody>';
+
+    // ---- finalized keywords
+    document.getElementById('m-kw-sub').textContent = isT
+      ? `The ${nF} US keywords with core or adjacent intent, relevance of 80 or above and no brand name, on the board re-scored for reels. “Free”, “without ads” and “4K” keywords are left out because this listing makes none of those claims. Split by whether this metadata targets them.`
+      : 'The 24 highest-priority US keywords with core or adjacent intent, relevance of 80 or above and no platform name, split by whether this metadata targets them.';
+    const maxP = FIN[0].P;
+    const kwRow = (r, w) => `<tr><td class="num muted">${FIN.indexOf(r) + 1}</td><td style="min-width:200px"><span class="kw">${esc(r.q)}</span><div class="kwmeta"><span class="pill ${TIER_PILL[r.tier]}">${TIER[r.tier]}</span><span class="pill p-mute">${SRC[r.src]}</span>${tmPill(r)}</div></td><td><div class="pbar"><div class="track"><div class="fill" style="width:${(100 * r.P / maxP).toFixed(1)}%"></div></div><b>${r.P}</b></div>${pWas(r)}</td><td class="num">${Math.round(r.R * 100)}</td><td class="num">${r.nb}<span class="muted">/10</span></td><td class="num">${r.demand}</td><td class="num">${entryCell(r)}</td><td class="small" style="min-width:170px">${compNames(r)}</td>${w ? `<td>${covPill(coverageOf(r.q, f))}</td>` : ''}</tr>`;
+    const head = w => `<thead><tr><th class="num">#</th><th>Keyword</th><th>Priority</th><th class="num">Relevance</th><th class="num">Winnable</th><th class="num">Demand</th><th class="num">Entry bar</th><th>Competitors ranking (US)</th>${w ? '<th>Targeted in</th>' : ''}</tr></thead>`;
+    const now = FIN.filter(r => coverageOf(r.q, f).key !== 'none'), future = FIN.filter(r => coverageOf(r.q, f).key === 'none');
+    document.getElementById('m-kw-now-h').textContent = `Targeted in this metadata · ${now.length} of ${nF}`;
+    document.getElementById('m-kw-future-h').textContent = `Not in this version · ${future.length} of ${nF}`;
+    document.getElementById('m-kw-now').innerHTML = head(true) + '<tbody>' + now.map(r => kwRow(r, true)).join('') + '</tbody>';
+    document.getElementById('m-kw-future').innerHTML = future.length ? head(false) + '<tbody>' + future.map(r => kwRow(r, false)).join('') + '</tbody>' : '<tbody><tr><td class="muted">Every finalized keyword is targeted.</td></tr></tbody>';
+
+    // ---- ladder
+    document.getElementById('m-ladder-sub').textContent = (isT ? 'The US ladder rebuilt on the re-scored board, so reels keywords take the phase their entry bars earn. ' : 'The US ladder with each keyword marked by how this metadata covers it. ') + 'T = title, T+S = every word across title and short description, S = short description, L = full description, and a dash = not in this version.';
+    document.getElementById('m-ladder-list').innerHTML = ladderPhases(B, V.ex).map(([ph, sub, list]) => { const cov = list.map(r => coverageOf(r.q, f).key); return `<div class="rung"><div class="ph">${ph}<small>${sub}</small></div><div><ul>${list.map(r => { const c = coverageOf(r.q, f); return `<li>${esc(r.q)} <i>P${r.P}</i><span class="cov pill ${COV[c.key][1]}">${COV[c.key][0]}</span> <i>· ${compTop10(r)} comp. top-10 · smallest app ${r.entry == null ? '—' : r.entry < 1000 ? 'under 1K' : fmt(r.entry)}</i></li>`; }).join('') || '<li>none at this bar</li>'}</ul><p class="proof">This metadata carries <b>${cov.filter(k => strongKeys.includes(k)).length}</b> in the title or short description and <b>${cov.filter(k => k === 'long').length}</b> in the full description; <b>${cov.filter(k => k === 'none').length}</b> not in this version.</p></div></div>`; }).join('');
+
+    // ---- competitor ranks on the keywords used
+    const sorted = used.slice().sort((x, y) => (compRanks(y).length > 0) - (compRanks(x).length > 0) || y.R - x.R || y.P - x.P);
+    const noC = sorted.filter(r => !compRanks(r).length), cols = 3 + COMP.length + 1;
+    const urow = r => `<tr><td class="kwc"><span class="kw">${esc(r.q)}</span>${tmPill(r)}<div style="margin-top:3px">${covPill(coverageOf(r.q, f))}</div></td><td class="num small">${Math.round(r.R * 100)}</td><td class="num small">${r.P}</td>${COMP.map((c, k) => `<td>${rkCell(r.comps[k], c, r.q)}</td>`).join('')}<td class="num"><b>${compTop10(r)}</b><span class="muted"> / 16</span></td></tr>`;
+    document.getElementById('m-used-table').innerHTML = `<thead><tr><th>Keyword · where this metadata uses it</th><th class="num">Relevance</th><th class="num">Priority</th>${COMP.map((c, i) => `<th class="ch">${esc(SHORT[i])}</th>`).join('')}<th class="num">Top 10</th></tr></thead><tbody><tr class="grp"><td colspan="${cols}">Competitors rank on these · ${withC.length}</td></tr>${sorted.filter(r => compRanks(r).length).map(urow).join('')}${noC.length ? `<tr class="grp"><td colspan="${cols}">No competitor in the results · ${noC.length}</td></tr>${noC.map(urow).join('')}` : ''}</tbody>`;
+
+    // ---- policy record
+    const rec = [], add = (s, rule, detail) => rec.push({ s, rule, detail });
+    const sameT = PROF.find(p => p.title.toLowerCase() === f.title.toLowerCase());
+    add(f.title.length <= 30 ? 'met' : 'not', 'Title within 30 characters', `${f.title.length} / 30.`);
+    add(/(\bbest\b|#1|\bfree\b|\bsale\b)/i.test(f.title) ? 'not' : 'met', 'Title free of “best”, “#1”, “free” and sale wording', 'None present.');
+    if (isT) {
+      const clash = A.find(a => normT(a.t).includes(' tiksta '));
+      add(clash || PC.tikstaNamed ? 'not' : 'met', 'Title distinct from other apps’ titles', clash ? `“${clash.t}” uses the name.` : `No app among the ${A.length} in the playbook or the ${PC.apps} checked on 16 Sep 2026 is named Tiksta.`);
+      add(brands.length ? 'not' : 'met', 'No brand names in the title, short or full description', brands.length ? `Present: ${brands.join(', ')}.` : 'None of Instagram, Insta, Facebook, TikTok, WhatsApp, YouTube, Pinterest, X / Twitter, LinkedIn, Vimeo, Dailymotion, Snapchat or Likee appear.');
+      const tr = PC.terms.find(t => t.key === 'reels'), tt = PC.terms.find(t => t.key === 'tik');
+      add('rec', '“Reels” used as a generic term', `Checked on Google Play: ${tr.n} live app titles carry it, ${tr.y2} of them listed for 2+ years, ${tr.m1} with 1M+ installs. Meta’s Instagram brand rules name “Insta” and “gram”, not “Reels”. Tolerated, but the proof at scale is thin; see the check below.`);
+      add('rec', 'Brand name “Tiksta”', `No app on Google Play uses the name, and it contains neither “Insta” nor “gram”. ${tt.n} live titles use a “Tik” name, ${tt.y2} of them listed for 2+ years (for example ${[tt.ex[2], tt.ex[3]].filter(Boolean).map(e => `${e.t}, ${e.b}`).join('; ')}). This is a store check, not a trademark clearance.`);
+      add('rec', 'App name inside the APK', 'The build’s app name is “All Video Downloader” (dossier spec). Rename the launcher label and in-app name to Tiksta in the same release as this title, so the installed app matches the listing.');
+      add('rec', 'Package name', `${L.current.id} contains “instagram”. A published app’s package name cannot change; it shows in the listing URL, not in the metadata text.`);
+    } else {
+      add(sameT ? 'not' : 'met', 'Title distinct from competitors’ titles', sameT ? `Identical to “${sameT.title}” by ${sameT.developer}.` : 'Distinct.');
+      const platIn = [f.title, f.short].join(' ').match(/\b(instagram|facebook|tiktok|twitter|whatsapp|youtube|pinterest)\b/i);
+      add(platIn ? 'not' : 'met', 'No platform names in title or short description', platIn ? `“${platIn[0]}” present.` : 'None present.');
+    }
+    add(/youtube/i.test(all) ? 'not' : 'met', 'No YouTube references', /youtube/i.test(all) ? 'YouTube is mentioned.' : 'None present.');
+    if (isT) add(/no watermark|watermark remover|remove (the )?watermark/i.test(all) ? 'not' : 'met', 'No “no watermark” promise', 'The only watermark mention is the editor adding your own.');
+    add(/not affiliated/i.test(all) ? 'met' : 'not', 'Non-affiliation statement', /not affiliated/i.test(all) ? 'Present at the end of the full description.' : 'Missing.');
+    add(/copyright/i.test(all) ? 'met' : 'not', 'Copyright notice', /copyright/i.test(all) ? 'Present: download only content you own or may save.' : 'Missing.');
+    add(/\bno ads\b|without ads|ad-free/i.test(all) && L.current.ads ? 'not' : 'met', 'Ad wording matches the “Contains ads” label', isT ? 'Premium is described as removing ads; there is no ad-free claim for the app itself.' : 'No ad-free claim in the text.');
+    if (isT) add(/premium removes all ads/i.test(all) && !/unlimited|faster downloads|1080p/i.test(all) ? 'met' : 'not', 'Premium described as it works', 'Premium removes all ads, including the one before a download. No speed, quality or unlimited-download promise.');
+    add(f.short.length <= 80 ? 'met' : 'not', 'Short description within 80 characters', `${f.short.length} / 80.`);
+    add(f.long.length <= 4000 ? 'met' : 'not', 'Full description within 4,000 characters', `${f.long.length.toLocaleString('en-US')} / 4,000 · ${(4000 - f.long.length).toLocaleString('en-US')} unused.`);
+    if (isT) {
+      const top = phr.filter(x => nWords(x.r.q) > 1)[0];
+      add('rec', 'Keyword repetition', top ? `Most repeated board phrase: “${top.r.q}” ×${top.n}, ${top.d.toFixed(1)}% of ${nWords(f.long)} words. Headings and bullets carry the keywords; no phrase is stacked in a list.` : 'No repeated board phrase.');
+      add('met', 'Every feature claim is in the Product Dossier', 'Paste or share a link · built-in browser · quality picker · photos and multi-item posts · parallel downloads with pause, resume, retry · background downloads · status saver · 9-tool editor · vault with PIN, fingerprint and security question · 9 languages with RTL · dark mode.');
+    } else add('rec', 'Features the listing doesn’t mention', `${D.claims.filter(([c]) => F.ourClaims[c] && !MYP.claims[c]).map(([, l]) => l).join(', ')}.`);
+    add('met', 'Privacy policy link', `Linked and loading (HTTP ${L.current.privacyStatus}).`);
+    document.getElementById('m-policy-table').innerHTML = `<thead><tr><th>Status</th><th>Rule</th><th>Detail</th></tr></thead><tbody>` + rec.map(x => `<tr><td>${pill(x.s)}</td><td><b>${esc(x.rule)}</b></td><td>${esc(x.detail)}</td></tr>`).join('') + '</tbody>';
+
+    // ---- borderline terms, checked on Google Play (Tiksta only)
+    const tw = document.getElementById('m-terms');
+    tw.hidden = !isT;
+    if (isT) {
+      const DEC = {
+        reels: ['p-good', 'Used', 'Not named in Meta’s Instagram brand rules', 'title, short, full'],
+        story: ['p-good', 'Used', 'Everyday word; the baseline for “proven”', 'short, full'],
+        tik: ['p-acc', 'Name only', 'No store evidence against it; get a trademark check', 'the Tiksta brand'],
+        insta: ['p-risk', 'Not used', 'Meta: “Don’t combine ‘Insta’ or ‘gram’ with your own brand”', 'fails the check'],
+        tiktok: ['p-mute', 'Not used', 'Brand name, kept out by your decision', 'brand name'],
+        instagram: ['p-mute', 'Not used', 'Meta allows only a descriptive “for Instagram”; kept out by your decision', 'brand name'],
+      };
+      const tr = PC.terms.find(t => t.key === 'reels'), st = PC.terms.find(t => t.key === 'story'), it = PC.terms.find(t => t.key === 'insta');
+      const serpHas = PC.serp.map((s, i) => ({ ...s, rank: i + 1 })).filter(s => s.has);
+      const newest = serpHas.slice().sort((a, b) => (b.f || '').localeCompare(a.f || ''))[0], smallest = serpHas[serpHas.length - 1];
+      tw.innerHTML = `<h3 style="margin:30px 0 6px">Borderline terms, checked on Google Play</h3>
+        <p class="sub" style="margin-bottom:14px">${PC.queries.length} US English searches on ${new Date(PC.collectedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}, ${PC.apps} distinct apps, each app page read for its title, installs and first listing date. Apps published by the brand owner are not counted.</p>
+        <div class="tscroll"><table class="checks-table"><thead><tr><th>Term</th><th class="num">Live titles</th><th class="num">1M+ installs</th><th class="num">Listed 2+ years</th><th>Largest examples</th><th>Brand owner’s rules</th><th>Decision</th></tr></thead><tbody>${PC.terms.map(t => { const d = DEC[t.key]; return `<tr><td class="nowrap"><b>${esc(t.label)}</b></td><td class="num">${t.n}</td><td class="num">${t.m1}</td><td class="num">${t.y2}</td><td class="small" style="min-width:260px">${t.ex.map(e => `${esc(e.t)} <span class="muted">· ${esc(e.b)} · since ${pDate(e.f)}</span>`).join('<br>') || '—'}</td><td class="small" style="min-width:180px">${esc(d[2])}</td><td><span class="pill ${d[0]}">${esc(d[1])}</span><div class="small muted" style="margin-top:4px">${esc(d[3])}</div></td></tr>`; }).join('')}</tbody></table></div>
+        <div class="g-cols" style="margin-top:16px">
+          <p><b>Does a crowded title prove a term is safe?</b> Only partly. Google Play acts on complaints from the brand owner, so apps removed after a complaint no longer appear in a count like this. Many small, new apps show a term is tolerated today; titles that have stayed live for two years with a million installs are the stronger proof. By that test “Story” is proven (${st.m1} titles with 1M+ installs, ${st.y2} listed 2+ years), “Reels” is tolerated but thin at scale (${tr.n} titles, ${tr.y2} listed 2+ years, ${tr.m1} with 1M+), and “Insta” fails (${it.n} titles, none past 1K+ installs or a year old, and Meta bans it by name).</p>
+          <p><b>Why “Reels” is still worth the title.</b> On “reels downloader”, ${serpHas.length} of the top 10 apps carry reels in their title${newest ? `, including ${esc(newest.t)} (${esc(newest.b)} installs, listed ${pDate(newest.f)}) at #${newest.rank}` : ''}${smallest && smallest !== newest ? ` and ${esc(smallest.t)} (${esc(smallest.b)}) at #${smallest.rank}` : ''}. The 10M+ leaders rank there without the word, so a new app wins those slots by naming it. A search for “tiksta” returns ${esc(PC.tikstaSerp.slice(0, 3).join(', '))} and other apps; none uses the name. Source for Meta’s rule: <a href="https://www.meta.com/brand/resources/instagram/instagram-brand/" target="_blank" rel="noopener">Instagram brand guidelines ↗</a>.</p>
+        </div>`;
+    }
+
+    // ---- method
+    document.getElementById('m-method-text').innerHTML = (isT ? [
+      `<b>The copy.</b> Title, short and full description written for Tiksta on 16 Sep 2026 from the playbook’s US board. Every feature claim maps to the device-tested build in the Product Dossier; the header facts, links and assets are the live listing’s.`,
+      '<b>Reels re-score.</b> Board rows flagged only for “reels” are scored as core intent after the Google Play check: relevance rises by 0.55 × (1 − 0.7) = 0.165 and priority = 100 · relevance² · opportunity. Rows that also name a brand, such as “instagram reels downloader”, keep their flag.',
+      `<b>Finalized keywords.</b> The ${nF} rows with core or adjacent intent, relevance of 80 or above and no brand name. “Free”, “without ads” (the app contains ads) and “4K” (not a verified quality) are left out.`,
+      '<b>Keyword coverage.</b> Text is lowercased and “&” is read as “and”. A keyword counts as in the title when its exact phrase or all its words appear there; as title + short when all its words appear across both; otherwise its exact-phrase uses in the full description are counted. Ranks belong to the 16 competitors, from the playbook’s US results.',
+    ] : [
+      `<b>The listing.</b> Title, short and full description, monetisation labels and store assets were fetched from Google Play for <span class="quote">${esc(L.current.id)}</span> (English, United States). The privacy policy link was requested live.`,
+      '<b>No own-app ranking.</b> Every rank on this tab belongs to one of the 16 competitors, from the same US results used across the playbook.',
+      '<b>Keyword coverage.</b> Text is lowercased and “&” is read as “and”. A keyword counts as in the title when its exact phrase or all its words appear there; as title + short when all its words appear across both; otherwise its exact-phrase uses in the full description are counted.',
+      '<b>Finalized keywords.</b> US board rows with core or adjacent intent, relevance of 80 or above and no platform name, ranked by priority. “Without ads” phrases are excluded because the app contains ads.',
+    ]).map(p => `<p>${p}</p>`).join('');
+  }
+
+  // ---------- TAB 3 · features ----------
+  const FV = { F: ['✓', 'full', 'Yes'], P: ['◐', 'basic', 'Partial'], N: ['✕', 'none', 'No'], U: ['?', 'unk', 'Not determinable'] };
+```
+
+### `renderFeatures()` (assets/app.js L480-530)
+
+```js
+  function renderFeatures() {
+    const au = F.audit, apps = au.apps, rowsAll = au.groups.flatMap(g => g.rows), n = apps.length;
+    const score = i => rowsAll.reduce((s, r) => s + fsc(r.v[i]), 0);
+    const onlyUs = rowsAll.filter(r => r.v[0] === 'F' && ![...r.v.slice(1)].includes('F'));
+    const best = Math.max(...apps.slice(1).map((a, i) => score(i + 1)));
+    const claimKeys = D.claims.map(c => c[0]);
+    const claimCount = p => claimKeys.filter(k => p.claims[k]).length;
+    const bestClaims = PROF.slice().sort((a, b) => claimCount(b) - claimCount(a))[0];
+    document.getElementById('f-lede').textContent = `Our app against six audited competitor builds and all 16 tracked listings. It is the only app in the audit with MP3 extraction, batch downloads and a PIN-locked vault, and the only one anywhere in the set that pairs a downloader with a 9-tool video editor.`;
+    document.getElementById('f-tiles').innerHTML = [
+      [`${onlyUs.length}`, 'audited features only our app ships'],
+      [`${score(0)}<small>/${rowsAll.length}</small>`, `audit coverage · best competitor ${best}`],
+      [`${claimKeys.length}<small>/${claimKeys.length}</small>`, `user features shipped · best competitor listing claims ${claimCount(bestClaims)}`],
+      ['9', 'editing tools · no audited competitor has one'],
+    ].map(([v, l]) => `<div class="tile"><div class="n">${v}</div><div class="l">${l}</div></div>`).join('');
+    document.getElementById('f-only').innerHTML = F.oursOnly.map(a => `<div class="card"><div class="tag">Only in our app</div><h3 style="font-size:1rem;margin-bottom:6px">${esc(a.h)}</h3><p>${esc(a.p)}</p></div>`).join('');
+
+    document.getElementById('f-legend').innerHTML = [['F', 'Ships'], ['N', 'Not in the build']].map(([k, l]) => `<span><i class="fv ${FV[k][1]}" aria-hidden="true">${FV[k][0]}</i>${l}</span>`).join('');
+    const colHead = apps.map((a, i) => { const p = a.comp >= 0 ? PROF[a.comp] : null; const t10 = p ? D.markets.reduce((s, gl) => s + p.perMarket[gl].top10, 0) : null; return `<th class="ch${i === 0 ? ' ours-col' : ''}">${esc(a.dev)}<div class="small muted">${esc(a.installs)}</div>${p ? `<div class="liveb">${t10} top-10s · 8 mkts</div>` : ''}</th>`; }).join('');
+    document.getElementById('f-audit-table').innerHTML = `<thead><tr><th>Feature</th>${colHead}<th class="num">Competitors with it</th></tr></thead><tbody>` +
+      au.groups.map(g => `<tr class="grp"><td colspan="${n + 2}">${esc(g.g)}</td></tr>` + g.rows.map(r => `<tr><td class="kwc" style="min-width:220px">${esc(r.f)}</td>${[...r.v].map((v, i) => `<td${i === 0 ? ' class="ours-col"' : ''}><span class="fv ${FV[v][1]}" title="${FV[v][2]}">${FV[v][0]}</span></td>`).join('')}<td class="num"><b>${[...r.v.slice(1)].filter(v => v === 'F').length}</b><span class="muted"> / 6</span></td></tr>`).join('')).join('') +
+      `</tbody><tfoot><tr><td class="kwc">Coverage</td>${apps.map((a, i) => `<td${i === 0 ? ' class="ours-col"' : ''}>${score(i)}</td>`).join('')}<td class="num">of ${rowsAll.length}</td></tr></tfoot>`;
+    document.getElementById('f-excluded').textContent = au.excluded;
+
+    const cols = [{ ours: true }].concat(PROF.map((p, k) => ({ p, k })));
+    document.getElementById('f-claims-table').innerHTML = `<thead><tr><th>Feature</th><th class="ch ours-col">Our app<div class="small muted">product</div></th>${PROF.map((p, k) => `<th class="ch" title="${esc(p.title)}">${esc(SHORT[k])}<div class="small muted">${esc(p.installsLabel)}</div></th>`).join('')}<th class="num">Listings claiming it</th></tr></thead><tbody>` +
+      D.claims.map(([key, label]) => `<tr><td class="kwc" style="min-width:220px">${esc(label)}</td><td class="ours-col"><span class="fv full" title="Ships in the app">✓</span>${MYP.claims[key] ? '' : '<div><span class="fv gap" title="Your listing does not mention it">not in listing</span></div>'}</td>${PROF.map(p => `<td><span class="fv ${p.claims[key] ? 'full' : 'none'}" title="${p.claims[key] ? 'Claimed in listing' : 'Not claimed'}">${p.claims[key] ? '✓' : '✕'}</span></td>`).join('')}<td class="num"><b>${PROF.filter(p => p.claims[key]).length}</b><span class="muted"> / 16</span></td></tr>`).join('') +
+      `</tbody><tfoot><tr><td class="kwc">Claims</td><td class="ours-col">${claimKeys.length}</td>${PROF.map(p => `<td>${claimCount(p)}</td>`).join('')}<td></td></tr></tfoot>`;
+    const gaps = D.claims.filter(([k]) => !MYP.claims[k]).map(([, l]) => l);
+    document.getElementById('f-claims-note').textContent = `Competitor columns show what each listing claims, not a code audit — an app may ship a feature its listing never mentions. Your current listing mentions ${claimKeys.length - gaps.length} of the ${claimKeys.length} features your app ships; the ones it leaves out are ${gaps.join(', ').toLowerCase()}.`;
+
+    document.getElementById('f-inv').innerHTML = F.inventory.map(s => `<div class="card"><div class="tag">${esc(s.screen)}</div><ul class="checks" style="margin-top:4px">${s.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul></div>`).join('');
+    const inshot = PROF[0];
+    document.getElementById('f-edge-cards').innerHTML = F.edges.map(c => `<div class="card"><div class="tag">Competitor strength</div><h3 style="font-size:1rem;margin-bottom:6px">${esc(c.h)}</h3><p>${esc(c.p)}</p></div>`).join('') +
+      `<div class="card"><div class="tag">Search visibility</div><h3 style="font-size:1rem;margin-bottom:6px">${esc(inshot.developer)} owns the search results</h3><p>${inshot.perMarket.US.top10} US top-10 placements and ${inshot.score ? inshot.score.toFixed(2) : '—'} stars from ${fmt(inshot.ratings)} ratings. Features win the comparison; ratings volume and ranking history are where the leaders are hardest to catch.</p></div>`;
+
+    const iapRows = PROF.concat([MYP]).map(p => ({ p, r: p.iapRange })).sort((a, b) => (b.p.installs || 0) - (a.p.installs || 0));
+    document.getElementById('f-iap-table').innerHTML = `<thead><tr><th>App</th><th class="num">Installs</th><th class="num">Rating</th><th>Ads</th><th>In-app purchases (US)</th><th style="min-width:200px">Range · $0–$100</th></tr></thead><tbody>` +
+      iapRows.map(({ p, r }) => `<tr${p.mine ? ' style="background:var(--accent-soft)"' : ''}><td style="min-width:210px"><b>${esc(p.title)}</b><div class="small muted">${esc(p.mine ? 'Your app' : p.developer)}</div></td><td class="num">${esc(p.installsLabel)}</td><td class="num">${p.score ? p.score.toFixed(1) : '—'}</td><td>${p.ads ? '<span class="pill p-warn">Ads</span>' : '<span class="pill p-good">No ads</span>'}</td><td class="money">${esc(p.iap || 'None')}</td><td>${r ? `<div class="range${p.mine ? ' ours' : ''}" role="img" aria-label="$${r.min} to $${r.max}"><span style="left:${Math.min(100, r.min)}%;width:${Math.max(1, Math.min(100, r.max) - Math.min(100, r.min))}%"></span></div>` : '<span class="muted small">—</span>'}</td></tr>`).join('') + '</tbody>';
+    document.getElementById('f-plans').innerHTML = `<h3 style="margin-bottom:8px">Our plans</h3><div class="kwlist">${F.plans.items.map(x => `<span>${esc(x.p)} · ${esc(x.price)} · ${esc(x.sku)}</span>`).join('')}</div><p class="small muted" style="margin-top:8px">${esc(F.plans.note)} In the US, Play shows the app’s in-app items at ${esc(L.current.iap)}. Premium removes ads; it does not unlock faster or unlimited downloads.</p>`;
+
+    document.getElementById('f-method-text').innerHTML = [
+      '<b>Feature audit.</b> The matrix is your team’s static analysis of six competitor APKs against ours (Slide 7). One row, “Jetpack Compose modern UI”, is left out because the Product Dossier’s spec shows the app is built with Android Views.',
+      '<b>Listing claims.</b> Each competitor’s live Google Play title, short and full description (US, English) was searched for wording that describes each feature. A ✕ means the listing does not claim it, not that the app lacks it.',
+      '<b>Our column.</b> Features come from the Product Dossier: the build’s spec and the device-tested QA rounds. “Not in listing” marks features your current Play listing never mentions.',
+      '<b>IAP.</b> Price ranges are the “In-app purchases” line each listing shows in the United States. Our plan prices are the Pakistan prices recorded in the dossier.',
+    ].map(p => `<p>${p}</p>`).join('');
+  }
+
+  // ---------- page ----------
+  const bar = document.getElementById('bar');
+```
+
+### `renderScoped()` (assets/app.js L534-558)
+
+```js
+  function renderScoped() {
+    document.querySelectorAll('[data-scope]').forEach(s => { s.textContent = MN[state.gl]; });
+    state.strips = 20;
+    renderCategories(); renderCompetitors(); renderMatrix(); renderStrips(); renderBoard(); renderLadder();
+  }
+
+  if (PAGE === 'playbook') {
+    document.getElementById('strips-more').addEventListener('click', () => { state.strips += 20; renderStrips(); });
+    document.getElementById('matrix-all').addEventListener('change', e => { state.all = e.target.checked; renderMatrix(); });
+    renderHeader(); renderMarketSel(); renderTierChips(); renderCompDetailSelect(); renderCompDetail(); renderEvents(); renderMarkets(); renderListing(); renderScoped();
+  } else if (PAGE === 'metadata') {
+    renderMetadata('tiksta');
+    document.querySelectorAll('#mv [data-ver]').forEach(b => b.addEventListener('click', () => {
+      document.querySelectorAll('#mv [data-ver]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      renderMetadata(b.dataset.ver);
+    }));
+  } else if (PAGE === 'features') {
+    renderFeatures();
+  }
+
+  // Sections are drawn by this script, so jump to a #section link only after rendering.
+  const h = decodeURIComponent(location.hash.slice(1)), el = h && document.getElementById(h);
+  if (el) el.scrollIntoView();
+})();
+```
+
+### Page start-up (assets/app.js L529-558); the `PAGE === 'playbook'` branch runs for this tab
+
+```js
+  // ---------- page ----------
+  const bar = document.getElementById('bar');
+  const syncBar = () => document.documentElement.style.setProperty('--barh', bar.offsetHeight + 'px');
+  addEventListener('resize', syncBar); syncBar();
+
+  function renderScoped() {
+    document.querySelectorAll('[data-scope]').forEach(s => { s.textContent = MN[state.gl]; });
+    state.strips = 20;
+    renderCategories(); renderCompetitors(); renderMatrix(); renderStrips(); renderBoard(); renderLadder();
+  }
+
+  if (PAGE === 'playbook') {
+    document.getElementById('strips-more').addEventListener('click', () => { state.strips += 20; renderStrips(); });
+    document.getElementById('matrix-all').addEventListener('change', e => { state.all = e.target.checked; renderMatrix(); });
+    renderHeader(); renderMarketSel(); renderTierChips(); renderCompDetailSelect(); renderCompDetail(); renderEvents(); renderMarkets(); renderListing(); renderScoped();
+  } else if (PAGE === 'metadata') {
+    renderMetadata('tiksta');
+    document.querySelectorAll('#mv [data-ver]').forEach(b => b.addEventListener('click', () => {
+      document.querySelectorAll('#mv [data-ver]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      renderMetadata(b.dataset.ver);
+    }));
+  } else if (PAGE === 'features') {
+    renderFeatures();
+  }
+
+  // Sections are drawn by this script, so jump to a #section link only after rendering.
+  const h = decodeURIComponent(location.hash.slice(1)), el = h && document.getElementById(h);
+  if (el) el.scrollIntoView();
+})();
+```
+
+## Data this tab reads
+
+- [`assets`](#assets)
+- [`data.apps`](#dataapps)
+- [`data.board`](#databoard)
+- [`data.claims`](#dataclaims)
+- [`data.collectedAt`](#datacollectedat)
+- [`data.compIdx`](#datacompidx)
+- [`data.marketSummary`](#datamarketsummary)
+- [`data.markets`](#datamarkets)
+- [`data.profiles`](#dataprofiles)
+- [`data.secondary`](#datasecondary)
+- [`features`](#features)
+- [`listing`](#listing)
+- [`offersChecked`](#offerschecked)
+- [`tiksta.long`](#tikstalong)
+- [`tiksta.pc`](#tikstapc)
+- [`tiksta.short`](#tikstashort)
+- [`tiksta.shortAlt`](#tikstashortalt)
+- [`tiksta.titles`](#tikstatitles)
+
+These are exact copies of the values in [assets/data.js](../../assets/data.js); edit them there. Field meanings are in the [data dictionary](../data-dictionary.md).
+
+### assets
+
+```json
+{
+  "icon": {
+    "file": "../../assets/listing/icon.png",
+    "src": "https://play-lh.googleusercontent.com/qLNXtLkR4z4KiAhmkwjlXx1TpuC4aaH6qsMoZgkWzjg1-ZaXUh-KMfdG1gXfayu_gkStOl6S1w4tCfe2WMPBbQ",
+    "bytes": 369966
+  },
+  "feature": {
+    "file": "../../assets/listing/feature-graphic.png",
+    "src": "https://play-lh.googleusercontent.com/q4weOoYNzbX0TD4RtvgBm1VsiywteBuYuZsb5Rr0JzQPEFYto2uU7Taj_ueFgCp65xXjCQ9zFHSZ9jwTq7lk8Q",
+    "bytes": 315561
+  },
+  "screenshots": [
+    {
+      "file": "../../assets/listing/screenshot-01.png",
+      "src": "https://play-lh.googleusercontent.com/j2_25nIZRvSsEN0BlWJSIIRtIx-N1I7ugFgLUo5rDuBOnNTugt1bnMxlZt9p-RnjyAXdCFKK5KMAYzsaqTK8VA",
+      "bytes": 626837
+    },
+    {
+      "file": "../../assets/listing/screenshot-02.png",
+      "src": "https://play-lh.googleusercontent.com/TDaaCxqjFa48ZfwV0k4SNIeBK-v0Cwt33ue3sNB5cqdlGlK4sYIZGuNKiKX2zGtm62hpnf9h3Zmc8ajaon7LXg",
+      "bytes": 668815
+    },
+    {
+      "file": "../../assets/listing/screenshot-03.png",
+      "src": "https://play-lh.googleusercontent.com/iWFuKpcYqHVHeGgYoYhIrSjIrlR9FcRwAaGP1dZaP3WYRiq5zov4dfdatnjVHXoBdObNVJClXxRpLiWW2OhOTw",
+      "bytes": 798268
+    },
+    {
+      "file": "../../assets/listing/screenshot-04.png",
+      "src": "https://play-lh.googleusercontent.com/3n20NxyQhoOWJOgRndJyj48dCylpmBu1lIGTP9GG5lS89ovMzjfum-Ps_cLIDr_54bKevER-jTLc-Um63vy_nw",
+      "bytes": 560921
+    }
+  ]
+}
+```
+
+### data.apps
+
+```json
+[
+  [
+    "com.video.downloader.instagram.videosaver", "All Video Downloader & Saver", "Cell Cave", 9, null, null, null, null, 0, "downloader", 1,
+    "$4.99 - $19.99 per item"
+  ],
+  [
+    "video.downloader.videodownloader", "Video Downloader", "InShot Inc.", 236276464, 4.722918, 2719684, "Mar 16, 2018", "2026-08-24", 0, "downloader",
+    1, "$2.99 - $6.99 per item"
+  ],
+  ["com.gamma.videodownloader","Video Downloader - without ads","Gamma Play",266150,4.6309524,3097,"Jul 14, 2026",null,0,"downloader",0,null],
+  [
+    "videoplayer.videodownloader.downloader", "All Video Downloader & Player", "QR Code Scanner.", 383593932, 4.5262523, 1880043, "Jan 29, 2022",
+    "2026-09-16", 0, "downloader", 1, null
+  ],
+  [
+    "instagram.video.downloader.story.saver.ig", "Video downloader - Story Saver", "Video Downloader Story Saver", 64791541, 4.7444468, 1420154,
+    "Oct 13, 2023", "2026-09-14", 0, "downloader", 1, "$0.09 - $119.99 per item"
+  ],
+  [
+    "instagram.video.downloader.story.saver.ig.insaver", "InSaver: All Video Downloader", "Video Downloader Story Saver", 13028866, 4.74722, 295406,
+    "May 29, 2024", "2026-09-14", 0, "downloader", 1, "$1.99 - $29.99 per item"
+  ],
+  [
+    "hub.browser.video.downloader.saver", "Hub Video Downloader", "DOSA Apps", 13689906, 4.3660564, 81935, "Jun 7, 2023", "2026-08-10", 0,
+    "downloader", 1, "$0.99 - $99.99 per item"
+  ],
+  [
+    "videodownloader.instagram.videosaver", "Video Downloader & Story Saver", "Video Downloader & Fast Saver", 19231602, 4.8078337, 377121,
+    "Mar 28, 2024", "2026-08-26", 0, "downloader", 1, "$0.99 - $8.99 per item"
+  ],
+  [
+    "com.videodownload.browser.videodownloader", "All Video Downloader & Player", "AppTool-Browser-Video", 13970550, 4.366337, 65572, "Feb 26, 2024",
+    "2026-08-28", 0, "downloader", 0, null
+  ],
+  [
+    "downloader.video.download.free", "Video Downloader & Video Saver", "All Video Downloader, Saver & Player Studio", 53554550, 4.4288754, 357387,
+    "Nov 25, 2020", "2026-08-17", 0, "downloader", 1, null
+  ],
+  [
+    "instasaver.videodownloader.photodownloader.repost", "All Video Downloader & Browser", "Fast Video Downloader & Story Saver - DevBay", 67490521,
+    3.8952587, 649420, "May 18, 2020", "2026-07-31", 0, "downloader", 1, "$2.99 - $49.99 per item"
+  ],
+  [
+    "com.allvideodownloader.hdvideodownloader.savevideos", "All Video Downloader & Saver", "Sky Vision Apps Lab", 18203494, 4.09, 24362,
+    "Apr 10, 2025", "2026-08-26", 0, "downloader", 1, "$3.99 - $14.99 per item"
+  ],
+  [
+    "allinone.videodownloader.savevideos", "All video downloader and saver", "Attractive Apps Valley", 26789772, 3.99, 23291, "Dec 23, 2024",
+    "2026-08-05", 0, "downloader", 1, "$6.49 - $29.99 per item"
+  ],
+  [
+    "com.videosaver.savevideos.story.saverapp", "Video Downloader & Save Video", "Markhoor Studio", 11079615, 4, 9549, "Apr 25, 2024", "2026-09-09", 0,
+    "downloader", 1, "$3.49 per item"
+  ],
+  [
+    "com.videodownloder.alldownloadvideos", "Video Downloader - Player", "Mobile Notepad Apps", 8405820, 3.8349514, 7477, "May 29, 2023", "2026-09-11",
+    0, "downloader", 1, "$1.99 - $14.99 per item"
+  ],
+  [
+    "com.hdvideodownloader.downloaderapp", "Video Downloader HD - Vidow", "Vidow™", 108093926, 3.9678714, 335197, "Aug 31, 2022", "2026-05-18", 0,
+    "downloader", 1, "$14.99 per item"
+  ],
+  [
+    "free.video.downloader.freevideodownloader2021.video.saver.videosaverlite", "Video Downloader and 4k Player", "Vidpal Apps Studio", 79543373,
+    4.25969, 401654, "Jun 22, 2021", "2026-08-31", 0, "downloader", 1, "$1.99 - $34.99 per item"
+  ],
+  [
+    "com.sun.ai.app.tube.videodownloader", "Tube Video Downloader", "Sun Mobile Studio", 5751288, 4.508197, 52563, "Mar 26, 2025", "2026-09-03", 0,
+    "downloader", 1, null
+  ],
+  [
+    "com.video.downloader.ttypldre", "Tube Video Downloader &Mp3", "Video Downloader inc.", 5071274, 3.6068966, 25219, "Jul 15, 2020", "2026-06-12", 0,
+    "downloader", 1, null
+  ],
+  [
+    "tweeter.gif.twittervideodownloader", "Download Twitter Videos - GIF", "Photo and Video App", 19077211, 4.6, 470515, "Mar 18, 2018", "2026-07-31",
+    0, "platform", 1, "$4.99 - $9.99 per item"
+  ],
+  [
+    "all.video.downloader.allvideodownloader", "All Video Downloader", "InShot Inc.", 277373379, 4.710804, 1087720, "Jul 5, 2018", "2026-09-15", 0,
+    "downloader", 1, "$7.99 - $19.99 per item"
+  ],
+  [
+    "free.files.downloader.save.video.manager", "Video Downloader - Save Videos", "All Video Downloader, Saver & Player Studio", 23937324, 4.5355506,
+    127396, "Aug 2, 2020", "2026-08-17", 0, "downloader", 1, null
+  ],
+  [
+    "download.movie.media.app.hd.video.social.browser", "HD Video Downloader", "Sniper Legend", 11384742, null, null, null, null, 0, "downloader", 0,
+    "$2.49 - $9.49 per item"
+  ],
+  [
+    "hd.video.downloader.app.hdvideodownloaderapp", "HD Video Downloader App - 2022", "Leap Fitness Group", 142867928, 4.6406927, 356102,
+    "Mar 29, 2019", "2026-09-07", 0, "downloader", 1, "$3.99 per item"
+  ],
+  ["com.fastbit.hdvideodonloader","HD Video Downloader HD Player","Duoei qrui",496659,null,null,null,null,0,"downloader",1,null],
+  [
+    "com.xbuddymobile.app", "9xbuddy: Video downloader", "123SUDO", 249023, 3.5609756, 603, "Oct 29, 2024", "2026-09-14", 0, "downloader", 0,
+    "$5.49 - $54.99 per item"
+  ],
+  [
+    "com.cent.hd.videodownloader.player", "All Video Downloader HD Saver", "Cent Studio Global", 157368, null, null, "Aug 11, 2026", null, 0,
+    "downloader", 1, "$1.99 - $49.99 per item"
+  ],
+  [
+    "com.vidmat.allvideodownloader", "All Video Downloader Master", "Vidmark Inc.", 35664600, 3.7769232, 77048, "Jan 30, 2023", "2026-09-08", 0,
+    "downloader", 1, "$2.99 - $49.99 per item"
+  ],
+  [
+    "io.browser.xbrowsers", "Private Video Downloader", "Battery Stats Saver", 4125863, 4.4840765, 25251, "Nov 22, 2022", "2025-09-12", 0,
+    "downloader", 1, "$0.99 - $99.99 per item"
+  ],
+  [
+    "com.download.video.fast.good", "Video Private Downloader", "O.A.DIAZ PROPERTIES  LLC", 228144, 4.277228, 240, "Feb 2, 2026", "2026-06-15", 0,
+    "downloader", 1, null
+  ],
+  [
+    "free.allvideo.videodownloader", "Private Video Vault Downloader", "Daily Apps Mania", 27368, 5, 148, "Feb 14, 2026", null, 0, "downloader", 1,
+    "$2.09 - $30.99 per item"
+  ],
+  ["com.savefrom.theappdoor","Save From Net Video Downloader","Cards",740557,4.59,15575,"Feb 9, 2025",null,0,"downloader",1,"$0.99 - $99.99 per item"],
+  [
+    "com.all.video.fast.downloader", "Fast Downloader - Video Player", "Dhvankit", 2472032, 4.1929827, 22738, "Oct 23, 2025", "2026-09-01", 0,
+    "downloader", 1, null
+  ],
+  ["mobidev.apps.vd","Video Downloader","MobiDevApps",24537119,4.2894115,75723,"Nov 13, 2016","2026-09-12",0,"downloader",1,null],
+  [
+    "downloader.vitmate.downloaderapp", "Downloader - Video Downloader", "Leap Fitness Group", 159077152, 4.656465, 569798, "Jul 19, 2019",
+    "2026-08-28", 0, "downloader", 1, "$3.99 per item"
+  ],
+  [
+    "ru.spaple.pinterest.downloader", "Pinget – Video Downloader", "Spaple", 2407641, 4.8040543, 66588, "Mar 9, 2022", "2026-07-13", 0, "platform", 1,
+    "$0.99 - $20.99 per item"
+  ],
+  [
+    "video.downloader.saver.story", "Video downloader & video saver", "Yevbezapp", 4070188, 3.7631578, 92161, "Nov 14, 2022", "2024-12-23", 0,
+    "downloader", 0, "$1.49 - $5.99 per item"
+  ],
+  [
+    "com.saveinsta.app.savevideo.saveclip", "SaveVideo - No Watermark & HD", "T Global", 1901315, 3.4, 7080, "Sep 8, 2024", "2026-09-10", 0,
+    "downloader", 1, "$1.49 - $11.99 per item"
+  ],
+  [
+    "tiktok.video.downloader.nowatermark.tiktokdownload", "Download video no watermark", "ETM Video Downloader", 54214010, 4.611807, 702998,
+    "Aug 27, 2021", "2026-09-07", 0, "downloader", 1, "$0.99 - $24.99 per item"
+  ],
+  [
+    "idm.internet.download.manager", "1DM: Browser & Video Download", "Vicky Bonick", 74653915, 4.6229205, 589363, "Mar 8, 2017", "2025-04-07", 0,
+    "downloader", 1, null
+  ],
+  [
+    "com.downloadvideo.videodownloadfree.mp4videodownload", "Video Downloader & Player HD", "Video Downloader- Apps Studio", 484585, 4.493976, 15765,
+    "Aug 1, 2026", null, 0, "downloader", 1, "$0.99 - $1.99 per item"
+  ],
+  [
+    "free.video.downloader.freevideodownloader", "Video Downloader - Downloader", "Simple Design Ltd.", 332918517, 4.6892695, 596707, "Jul 26, 2018",
+    "2026-09-11", 0, "downloader", 1, "$2.99 per item"
+  ],
+  [
+    "com.linhiev.videodownloader", "Social Video Downloader", "Linhiev technologies", 133921, 4.0941176, 3041, "Apr 13, 2024", "2026-09-16", 0,
+    "platform", 1, "$2.99 per item"
+  ],
+  [
+    "se.appthrive.linkedindownloader", "LinkedIn Video Downloader", "SE AppThrive", 101833, 4.7272725, 2039, "Dec 6, 2024", "2026-06-27", 0,
+    "downloader", 1, "$0.99 - $22.99 per item"
+  ],
+  [
+    "video.edit.saver.trim.downloader.editor.save.hd.mp4", "Video Saver, MP4 Downloader", "Fillog Studio", 6605074, 3.703125, 5461, "Sep 11, 2025",
+    "2026-09-10", 0, "downloader", 1, "$2.99 - $29.99 per item"
+  ],
+  [
+    "ru.codeluck.tiktok.downloader", "Tikget - Video Downloader", "Spaple", 684294, 4.68, 15658, "Aug 15, 2023", "2026-09-03", 0, "platform", 1,
+    "$0.99 - $19.99 per item"
+  ],
+  [
+    "nova.all.video.downloader", "Video Downloader & Video Saver", "Video Downloader & Video Player & Photo Downloader", 14536535, 4.3268766, 78389,
+    "May 3, 2019", "2026-09-16", 0, "downloader", 1, "$6.99 per item"
+  ],
+  [
+    "tiktok.video.downloader.nowatermark.tiktokdownload.snaptik", "SnapTok - TT Video Downloader", "Video Downloader & Video Saver", 19561637,
+    4.6074767, 81623, "Mar 26, 2024", "2026-09-14", 0, "downloader", 1, "$0.99 - $19.99 per item"
+  ],
+  ["com.ytcorp.ytdownload","All Video Download: YTDownload","YT Corp",29397,2.4545455,185,"Feb 21, 2025","2026-08-02",0,"downloader",0,null],
+  ["com.rit.allsocialvideodownloader","All Social Video Downloader","Zivo Labs",9633,2.8333333,163,"Nov 9, 2025","2026-08-27",0,"downloader",0,null],
+  [
+    "video.player.videoplayer", "Video Player All Format", "InShot Inc.", 149855720, 4.792115, 1911189, "Feb 10, 2017", "2026-09-14", 0, "downloader",
+    1, "$0.99 - $39.99 per item"
+  ],
+  [
+    "com.mxtech.videoplayer.ad", "MX Player", "Amazon Mobile LLC", 1615712802, 4.2123733, 14245043, "Jul 18, 2011", "2026-09-15", 1, "player", 1,
+    "$0.49 - $239.99 per item"
+  ],
+  [
+    "com.transsion.magicshow", "Visha-Video Player All Formats", "Visha Group", 1109734798, 4.2759833, 1697298, "Apr 5, 2017", "2026-08-31", 0,
+    "player", 0, "$0.49 - $48.99 per item"
+  ],
+  [
+    "com.videoplayer.hdvideos.videodownloader", "Video player Video Downloader", "Devnest studio", 202665, null, null, null, null, 0, "downloader", 0,
+    "$1.99 - $12.99 per item"
+  ],
+  [
+    "com.UCMobile.intl", "UC Browser-Safe, Fast, Private", "UCWeb Singapore Pte. Ltd.", 1181148221, 4.3700304, 21663015, "Oct 25, 2011", "2026-09-04",
+    1, "browser", 1, "$0.10 - $99.99 per item"
+  ],
+  [
+    "com.shicichaxun.video", "Video downloader, mp4, m3u8", "Chen Guoming", 201888, 4.195402, 1669, "Feb 6, 2024", "2026-09-10", 0, "downloader", 1,
+    "$12.99 per item"
+  ],
+  [
+    "com.utorrent.client", "µTorrent®- Torrent Downloader", "bittorrent.com", 258334720, 4.651682, 5409866, "Sep 5, 2012", "2026-09-07", 0,
+    "downloader", 1, "$2.99 per item"
+  ],
+  [
+    "facebook.video.downloader.savefrom.fb.saver.fast", "AhaFast Video Downloader", "Video Downloader & Video Saver", 12887883, 4.56859, 437482,
+    "Jan 22, 2024", "2026-09-09", 0, "downloader", 1, "$0.49 - $24.99 per item"
+  ],
+  [
+    "idm.internet.download.manager.plus", "1DM+: Browser & Video Download", "Vicky Bonick", 415298, 4.6873064, 37499, "Mar 8, 2017", "2025-04-07", 0,
+    "downloader", 0, null
+  ],
+  ["com.tcl.browser","Browser TV Web - BrowseHere","TCL Group",76031395,4.541906,241941,"May 24, 2021","2026-09-04",0,"browser",0,null],
+  ["net.quetta.browser","Quetta - Video Private Browser","Quetta Networks",1325360,4.8493724,31358,"Jan 23, 2024","2026-09-08",0,"downloader",0,null],
+  ["com.storysaver.saveig","Story Saver","Smart Tech1",7481536,4.3049855,105204,"Nov 14, 2020","2026-05-27",0,"platform",1,"$4.99 - $21.99 per item"],
+  [
+    "story.saver.insta", "Story Saver - Video Downloader", "Story Saver&Video Downloader", 5473342, 4.6350365, 65158, "Feb 8, 2023", "2026-08-12", 0,
+    "downloader", 1, null
+  ],
+  [
+    "free.insaver.videodownloader", "Story Downloader - Story Saver", "Daily Apps Mania", 21289, null, null, "Mar 5, 2026", null, 0, "saver", 0,
+    "$1.99 - $27.99 per item"
+  ],
+  [
+    "storysaverforinstagram.storydownloaderforinstagram", "Story Saver", "Sara Tech", 9191538, 4.5742574, 114624, "Apr 12, 2018", "2026-08-27", 0,
+    "saver", 1, "$0.99 - $11.99 per item"
+  ],
+  ["com.iyia.repost","Reshare: Video & Story Saver","iyia",945346,4.58,12114,"Dec 28, 2019","2026-09-01",0,"saver",1,"$2.99 - $49.99 per item"],
+  [
+    "com.shirokovapp.instasave", "Insget - Video & Story Saver", "Spaple", 4847443, 4.7786884, 198283, "Nov 29, 2019", "2026-06-27", 0, "platform", 1,
+    "$0.99 - $2.49 per item"
+  ],
+  [
+    "com.mariaxcodexpert.whatsdownloadplus", "Story Saver for Whatsapp", "mariaxcode", 5646, null, null, "Mar 15, 2026", null, 0, "saver", 0,
+    "$1.49 - $6.99 per item"
+  ],
+  ["com.ethar.videodownloader","SaveVideo HD","Ethar Shrouf",747,null,null,"Nov 15, 2025",null,0,"downloader",0,null],
+  [
+    "com.esaba.downloader", "Downloader by AFTVnews", "AFTVnews.com", 87167338, 4.063745, 61045, "Aug 18, 2017", "2026-07-30", 0, "downloader", 1,
+    "$2.00 - $100.00 per item"
+  ],
+  ["com.google.android.apps.nbu.files","Files by Google","Google LLC",7815906017,4.503248,9038826,"Dec 1, 2017","2026-09-15",1,"other",0,null],
+  [
+    "com.audiomack", "Audiomack: Music Downloader", "Audiomack Music Apps", 190807683, 4.7981505, 8939235, "Jan 8, 2015", "2026-09-11", 0,
+    "downloader", 1, "$0.59 - $79.99 per item"
+  ],
+  [
+    "com.lenovo.anyshare.gps", "SHAREit: Transfer, Share Files", "Smart Media4U Technology Pte.Ltd.", 2581909633, 4.291621, 18247020, "Apr 28, 2013",
+    "2026-08-31", 0, "downloader", 1, "$0.19 - $7.99 per item"
+  ],
+  [
+    "com.sec.android.easyMover", "Samsung Smart Switch Mobile", "Samsung Electronics Co.,  Ltd.", 2356313321, 3.9128733, 531412, "Apr 17, 2013",
+    "2026-09-03", 1, "other", 0, null
+  ],
+  ["com.tech.downloader","Downloader","Supono Holdings LTD",4642540,3.27,3095,"Oct 4, 2024","2026-08-19",0,"downloader",0,"$4.99 per item"],
+  [
+    "org.freedownloadmanager.fdm", "Free Download Manager - FDM", "SoftDeluxe, Inc.", 4926308, 4.707547, 57357, "Jul 26, 2019", "2026-07-31", 0,
+    "downloader", 0, null
+  ],
+  ["com.downloader.tv.installer.xapk","Downloader TV: APK Installer","Smartago",343910,4.2444444,923,"Dec 7, 2025","2026-09-10",0,"downloader",0,null],
+  [
+    "com.creativelabs.videodownloader", "4K Video Downloader", "creative labs", 1217400, 3.98, 6499, "Sep 23, 2022", "2026-03-15", 0, "platform", 1,
+    "$3.99 - $24.99 per item"
+  ],
+  ["com.fbreels.downloader","FB Video Downloader - Downvid","RepairNet Solutions",14791,2.8333333,43,"Dec 9, 2025","2026-08-30",0,"platform",1,null],
+  [
+    "face.downloader", "Video Downloader for Facebook", "irmme LLC", 1686085, 4.360656, 21688, "Oct 9, 2017", "2026-09-14", 0, "platform", 1,
+    "$0.99 - $11.99 per item"
+  ],
+  [
+    "me.vidura.vloader", "Quik Facebook Video downloader", "Vidura Prasangana Wijerathna", 12753, 4.909091, 201, "Mar 17, 2026", "2026-08-08", 0,
+    "platform", 0, null
+  ],
+  [
+    "com.livevideos.videostreamer", "Video Stream & Reel Downloader", "Zag Technology", 1137468, 4.019802, 19062, "Apr 18, 2023", "2026-01-23", 0,
+    "platform", 1, "$4.99 - $14.99 per item"
+  ],
+  ["com.psapps.videos.downloader.forfb","Faster Video Downloader","PlaySmartApps",642319,3.75,1983,"Jul 14, 2017","2025-09-23",0,"downloader",1,null],
+  ["org.videolan.vlc","VLC for Android","Videolabs",510580686,4.0420322,2003493,"Feb 4, 2015","2026-05-11",0,"player",0,null],
+  [
+    "com.sensei.social", "Reels Downloader", "MobileByteSensei", 54767, 4.2105265, 1960, "Feb 24, 2025", "2026-09-03", 0, "platform", 1,
+    "$9.90 - $99.99 per item"
+  ],
+  ["online.savereels.app","SaveReels - Reels Downloader","Khalil Asif",3209,null,null,"May 8, 2026",null,0,"platform",1,null],
+  ["com.quickostudio.reelsave","ReelSave - Reels Downloader","Quicko Studio",1497,null,null,"Sep 3, 2026",null,0,"platform",0,null],
+  [
+    "statussaver.statusdownloader.downloadstatus.videoimagesaver", "Status Saver - Video Saver", "Save Status, Video & Image Downloader", 113321085,
+    4.5908375, 274609, "May 16, 2020", "2026-06-09", 0, "saver", 1, "$9.00 per item"
+  ],
+  [
+    "com.falnesc.statussaver", "Status Saver・Status Downloader", "Battery Stats Saver", 18272082, 4.795, 225271, "Jun 10, 2022", "2026-06-08", 0,
+    "saver", 1, "$0.99 - $99.99 per item"
+  ],
+  [
+    "com.downlood.sav.whmedia", "Status Download - Video Saver", "Shree Ganesha Labs", 201855067, 4.599099, 1708164, "Feb 28, 2017", "2026-09-14", 0,
+    "downloader", 1, "$0.99 per item"
+  ],
+  [
+    "statussaver.statusdownloader.downloadstatus.savestatus", "Status Saver: Video Downloader", "BlueLine. Tech", 69685232, 4.7657895, 204976,
+    "Feb 15, 2021", "2026-08-28", 0, "downloader", 1, "$9.99 - $29.99 per item"
+  ],
+  ["com.statussaver.statusdownloader.lite","Status Saver","Fun and Hi Tool",19397861,4.304348,7352,"Dec 22, 2024","2026-08-05",0,"saver",0,null],
+  ["com.heethjain.apps.statussaver","Status Saver - Video Download","Heeth Jain",779547,4.413793,7394,"Aug 6, 2023","2026-08-01",0,"saver",0,null],
+  ["com.sinosystems.status","Status Saver: Video Downloader","SinoSystems, Inc",286829,null,null,"Jul 11, 2026","2026-07-11",0,"downloader",0,null],
+  ["com.studio.zm.statussaver","Status Saver・Status Downloader","Status Saver Sol",6861810,4.57,28588,"Sep 16, 2019","2026-01-28",0,"saver",1,null],
+  ["com.ammarishfaq.status_saver","Status Saver","MU_AMR",1408,null,null,"Jun 8, 2026",null,0,"saver",0,null],
+  ["com.jam.status_saver","Status Saver: Save & Share","Jawad108",28401,null,null,"Apr 9, 2026",null,0,"platform",0,null],
+  [
+    "com.haariug.video.downloader.story.saver.reel.saver", "Reel Saver - Video Downloader", "Haari UG", 5399, null, null, "Jun 26, 2026", null, 0,
+    "platform", 1, null
+  ],
+  [
+    "insta.face.photo.video.story.saver.reels.downloader", "Reels Downloader: InstaSaver", "All Reels Downloader, Video Saver And Downloader", 6811,
+    4.714286, 229, "Aug 6, 2026", null, 0, "platform", 1, "$0.99 - $9.99 per item"
+  ],
+  [
+    "com.allvideo.downloader.reels", "All Video Downloader & Reels", "Nubivio Apps", 82647, null, null, "Jul 23, 2026", null, 0, "downloader", 0,
+    "$19.99 per item"
+  ],
+  ["com.github.igorkhlebunov.downloader.lnkin","LinkedIn Video Downloader","kiv",11636,4.8,289,"Oct 15, 2025","2026-09-07",0,"downloader",1,null],
+  [
+    "linkedin.video.downloader.abyssiniatech", "LinkedIn video downloader", "Abyssiniatech", 7096, 5, 184, "Oct 12, 2023", null, 0, "downloader", 1,
+    "$0.99 - $9.99 per item"
+  ],
+  [
+    "com.sumino.issave.storysaver.photovideo.downloader", "InSaver: Video & Story Saver", "Sumino Apps", 558349, 4.2222223, 1201, "Mar 30, 2024",
+    "2026-09-12", 0, "downloader", 1, "$0.99 - $19.99 per item"
+  ],
+  [
+    "com.cosmicmedia.storysaverinstagram.stories.downloader.for.instagram.story.saver", "Story Saver for IG - HD Format",
+    "Cosmic Media Apps - Video, Image Downloaders", 194345, 2.9444444, 706, "May 31, 2022", null, 0, "saver", 1, null
+  ],
+  [
+    "com.freereels.app", "FreeReels - Dramas & Reels", "SKYWORK AI PTE.LTD.", 229234805, 4.661235, 1900604, "Nov 28, 2024", "2026-09-15", 0, "other",
+    1, "$0.99 - $119.99 per item"
+  ],
+  ["com.luckydog.wastatusgrab","Save Status - Video Downloader","iToolab",14359,null,null,"Jan 7, 2024",null,0,"platform",0,null],
+  [
+    "reels.stories.video.downloader", "Video Downloader for Instagram", "Bytecode.one", 45305, 4.92, 1641, "Aug 21, 2024", "2026-08-12", 0, "platform",
+    1, "$2.99 - $64.99 per item"
+  ],
+  [
+    "com.insaver", "InSaver: Video Downloader", "Ninetysix Info", 13929, 4.4545455, 284, "Dec 27, 2023", "2026-09-15", 0, "platform", 0,
+    "$2.99 - $29.99 per item"
+  ],
+  [
+    "instagram.free.video.downloader.videodownloader", "InSaver : Video Downloader", "Magic Makers", 35089, null, null, "Sep 19, 2025", null, 0,
+    "downloader", 1, "$2.99 - $29.99 per item"
+  ],
+  [
+    "instagram.downloader.saver.repost.reels.story", "Video Downloader & Story Saver", "SavePro - Video Downloader", 499002, 4.8431373, 8698,
+    "Aug 3, 2023", "2026-09-06", 0, "platform", 1, null
+  ],
+  [
+    "com.arkdev.fbstorysaver", "Stories Saver - Video Download", "ARK Dev", 769945, 4.53, 15942, "Apr 6, 2021", "2026-09-06", 0, "downloader", 1,
+    "$2.99 per item"
+  ],
+  [
+    "com.storysaver.forfacebooksaver", "Story Saver - Stories Download", "MOHAMED KAZARAH", 391880, 4.4, 5848, "Sep 23, 2023", null, 0, "saver", 1,
+    "$1.49 - $9.99 per item"
+  ],
+  [
+    "video.downloader.save.video.social.media", "Video Downloader - Story Saver", "GiggleGenius", 12342895, 4.25, 57524, "Oct 13, 2022", "2026-08-13",
+    0, "platform", 1, "$3.99 - $49.99 per item"
+  ],
+  [
+    "com.videodownloader.savevideos.socialmedia.video.saver", "Video Downloader - Story Saver", "AimzSol Technology", 2412162, 4.7115383, 7904,
+    "Apr 18, 2024", "2026-05-25", 0, "platform", 1, "$4.49 - $32.99 per item"
+  ],
+  [
+    "com.dv.adm", "Advanced Download Manager", "admtorrent", 111132354, 4.3939295, 1005719, "Jan 4, 2012", "2026-08-22", 0, "downloader", 1,
+    "$0.99 - $19.99 per item"
+  ],
+  ["com.tdm.manager","TDM: Files Download Manager","DevMax Inc.",2132519,4.414365,27873,"Nov 24, 2025","2026-07-01",0,"downloader",1,null],
+  ["com.magdalm.downloadmanager","Download manager","Magdalm",8495475,3.9033613,57216,"Oct 6, 2018","2026-05-01",0,"downloader",1,"$5.99 per item"],
+  ["com.codex.torrentx","8XDL - Secure Download Manager","CanWe.tech",3194,4.4166665,126,"Apr 5, 2026",null,0,"downloader",1,"$1.09 - $5.49 per item"],
+  ["com.xdm.xtreme.download.manager","XDM–Download Manager & Browser","R7ia4917",1371,null,null,"May 27, 2026",null,0,"downloader",0,null],
+  [
+    "com.appsyscode.downloadstation.downloadstation", "Download Manager NAS", "Parti Albert - developer", 1600, null, null, "Nov 29, 2025", null, 0,
+    "downloader", 1, "$1.49 per item"
+  ],
+  ["com.ireelsave.app","iReels Save – Reels Downloader","iReels Save",219,null,null,"Apr 4, 2026",null,0,"platform",0,"$0.99 - $10.99 per item"],
+  ["com.markfree.videodownloader.hd.video.saver","Video Downloader & Reel Saver","NextSol",110,null,null,"Jul 31, 2026",null,0,"platform",1,null],
+  ["com.telex.statusSaver","Status Saver: Story Downloader","Appnest Technologies",46157,null,null,"Jul 2, 2023",null,0,"saver",0,null],
+  ["com.ferdigokdemir.instabox","Instagram Video Downloader","Nazar Tech",34890,4.2,159,"Jul 5, 2026",null,0,"platform",1,"$1.99 - $9.99 per item"],
+  ["app.xapps.ig","Instagram Video Downloader","李长华",229,null,null,"Aug 23, 2026",null,0,"platform",1,null],
+  [
+    "com.all.social.video.downloader", "Video Downloader - Video Saver", "GetItDone", 17370357, 4.074627, 79447, "Feb 13, 2022", "2026-09-06", 0,
+    "downloader", 1, "$2.99 - $99.99 per item"
+  ],
+  [
+    "aculix.video.downloader.for.reels", "All Social Video Downloader", "Aculix Technologies LLP", 2153453, 4.4521737, 55564, "Jul 22, 2020",
+    "2026-08-17", 0, "downloader", 1, "$24.49 per item"
+  ],
+  [
+    "com.downloaderfor.tiktok", "Downloader for TikTok", "application.development.studio", 24710882, 4.373602, 367941, "Feb 21, 2019", "2025-03-14", 0,
+    "platform", 1, null
+  ],
+  [
+    "tt.video.downloader.saver.withoutwatermark.tmate.snaptik", "Video Downloader No Watermark", "JedyApps", 28350924, 4.313222, 442614, "Aug 9, 2022",
+    "2026-06-21", 0, "downloader", 1, "$1.49 - $149.99 per item"
+  ],
+  [
+    "repost.share.tiktok.nowatermark.videosave.download.videodownloader.saver", "VideoSaver : Watermark Remover",
+    "Video Downloader & Story Downloader & Saver", 9329466, 4.467422, 177275, "Jun 4, 2022", "2026-09-09", 0, "downloader", 0,
+    "$0.99 - $22.99 per item"
+  ],
+  [
+    "com.zhiliaoapp.musically", "TikTok - Videos, Shop & LIVE", "TikTok Pte. Ltd.", 4676450126, 3.9747567, 69914108, "Jul 9, 2015", "2026-09-15", 1,
+    "other", 1, "$0.05 - $9,999.90 per item"
+  ],
+  ["com.desicoder.tikdown","TikVid - TikTok Downloader","MobilesWorld",250537,4.5405407,1301,"Jun 4, 2023","2026-08-13",0,"platform",1,null],
+  [
+    "tiktak.downloader.no.watermark.video.downloader", "Video Downloader For Tiktok", "IFM Project", 25597, 4.529412, 1129, "Jun 15, 2025",
+    "2026-08-26", 0, "platform", 1, "$0.99 - $19.99 per item"
+  ],
+  [
+    "mp3videoconverter.videotomp3.videotomp3converter", "Video to MP3 - Video to Audio", "InShot Inc.", 86105214, 4.750764, 731746, "Feb 11, 2018",
+    "2026-04-01", 0, "editor", 1, "$3.99 - $19.99 per item"
+  ],
+  [
+    "blueeasyapp.videosget.tubemasterdownloader", "Tube Video Downloader", "ZHANG BIN llc", 194925, 4.63, 1912, "Nov 6, 2025", "2026-09-11", 0,
+    "downloader", 1, "$2.99 - $38.99 per item"
+  ],
+  [
+    "freemusic.mp4music.mp3music.musicdownloader.videodownloader", "Tube Video Downloader/ For All", "Role Model Clothing", 1639792, 4.19, 45769,
+    "Dec 10, 2025", null, 0, "downloader", 1, null
+  ],
+  [
+    "smartapps38.video.downloader.forpinterest", "Video Downloader for Pinterest", "SmartApps38", 6431333, 4.8129034, 238495, "Sep 11, 2019",
+    "2025-11-08", 0, "platform", 1, "$0.99 - $4.49 per item"
+  ],
+  [
+    "pin.pinterest.video.downloader.pinterest.downloader", "Video Downloader for Pinterest", "Video Download Studio", 9702603, 4.796163, 161099,
+    "Jul 16, 2022", "2026-09-07", 0, "platform", 1, null
+  ],
+  [
+    "pin.pinterest.video.downloader.forpinterest.pinsaver", "Video Downloader for Pinterest", "ETM Video Downloader", 6726568, 4.7237353, 104824,
+    "Jul 12, 2024", "2026-09-09", 0, "platform", 1, "$0.99 - $19.99 per item"
+  ],
+  [
+    "videodownloader.pinterest.video.download.pinterestdownloader", "Video Downloader For Pinterest", "Hatici Video Downloader Apps", 6352778, 4.6,
+    73508, "May 28, 2021", "2026-07-20", 0, "platform", 1, "$1.99 - $24.99 per item"
+  ],
+  [
+    "com.downloader.videodownloader.videodownloaderforpinterest", "Video Downloader For Pinterest", "Ather Apps", 2309, null, null, "Jan 21, 2026",
+    null, 0, "platform", 1, "$4.99 - $45.99 per item"
+  ],
+  [
+    "pin.pinter.pinterest.video.downloader.pinterestdownloader", "Video Downloader for Pinterest", "Video Downloader, Video Saver - Photo Downloader",
+    469601, 3.9642856, 1164, "Oct 4, 2022", "2022-12-30", 0, "platform", 1, null
+  ],
+  [
+    "aculix.pinload.app", "Video Downloader For Pinterest", "Aculix Technologies LLP", 537436, 4.4851484, 13985, "Aug 11, 2024", "2026-07-29", 0,
+    "platform", 1, "$3.49 per item"
+  ],
+  [
+    "pinsterdownload.advanceddownloader.com", "Video Downloader for Pinterest", "Angolix", 1183670, 4.634146, 43560, "Jul 31, 2019", "2026-07-15", 0,
+    "downloader", 1, "$1.99 - $2.99 per item"
+  ],
+  [
+    "com.pinterestvideodownload.pinterestdownloader.pinsaver", "Video Downloader for Pinterest", "CrDev", 1567, null, null, "Feb 28, 2026", null, 0,
+    "platform", 1, null
+  ],
+  [
+    "com.qmlab.pinterest.video.downloader.download.videos.gif", "Video Downloader for Pinterest", "QMLab", 1124710, 4.89, 53081, "Dec 15, 2021",
+    "2025-10-25", 0, "platform", 1, null
+  ],
+  [
+    "com.instagram.android", "Instagram", "Instagram", 7749233631, 3.9933467, 169254456, "Apr 3, 2012", "2026-09-15", 1, "other", 1,
+    "$0.19 - $10,000.00 per item"
+  ],
+  [
+    "com.dba.tiktokvideosaver.nowatermark", "Video Downloader TSaver", "Dark Blue Apps", 5586740, 4.238532, 95019, "Jun 10, 2022", "2026-09-01", 0,
+    "downloader", 1, null
+  ],
+  [
+    "snaptik.snaptok.nowatermark.videodownloader.tiksaver.videosaver.watermark.remover", "WeSaver: No Watermark Download",
+    "Video Downloader & Useful Tool", 2115938, 4.6, 49183, "Mar 24, 2023", "2026-09-10", 0, "downloader", 0, null
+  ],
+  [
+    "download.video.tiktok.nowatermark.tiktokdownloader", "No Watermark Video Downloader", "Hatici Video Downloader Apps", 4429060, 4.359649, 29024,
+    "Sep 29, 2021", "2026-09-01", 0, "downloader", 1, "$0.99 - $24.99 per item"
+  ],
+  [
+    "com.tiktokiocom.myapp", "Tiktokio:TT Video Downloader", "All video downloader studio", 3304444, 4.05, 3926, "Jul 17, 2023", "2025-08-25", 0,
+    "platform", 0, null
+  ],
+  [
+    "tiktok.downloader.nowatermark.save.video", "Video Downloader No Watermark", "GV Video Downloader", 342412, 4.84, 14889, "Oct 12, 2023",
+    "2026-07-28", 0, "downloader", 1, null
+  ],
+  [
+    "statussaver.statusdownloader.videodownloader", "Status Saver - Save Status", "Lite Media", 65063067, 4.7519684, 430452, "Mar 25, 2022",
+    "2026-07-20", 0, "saver", 1, "$9.99 - $19.99 per item"
+  ],
+  ["com.vimeo.android.videoapp","Vimeo","Vimeo.com, Inc.",38705060,3.3980699,140210,"Jan 9, 2012","2026-09-02",1,"other",0,"$0.99 - $900.00 per item"],
+  [
+    "com.videodownloaderforvimeo.vimeovideodownloader.without.watermark", "Video Downloader for Vimeo", "funblast tech", 6939, null, null,
+    "Jun 27, 2025", null, 0, "downloader", 1, null
+  ],
+  [
+    "com.elmoiv.vimvid.videodownloaderforvimeo.vimeo", "Video Downloader for Vimeo", "Elmoiv Apps", 44122, 2.92, 128, "Jan 11, 2023", "2024-10-31", 0,
+    "downloader", 1, null
+  ],
+  [
+    "pure.video.downloader.videodownloader", "Pure Video Downloader - Player", "PureBrowser", 1805314, 4.1545453, 22903, "Oct 15, 2020", "2026-08-31",
+    0, "downloader", 1, "$1.99 - $12.99 per item"
+  ],
+  [
+    "tool2easy.totalvideos.itubevideodownloader", "Total Video Downloader", "Video Player and Social Platform Downloader", 677608, 4.4444447, 23129,
+    "Dec 20, 2023", "2026-08-18", 0, "downloader", 1, "$1.99 - $31.99 per item"
+  ],
+  [
+    "com.dailymotion.dailymotion", "Dailymotion Social Video App", "Dailymotion", 89970089, 3.7771428, 992510, "Nov 8, 2011", "2026-09-11", 1, "other",
+    1, "$9.99 per item"
+  ],
+  [
+    "com.instadownloader.instasave.igsave.ins", "Video Downloader : Story Saver", "Video Downloader & Photo Downloader & Saver", 19591899, 4.43,
+    169100, "Dec 7, 2020", "2026-08-16", 0, "downloader", 1, "$0.99 - $19.99 per item"
+  ],
+  [
+    "com.downloadwhatsappstatus.statussaver.videodownloader", "Status Saver - Download Status", "Office Tools.", 48428534, 4.2972975, 166762,
+    "Dec 10, 2020", "2026-09-15", 0, "saver", 1, "$3.49 - $21.99 per item"
+  ],
+  [
+    "com.lazygeniouz.saveit", "Status, Sticker Saver", "Lazy Geniouz Pvt. Ltd.", 117695314, 4.2610965, 721889, "Jun 29, 2017", "2026-04-03", 0,
+    "other", 1, "$0.99 - $1.49 per item"
+  ],
+  [
+    "savestatus.videodownloader.storysaver.statuskeeper", "Status Saver・Status Downloader", "Save Status, Video & Image Downloader", 49853069,
+    4.823718, 219779, "Apr 18, 2022", "2026-08-31", 0, "saver", 1, "$9.99 - $19.99 per item"
+  ],
+  ["com.pinterest","Pinterest","Pinterest",1604137657,4.2670116,11632910,"Aug 14, 2012","2026-09-14",1,"other",1,"$5.88 - $329.41 per item"],
+  ["pinkaal.pinterest.video.downloader","Pinterest Video Downloader","PinKaal",2657205,4.67,14185,"Jul 28, 2023","2024-08-30",0,"platform",1,null],
+  [
+    "pinterest.video.downloader.gif.saver", "Pinterest Video Downloader", "DigitalEraApps", 155270, 4.304348, 1080, "Aug 8, 2023", "2026-08-31", 0,
+    "platform", 1, null
+  ],
+  [
+    "com.raviparaliya.reelsave", "PinSave: Pinterest Downloader", "Ravi Paraliya", 62334, null, null, "Apr 5, 2026", null, 0, "platform", 0,
+    "$0.99 - $26.99 per item"
+  ],
+  [
+    "pin.pinterestvideodownloader.pinvideodownloader.aidroidjadl", "Pinterest Video Downloader", "AidroidjaTech", 3080, null, null, "Jun 18, 2026",
+    "2026-09-09", 0, "platform", 1, null
+  ],
+  [
+    "downloadtwittervideo.twitterdownloader.twittervideodownloader.twittersaver", "Video Downloader for Twitter", "Video Downloader & Fast Saver",
+    4248697, 4.7792, 131782, "Jun 16, 2020", "2026-09-02", 0, "platform", 1, "$2.99 per item"
+  ],
+  [
+    "twittervideosaver.twittervideodownloader.twimate.savetwittergif", "Video Downloader & GIF Saver", "Alpha App Team", 5253515, 4.787845, 168686,
+    "Dec 17, 2019", "2025-10-16", 0, "downloader", 1, "$2.99 per item"
+  ],
+  [
+    "twittervideodownloader.twitter.videoindir.savegif.twdown", "X Saver:Download Twitter Video", "Shotcut Video Workshop", 8773164, 4.65953, 226409,
+    "Apr 30, 2020", "2026-09-09", 0, "platform", 1, "$0.99 - $29.99 per item"
+  ],
+  [
+    "tweeter.savetwitter.twittervideodownloader.downloadtwittervideos", "Video Downloader for Twitter", "Hatici Video Downloader Apps", 4650347,
+    4.609137, 54167, "Mar 27, 2021", "2026-08-25", 0, "platform", 1, "$1.49 - $29.99 per item"
+  ],
+  [
+    "tweeload.twitter.video.downloader", "Video Downloader for Twitter X", "Aculix Technologies LLP", 2219657, 4.599034, 53279, "Jul 27, 2021",
+    "2026-07-28", 0, "platform", 1, "$19.99 per item"
+  ],
+  ["com.videodownloader.videoxdownloader","Video Downloader for Twitter X","Fluffy Tools Apps",1084,null,null,"Jul 1, 2026",null,0,"platform",1,null],
+  ["com.tweetdownloader","Tweet Video Downloader","Adrián Parodi",54103,4.24,2592,"Mar 10, 2022",null,0,"platform",1,"$0.49 - $0.99 per item"],
+  ["com.Xsaver.xvideodownload","XSaver Twitter Video Download","Toolverse Studio",67424,4.54902,1450,"Feb 13, 2025","2026-02-10",0,"platform",1,null],
+  [
+    "free.xnxx.hot.video.downloader", "X Sexy Video Downloader", "Video Studio Browser Apps", 66024170, 4.440576, 569221, "Nov 4, 2021", "2024-10-23",
+    0, "downloader", 1, null
+  ],
+  [
+    "video.downloader.tiktok.instagram.file.saver.vault", "X Downloader & Video Player", "DC Mobile Studio", 9394749, 4.522936, 66977, "Aug 12, 2022",
+    "2026-09-15", 0, "downloader", 1, "$1.49 - $29.99 per item"
+  ],
+  [
+    "com.videodownload.videobrowser.xvideodownloader", "Video Downloader - XDownloader", "Download Videos App Tools", 1885283, 4.359375, 6555,
+    "Nov 22, 2025", "2026-08-28", 0, "downloader", 1, null
+  ],
+  ["com.panshen.twitterdownloader","X Downloader - video&gif","Innov App",8285,4.5,136,"Nov 24, 2025","2026-09-15",0,"platform",0,"$2.99 per item"],
+  [
+    "com.videoplayer.arcplayer", "Video Player All Format", "Arc Video Player", 5129377, 4.807971, 83060, "Mar 28, 2024", "2026-09-15", 0, "player", 0,
+    "$3.99 - $9.99 per item"
+  ],
+  [
+    "uplayer.video.player", "Video Player All Format", "UPlayer", 29358958, 4.632969, 458769, "Feb 27, 2018", "2026-08-13", 0, "player", 1,
+    "$0.99 - $9.99 per item"
+  ],
+  [
+    "com.kmplayer", "KMPlayer - All Video Player", "PANDORA.TV", 42723496, 4.118952, 385297, "Mar 19, 2014", "2026-09-01", 0, "player", 0,
+    "$1.99 - $19.99 per item"
+  ],
+  [
+    "com.playit.videoplayer", "PLAYit-All in One Video Player", "PLAYIT TECHNOLOGY PTE. LTD.", 734200539, 4.5444055, 6964186, "Nov 8, 2019",
+    "2026-08-27", 0, "player", 1, "$0.99 - $25.99 per item"
+  ],
+  ["org.courville.nova","NOVA Video Player","Courville Software",4652930,4.074766,13244,"Aug 19, 2018","2026-08-26",0,"downloader",0,null],
+  [
+    "com.rz.night.player", "Night Video Player - voice amp", "ONIX INC.", 1982923, 4.67, 10735, "Jan 29, 2019", "2026-07-22", 0, "player", 0,
+    "$0.99 - $1.99 per item"
+  ],
+  [
+    "com.cgcinfotech.vxplayer", "Video Player: MP4, MKV & 4K", "CGC-Infotech", 120807, 4.6666665, 368, "Mar 13, 2026", "2026-07-22", 0, "player", 1,
+    "$0.99 - $10.99 per item"
+  ],
+  [
+    "vidfo.video.player.videoplayer", "4K Video Player & Downloader", "Media Studio Inc - All Video Downloader Apps", 8183373, 4.3431373, 36477,
+    "Feb 5, 2025", "2026-08-17", 0, "downloader", 1, "$0.49 - $69.99 per item"
+  ],
+  ["com.kmp.video","Video Player KMP","PANDORA.TV",533824,3.92,3642,"Sep 18, 2020","2026-09-01",0,"player",0,null],
+  [
+    "imagedownloader.hdimagedownloader.hd.image.downloader", "Image Downloader, Image Search", "ADevStudio", 1269195, 3.83, 5735, "Sep 17, 2020",
+    "2026-03-14", 0, "downloader", 1, null
+  ],
+  ["imagedownloader.image.photo.download","image downloader","Shagun Software Farm",249895,3.9714286,1626,"Oct 7, 2023",null,0,"downloader",1,null],
+  [
+    "moris.ins.download.free", "Ins Video & Photo Saver", "XiX Tech", 384618, 4.9583335, 4224, "Jan 9, 2026", "2026-09-08", 0, "downloader", 1,
+    "$0.99 - $9.99 per item"
+  ],
+  [
+    "com.beta9dev.imagedownloader", "Image Search, Image Downloader", "9BETA", 794551, 3.56, 3862, "May 13, 2020", "2026-08-22", 0, "downloader", 1,
+    "$2.49 - $27.99 per item"
+  ],
+  [
+    "com.freresmensah.imagesearch", "Image Search Pro HD Downloader", "Kayel Apps", 185645, 4.31, 2854, "Sep 28, 2020", "2026-09-11", 0, "downloader",
+    1, "$2.99 - $49.99 per item"
+  ],
+  [
+    "fb.album.photo.downloader", "Bulk Photos Videos Downloader", "CodeAndPlayVn", 28057, 2.125, 102, "Nov 7, 2024", "2026-07-18", 0, "downloader", 1,
+    "$0.99 - $3.99 per item"
+  ],
+  [
+    "com.fvd", "All File & Video Downloader", "Battery Stats Saver", 17342248, 4.238494, 168050, "Nov 3, 2012", "2026-08-31", 0, "downloader", 1,
+    "$0.99 - $99.99 per item"
+  ],
+  ["media.player.hd.video.player","HD Video Player All Format","Litter Penguin",4427329,4.64,32976,"Dec 2, 2022","2026-08-28",0,"player",1,null],
+  [
+    "videoplayer.mediaplayer.hdplayer", "Video Player HD", "Mytechnosound", 17735821, 4.5807257, 351165, "May 12, 2015", "2025-11-06", 0, "player", 1,
+    "$1.99 per item"
+  ],
+  [
+    "com.rocks.music.videoplayer", "HD Video Player All Formats", "ASD Dev Video Player for All Format", 118013505, 4.308119, 361118, "Aug 1, 2016",
+    "2026-09-15", 0, "downloader", 1, "$0.49 - $35.99 per item"
+  ],
+  [
+    "com.larkvideo.player", "Lark Video Player", "Lark Player Studio - Video, MP4 & Music Player", 14033027, 4.22, 69555, "Jan 17, 2025", "2026-07-23",
+    0, "player", 1, null
+  ],
+  ["in.pixelmaster.offline_video_player","Offline Video Player","Pixelmaster",11231,null,null,"Mar 22, 2026",null,0,"player",0,null],
+  [
+    "com.olimsoft.android.oplayer", "Video Player - OPlayer Lite", "OLIMSOFT", 949660, 4.32, 8143, "Feb 15, 2012", "2026-08-25", 0, "player", 1,
+    "$0.99 - $7.99 per item"
+  ],
+  ["shortvideo.vertical.video.player","Offline short video player","Gesture guy",75555,3.2,228,"Jan 9, 2025","2026-05-31",0,"player",0,null],
+  ["com.mnetplayer.app","All Video Player - MNet Player","Rafiqull Islam",1330546,4.075472,2748,"Jan 24, 2026","2026-07-24",0,"player",0,null],
+  [
+    "com.top1.videotomp3.mp4tomp3.audioeditor", "MP3 Converter - Video to MP3", "Bizcraft Apps", 4108590, 4.748663, 80167, "May 11, 2024",
+    "2026-02-03", 0, "audio", 1, "$0.99 - $99.99 per item"
+  ],
+  ["com.fundevs.app.mediaconverter","Video MP3 Converter","FunDevs LLC",171611660,4.25721,690910,"Aug 2, 2016","2026-05-28",0,"editor",1,null],
+  [
+    "com.bdroid.audiomediaconverter", "Audio Converter (MP3 AAC OPUS)", "Bdroid Team", 10822975, 4.8011365, 30454, "Jul 6, 2018", "2026-09-14", 0,
+    "audio", 1, "$4.99 per item"
+  ],
+  [
+    "media.video.to.mp3.convert", "Video to Mp3 - Audio Converter", "Easyelife", 2679946, 4.3, 8287, "Sep 26, 2025", "2026-08-28", 0, "editor", 1,
+    "$1.99 - $11.99 per item"
+  ],
+  [
+    "com.mediaconverter.mp3videoconverter.videotomp3converter", "Video to MP3 Converter", "Convenient & Easy Apps", 2135345, 4.57, 13231,
+    "Dec 18, 2024", "2026-09-07", 0, "audio", 1, "$2.29 per item"
+  ],
+  [
+    "com.tapuniverse.audioconverter", "Audio Converter - MP4 to MP3", "TAPUNIVERSE", 767211, 4.7294116, 45432, "Dec 6, 2022", "2026-07-22", 0, "audio",
+    0, "$0.99 - $1.99 per item"
+  ],
+  ["com.springwalk.mediaconverter","MP3 Video Converter","주식회사 스프링워크",292951151,4.430791,1966341,"Dec 11, 2013","2026-06-26",0,"audio",1,null],
+  [
+    "com.golden.mango.videotomp3.mp4tomp3.studio", "MP3 Converter : Video To Mp3", "Golden Mango", 167808, 4.5, 1139, "Apr 6, 2026", "2026-08-10", 0,
+    "player", 1, "$0.99 - $29.99 per item"
+  ],
+  [
+    "mp3converter.convertvideotomp3.audioconverter", "MP3 Converter - Video to MP3", "Solution10", 6011384, 4.4345236, 61739, "Sep 26, 2023",
+    "2026-09-11", 0, "editor", 1, "$9.99 - $19.99 per item"
+  ],
+  [
+    "com.softin.gallery", " Hide Photo Vault  &Videos ", "Kevin's Lab", 5917211, 4.6030536, 57410, "May 27, 2022", "2026-08-10", 0, "vault", 0,
+    "$5.99 - $30.99 per item"
+  ],
+  [
+    "com.kii.safe", "Private Photo Vault - Keepsafe", "Keepsafe", 78202391, 4.739757, 2072271, "Jun 3, 2011", "2026-09-10", 0, "vault", 1,
+    "$0.99 - $299.99 per item"
+  ],
+  [
+    "com.theronrogers.vaultyfree", "Vaulty : Photo Vault & Hide", "Squid Tooth LLC", 12333236, 4.530998, 409193, "Jul 16, 2010", "2026-09-10", 0,
+    "vault", 1, "$0.99 - $99.99 per item"
+  ],
+  [
+    "com.fourchars.privary", "PRIVARY Secure Photo Vault", "fourchars", 4058989, 4.4229074, 107100, "Dec 23, 2015", "2026-08-28", 0, "vault", 1,
+    "$0.99 - $162.99 per item"
+  ],
+  [
+    "com.fourchars.lmpfree", "LockMyPix Safe Photo Vault", "fourchars", 17425868, 4.5078692, 331065, "Jun 12, 2015", "2026-08-28", 0, "vault", 1,
+    "$0.99 - $162.99 per item"
+  ],
+  [
+    "com.netqin.ps", "Vault - Hide Pics, App Lock", "Wafer Co.", 125030653, 4.251341, 1285700, "Dec 16, 2011", "2026-09-15", 0, "vault", 1,
+    "$0.99 - $30.99 per item"
+  ],
+  [
+    "com.thinkyeah.galleryvault", "Gallery Vault-Hide Photo Video", "GalleryVault Developer Team", 54008967, 4.4289236, 605900, "Aug 4, 2012",
+    "2026-09-11", 0, "downloader", 1, "$0.99 - $48.99 per item"
+  ],
+  [
+    "com.hld.anzenbokusucal", "Calculator - photo vault", "FishingNet", 44921319, 4.829653, 498296, "Jan 5, 2019", "2026-08-03", 0, "vault", 1,
+    "$0.99 - $14.99 per item"
+  ],
+  [
+    "com.vault.hide.media.photo.video.lock.ptl", "Photo Video Vault - Hidely", "PureTech Labs", 364704, 4.375, 505, "Feb 13, 2026", "2026-07-23", 0,
+    "vault", 1, "$3.99 - $5.49 per item"
+  ],
+  ["com.inglesdivino.audioextractor","Extract Audio from Video","Inglesdivino",2659084,4.65,11402,"Jan 23, 2017","2025-11-08",0,"audio",1,null],
+  [
+    "com.hitrolab.audioeditor", "AudioLab Audio Cutter & Editor", "HitroLab - Mp3 Audio Editor and Ringtone Maker Dev", 39613705, 4.6737876, 334823,
+    "Jan 1, 2020", "2026-05-27", 0, "editor", 1, "$0.99 - $59.99 per item"
+  ],
+  [
+    "com.tianxingjian.supersound", "Music Audio Editor, MP3 Cutter", "Video Screen Recorder, Voice Audio Editor, Cut MP3", 61294113, 4.541847, 1393779,
+    "Apr 9, 2019", "2026-08-17", 0, "editor", 1, "$0.99 - $19.99 per item"
+  ],
+  [
+    "com.indiemobileapps.videotomp3", "Video to MP3 Audio Conversion", "Indie Mobile Apps", 9488, 4.285714, 498, "Dec 18, 2025", "2025-12-19", 0,
+    "audio", 0, "$2.99 - $9.99 per item"
+  ],
+  [
+    "com.jkgg.convert.app", "Audio Editor & MP3 Editor", "CamSoft AI Magic", 2050914, 3.960396, 35736, "Jan 30, 2026", "2026-08-05", 0, "editor", 0,
+    "$19.99 - $49.99 per item"
+  ],
+  [
+    "kgs.com.addmusictovideos", "Add Music Audio To Video", "Add music to video maker & editor LLC", 12663827, 4.4172664, 156468, "Apr 30, 2018",
+    "2026-09-14", 0, "editor", 1, "$1.99 - $32.99 per item"
+  ],
+  [
+    "videoeditor.musictovideo.addmusic", "Add Music To Video & Photo", "Wavez Technology Ltd", 1658858, 4.49, 9199, "May 15, 2024", "2026-03-11", 0,
+    "editor", 1, "$1.99 - $9.99 per item"
+  ],
+  [
+    "com.camerasideas.instashot", "Video Editor & Maker - InShot", "InShot Video Editor", 954095366, 4.839478, 24617957, "Mar 5, 2014", "2026-08-31",
+    0, "editor", 1, "$0.99 - $199.99 per item"
+  ],
+  [
+    "com.andromania.audiovideomixer", "Add Audio to Video & Trim", "AndroTechMania", 4874106, 4.5333333, 69681, "May 9, 2018", "2024-10-09", 0,
+    "editor", 1, "$9.99 per item"
+  ],
+  ["com.inglesdivino.addmusictovideo","Add Music To Video","Inglesdivino",63849,4.3809524,476,"Dec 30, 2023","2026-03-06",0,"audio",1,null],
+  [
+    "com.stcodesapp.add_audio_to_video", "Add Music to Video Editor", "STCodesApp", 698310, 3.8030303, 1487, "Jul 6, 2022", "2026-09-11", 0, "editor",
+    1, "$0.99 - $9.99 per item"
+  ],
+  [
+    "com.funcamerastudio.videomaker", "Video Maker Music Video Editor", "VIDEOSHOW Video Editor & Maker & AI Chat Generator", 197015481, 4.3931737,
+    1345231, "Mar 6, 2018", "2026-08-27", 0, "editor", 1, "$0.99 - $199.99 per item"
+  ],
+  [
+    "com.braincraftapps.addmusictovideo", "Add Music & Audio to Video", "Brain Craft Limited", 537281, 4.67, 2920, "Aug 25, 2022", "2026-08-25", 0,
+    "editor", 1, "$0.99 per item"
+  ],
+  [
+    "com.google.android.apps.youtube.music", "YouTube Music", "Google LLC", 7973868955, 4.475633, 7809500, "Nov 12, 2015", "2026-09-15", 1, "audio", 1,
+    "$0.05 - $999.99 per item"
+  ],
+  [
+    "videoeditor.videomaker.slideshow.fotoplay", "Video Maker & Editor: FotoPlay", "FotoPlay Video Maker", 37837123, 4.8377695, 702240, "Oct 17, 2019",
+    "2026-09-04", 0, "editor", 1, "$0.99 - $24.99 per item"
+  ],
+  [
+    "com.video_joiner.video_merger", "Video Merger, Collage & Editor", "Inverse AI", 1965936, 4.3980584, 20937, "Jul 29, 2020", "2026-08-27", 0,
+    "editor", 1, "$1.99 - $69.99 per item"
+  ],
+  [
+    "com.psma.videomerge", "Video Merge: Joiner & Combiner", "photoshop mobile apps", 9181396, 4.6496816, 170398, "Oct 9, 2018", "2026-05-02", 0,
+    "downloader", 1, "$2.99 - $19.99 per item"
+  ],
+  [
+    "com.mmedia.videomerger", "Video Merger - Splice/Collage", "MMedia Tech", 1012802, 4.67, 7541, "Oct 7, 2022", "2026-08-21", 0, "other", 1,
+    "$0.99 - $6.99 per item"
+  ],
+  [
+    "com.clogica.videoeditor", "Vedit Video Cutter and Merger", "Clogica", 10753571, 3.7163463, 45041, "Aug 15, 2016", "2026-09-11", 0, "editor", 1,
+    "$6.99 per item"
+  ],
+  ["video.merger.app","Video Merger and Joiner","Modern Mobile Tools",8416,null,null,"Dec 1, 2025",null,0,"editor",1,"$20.99 per item"],
+  ["com.clogica.videomerger","VMER Video Merger Joiner","Clogica",3751441,3.95,12798,"Sep 16, 2016","2025-10-29",0,"other",1,"$1.99 per item"],
+  [
+    "com.stcodesapp.video_trimmer_video_cutter", "Video Trimmer, Merger & Joiner", "STCodesApp", 255880, 3.8888888, 1884, "Jan 29, 2023", "2026-08-26",
+    0, "editor", 1, "$1.99 - $15.99 per item"
+  ],
+  [
+    "com.camerasideas.trimmer", "YouCut - Video Editor & Maker", "InShot Video Editor", 258921389, 4.8355227, 8589214, "Oct 15, 2014", "2026-08-31", 0,
+    "editor", 1, "$2.99 - $59.99 per item"
+  ],
+  [
+    "jp.takke.videocutter", "Video Cut & Merge - Fast LVC", "Panecraft, Inc.", 69924, 3.6153846, 591, "Apr 22, 2019", "2026-09-09", 0, "editor", 1,
+    "$1.49 - $31.99 per item"
+  ],
+  ["topix.video.merger.joiner","Video Merger","D app",2138,null,null,"Jun 14, 2026",null,0,"editor",1,null],
+  [
+    "com.hideitpro", "Hide Photos, Video and App Loc", "Goaffpro", 71240567, 4.7403917, 1260497, "Oct 19, 2014", "2026-09-04", 0, "audio", 1,
+    "$1.49 - $6.99 per item"
+  ],
+  [
+    "ws.clockthevault", "Clock Vault-Hide Photos,Videos", "WS INFOTECH", 50755662, 4.580071, 549085, "Jan 10, 2018", "2026-08-27", 0, "vault", 1,
+    "$0.49 - $33.99 per item"
+  ],
+  [
+    "com.calculator.lock.hide.photo.video", "Calculator Lock - Photo Vault", "Applus Studio", 88855253, 4.630358, 659330, "Feb 27, 2022", null, 0,
+    "vault", 1, null
+  ],
+  ["com.photobox.nbexppll","Photo Lock: Hide Videos, Pics","Fantastic Light",6558341,4.44,28083,"Mar 1, 2022","2026-07-01",0,"downloader",1,null],
+  [
+    "com.colure.app.privacygallery", "Hide Something: photos, videos", "COLIFER LAB", 13634314, 4.6258993, 305390, "Apr 17, 2013", "2026-08-26", 0,
+    "vault", 1, "$0.99 - $6.99 per item"
+  ],
+  [
+    "vault.gallery.lock", "Photo Lock App - Hide Pictures", "Battery Stats Saver", 134998799, 4.6258903, 1321883, "Jan 29, 2016", "2026-05-06", 0,
+    "vault", 1, "$0.99 - $99.99 per item"
+  ],
+  [
+    "com.handyapps.videolocker", "Video Locker - Hide Videos", "Handy Apps", 19022814, 3.2272727, 181717, "Jul 19, 2012", "2026-09-13", 0, "vault", 1,
+    "$4.99 - $99.99 per item"
+  ],
+  ["com.inno.videolocker","Video locker - Hide videos","Rowdy Techs",4062792,4.6,36082,"Aug 24, 2013","2025-10-21",0,"vault",1,"$2.99 per item"],
+  ["inno.gallerylocker","Photo & Video Locker - Gallery","SmallCat Media",8083495,4.58,75062,"May 12, 2014","2026-09-01",0,"vault",1,"$6.99 per item"],
+  [
+    "com.sybu.gallerylocker", "Video locker - Photo locker", "SmallCat Media", 1296476, 4.56962, 4471, "Nov 13, 2017", "2026-09-11", 0, "vault", 1,
+    "$4.49 per item"
+  ],
+  [
+    "smart.calculator.gallerylock", "Photo, Video Locker-Calculator", "Photo and video applications", 11212067, 4.401119, 166954, "Apr 15, 2016",
+    "2026-06-02", 0, "vault", 1, "$0.99 per item"
+  ],
+  [
+    "vault.videolocker.galleryvault", "video locker - Gallery Vault", "Codeancy", 15725, null, null, "Nov 24, 2022", null, 0, "vault", 1,
+    "$0.99 - $4.99 per item"
+  ],
+  ["com.cloudspix.videolocker","Video Locker - Hide Videos","Cloudspix",14952,null,null,"Aug 27, 2025",null,0,"vault",1,"$7.49 per item"],
+  [
+    "com.hide.videophoto", "HideS: Lock Video, Hide Photo", "Firehawk", 1310538, 4.67, 15713, "Mar 5, 2022", "2025-04-24", 0, "vault", 1,
+    "$0.99 - $99.99 per item"
+  ],
+  [
+    "net.newsoftwares.photandvideolocker", "Photo Video Gallery Locker", "NewSoftwares LLC", 2251276, 4.0657897, 7084, "Oct 12, 2015", "2025-08-21", 0,
+    "vault", 1, "$0.49 - $4.99 per item"
+  ],
+  [
+    "com.psma.audioextractor", "Audio Extractor: Video to MP3", "photoshop mobile apps", 3830152, 4.873181, 147340, "Jul 17, 2019", "2026-01-06", 0,
+    "editor", 1, "$1.99 - $19.99 per item"
+  ],
+  ["com.mp4.to.mp3.video.audio.converter.media.ss","Video to MP3 Converter・2Audio","ss media",9877,4.0666666,424,"Mar 31, 2026",null,0,"audio",0,null],
+  [
+    "fnzstudios.com.videocrop", "Crop, Cut & Trim Video Editor", "ZipoApps", 26285483, 4.445055, 361154, "Feb 20, 2016", "2025-09-19", 0, "editor", 1,
+    "$0.99 - $149.99 per item"
+  ],
+  [
+    "com.eco.cropvideo", "Crop, Trim Video Editor", "Eco Mobile Editor", 1473896, 4.4, 20425, "Sep 22, 2024", "2026-08-27", 0, "editor", 1,
+    "$2.99 - $48.00 per item"
+  ],
+  ["video.crop.audio","Video Crop & Trim (Video Cut)","UPlayer",4404351,4.607843,51231,"Feb 28, 2021","2025-10-30",0,"editor",1,null],
+  [
+    "com.resizevideo.resize.video.compress.crop", "Resize Video, Compress & Crop", "DOSA Apps", 922179, 4.37, 12969, "Aug 4, 2023", "2024-12-09", 0,
+    "editor", 1, "$0.99 - $99.99 per item"
+  ],
+  [
+    "com.lemon.lvoverseas", "CapCut - Video Editor", "Bytedance Pte. Ltd.", 2001450464, 3.568427, 13020122, "Apr 10, 2020", "2026-09-14", 1, "editor",
+    0, "$0.49 - $900.00 per item"
+  ],
+  [
+    "com.psoffritti.trim.video", "Trim Video - Cut Video", "Double Ape", 1101461, 4.4513273, 16912, "Apr 1, 2024", "2026-09-14", 0, "editor", 1,
+    "$5.99 - $31.99 per item"
+  ],
+  [
+    "videoeditor.videomaker.videoeditorforyoutube", "Video Maker", "InShot Video Editor", 134747999, 4.7772202, 3073303, "Dec 18, 2017", "2026-07-20",
+    0, "editor", 1, "$2.99 - $59.99 per item"
+  ],
+  [
+    "com.braincraftapps.cropvideos", "Video Crop :editor, trim & cut", "Brain Craft Limited", 1929375, 4.4219513, 31190, "Oct 1, 2020", "2026-08-23",
+    0, "editor", 1, "$2.99 per item"
+  ],
+  ["app.cropflow.video","Crop Video Editor: Trim & Cut","Dope Capybara Play",2066,null,null,"Jun 6, 2026",null,0,"editor",1,"$2.99 - $18.99 per item"],
+  [
+    "media.videoeditor.musiceditor", "Super Cut:Video Cut,MP3 Cut", "Wang YuFen", 641706, 4.62, 11068, "Feb 22, 2020", "2026-08-25", 0, "editor", 1,
+    "$4.99 per item"
+  ],
+  ["canhtechdevelopers.imagedownloader","Image Downloader","Canh Soft",8599085,3.142857,79587,"May 29, 2017","2026-08-24",0,"downloader",1,null],
+  ["sansunsen3.imagesearcher","ImageSearchMan - Image Search","sunsunsun",25654637,4.16,165633,"Nov 29, 2015","2026-09-06",0,"other",1,null],
+  [
+    "image.downloader.photos.search.background", "Image downloader", "Eddy Margarita Santana Peguero", 176028, 3.6, 516, "Sep 12, 2021", null, 0,
+    "downloader", 1, null
+  ],
+  [
+    "com.bothwing.allpicfinder", "All Image Downloader - Search", "bothwing", 818295, 3.43, 6095, "May 7, 2015", "2026-07-14", 0, "downloader", 1,
+    "$14.99 per item"
+  ],
+  [
+    "com.betteridea.video.editor", "Video Cutter & Video Editor", "MMedia Tech", 5849820, 4.5185184, 58995, "May 2, 2020", "2026-08-14", 0, "editor",
+    1, "$0.99 - $6.49 per item"
+  ],
+  [
+    "com.mobivio.android.cutecut", "Cute CUT - Video Editor", "MobiVio Solutions", 37142502, 4.1277995, 365714, "May 2, 2017", "2026-08-01", 0,
+    "editor", 0, "$9.99 per item"
+  ],
+  [
+    "com.quvideo.xiaoying", "VivaVideo - Video Cut & Editor", "QuVideo Inc. Video Editor & Video Maker App", 542919112, 4.282199, 12284283,
+    "Mar 21, 2013", "2026-09-11", 0, "editor", 1, "$0.99 - $99.99 per item"
+  ],
+  [
+    "com.nexstreaming.app.kinemasterfree", "KineMaster - AI Video Editor", "KineMaster, Video Editor Experts Group", 546976581, 4.447456, 6103408,
+    "Dec 26, 2013", "2026-09-15", 0, "editor", 1, "$0.19 - $77.77 per item"
+  ],
+  [
+    "video.editor.videomaker.effects.fx", "AI Video Editor: ShotCut AI", "Shotcut Video Workshop", 71541508, 4.216353, 391224, "Apr 28, 2021",
+    "2026-09-07", 0, "editor", 1, "$0.99 - $119.99 per item"
+  ],
+  [
+    "com.cyberlink.powerdirector.DRA140225_01", "PowerDirector - Video Editor", "Cyberlink Corp", 144120399, 4.1975493, 1732008, "Jun 4, 2014",
+    "2026-09-11", 0, "editor", 1, "$0.99 - $249.99 per item"
+  ],
+  [
+    "audio.video.mp3.converter", "Video to MP3 & Audio Converter", "HyperMind Ltd.", 8297, 4.142857, 194, "Jun 23, 2026", "2026-08-29", 0, "editor", 0,
+    "$2.99 - $8.99 per item"
+  ],
+  ["com.goseet.VidTrim","VidTrim - Video Editor","Goseet",31187697,4.086331,248115,"Dec 3, 2010","2019-04-06",0,"editor",1,null],
+  ["com.lightcut.videoeditor","LightCut -AI Auto Video Editor","LightCut Inc.",4089278,4.65,68480,"Aug 15, 2021","2025-02-17",0,"editor",0,null],
+  ["com.naing.cutter","Easy Video Cutter","NAINGDroid",21423388,4.2413793,88385,"Sep 6, 2014","2022-08-22",0,"editor",1,null],
+  [
+    "com.frontrow.vlog", "VN: Photo & Video Editor", "Ubiquiti Labs, LLC", 331882897, 4.7126412, 5479341, "May 4, 2018", "2026-09-07", 0, "editor", 1,
+    "$0.99 - $109.99 per item"
+  ],
+  [
+    "com.canva.editor", "Canva: AI Photo & Video Editor", "Canva", 771880818, 4.7763386, 26995586, "Nov 27, 2017", "2026-09-09", 0, "editor", 0,
+    "$1.49 - $300.00 per item"
+  ],
+  [
+    "com.instagram.basel", "Edits: Video Editor", "Instagram", 118386899, 4.678617, 1664734, "Apr 21, 2025", "2026-09-14", 1, "editor", 0,
+    "$0.99 - $1,049.00 per item"
+  ],
+  ["com.google.android.apps.youtube.producer","YouTube Create","Google LLC",15341000,4.7022333,133233,"Sep 15, 2023","2026-09-10",1,"other",0,null],
+  [
+    "com.zmobileapps.videowatermark", "Video Watermark - Create & Add", "photoshop mobile apps", 2793226, 4.809628, 114179, "Jul 11, 2018",
+    "2026-05-28", 0, "other", 1, "$2.99 - $7.99 per item"
+  ],
+  [
+    "com.origa.salt", "Watermark Photos & Videos", "Digital business card, Watermark & Logo Maker", 2776428, 3.5357919, 72388, "Apr 25, 2015",
+    "2024-10-29", 0, "other", 0, "$0.99 - $63.99 per item"
+  ],
+  [
+    "com.duygiangdg.magiceraservideo", "Video Object Watermark Remover", "Creatix Technology Co., Ltd", 1434866, 4.688, 25536, "Jun 1, 2023",
+    "2026-08-25", 0, "other", 0, "$0.99 - $74.99 per item"
+  ],
+  [
+    "com.pixelbin.watermarkremover.io", "Watermark Remover, Photo Video", "PixelBin", 2207950, 4.1847134, 25372, "Feb 14, 2022", "2026-08-09", 0,
+    "other", 0, "$5.99 - $114.99 per item"
+  ],
+  [
+    "video.watermaker.remover.logo.videowatermark", "Watermark remover, Logo eraser", "Watermark Remover & Slow motion & SlowMo", 7106155, 3.7908497,
+    64919, "Jan 13, 2021", "2026-08-04", 0, "other", 1, "$14.99 - $39.99 per item"
+  ],
+  [
+    "com.visualwatermark.watermarkly", "Watermarkly: Make Watermark", "Julia N", 696360, 4.66, 8754, "Apr 13, 2020", "2026-08-28", 0, "other", 0,
+    "$9.90 - $39.99 per item"
+  ],
+  [
+    "com.whizpool.ezyvideowatermarkpro", "eZy Watermark Videos Classic", "Whizpool", 1171, 2.3333333, 63, "Feb 3, 2017", null, 0, "other", 0,
+    "$0.99 - $4.99 per item"
+  ],
+  [
+    "com.sarafan.watermark", "Watermark maker - Tomark", "Sarafan Mobile Limited", 101519, 4.364706, 2909, "Nov 8, 2024", null, 0, "other", 0,
+    "$5.99 - $59.99 per item"
+  ],
+  [
+    "com.video_converter.video_compressor", "Compress Video Size Compressor", "Inverse AI", 7952461, 4.4345236, 179586, "Jan 30, 2020", "2026-09-02",
+    0, "other", 1, "$0.99 - $209.99 per item"
+  ],
+  [
+    "com.pandavideocompressor", "Panda Video Compress & Convert", "Farluner Apps & Games", 16182430, 4.6600676, 657221, "Jun 26, 2018", "2026-08-11",
+    0, "other", 1, "$0.49 - $59.99 per item"
+  ],
+  ["com.tapuniverse.videocompressor","Compress Video - Resize Video","TAPUNIVERSE",85209,4.25,2387,"Apr 19, 2023","2025-07-09",0,"other",0,null],
+  [
+    "com.psoffritti.compress.video", "Compress Video - Resize Video", "Double Ape", 803823, 4.651079, 18870, "Dec 28, 2023", "2026-08-14", 0, "other",
+    1, "$5.99 - $31.99 per item"
+  ],
+  [
+    "com.inverseai.video_converter", "Video Converter, Compressor", "Inverse AI", 17530140, 4.513204, 214707, "Mar 18, 2019", "2026-09-05", 0, "audio",
+    1, "$0.99 - $49.99 per item"
+  ],
+  ["compress.joshattic.us","Compressor","JoshAtticus",11650,4.868421,185,"Feb 12, 2026","2026-08-27",0,"other",0,null],
+  [
+    "com.videoconverter.videocompressor", "Video Compressor & Converter", "TarrySoft", 13106222, 4.5068727, 172952, "Oct 8, 2020", "2026-07-03", 0,
+    "audio", 1, "$0.99 - $99.99 per item"
+  ],
+  [
+    "com.idea.videocompress", "Video Compressor &Video Cutter", "MobileIdea Studio", 17195793, 4.2861843, 113382, "Aug 20, 2018", "2026-08-19", 0,
+    "editor", 1, "$0.99 - $6.99 per item"
+  ],
+  [
+    "com.arthur.hritik.proton.video.compressor", "Video Compressor - Reduce Size", "H. Arthur", 1042371, 4.53, 11629, "Sep 27, 2020", "2026-09-11", 0,
+    "other", 1, null
+  ],
+  [
+    "com.freeconvert.video_compressor", "Video Compressor - ShrinkVid", "TransMedia Inc", 265532, 4.61, 5274, "May 4, 2021", "2025-10-27", 0, "other",
+    1, "$2.99 - $11.99 per item"
+  ],
+  [
+    "com.ddgames.newmusicplayer", "Mp3 Music Downloader", "Music  Downloader KD.", 12190593, 4.775678, 132175, "Sep 13, 2018", "2026-06-16", 0,
+    "downloader", 1, null
+  ],
+  [
+    "com.free.music.downloader.erersd", "Music Downloader & Mp3 Songs M", "super music downloader.", 7240187, 4.724675, 75015, "Sep 9, 2020",
+    "2026-07-07", 0, "downloader", 1, null
+  ],
+  [
+    "com.mmm.trebelmusic", "TREBEL: Music, MP3 & Podcasts", "M&M Media, Inc.", 93527055, 4.7061, 1648792, "Dec 2, 2016", "2026-08-17", 0, "player", 1,
+    "$0.49 - $99.99 per item"
+  ],
+  [
+    "in.krosbits.musicolet", "Musicolet Music Player", "Krosbits", 21427832, 4.643203, 241025, "Jun 24, 2016", "2026-08-21", 0, "player", 0,
+    "$8.99 - $159.92 per item"
+  ],
+  [
+    "com.sec.android.app.music", "Samsung Music", "Samsung Electronics Co.,  Ltd.", 1199790105, 3.8087595, 819546, "Feb 17, 2016", "2026-06-22", 1,
+    "player", 1, null
+  ],
+  ["com.apple.android.music","Apple Music","Apple",202838727,4.5783296,751695,"Nov 10, 2015","2026-08-18",0,"audio",0,"$5.99 - $199.99 per item"],
+  [
+    "com.afmobi.boomplayer", "Boomplay: Music & Live Stream", "Transsnet Music Limited", 345343908, 4.281841, 1003486, "Apr 7, 2016", "2026-08-20", 0,
+    "downloader", 1, "$0.49 - $299.99 per item"
+  ],
+  [
+    "www.whimmusic.info", "Unlimited MP3 Music Downloader", "Whim Music", 37011136, 4.6878595, 284448, "Nov 27, 2019", "2026-09-06", 0, "downloader",
+    1, "$0.99 - $7.99 per item"
+  ],
+  [
+    "com.brave.browser", "Brave Private Web Browser, VPN", "Brave Software", 277809412, 4.7510104, 3794732, "Oct 12, 2016", "2026-09-12", 1, "browser",
+    1, "$9.99 - $149.99 per item"
+  ],
+  [
+    "com.sec.android.app.sbrowser", "Samsung Browser", "Samsung Electronics Co.,  Ltd.", 3994427592, 3.5791974, 5906904, "Aug 24, 2015", "2026-07-08",
+    1, "browser", 0, null
+  ],
+  ["org.mozilla.firefox","Firefox Fast & Private Browser","Mozilla",510135461,4.6077027,6537206,"Dec 21, 2010","2026-09-09",1,"browser",0,null],
+  ["org.torproject.torbrowser","Tor Browser","The Tor Project",52872141,4.5438595,288698,"May 21, 2019","2026-09-15",0,"browser",0,null],
+  ["com.internet.tvbrowser","Browser","browser-app.com",25623757,4.624176,119561,"Mar 2, 2023","2026-09-09",0,"browser",1,"$0.99 - $104.99 per item"],
+  [
+    "com.duckduckgo.mobile.android", "DuckDuckGo, optional Duck.ai", "DuckDuckGo", 90230549, 4.6924634, 2455604, "Apr 8, 2011", "2026-09-14", 0,
+    "browser", 0, "$9.99 - $199.99 per item"
+  ],
+  ["com.opera.browser","Opera: Private Web Browser","Opera",553068106,4.751914,5497536,"Nov 8, 2010",null,1,"browser",1,"$5.99 - $29.99 per item"],
+  ["com.android.chrome","Google Chrome","Google LLC",22891762876,4.1195025,49264103,"Feb 7, 2012","2026-09-15",1,"browser",1,null],
+  [
+    "com.thinkyeah.galleryvault.key", "GalleryVault ProKey: Hide Pics", "GalleryVault Developer Team", 98195, 4.758333, 11945, "Aug 4, 2012",
+    "2025-07-10", 0, "audio", 0, null
+  ],
+  [
+    "gallery.hidepictures.photovault.lockgallery", "Gallery - Album, Photo Vault", "InShot Inc.", 68787767, 4.6976357, 828480, "Jul 7, 2020",
+    "2026-09-03", 0, "vault", 1, "$4.99 per item"
+  ],
+  [
+    "com.enchantedcloud.photovault", "Private Photo Vault", "Legendary Software Labs LLC", 30541246, 4.7718263, 235281, "Apr 6, 2015", "2026-09-08", 0,
+    "vault", 1, "$2.99 - $179.99 per item"
+  ],
+  [
+    "videoeditor.videorecorder.screenrecorder", "Screen Recorder - XRecorder", "InShot Inc.", 419096189, 4.694074, 7651983, "May 10, 2019",
+    "2026-09-02", 0, "editor", 1, "$0.99 - $49.99 per item"
+  ],
+  [
+    "com.hecorat.screenrecorder.free", "Screen Recorder - AZ Recorder", "AZ Screen Recorder", 120055792, 4.722793, 2011086, "Nov 11, 2014",
+    "2026-08-21", 0, "audio", 1, "$2.49 - $25.99 per item"
+  ],
+  [
+    "com.rsupport.mvagent", "Mobizen Screen Recorder", "MOBIZEN", 229593271, 4.2606297, 3343470, "May 9, 2012", "2026-07-01", 0, "other", 1,
+    "$0.99 - $43.99 per item"
+  ],
+  [
+    "recorder.screenrecorder.videoeditor", "Screen Recorder Video Recorder", "Video Player & Cast to TV", 107345080, 4.3140783, 801740, "Jun 7, 2023",
+    "2026-09-04", 0, "audio", 1, "$5.99 - $19.99 per item"
+  ],
+  ["de.twokit.screen.recording.app","Screen Recording App","2kit consulting",184175,4.5675673,8644,"Apr 17, 2026","2026-08-19",0,"audio",0,null],
+  ["screen.recorder.ul","Screen Recorder Unlimited","Castify",2046695,4.2190814,16473,"Dec 13, 2021","2026-08-05",0,"other",0,null],
+  [
+    "com.softin.recgo", "Screen Recorder - Record Video", "Kevin's Lab", 9110044, 3.986607, 97322, "Jul 23, 2021", "2026-03-25", 0, "other", 0,
+    "$3.99 - $15.99 per item"
+  ],
+  ["com.appculus.clypzo","Clypzo: Screen Video Recorder","TasakiApps",55895,4.275862,930,"Jan 22, 2026","2026-09-10",0,"audio",0,null],
+  [
+    "com.blogspot.byterevapps.lollipopscreenrecorder", "ADV Screen Recorder", "ByteRevApps", 26130558, 4.19457, 287356, "Aug 13, 2015", "2026-09-14",
+    0, "other", 1, "$0.99 per item"
+  ],
+  ["com.loom.android","Loom – Screen and Cam Recorder","Loom, Inc",2415605,3.09901,5658,"Mar 18, 2021","2026-09-15",0,"other",0,null],
+  [
+    "com.alphainventor.filemanager", "File Manager", "File Manager Plus", 172913851, 4.652231, 1703499, "Oct 19, 2015", "2026-08-06", 0, "other", 1,
+    "$0.99 - $11.99 per item"
+  ],
+  ["com.mi.android.globalFileexplorer","File Manager","Xiaomi Inc.",3580428785,4.554655,4379892,"Oct 25, 2017","2024-05-13",0,"other",1,null],
+  ["com.cxinventor.file.explorer","Cx File Explorer","Cx File Explorer",47472608,4.754538,349254,"Jul 11, 2018","2026-07-28",0,"other",0,null],
+  [
+    "files.fileexplorer.filemanager", "File Manager", "InShot Inc.", 9773383, 4.6464925, 197211, "Nov 27, 2020", "2026-08-26", 0, "other", 1,
+    "$2.99 - $7.99 per item"
+  ],
+  ["ru.zdevs.zarchiver","ZArchiver","ZDevs",482765224,4.1637073,1442777,"Jan 24, 2012","2024-06-24",0,"other",0,null],
+  ["com.metago.astro","ASTRO File Manager & Cleaner","ST Pulse",86759633,4.0738635,612015,null,"2025-02-19",0,"other",0,null],
+  [
+    "pl.solidexplorer2", "Solid Explorer File Manager", "NeatBytes", 13930422, 4.4835525, 158334, "Jul 1, 2015", "2026-08-29", 0, "other", 1,
+    "$0.99 - $22.99 per item"
+  ],
+  [
+    "com.lonelycatgames.Xplore", "X-plore File Manager", "Lonely Cat Games", 37831684, 4.3670497, 256824, "Jul 21, 2010", "2026-08-07", 0, "other", 1,
+    "$1.70 - $17.00 per item"
+  ],
+  [
+    "com.sec.android.app.myfiles", "Samsung My Files", "Samsung Electronics Co.,  Ltd.", 5905299174, 4.064985, 549041, "Apr 8, 2018", "2026-06-29", 1,
+    "other", 0, null
+  ],
+  ["com.miui.videoplayer","Mi Video-Short Video Download","Mi Video",3041217318,4.4515285,1217640,"Oct 9, 2024","2026-09-14",0,"downloader",1,null],
+  [
+    "com.uc.browser.en", "UC Mini-Download Video Status ", "UCWeb Singapore Pte. Ltd.", 420731505, 4.3837137, 4682414, "Aug 25, 2010", "2026-04-24", 1,
+    "downloader", 1, null
+  ],
+  [
+    "com.allvideodownloader.fastvideodownloader.easilydownloadvideo", "Video Downloader", "All video downloader and story downloader", 5337322, 4.28,
+    38248, "Mar 30, 2023", "2025-10-29", 0, "downloader", 0, null
+  ],
+  [
+    "instagram.pinterest.x.video.downloader.facebook", "Social Video Downloader", "MobiEdge", 282, null, null, "Jun 25, 2026", null, 0, "downloader",
+    1, "$2.09 - $18.99 per item"
+  ],
+  ["com.mi.globalbrowser.mini","Mint Browser - Video download,","Xiaomi Inc.",24690801,4.261438,88348,"Dec 21, 2018","2022-03-23",0,"platform",0,null],
+  [
+    "video.save.downloader.saver.hd.download.any", "Video Downloader Browser", "Fillog Studio", 6311735, 3.8118813, 5903, "Aug 19, 2025", "2026-09-10",
+    0, "downloader", 1, "$2.99 - $29.99 per item"
+  ],
+  [
+    "instaplus.app.lee", "HD Video Downloader", "Bitmatic Technologies", 11203947, 4.318408, 81178, "May 27, 2016", "2026-08-05", 0, "downloader", 1,
+    "$3.49 - $26.99 per item"
+  ],
+  [
+    "com.videos.pocket.video.save", "HD Video Downloader: Pocket", "Hafiz Zeeshan Yousaf", 680505, null, null, null, null, 0, "downloader", 1,
+    "$0.99 - $39.99 per item"
+  ],
+  [
+    "videodownloader.browser.video.saver.videoplayer", "HD Video Downloader & Launcher", "Tools Apps Dev.", 640387, 4.133333, 697, "Apr 9, 2026", null,
+    0, "downloader", 1, "$4.99 - $13.99 per item"
+  ],
+  ["com.mp4mp3","Video & Music Downloader","Media Studio Ltd",27760953,4.608451,316578,"Dec 1, 2022","2026-09-15",0,"downloader",0,null],
+  ["com.universal.manager","XAPK Installer APK Downloader","Smartago",691312,4.41,2474,"Aug 20, 2025","2026-07-27",0,"downloader",0,"$5.99 per item"],
+  [
+    "com.videodownloader.story_saver_for_instagram", "Story Saver, Story Downloader", "BrownHat Labs", 872448, null, null, null, "2026-08-27", 0,
+    "saver", 1, null
+  ],
+  [
+    "story.saver.photo.video.downloader.social.alldownloader", "All Video Story Downloader", "Nado58", 3597462, null, null, null, "2026-07-26", 0,
+    "saver", 1, "$0.49 - $99.99 per item"
+  ],
+  ["in.k_nesar.vinsta","InSave: Story Saver 2026","OxyLabz Studio",50802,null,null,"Dec 31, 2022",null,0,"saver",1,"$2.99 - $24.99 per item"],
+  ["com.videodownloaderfor.face","Video Downloader for FastVid","The 8th Wonders Company",98777,null,null,null,null,0,"platform",0,null],
+  [
+    "com.tiktok.video.downloader.no.watermark.tk", "Video downloader for HD Video", "Likeme Tech Studio", 5059662, 4.4526315, 74993, "Nov 25, 2022",
+    "2026-08-11", 0, "downloader", 1, "$0.99 - $39.99 per item"
+  ],
+  ["com.app.save.video.status.kkapptech","Status Saver - Status Download","Walls Engine",382355,null,null,"Feb 11, 2025",null,0,"saver",1,null],
+  ["com.async.whatsappstatus","Whatsapp Status Saver","Async Digital Network",2120,null,null,"Apr 29, 2026",null,0,"saver",0,null],
+  [
+    "com.playfake.utility.instadownloader", "Status Vault Video Download", "Playfake", 300204, 4.214286, 1194, "Jun 9, 2019", "2026-08-16", 0,
+    "downloader", 0, null
+  ],
+  ["com.uniquevpn.vpnglobal","Tubematè Mp4 Video Downloader","Classic Infinity",1441928,4.1,8950,"Nov 15, 2020","2026-06-14",0,"downloader",0,null],
+  [
+    "com.universal.video.downloader", "Any Video Downloader App | SSS", "Any_Video_Downloader", 1981149, 4.67, 6872, "Oct 3, 2023", "2026-09-10", 0,
+    "downloader", 1, "$0.99 - $29.99 per item"
+  ],
+  [
+    "x.twitter.video.downloader.saver", "Twitter Video Download", "Vidmark Inc.", 802249, 4.69, 11064, "Jan 22, 2025", "2026-07-30", 0, "platform", 1,
+    "$9.99 - $14.99 per item"
+  ],
+  [
+    "videodownlaoder.facebookvideodownlaoder.facebookdownloader.videodownloaderforfacebook", "Video Downloader for FB", "Tekno Apps", 1103389, 4.47,
+    6737, "Feb 6, 2021", null, 0, "platform", 1, "$19.99 per item"
+  ],
+  [
+    "com.linhiev.vdownloader", "Social Video Saver & Download", "Linhiev technologies", 3127, null, null, "Jul 31, 2025", null, 0, "platform", 1,
+    "$2.49 per item"
+  ],
+  ["com.hkinnovate.downloader_for_tv","Downloader for TV","HK Innovate",4778394,3.56,3376,"Feb 9, 2024","2025-02-05",0,"downloader",0,null],
+  ["cn.xender","Xender - Quick Share, Transfer","Xender File Sharing Team",757988386,4.5691924,4558121,"Jul 19, 2013","2026-07-07",0,"other",1,null],
+  [
+    "com.video.tweet.fast.hd.saver.x.twitter.downloader", "X Video Downloader - Saver", "ViaTech Lab", 3217, 4.857143, 70, "Jul 28, 2026", null, 0,
+    "platform", 0, null
+  ],
+  [
+    "com.ace.video.downloader", "Ace Video Downloader: Videos X", "Ace Mobile", 124093, 4.3448277, 504, "Dec 18, 2020", "2026-08-21", 0, "downloader",
+    1, "$0.99 - $5.99 per item"
+  ],
+  ["com.ferdigokdemir.twibox","Twitter Video Downloader - GIF","Nazar Tech",118,null,null,"Aug 24, 2026",null,0,"platform",1,"$1.99 - $9.99 per item"],
+  [
+    "com.video.downloader.proxy.browser.player.app", "Video Downloader & Browser", "Video Downloader & hubMate Apps", 2067339, 3.9824562, 2882,
+    "Mar 1, 2026", "2026-08-05", 0, "downloader", 1, "$5.99 per item"
+  ],
+  [
+    "com.itcraftsolution.statussaverforwhatsappdownload", "Status Saver Downloader", "IT Craft Solution", 1849, null, null, "Jul 28, 2022", null, 0,
+    "saver", 0, null
+  ],
+  [
+    "reelsdownloaderforinstagram.reelsaverforinstagram", "Reels Downloader", "Andron Apps", 298422, 3.1818182, 3281, "Aug 25, 2022", "2026-08-02", 0,
+    "platform", 1, "$3.99 - $29.99 per item"
+  ],
+  [
+    "app.nextinnovations.xvideodownloader", "X Video Downloader 2023", "Next Innovations Global", 1524764, 3.88, 15473, "Dec 13, 2022", null, 0,
+    "platform", 1, null
+  ],
+  ["com.macd.developer.status_saver","WhatsApp Status Saver","Envision Technolabs LLP",81513,null,null,"Oct 7, 2023",null,0,"saver",1,null],
+  [
+    "one.browser.video.downloader.web.navigation", "One Browser - Video Downloader", "Dovi Tools", 703690, 4.32, 2474, "Aug 26, 2024", "2026-09-15", 0,
+    "downloader", 1, "$1.99 - $9.99 per item"
+  ],
+  [
+    "privatebrowser.videodownloader.downloadvideo.videoeditor", "Video Downloader & Saver - XDM", "savevideo.app", 2320208, 4.45, 9142, "Sep 26, 2020",
+    "2026-08-21", 0, "downloader", 1, "$2.99 - $12.99 per item"
+  ],
+  ["com.vishalkt.saveit","Savesta: Video & Status Saver","VishalKT",97032,null,null,"May 23, 2026",null,0,"saver",1,null],
+  [
+    "super.video.downloader.wsnbppl", "Video Downloader, Player, Save", "Fantastic Light", 758219, 4.4444447, 5900, "Feb 8, 2024", "2026-07-02", 0,
+    "platform", 0, null
+  ],
+  ["com.xiaomi.midrop","ShareMe: File sharing","Xiaomi Inc.",2751515013,4.6267476,2437029,"Nov 7, 2017","2026-09-10",0,"other",0,null],
+  [
+    "com.mstudio.story.save", "Story Saver & Story Downloader", "Maven Studio", 289495, 3.8235295, 783, "Oct 24, 2022", null, 0, "saver", 1,
+    "$0.99 - $5.99 per item"
+  ],
+  [
+    "wasaver.downloadstatus.videosaver.wasticker.downloader", "Save Status - Download Status", "Lite Media", 6121431, 4.77, 30900, "Dec 26, 2022",
+    "2026-09-14", 0, "other", 1, "$19.99 per item"
+  ],
+  [
+    "com.statussaver.inaxiod.inc", "Save Status - Video Downloader", "Video Downloader & Photo Saver App", 71187, null, null, "Mar 10, 2025", null, 0,
+    "platform", 1, "$1.00 - $19.99 per item"
+  ],
+  [
+    "com.theyouthtech.statusaver", "Save Status - Download Status", "TheYouthTech", 4194862, 4.36, 55347, "Oct 7, 2018", "2026-09-13", 0, "downloader",
+    1, "$0.49 - $0.99 per item"
+  ],
+  ["com.status.statusdownload","Status Saver - Video Download","Sanatan App",1160702,4.4375,2132,"May 2, 2020","2024-12-01",0,"saver",0,null]
+]
+```
+
+### data.board
+
+```json
+{
+  "US": [
+    {
+      "q": "video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,6,17,9,2,18,19,20,21,34,41,31,8,35,39,4,-1,55,-1,25,33,47,43,5,50,36,-1,38,367],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 23937324,
+      "entry": 266150,
+      "entryRank": 6,
+      "demand": 100,
+      "demandAt": "vid",
+      "comps": [1,6,2,17,25,3,null,14,5,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.993,
+      "O": 0.837,
+      "P": 83,
+      "entryIdx": 2
+    },
+    {
+      "q": "hd video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,22,3,6,2,23,24,8,25,26,355,5,-1,377,50,40,21,20,4,42,10,-1,-1,356,57,-1,198,9,-1,-1],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13689906,
+      "entry": 157368,
+      "entryRank": 10,
+      "demand": 86,
+      "demandAt": "hd v",
+      "comps": [1,5,3,19,12,4,null,8,28,21,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 1,
+      "O": 0.797,
+      "P": 80,
+      "entryIdx": 26
+    },
+    {
+      "q": "all video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,9,20,21,8,6,27,2,19,39,4,50,35,25,48,47,42,55,5,38,367,36,49,7,-1,34,43,18,-1],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 35664600,
+      "entry": 266150,
+      "entryRank": 9,
+      "demand": 86,
+      "demandAt": "all v",
+      "comps": [1,9,2,12,20,7,25,6,3,null,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.798,
+      "P": 79,
+      "entryIdx": 2
+    },
+    {
+      "q": "private video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [28,1,9,6,29,21,3,30,8,2,5,377,25,375,4,385,20,176,-1,-1,-1,46,27,10,36,178,-1,45,35,31],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13970550,
+      "entry": 27368,
+      "entryRank": 8,
+      "demand": 71,
+      "demandAt": "private v",
+      "comps": [2,10,7,15,11,4,null,9,3,24,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 9,
+      "R": 1,
+      "O": 0.771,
+      "P": 77,
+      "entryIdx": 30
+    },
+    {
+      "q": "save video downloader app",
+      "tier": "A",
+      "src": "ac",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,31,4,6,2,5,25,8,7,47,42,37,38,55,39,35,40,36,138,57,45,19,385,48,18,17,10,357,-1],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13970550,
+      "entry": 249023,
+      "entryRank": 8,
+      "demand": 77,
+      "demandAt": "save v",
+      "comps": [1,6,2,4,7,5,10,9,null,28,null,null,null,null,null,null],
+      "c10": 8,
+      "c30": 9,
+      "R": 1,
+      "O": 0.765,
+      "P": 77,
+      "entryIdx": 25
+    },
+    {
+      "q": "fast video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,9,32,33,3,21,6,2,34,31,57,8,25,39,-1,20,5,377,42,4,10,18,55,36,22,-1,157,385,46,7],
+      "nb": 10,
+      "niche": 1,
+      "vol": 24537119,
+      "entry": 266150,
+      "entryRank": 8,
+      "demand": 71,
+      "demandAt": "fast v",
+      "comps": [1,8,5,20,17,7,30,12,2,21,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 10,
+      "R": 1,
+      "O": 0.751,
+      "P": 75,
+      "entryIdx": 2
+    },
+    {
+      "q": "online video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,20,2,31,6,25,3,8,4,35,42,5,39,367,19,55,48,18,36,17,7,357,138,47,38,375,-1,-1,57,43],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 13970550,
+      "entry": 249023,
+      "entryRank": 6,
+      "demand": 75,
+      "demandAt": "online v",
+      "comps": [1,3,7,9,12,5,21,8,null,null,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 8,
+      "R": 0.993,
+      "O": 0.759,
+      "P": 75,
+      "entryIdx": 25
+    },
+    {
+      "q": "video saver - video downloader",
+      "tier": "A",
+      "src": "ac",
+      "tm": 0,
+      "depth": 30,
+      "ids": [21,1,5,4,31,7,3,9,36,6,57,8,25,10,90,2,18,47,-1,-1,46,26,27,385,-1,138,-1,55,-1,28],
+      "nb": 10,
+      "niche": 1,
+      "vol": 23937324,
+      "entry": 740557,
+      "entryRank": 5,
+      "demand": 66,
+      "demandAt": "video sav",
+      "comps": [2,16,7,4,3,10,6,12,8,14,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 10,
+      "R": 1,
+      "O": 0.724,
+      "P": 72,
+      "entryIdx": 31
+    },
+    {
+      "q": "save videos app",
+      "tier": "A",
+      "src": "ac",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,19,4,37,31,5,6,2,38,3,7,21,-1,191,8,47,39,138,9,57,90,10,385,384,87,129,17,35,68,89],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 19077211,
+      "entry": 266150,
+      "entryRank": 8,
+      "demand": 66,
+      "demandAt": "save v",
+      "comps": [1,8,10,3,6,7,11,15,19,22,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 10,
+      "R": 0.993,
+      "O": 0.734,
+      "P": 72,
+      "entryIdx": 2
+    },
+    {
+      "q": "download video",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,19,6,3,17,39,2,4,40,8,47,35,25,31,45,42,5,18,55,38,367,9,-1,7,-1,43,114,34,138,375],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 19077211,
+      "entry": 266150,
+      "entryRank": 7,
+      "demand": 60,
+      "demandAt": "download v",
+      "comps": [1,7,4,8,17,3,24,10,22,null,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.716,
+      "P": 71,
+      "entryIdx": 2
+    },
+    {
+      "q": "free video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,2,3,17,6,41,39,20,19,4,9,35,31,25,48,21,38,18,8,5,42,47,34,367,7,55,138,-1,57,128],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 74653915,
+      "entry": 266150,
+      "entryRank": 2,
+      "demand": 59,
+      "demandAt": "free vid",
+      "comps": [1,2,3,10,20,5,25,19,11,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.723,
+      "P": 71,
+      "entryIdx": 2
+    },
+    {
+      "q": "download video from link",
+      "tier": "A",
+      "src": "ac",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,31,2,4,3,6,5,42,38,43,9,39,138,126,10,25,34,47,55,8,21,157,139,7,57,385,-1,20,-1,35],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 13689906,
+      "entry": 101833,
+      "entryRank": 10,
+      "demand": 60,
+      "demandAt": "download vid",
+      "comps": [1,3,5,4,7,6,24,20,11,15,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 10,
+      "R": 0.993,
+      "O": 0.724,
+      "P": 71,
+      "entryIdx": 43
+    },
+    {
+      "q": "video saver mp4 downloader",
+      "tier": "A",
+      "src": "ac",
+      "tm": 0,
+      "depth": 10,
+      "ids": [44,1,2,45,31,46,8,4,10,5],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 13970550,
+      "entry": 266150,
+      "entryRank": 3,
+      "demand": 60,
+      "demandAt": "video sav",
+      "comps": [2,3,null,8,10,null,null,7,null,9,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 6,
+      "R": 0.993,
+      "O": 0.713,
+      "P": 70,
+      "entryIdx": 2
+    },
+    {
+      "q": "video saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,5,7,4,31,6,47,2,3,8,38,36,42,45,138,46,57,35,18,87,129,10,55,191,19,128,90,9,-1,48],
+      "nb": 10,
+      "niche": 1,
+      "vol": 19231602,
+      "entry": 266150,
+      "entryRank": 8,
+      "demand": 49,
+      "demandAt": "video s",
+      "comps": [1,8,9,4,2,6,3,10,28,22,null,null,null,null,null,null],
+      "c10": 8,
+      "c30": 10,
+      "R": 1,
+      "O": 0.683,
+      "P": 68,
+      "entryIdx": 2
+    },
+    {
+      "q": "social video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [42,1,25,2,31,48,35,45,19,49,351,371,4,5,-1,-1,-1,7,43,55,36,-1,6,8,126,-1,47,38,-1,157],
+      "nb": 10,
+      "niche": 0.92,
+      "vol": 684294,
+      "entry": 9633,
+      "entryRank": 10,
+      "demand": 75,
+      "demandAt": "social v",
+      "comps": [2,4,null,13,14,23,18,24,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 7,
+      "R": 0.939,
+      "O": 0.773,
+      "P": 68,
+      "entryIdx": 49
+    },
+    {
+      "q": "video downloader and player",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,50,3,8,51,6,52,53,2,40,25,5,-1,4,199,21,-1,55,-1,367,-1,385,181,-1,18,377,42,182,7,83],
+      "nb": 9,
+      "niche": 0.87,
+      "vol": 149855720,
+      "entry": 202665,
+      "entryRank": 8,
+      "demand": 77,
+      "demandAt": "video d",
+      "comps": [1,9,3,14,12,6,29,4,null,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.955,
+      "O": 0.75,
+      "P": 68,
+      "entryIdx": 53
+    },
+    {
+      "q": "video saver downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,4,31,5,6,25,7,2,36,8,47,42,35,45,3,138,57,26,55,93,90,38,357,89,10,367,18,385,9,92],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13689906,
+      "entry": 249023,
+      "entryRank": 6,
+      "demand": 48,
+      "demandAt": "video sav",
+      "comps": [1,8,15,2,4,5,7,10,29,25,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 10,
+      "R": 1,
+      "O": 0.678,
+      "P": 68,
+      "entryIdx": 25
+    },
+    {
+      "q": "video downloader for android",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,17,2,3,8,4,6,25,31,5,20,39,18,35,367,21,57,45,55,42,9,157,10,48,7,36,-1,27,357,34],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13689906,
+      "entry": 249023,
+      "entryRank": 8,
+      "demand": 48,
+      "demandAt": "video downloader f",
+      "comps": [1,3,4,6,10,7,25,5,21,23,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 10,
+      "R": 1,
+      "O": 0.678,
+      "P": 68,
+      "entryIdx": 25
+    },
+    {
+      "q": "save videos download",
+      "tier": "A",
+      "src": "ac",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,31,4,6,5,25,2,21,3,19,38,7,47,35,39,9,8,37,-1,57,10,-1,17,42,138,45,139,-1,385,48],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 19077211,
+      "entry": 249023,
+      "entryRank": 6,
+      "demand": 51,
+      "demandAt": "save vid",
+      "comps": [1,7,9,3,5,4,12,17,16,21,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 10,
+      "R": 0.993,
+      "O": 0.689,
+      "P": 68,
+      "entryIdx": 25
+    },
+    {
+      "q": "video downloader browser",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,2,39,6,54,8,31,25,3,55,353,42,382,-1,58,5,377,35,-1,9,385,10,375,-1,43,57,195,7,17,157],
+      "nb": 9,
+      "niche": 0.96,
+      "vol": 13970550,
+      "entry": 201888,
+      "entryRank": 10,
+      "demand": 62,
+      "demandAt": "video d",
+      "comps": [1,2,9,null,16,4,28,6,20,22,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 0.984,
+      "O": 0.687,
+      "P": 67,
+      "entryIdx": 55
+    },
+    {
+      "q": "video downloader without ads",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [2,1,25,31,35,42,48,45,8,6,5,55,4,39,367,47,36,7,43,3,-1,375,385,18,38,357,17,-1,49,138],
+      "nb": 10,
+      "niche": 0.94,
+      "vol": 740557,
+      "entry": 29397,
+      "entryRank": 7,
+      "demand": 55,
+      "demandAt": "video downloader w",
+      "comps": [2,1,20,13,11,10,18,9,null,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.979,
+      "O": 0.701,
+      "P": 67,
+      "entryIdx": 48
+    },
+    {
+      "q": "video downloader app",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,6,2,19,39,56,8,17,4,35,25,47,18,55,74,5,38,367,114,7,375,26,138,-1,36,40,372,357,9],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 64791541,
+      "entry": 266150,
+      "entryRank": 4,
+      "demand": 38,
+      "demandAt": "video downloader a",
+      "comps": [1,4,2,10,17,3,21,8,30,null,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.659,
+      "P": 65,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader and saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [9,1,4,6,3,31,5,8,2,7,25,21,36,57,10,47,42,138,-1,35,55,17,357,-1,90,46,-1,385,19,27],
+      "nb": 10,
+      "niche": 1,
+      "vol": 19231602,
+      "entry": 266150,
+      "entryRank": 9,
+      "demand": 35,
+      "demandAt": "video downloader an",
+      "comps": [2,9,5,3,7,4,10,8,1,15,null,null,null,null,null,null],
+      "c10": 9,
+      "c30": 10,
+      "R": 1,
+      "O": 0.641,
+      "P": 64,
+      "entryIdx": 2
+    },
+    {
+      "q": "all video downloader and saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,8,9,31,6,4,5,21,7,26,10,36,20,2,27,57,-1,25,47,195,42,-1,46,385,-1,22,55,377,-1],
+      "nb": 10,
+      "niche": 1,
+      "vol": 23937324,
+      "entry": 740557,
+      "entryRank": 5,
+      "demand": 38,
+      "demandAt": "all video downloader a",
+      "comps": [1,15,2,7,8,6,10,3,4,12,null,null,null,null,null,null],
+      "c10": 8,
+      "c30": 10,
+      "R": 1,
+      "O": 0.64,
+      "P": 64,
+      "entryIdx": 31
+    },
+    {
+      "q": "video save",
+      "tier": "A",
+      "src": "ac",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,4,31,6,5,37,7,38,47,57,2,3,129,8,21,10,138,128,191,19,-1,9,90,385,25,62,36,87,-1,42],
+      "nb": 10,
+      "niche": 1,
+      "vol": 19231602,
+      "entry": 740557,
+      "entryRank": 3,
+      "demand": 38,
+      "demandAt": "video sa",
+      "comps": [1,11,12,2,5,4,7,14,22,16,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 10,
+      "R": 1,
+      "O": 0.639,
+      "P": 64,
+      "entryIdx": 31
+    },
+    {
+      "q": "download video browser",
+      "tier": "A",
+      "src": "ac",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,39,54,6,2,58,59,60,9,8,25,-1,31,-1,-1,-1,-1,382,324,55,-1,377,-1,319,-1,375,-1,-1,114,10],
+      "nb": 9,
+      "niche": 0.91,
+      "vol": 53554550,
+      "entry": 266150,
+      "entryRank": 5,
+      "demand": 57,
+      "demandAt": "download v",
+      "comps": [1,5,null,null,null,4,null,10,9,30,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 6,
+      "R": 0.969,
+      "O": 0.679,
+      "P": 64,
+      "entryIdx": 2
+    },
+    {
+      "q": "story saver app",
+      "tier": "A",
+      "src": "ac",
+      "tm": 0,
+      "depth": 30,
+      "ids": [4,61,62,5,63,64,65,66,7,67,110,102,103,-1,10,361,109,-1,-1,-1,-1,159,-1,-1,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.84,
+      "vol": 7481536,
+      "entry": 5646,
+      "entryRank": 10,
+      "demand": 48,
+      "demandAt": "story sav",
+      "comps": [null,null,null,1,4,null,9,null,null,15,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 4,
+      "R": 0.944,
+      "O": 0.715,
+      "P": 64,
+      "entryIdx": 67
+    },
+    {
+      "q": "video downloader free",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,2,19,39,48,25,35,45,31,42,3,8,4,17,6,18,367,47,55,5,43,38,7,375,138,36,-1,128,357,20],
+      "nb": 10,
+      "niche": 0.92,
+      "vol": 740557,
+      "entry": 29397,
+      "entryRank": 5,
+      "demand": 57,
+      "demandAt": "video d",
+      "comps": [1,2,11,13,20,15,23,12,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 8,
+      "R": 0.939,
+      "O": 0.707,
+      "P": 62,
+      "entryIdx": 48
+    },
+    {
+      "q": "save video",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 7,
+      "ids": [37,1,19,42,68,2,35],
+      "nb": 7,
+      "niche": 0.91,
+      "vol": 1901315,
+      "entry": 747,
+      "entryRank": 5,
+      "demand": 60,
+      "demandAt": "save v",
+      "comps": [2,6,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 2,
+      "R": 0.937,
+      "O": 0.658,
+      "P": 58,
+      "entryIdx": 68
+    },
+    {
+      "q": "download videos",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,19,3,40,17,6,18,2,31,25,8,39,35,45,4,5,55,42,38,47,9,7,57,36,-1,375,48,157,367,377],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 5751288,
+      "entry": 249023,
+      "entryRank": 10,
+      "demand": 20,
+      "demandAt": "download videos",
+      "comps": [1,8,3,15,16,6,22,11,21,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.588,
+      "P": 58,
+      "entryIdx": 25
+    },
+    {
+      "q": "downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [69,1,70,71,72,73,74,75,19,76,56,6,373,386,-1,-1,114,39,-1,-1,-1,-1,-1,2,372,-1,42,9,4,3],
+      "nb": 8,
+      "niche": 0.78,
+      "vol": 190807683,
+      "entry": 343910,
+      "entryRank": 10,
+      "demand": 100,
+      "demandAt": "dow",
+      "comps": [2,24,30,29,null,12,null,null,28,null,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 6,
+      "R": 0.856,
+      "O": 0.78,
+      "P": 57,
+      "entryIdx": 76
+    },
+    {
+      "q": "video download app",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,39,19,50,51,2,52,25,35,83,42,199,4,6,114,20,54,40,47,8,55,5,-1,38,367,17,7,129,34],
+      "nb": 9,
+      "niche": 0.83,
+      "vol": 149855720,
+      "entry": 249023,
+      "entryRank": 9,
+      "demand": 38,
+      "demandAt": "video download a",
+      "comps": [1,7,2,14,23,15,28,21,null,null,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 8,
+      "R": 0.941,
+      "O": 0.63,
+      "P": 56,
+      "entryIdx": 25
+    },
+    {
+      "q": "4k video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 5,
+      "ids": [77,1,2,25,42],
+      "nb": 5,
+      "niche": 0.92,
+      "vol": 266150,
+      "entry": 133921,
+      "entryRank": 5,
+      "demand": 94,
+      "demandAt": "4k",
+      "comps": [2,3,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 2,
+      "R": 0.939,
+      "O": 0.619,
+      "P": 55,
+      "entryIdx": 42
+    },
+    {
+      "q": "fb video downloader app",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [78,79,1,57,42,80,81,4,82,5,125,126,-1,385,-1,10,354,2,3,-1,-1,-1,-1,25,-1,-1,21,7,-1,-1],
+      "nb": 10,
+      "niche": 0.9,
+      "vol": 1686085,
+      "entry": 12753,
+      "entryRank": 6,
+      "demand": 85,
+      "demandAt": "fb v",
+      "comps": [3,18,19,8,10,null,28,null,null,16,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 7,
+      "R": 0.8,
+      "O": 0.806,
+      "P": 52,
+      "entryIdx": 80
+    },
+    {
+      "q": "download videos app",
+      "tier": "A",
+      "src": "ac",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,19,40,51,50,83,25,35,52,56,3,2,39,48,42,-1,54,114,183,4,6,17,8,47,5,74,38,367,7,-1],
+      "nb": 9,
+      "niche": 0.76,
+      "vol": 236276464,
+      "entry": 249023,
+      "entryRank": 7,
+      "demand": 66,
+      "demandAt": "download v",
+      "comps": [1,12,11,20,25,21,29,23,null,null,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 8,
+      "R": 0.851,
+      "O": 0.718,
+      "P": 52,
+      "entryIdx": 25
+    },
+    {
+      "q": "reels downloader app",
+      "tier": "B",
+      "src": "ac",
+      "tm": 1,
+      "depth": 30,
+      "ids": [84,4,5,85,1,86,42,7,57,38,97,2,47,3,10,-1,8,128,-1,107,98,31,6,106,45,109,139,108,357,157],
+      "nb": 10,
+      "niche": 0.92,
+      "vol": 13028866,
+      "entry": 1497,
+      "entryRank": 6,
+      "demand": 66,
+      "demandAt": "reels d",
+      "comps": [5,12,14,2,3,23,8,17,null,15,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 9,
+      "R": 0.807,
+      "O": 0.787,
+      "P": 51,
+      "entryIdx": 86
+    },
+    {
+      "q": "status saver app",
+      "tier": "A",
+      "src": "ac",
+      "tm": 0,
+      "depth": 30,
+      "ids": [87,88,89,90,91,92,93,94,95,96,-1,-1,161,122,-1,-1,-1,-1,391,-1,152,-1,-1,-1,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.8,
+      "vol": 18272082,
+      "entry": 1408,
+      "entryRank": 9,
+      "demand": 48,
+      "demandAt": "status sav",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.83,
+      "O": 0.736,
+      "P": 51,
+      "entryIdx": 95
+    },
+    {
+      "q": "reels download app",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [5,84,4,86,85,97,7,1,98,99,42,104,10,120,-1,2,-1,-1,379,-1,31,-1,-1,-1,-1,38,8,-1,107,106],
+      "nb": 10,
+      "niche": 0.9,
+      "vol": 82647,
+      "entry": 1497,
+      "entryRank": 4,
+      "demand": 75,
+      "demandAt": "reels d",
+      "comps": [8,16,null,3,1,null,7,27,null,13,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 7,
+      "R": 0.8,
+      "O": 0.778,
+      "P": 50,
+      "entryIdx": 86
+    },
+    {
+      "q": "linkedin video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 10,
+      "ids": [43,1,35,25,2,42,48,31,100,101],
+      "nb": 10,
+      "niche": 0.96,
+      "vol": 249023,
+      "entry": 7096,
+      "entryRank": 10,
+      "demand": 75,
+      "demandAt": "linkedin v",
+      "comps": [2,5,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 2,
+      "R": 0.788,
+      "O": 0.769,
+      "P": 48,
+      "entryIdx": 101
+    },
+    {
+      "q": "story saver from instagram",
+      "tier": "B",
+      "src": "ac",
+      "tm": 1,
+      "depth": 30,
+      "ids": [61,4,7,64,102,62,5,66,103,65,63,159,109,-1,361,-1,-1,-1,-1,-1,-1,110,-1,387,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.87,
+      "vol": 7481536,
+      "entry": 194345,
+      "entryRank": 9,
+      "demand": 77,
+      "demandAt": "story s",
+      "comps": [null,null,null,2,7,null,3,null,null,null,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 3,
+      "R": 0.789,
+      "O": 0.763,
+      "P": 48,
+      "entryIdx": 103
+    },
+    {
+      "q": "reels download app free",
+      "tier": "B",
+      "src": "ac",
+      "tm": 1,
+      "depth": 30,
+      "ids": [84,5,85,104,1,4,86,10,7,97,379,99,-1,98,2,-1,-1,38,121,-1,-1,42,-1,3,109,-1,8,17,-1,75],
+      "nb": 10,
+      "niche": 0.82,
+      "vol": 19231602,
+      "entry": 1497,
+      "entryRank": 7,
+      "demand": 64,
+      "demandAt": "reels down",
+      "comps": [5,15,24,6,2,null,9,27,null,8,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.772,
+      "O": 0.784,
+      "P": 47,
+      "entryIdx": 86
+    },
+    {
+      "q": "story saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 0,
+      "depth": 30,
+      "ids": [61,4,62,64,103,5,102,63,7,66,110,65,67,361,-1,-1,-1,-1,159,-1,-1,10,-1,-1,-1,111,109,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.87,
+      "vol": 7481536,
+      "entry": 21289,
+      "entryRank": 8,
+      "demand": 60,
+      "demandAt": "story s",
+      "comps": [null,null,null,2,6,null,9,null,null,22,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 4,
+      "R": 0.789,
+      "O": 0.736,
+      "P": 46,
+      "entryIdx": 63
+    },
+    {
+      "q": "status save",
+      "tier": "A",
+      "src": "ac",
+      "tm": 0,
+      "depth": 30,
+      "ids": [87,88,89,90,91,92,94,96,93,105,-1,-1,-1,95,152,161,389,-1,-1,160,-1,-1,390,-1,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.81,
+      "vol": 18272082,
+      "entry": 14359,
+      "entryRank": 10,
+      "demand": 33,
+      "demandAt": "status sa",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.834,
+      "O": 0.666,
+      "P": 46,
+      "entryIdx": 105
+    },
+    {
+      "q": "reels downloader instagram video",
+      "tier": "B",
+      "src": "ac",
+      "tm": 1,
+      "depth": 30,
+      "ids": [5,4,106,107,7,66,108,109,84,98,123,1,10,42,159,-1,-1,-1,97,36,379,-1,191,62,65,385,157,31,357,38],
+      "nb": 10,
+      "niche": 0.88,
+      "vol": 499002,
+      "entry": 6811,
+      "entryRank": 10,
+      "demand": 55,
+      "demandAt": "reels downl",
+      "comps": [12,null,null,2,1,null,5,null,null,13,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 5,
+      "R": 0.793,
+      "O": 0.714,
+      "P": 45,
+      "entryIdx": 98
+    },
+    {
+      "q": "story saver facebook story",
+      "tier": "B",
+      "src": "ac",
+      "tm": 1,
+      "depth": 30,
+      "ids": [110,4,62,5,111,64,65,7,112,113,63,-1,66,-1,109,67,-1,61,159,-1,102,57,-1,-1,-1,-1,42,10,-1,103],
+      "nb": 10,
+      "niche": 0.87,
+      "vol": 9191538,
+      "entry": 391880,
+      "entryRank": 5,
+      "demand": 64,
+      "demandAt": "story sav",
+      "comps": [null,null,null,2,4,null,8,null,null,28,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 4,
+      "R": 0.789,
+      "O": 0.718,
+      "P": 45,
+      "entryIdx": 111
+    },
+    {
+      "q": "download manager",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 30,
+      "ids": [75,114,39,58,115,1,116,117,118,119,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,56,-1,-1,-1],
+      "nb": 10,
+      "niche": 1,
+      "vol": 4926308,
+      "entry": 1371,
+      "entryRank": 9,
+      "demand": 56,
+      "demandAt": "download m",
+      "comps": [6,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 1,
+      "R": 0.768,
+      "O": 0.751,
+      "P": 44,
+      "entryIdx": 118
+    },
+    {
+      "q": "reel saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [5,4,97,86,84,85,120,7,121,98,-1,129,-1,-1,10,66,-1,107,109,-1,65,-1,62,99,159,42,104,191,108,-1],
+      "nb": 10,
+      "niche": 0.86,
+      "vol": 6811,
+      "entry": 110,
+      "entryRank": 9,
+      "demand": 40,
+      "demandAt": "reel sav",
+      "comps": [null,null,null,2,1,null,8,null,null,15,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 4,
+      "R": 0.786,
+      "O": 0.683,
+      "P": 42,
+      "entryIdx": 121
+    },
+    {
+      "q": "story saver for whatsapp",
+      "tier": "B",
+      "src": "ac",
+      "tm": 1,
+      "depth": 30,
+      "ids": [67,4,89,87,90,64,5,65,122,63,7,-1,66,93,-1,92,-1,94,162,110,62,-1,-1,61,88,-1,-1,103,-1,-1],
+      "nb": 10,
+      "niche": 0.82,
+      "vol": 13028866,
+      "entry": 5646,
+      "entryRank": 1,
+      "demand": 60,
+      "demandAt": "story sav",
+      "comps": [null,null,null,2,7,null,11,null,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 3,
+      "R": 0.739,
+      "O": 0.755,
+      "P": 41,
+      "entryIdx": 67
+    },
+    {
+      "q": "instagram video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [5,4,7,123,1,106,42,124,107,108,10,159,146,357,66,109,31,36,3,-1,-1,157,-1,8,-1,6,2,47,-1,377],
+      "nb": 10,
+      "niche": 0.9,
+      "vol": 133921,
+      "entry": 229,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [5,27,19,2,1,26,3,24,null,11,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 9,
+      "R": 0.8,
+      "O": 0.576,
+      "P": 37,
+      "entryIdx": 124
+    },
+    {
+      "q": "video downloader for instagram",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [106,4,5,7,1,42,107,108,10,109,66,123,-1,36,-1,157,-1,-1,159,3,-1,6,357,385,377,8,38,97,126,-1],
+      "nb": 10,
+      "niche": 0.92,
+      "vol": 13028866,
+      "entry": 13929,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [5,null,20,2,3,22,4,26,null,9,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.807,
+      "O": 0.565,
+      "P": 37,
+      "entryIdx": 107
+    },
+    {
+      "q": "reels downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [5,4,84,1,86,85,7,97,120,2,-1,10,42,109,98,3,-1,108,8,38,121,-1,107,99,-1,-1,-1,-1,36,62],
+      "nb": 10,
+      "niche": 0.9,
+      "vol": 266150,
+      "entry": 219,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [4,10,16,2,1,null,7,19,null,12,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.8,
+      "O": 0.582,
+      "P": 37,
+      "entryIdx": 120
+    },
+    {
+      "q": "facebook video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [79,57,1,80,42,125,3,126,5,81,4,-1,112,10,82,20,385,-1,2,-1,27,36,195,-1,21,157,25,6,7,-1],
+      "nb": 10,
+      "niche": 0.92,
+      "vol": 12887883,
+      "entry": 12753,
+      "entryRank": 4,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [3,19,7,11,9,28,29,null,null,14,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 8,
+      "R": 0.807,
+      "O": 0.566,
+      "P": 37,
+      "entryIdx": 80
+    },
+    {
+      "q": "tiktok video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [38,47,45,127,1,128,129,130,131,132,42,150,368,147,-1,-1,-1,149,-1,363,10,-1,4,5,151,-1,3,2,-1,-1],
+      "nb": 9,
+      "niche": 0.82,
+      "vol": 24710882,
+      "entry": 25597,
+      "entryRank": 10,
+      "demand": 71,
+      "demandAt": "tiktok v",
+      "comps": [5,28,27,23,24,null,null,null,null,21,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 6,
+      "R": 0.705,
+      "O": 0.741,
+      "P": 37,
+      "entryIdx": 132
+    },
+    {
+      "q": "instagram reels downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [7,4,5,106,66,107,1,10,108,84,109,-1,42,98,97,123,159,3,146,86,-1,-1,62,35,85,36,2,38,-1,357],
+      "nb": 10,
+      "niche": 0.92,
+      "vol": 13028866,
+      "entry": 13929,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [7,27,18,2,3,null,1,null,null,8,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 7,
+      "R": 0.807,
+      "O": 0.565,
+      "P": 37,
+      "entryIdx": 107
+    },
+    {
+      "q": "video downloader with editor",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 30,
+      "ids": [133,18,1,5,17,10,3,4,134,135,138,7,157,-1,147,187,-1,38,20,47,21,-1,-1,41,9,367,27,-1,149,36],
+      "nb": 10,
+      "niche": 0.93,
+      "vol": 64791541,
+      "entry": 194925,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [3,null,7,8,4,null,12,null,25,6,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 7,
+      "R": 0.81,
+      "O": 0.548,
+      "P": 36,
+      "entryIdx": 134
+    },
+    {
+      "q": "video downloader for pinterest",
+      "tier": "B",
+      "src": "ac",
+      "tm": 1,
+      "depth": 30,
+      "ids": [136,137,138,139,140,141,142,143,144,145,-1,163,-1,-1,165,166,-1,167,35,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.82,
+      "vol": 1183670,
+      "entry": 1567,
+      "entryRank": 9,
+      "demand": 72,
+      "demandAt": "video d",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.672,
+      "O": 0.787,
+      "P": 36,
+      "entryIdx": 144
+    },
+    {
+      "q": "reels download app instagram",
+      "tier": "B",
+      "src": "ac",
+      "tm": 1,
+      "depth": 30,
+      "ids": [146,5,4,84,106,66,98,109,107,108,7,-1,-1,123,42,-1,290,97,379,-1,10,-1,86,159,-1,65,62,191,-1,1],
+      "nb": 9,
+      "niche": 0.78,
+      "vol": 499002,
+      "entry": 6811,
+      "entryRank": 7,
+      "demand": 60,
+      "demandAt": "reels down",
+      "comps": [30,null,null,3,2,null,11,null,null,21,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 5,
+      "R": 0.725,
+      "O": 0.694,
+      "P": 36,
+      "entryIdx": 98
+    },
+    {
+      "q": "tiktok downloader no watermark",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [38,147,47,129,128,148,149,45,150,151,363,-1,131,-1,368,-1,42,127,-1,132,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.96,
+      "vol": 5586740,
+      "entry": 342412,
+      "entryRank": 10,
+      "demand": 49,
+      "demandAt": "tiktok downloader",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.721,
+      "O": 0.671,
+      "P": 35,
+      "entryIdx": 151
+    },
+    {
+      "q": "story saver for instagram",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [61,62,4,103,64,66,5,7,63,65,102,159,-1,109,361,-1,-1,-1,387,-1,-1,-1,-1,-1,110,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.84,
+      "vol": 7481536,
+      "entry": 21289,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,3,7,null,8,null,null,null,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 3,
+      "R": 0.779,
+      "O": 0.556,
+      "P": 34,
+      "entryIdx": 63
+    },
+    {
+      "q": "status saver for whatsapp",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [88,87,89,90,92,91,93,94,96,152,391,-1,95,162,-1,160,-1,161,-1,-1,-1,365,-1,-1,-1,-1,-1,-1,-1,105],
+      "nb": 10,
+      "niche": 0.8,
+      "vol": 19397861,
+      "entry": 28401,
+      "entryRank": 9,
+      "demand": 67,
+      "demandAt": "status s",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.665,
+      "O": 0.761,
+      "P": 34,
+      "entryIdx": 96
+    },
+    {
+      "q": "vimeo video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [153,154,155,156,1,25,46,157,3,2,27,-1,-1,55,9,8,377,385,-1,42,-1,20,6,17,31,36,10,18,-1,-1],
+      "nb": 9,
+      "niche": 0.9,
+      "vol": 1805314,
+      "entry": 6939,
+      "entryRank": 2,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [5,10,9,null,null,23,null,16,15,27,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 7,
+      "R": 0.8,
+      "O": 0.523,
+      "P": 33,
+      "entryIdx": 154
+    },
+    {
+      "q": "dailymotion video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [158,1,46,25,2,3,20,157,6,10,27,377,31,21,-1,8,5,55,-1,9,-1,385,17,-1,187,36,34,42,41,-1],
+      "nb": 9,
+      "niche": 0.9,
+      "vol": 67490521,
+      "entry": 249023,
+      "entryRank": 4,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,5,6,null,17,9,null,16,20,10,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.8,
+      "O": 0.511,
+      "P": 33,
+      "entryIdx": 25
+    },
+    {
+      "q": "insta downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,5,159,7,66,1,106,146,107,108,109,10,42,123,191,36,-1,-1,6,31,-1,-1,47,2,-1,-1,62,-1,25,3],
+      "nb": 9,
+      "niche": 0.84,
+      "vol": 19231602,
+      "entry": 13929,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [6,24,30,1,2,19,4,null,null,12,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.779,
+      "O": 0.533,
+      "P": 32,
+      "entryIdx": 107
+    },
+    {
+      "q": "status saver whatsapp",
+      "tier": "B",
+      "src": "ac",
+      "tm": 1,
+      "depth": 30,
+      "ids": [87,88,90,89,152,92,91,94,93,160,96,365,381,-1,391,-1,161,95,-1,-1,-1,-1,-1,122,162,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.79,
+      "vol": 48428534,
+      "entry": 286829,
+      "entryRank": 9,
+      "demand": 66,
+      "demandAt": "status s",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.661,
+      "O": 0.74,
+      "P": 32,
+      "entryIdx": 93
+    },
+    {
+      "q": "status saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 0,
+      "depth": 30,
+      "ids": [87,88,89,161,162,152,94,93,91,90,160,92,95,378,96,366,122,-1,-1,-1,-1,-1,-1,-1,-1,105,391,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.72,
+      "vol": 65063067,
+      "entry": 286829,
+      "entryRank": 8,
+      "demand": 75,
+      "demandAt": "status",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.637,
+      "O": 0.769,
+      "P": 31,
+      "entryIdx": 93
+    },
+    {
+      "q": "pinterest video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [137,163,164,138,139,165,35,140,166,167,141,-1,-1,142,-1,-1,-1,143,-1,-1,144,-1,-1,-1,145,-1,-1,-1,-1,-1],
+      "nb": 9,
+      "niche": 0.72,
+      "vol": 2657205,
+      "entry": 2309,
+      "entryRank": 8,
+      "demand": 75,
+      "demandAt": "pinterest v",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.637,
+      "O": 0.763,
+      "P": 31,
+      "entryIdx": 140
+    },
+    {
+      "q": "twitter video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [19,168,169,170,171,172,1,173,174,175,42,369,-1,-1,376,374,5,179,-1,6,-1,-1,4,-1,-1,-1,47,45,7,-1],
+      "nb": 10,
+      "niche": 0.84,
+      "vol": 4650347,
+      "entry": 1084,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [7,null,null,23,17,20,29,null,null,null,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 5,
+      "R": 0.712,
+      "O": 0.585,
+      "P": 30,
+      "entryIdx": 173
+    },
+    {
+      "q": "x video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [1,176,170,19,177,178,172,179,168,171,375,374,-1,6,173,-1,21,-1,3,175,377,-1,-1,25,-1,9,-1,369,-1,20],
+      "nb": 10,
+      "niche": 0.88,
+      "vol": 8773164,
+      "entry": 8285,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,null,19,null,null,14,null,null,26,null,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 4,
+      "R": 0.726,
+      "O": 0.568,
+      "P": 30,
+      "entryIdx": 179
+    },
+    {
+      "q": "whatsapp status saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [87,88,89,90,162,92,91,93,94,96,365,391,-1,381,-1,95,-1,160,152,-1,-1,-1,-1,-1,-1,161,-1,-1,122,-1],
+      "nb": 10,
+      "niche": 0.8,
+      "vol": 19397861,
+      "entry": 28401,
+      "entryRank": 10,
+      "demand": 35,
+      "demandAt": "whatsapp status s",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.665,
+      "O": 0.665,
+      "P": 29,
+      "entryIdx": 96
+    },
+    {
+      "q": "video player",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 24,
+      "ids": [50,83,51,180,181,182,183,52,184,185,-1,-1,-1,-1,-1,-1,1,-1,-1,199,188,203,-1,-1],
+      "nb": 9,
+      "niche": 0.48,
+      "vol": 149855720,
+      "entry": 1982923,
+      "entryRank": 10,
+      "demand": 88,
+      "demandAt": "vid",
+      "comps": [17,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 1,
+      "R": 0.553,
+      "O": 0.758,
+      "P": 23,
+      "entryIdx": 185
+    },
+    {
+      "q": "4k video player",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 17,
+      "ids": [50,182,83,51,180,186,185,52,187,188,-1,181,183,198,-1,-1,199],
+      "nb": 9,
+      "niche": 0.48,
+      "vol": 42723496,
+      "entry": 120807,
+      "entryRank": 6,
+      "demand": 76,
+      "demandAt": "4k",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.553,
+      "O": 0.743,
+      "P": 23,
+      "entryIdx": 186
+    },
+    {
+      "q": "photo downloader",
+      "tier": "C",
+      "src": "per",
+      "tm": 0,
+      "depth": 30,
+      "ids": [189,190,191,192,193,194,35,195,5,4,275,274,66,138,139,1,-1,7,-1,277,10,-1,276,-1,137,90,-1,159,-1,-1],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 1269195,
+      "entry": 28057,
+      "entryRank": 6,
+      "demand": 49,
+      "demandAt": "photo d",
+      "comps": [16,null,null,10,9,null,18,null,null,21,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 5,
+      "R": 0.575,
+      "O": 0.688,
+      "P": 23,
+      "entryIdx": 194
+    },
+    {
+      "q": "hd video player",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 15,
+      "ids": [50,196,180,51,182,197,198,52,183,185,-1,83,181,-1,199],
+      "nb": 9,
+      "niche": 0.48,
+      "vol": 118013505,
+      "entry": 1982923,
+      "entryRank": 10,
+      "demand": 81,
+      "demandAt": "hd v",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.553,
+      "O": 0.735,
+      "P": 22,
+      "entryIdx": 185
+    },
+    {
+      "q": "offline video player",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 16,
+      "ids": [199,50,200,83,182,180,51,52,201,202,-1,185,181,203,1,-1],
+      "nb": 9,
+      "niche": 0.42,
+      "vol": 42723496,
+      "entry": 11231,
+      "entryRank": 3,
+      "demand": 66,
+      "demandAt": "offline v",
+      "comps": [15,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 1,
+      "R": 0.53,
+      "O": 0.739,
+      "P": 21,
+      "entryIdx": 200
+    },
+    {
+      "q": "all video player",
+      "tier": "B",
+      "src": "ac",
+      "tm": 0,
+      "depth": 14,
+      "ids": [50,180,83,182,181,52,51,183,203,185,-1,-1,-1,-1],
+      "nb": 9,
+      "niche": 0.42,
+      "vol": 149855720,
+      "entry": 1330546,
+      "entryRank": 9,
+      "demand": 70,
+      "demandAt": "all v",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.53,
+      "O": 0.708,
+      "P": 20,
+      "entryIdx": 203
+    },
+    {
+      "q": "mp3 converter",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 30,
+      "ids": [133,204,205,206,207,208,209,210,211,212,263,-1,-1,-1,284,-1,-1,-1,-1,-1,225,-1,-1,-1,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.3,
+      "vol": 6011384,
+      "entry": 167808,
+      "entryRank": 9,
+      "demand": 82,
+      "demandAt": "mp3",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.492,
+      "O": 0.778,
+      "P": 19,
+      "entryIdx": 211
+    },
+    {
+      "q": "private video vault",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 13,
+      "ids": [213,214,215,216,217,218,219,220,221,30,-1,248,-1],
+      "nb": 10,
+      "niche": 0.44,
+      "vol": 17425868,
+      "entry": 27368,
+      "entryRank": 10,
+      "demand": 35,
+      "demandAt": "private video v",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.539,
+      "O": 0.665,
+      "P": 19,
+      "entryIdx": 30
+    },
+    {
+      "q": "extract audio from video",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 12,
+      "ids": [222,133,208,207,223,224,206,225,209,226,284,263],
+      "nb": 10,
+      "niche": 0.3,
+      "vol": 2679946,
+      "entry": 9488,
+      "entryRank": 8,
+      "demand": 72,
+      "demandAt": "extract a",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.49,
+      "O": 0.774,
+      "P": 19,
+      "entryIdx": 225
+    },
+    {
+      "q": "add music to video",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 30,
+      "ids": [227,228,229,230,231,232,233,234,235,236,-1,-1,244,-1,270,-1,280,-1,281,-1,-1,-1,315,-1,-1,-1,133,-1,-1,-1],
+      "nb": 9,
+      "niche": 0.3,
+      "vol": 12663827,
+      "entry": 63849,
+      "entryRank": 5,
+      "demand": 88,
+      "demandAt": "add m",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.49,
+      "O": 0.777,
+      "P": 19,
+      "entryIdx": 231
+    },
+    {
+      "q": "video merger",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 30,
+      "ids": [237,238,239,240,241,242,243,244,245,246,-1,-1,-1,-1,229,-1,-1,-1,-1,-1,270,-1,280,-1,-1,-1,268,-1,-1,233],
+      "nb": 10,
+      "niche": 0.31,
+      "vol": 1965936,
+      "entry": 2138,
+      "entryRank": 10,
+      "demand": 49,
+      "demandAt": "video m",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.493,
+      "O": 0.719,
+      "P": 18,
+      "entryIdx": 246
+    },
+    {
+      "q": "hide videos",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 30,
+      "ids": [247,213,248,249,250,214,251,252,215,253,219,218,-1,220,-1,-1,-1,260,-1,-1,254,-1,-1,-1,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.37,
+      "vol": 50755662,
+      "entry": 5917211,
+      "entryRank": 2,
+      "demand": 60,
+      "demandAt": "hide v",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.514,
+      "O": 0.689,
+      "P": 18,
+      "entryIdx": 213
+    },
+    {
+      "q": "video locker",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 30,
+      "ids": [253,254,255,256,257,258,259,260,261,248,250,-1,-1,-1,252,214,-1,218,-1,217,-1,213,-1,219,-1,215,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.3,
+      "vol": 4062792,
+      "entry": 14952,
+      "entryRank": 7,
+      "demand": 53,
+      "demandAt": "video l",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.49,
+      "O": 0.715,
+      "P": 17,
+      "entryIdx": 259
+    },
+    {
+      "q": "audio extractor",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 13,
+      "ids": [262,133,208,207,209,224,206,223,263,226,-1,284,225],
+      "nb": 10,
+      "niche": 0.3,
+      "vol": 3830152,
+      "entry": 9877,
+      "entryRank": 9,
+      "demand": 56,
+      "demandAt": "audio e",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.49,
+      "O": 0.728,
+      "P": 17,
+      "entryIdx": 263
+    },
+    {
+      "q": "crop video",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 30,
+      "ids": [264,265,266,244,229,267,268,269,270,271,283,272,303,-1,280,-1,279,306,273,-1,-1,290,-1,-1,-1,286,302,-1,-1,282],
+      "nb": 9,
+      "niche": 0.3,
+      "vol": 26285483,
+      "entry": 922179,
+      "entryRank": 6,
+      "demand": 75,
+      "demandAt": "crop",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.49,
+      "O": 0.715,
+      "P": 17,
+      "entryIdx": 267
+    },
+    {
+      "q": "video crop and trim",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 30,
+      "ids": [264,266,244,265,269,229,267,271,272,273,283,243,280,-1,270,-1,-1,268,279,306,-1,-1,133,-1,-1,-1,278,281,287,-1],
+      "nb": 10,
+      "niche": 0.3,
+      "vol": 1929375,
+      "entry": 2066,
+      "entryRank": 9,
+      "demand": 48,
+      "demandAt": "video crop a",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.49,
+      "O": 0.716,
+      "P": 17,
+      "entryIdx": 272
+    },
+    {
+      "q": "image downloader",
+      "tier": "C",
+      "src": "per",
+      "tm": 0,
+      "depth": 30,
+      "ids": [190,189,274,275,192,193,276,195,194,277,35,-1,1,-1,-1,-1,139,5,39,-1,2,10,45,-1,142,-1,66,138,126,385],
+      "nb": 10,
+      "niche": 0.9,
+      "vol": 818295,
+      "entry": 28057,
+      "entryRank": 9,
+      "demand": 60,
+      "demandAt": "image d",
+      "comps": [13,21,null,null,18,null,null,null,null,22,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 4,
+      "R": 0.48,
+      "O": 0.717,
+      "P": 17,
+      "entryIdx": 194
+    },
+    {
+      "q": "video cutter and video editor",
+      "tier": "B",
+      "src": "ac",
+      "tm": 0,
+      "depth": 20,
+      "ids": [278,244,279,270,229,280,281,282,268,283,-1,133,286,-1,-1,290,288,233,-1,-1],
+      "nb": 9,
+      "niche": 0.3,
+      "vol": 258921389,
+      "entry": 5849820,
+      "entryRank": 1,
+      "demand": 74,
+      "demandAt": "video cut",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.49,
+      "O": 0.708,
+      "P": 17,
+      "entryIdx": 278
+    },
+    {
+      "q": "video to mp3",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 7,
+      "ids": [133,207,208,284,225,263,209],
+      "nb": 7,
+      "niche": 0.3,
+      "vol": 767211,
+      "entry": 8297,
+      "entryRank": 4,
+      "demand": 67,
+      "demandAt": "video t",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.49,
+      "O": 0.646,
+      "P": 16,
+      "entryIdx": 284
+    },
+    {
+      "q": "video trimmer",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 21,
+      "ids": [244,269,266,243,285,229,270,265,283,264,-1,268,279,281,133,286,-1,-1,273,-1,240],
+      "nb": 10,
+      "niche": 0.3,
+      "vol": 31187697,
+      "entry": 255880,
+      "entryRank": 4,
+      "demand": 46,
+      "demandAt": "video t",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.49,
+      "O": 0.678,
+      "P": 16,
+      "entryIdx": 243
+    },
+    {
+      "q": "video cutter free",
+      "tier": "B",
+      "src": "ac",
+      "tm": 0,
+      "depth": 30,
+      "ids": [244,268,229,270,283,133,281,280,269,286,290,-1,-1,288,279,233,266,-1,-1,282,-1,-1,-1,-1,-1,265,306,-1,-1,264],
+      "nb": 9,
+      "niche": 0.3,
+      "vol": 258921389,
+      "entry": 1101461,
+      "entryRank": 9,
+      "demand": 51,
+      "demandAt": "video cut",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.49,
+      "O": 0.657,
+      "P": 16,
+      "entryIdx": 269
+    },
+    {
+      "q": "video cutter",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 30,
+      "ids": [244,287,278,269,229,268,270,133,266,281,283,290,-1,-1,282,-1,-1,-1,280,286,279,265,264,288,233,-1,-1,-1,-1,-1],
+      "nb": 9,
+      "niche": 0.3,
+      "vol": 134747999,
+      "entry": 1101461,
+      "entryRank": 4,
+      "demand": 40,
+      "demandAt": "video cut",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.49,
+      "O": 0.619,
+      "P": 15,
+      "entryIdx": 269
+    },
+    {
+      "q": "video editor",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 30,
+      "ids": [244,229,268,270,288,281,283,289,290,291,-1,-1,-1,-1,-1,-1,-1,-1,280,-1,-1,-1,-1,-1,-1,-1,-1,-1,133,-1],
+      "nb": 7,
+      "niche": 0.27,
+      "vol": 331882897,
+      "entry": 134747999,
+      "entryRank": 4,
+      "demand": 94,
+      "demandAt": "vid",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.479,
+      "O": 0.669,
+      "P": 15,
+      "entryIdx": 270
+    },
+    {
+      "q": "watermark video",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 30,
+      "ids": [292,293,294,295,296,297,129,298,38,299,-1,-1,-1,128,-1,-1,-1,-1,-1,-1,149,-1,148,-1,-1,244,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.2,
+      "vol": 2776428,
+      "entry": 1171,
+      "entryRank": 8,
+      "demand": 56,
+      "demandAt": "watermark v",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.455,
+      "O": 0.749,
+      "P": 15,
+      "entryIdx": 298
+    },
+    {
+      "q": "video cut editor",
+      "tier": "B",
+      "src": "ac",
+      "tm": 0,
+      "depth": 30,
+      "ids": [244,268,229,280,290,283,281,270,279,288,-1,133,269,-1,286,282,-1,-1,-1,-1,265,-1,233,264,-1,-1,266,-1,-1,-1],
+      "nb": 8,
+      "niche": 0.3,
+      "vol": 331882897,
+      "entry": 37142502,
+      "entryRank": 9,
+      "demand": 55,
+      "demandAt": "video cu",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.49,
+      "O": 0.598,
+      "P": 14,
+      "entryIdx": 279
+    },
+    {
+      "q": "video compressor",
+      "tier": "B",
+      "src": "adj",
+      "tm": 0,
+      "depth": 30,
+      "ids": [300,301,302,303,304,305,306,307,308,309,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.09,
+      "vol": 7952461,
+      "entry": 11650,
+      "entryRank": 6,
+      "demand": 46,
+      "demandAt": "video c",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.416,
+      "O": 0.701,
+      "P": 12,
+      "entryIdx": 305
+    },
+    {
+      "q": "music downloader",
+      "tier": "C",
+      "src": "per",
+      "tm": 0,
+      "depth": 30,
+      "ids": [310,71,311,312,235,313,314,315,316,317,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
+      "nb": 8,
+      "niche": 0.66,
+      "vol": 190807683,
+      "entry": 7240187,
+      "entryRank": 3,
+      "demand": 94,
+      "demandAt": "mus",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.398,
+      "O": 0.729,
+      "P": 12,
+      "entryIdx": 311
+    },
+    {
+      "q": "browser",
+      "tier": "C",
+      "src": "per",
+      "tm": 0,
+      "depth": 25,
+      "ids": [318,319,320,321,322,323,59,54,324,325,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
+      "nb": 4,
+      "niche": 0.55,
+      "vol": 510135461,
+      "entry": 25623757,
+      "entryRank": 5,
+      "demand": 100,
+      "demandAt": "bro",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.357,
+      "O": 0.6,
+      "P": 8,
+      "entryIdx": 322
+    },
+    {
+      "q": "gallery vault",
+      "tier": "C",
+      "src": "per",
+      "tm": 0,
+      "depth": 9,
+      "ids": [219,214,326,220,218,213,327,215,328],
+      "nb": 9,
+      "niche": 0.38,
+      "vol": 44921319,
+      "entry": 98195,
+      "entryRank": 3,
+      "demand": 66,
+      "demandAt": "gallery",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.297,
+      "O": 0.716,
+      "P": 6,
+      "entryIdx": 326
+    },
+    {
+      "q": "screen recorder",
+      "tier": "C",
+      "src": "per",
+      "tm": 0,
+      "depth": 30,
+      "ids": [329,330,331,332,333,334,335,336,337,338,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.15,
+      "vol": 26130558,
+      "entry": 55895,
+      "entryRank": 8,
+      "demand": 100,
+      "demandAt": "scr",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.217,
+      "O": 0.855,
+      "P": 4,
+      "entryIdx": 336
+    },
+    {
+      "q": "file manager",
+      "tier": "C",
+      "src": "per",
+      "tm": 0,
+      "depth": 14,
+      "ids": [339,340,70,341,342,343,344,345,346,347,-1,-1,-1,-1],
+      "nb": 8,
+      "niche": 0,
+      "vol": 172913851,
+      "entry": 9773383,
+      "entryRank": 5,
+      "demand": 94,
+      "demandAt": "fil",
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.165,
+      "O": 0.725,
+      "P": 2,
+      "entryIdx": 342
+    }
+  ],
+  "BR": [
+    {
+      "q": "all video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,8,3,39,349,27,6,19,2,4,55,9,35,25,31,45,36,48,47,38,42,5,49,367,7,43,350,18,-1],
+      "nb": 9,
+      "niche": 0.98,
+      "vol": 74653915,
+      "entry": 266150,
+      "entryRank": 10,
+      "demand": 100,
+      "demandAt": "all",
+      "comps": [1,10,4,11,23,8,26,3,13,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.811,
+      "P": 80,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,17,18,3,9,348,8,350,19,6,2,39,4,55,-1,31,-1,-1,35,25,36,38,349,47,5,367,7,34,43,138],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 19077211,
+      "entry": 5071274,
+      "entryRank": 3,
+      "demand": 94,
+      "demandAt": "vid",
+      "comps": [1,11,4,13,25,10,27,7,5,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.786,
+      "P": 77,
+      "entryIdx": 18
+    },
+    {
+      "q": "social video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [42,1,31,25,2,351,48,49,45,35,4,371,19,5,-1,-1,55,-1,7,43,36,8,126,348,-1,38,47,6,385,157],
+      "nb": 10,
+      "niche": 0.94,
+      "vol": 266150,
+      "entry": 282,
+      "entryRank": 6,
+      "demand": 75,
+      "demandAt": "social v",
+      "comps": [2,5,null,11,14,28,19,22,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 7,
+      "R": 0.946,
+      "O": 0.804,
+      "P": 72,
+      "entryIdx": 351
+    },
+    {
+      "q": "fast video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,2,6,57,8,31,-1,25,5,39,362,9,36,32,4,42,7,45,10,385,349,26,-1,55,21,17,157,377,22],
+      "nb": 9,
+      "niche": 1,
+      "vol": 13028866,
+      "entry": 249023,
+      "entryRank": 9,
+      "demand": 71,
+      "demandAt": "fast v",
+      "comps": [1,3,2,16,10,4,18,6,13,20,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 10,
+      "R": 1,
+      "O": 0.712,
+      "P": 71,
+      "entryIdx": 25
+    },
+    {
+      "q": "video saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,4,5,31,7,47,6,8,38,2,45,3,36,35,42,138,57,10,19,39,18,129,26,87,89,107,348,90,55,385],
+      "nb": 10,
+      "niche": 1,
+      "vol": 19231602,
+      "entry": 266150,
+      "entryRank": 10,
+      "demand": 40,
+      "demandAt": "video sav",
+      "comps": [1,10,12,2,3,7,5,8,null,18,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 9,
+      "R": 1,
+      "O": 0.656,
+      "P": 66,
+      "entryIdx": 2
+    },
+    {
+      "q": "all video downloader and saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,8,4,5,31,9,6,7,26,27,10,36,2,57,25,47,21,385,-1,46,195,-1,42,-1,-1,55,-1,-1,22],
+      "nb": 10,
+      "niche": 1,
+      "vol": 19231602,
+      "entry": 157368,
+      "entryRank": 10,
+      "demand": 35,
+      "demandAt": "all video downloader a",
+      "comps": [1,14,2,4,5,8,9,3,7,12,null,null,null,null,null,null],
+      "c10": 8,
+      "c30": 10,
+      "R": 1,
+      "O": 0.646,
+      "P": 65,
+      "entryIdx": 26
+    },
+    {
+      "q": "save video",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 9,
+      "ids": [37,1,19,68,348,42,2,66,35],
+      "nb": 9,
+      "niche": 0.91,
+      "vol": 2407641,
+      "entry": 747,
+      "entryRank": 4,
+      "demand": 60,
+      "demandAt": "save v",
+      "comps": [2,7,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 2,
+      "R": 0.936,
+      "O": 0.73,
+      "P": 64,
+      "entryIdx": 68
+    },
+    {
+      "q": "video downloader app",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,349,39,56,19,2,4,17,6,3,8,35,25,9,47,114,38,5,367,7,74,138,21,18,55,34,40,-1,57],
+      "nb": 9,
+      "niche": 0.98,
+      "vol": 74653915,
+      "entry": 266150,
+      "entryRank": 7,
+      "demand": 38,
+      "demandAt": "video downloader a",
+      "comps": [1,7,11,8,19,10,21,12,15,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.625,
+      "P": 62,
+      "entryIdx": 2
+    },
+    {
+      "q": "download video",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,19,352,17,25,2,35,349,39,45,3,40,9,4,6,52,350,18,58,114,8,42,31,-1,47,55,199,-1,36],
+      "nb": 9,
+      "niche": 0.94,
+      "vol": 24690801,
+      "entry": 249023,
+      "entryRank": 6,
+      "demand": 60,
+      "demandAt": "download v",
+      "comps": [1,7,12,15,null,16,null,22,14,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 7,
+      "R": 0.946,
+      "O": 0.683,
+      "P": 61,
+      "entryIdx": 25
+    },
+    {
+      "q": "video downloader and saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,4,31,5,3,6,9,7,8,2,25,36,57,21,47,138,10,35,42,-1,27,-1,17,55,90,357,46,26,38,385],
+      "nb": 10,
+      "niche": 1,
+      "vol": 19231602,
+      "entry": 266150,
+      "entryRank": 10,
+      "demand": 26,
+      "demandAt": "video downloader and s",
+      "comps": [1,10,5,2,4,6,8,9,7,17,null,null,null,null,null,null],
+      "c10": 9,
+      "c30": 10,
+      "R": 1,
+      "O": 0.614,
+      "P": 61,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader browser",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,39,353,6,352,2,8,349,31,25,55,54,58,3,5,35,42,-1,377,385,348,10,43,-1,36,375,-1,7,382,57],
+      "nb": 9,
+      "niche": 0.98,
+      "vol": 13970550,
+      "entry": 249023,
+      "entryRank": 10,
+      "demand": 38,
+      "demandAt": "video downloader b",
+      "comps": [1,6,14,null,15,4,28,7,null,22,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.993,
+      "O": 0.613,
+      "P": 60,
+      "entryIdx": 25
+    },
+    {
+      "q": "hd video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,23,6,22,3,354,8,26,355,356,2,-1,24,34,-1,5,-1,25,-1,9,-1,187,-1,-1,-1,27,21,-1,36,-1],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13689906,
+      "entry": 157368,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,11,5,null,16,3,null,7,20,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 7,
+      "R": 1,
+      "O": 0.539,
+      "P": 54,
+      "entryIdx": 26
+    },
+    {
+      "q": "private video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [28,1,9,176,6,3,8,5,21,2,30,4,29,375,385,377,27,25,36,-1,383,46,10,178,31,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 1,
+      "vol": 23937324,
+      "entry": 266150,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,10,6,12,8,5,null,7,3,23,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 9,
+      "R": 1,
+      "O": 0.537,
+      "P": 54,
+      "entryIdx": 2
+    },
+    {
+      "q": "video saver downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,4,31,5,7,6,2,36,47,8,25,138,35,26,45,42,93,57,3,55,38,89,90,10,367,357,385,17,18,19],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13970550,
+      "entry": 266150,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,7,19,2,4,6,5,10,null,24,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 9,
+      "R": 1,
+      "O": 0.533,
+      "P": 53,
+      "entryIdx": 2
+    },
+    {
+      "q": "online video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,357,31,6,8,5,4,18,25,367,348,17,2,39,35,138,36,38,34,55,45,27,9,7,47,57,-1,157,139],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13970550,
+      "entry": 249023,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,14,2,8,7,5,25,6,24,null,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 9,
+      "R": 1,
+      "O": 0.534,
+      "P": 53,
+      "entryIdx": 25
+    },
+    {
+      "q": "download videos",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,19,348,17,3,8,31,39,25,2,35,34,45,6,38,5,55,349,18,9,4,40,36,-1,7,43,47,375,21,57],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 19077211,
+      "entry": 249023,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,10,5,21,16,14,25,6,20,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.536,
+      "P": 53,
+      "entryIdx": 25
+    },
+    {
+      "q": "video downloader without ads",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [2,1,25,35,31,42,45,48,8,39,5,4,55,6,348,352,367,36,7,349,47,43,17,18,38,3,375,385,357,-1],
+      "nb": 10,
+      "niche": 0.94,
+      "vol": 740557,
+      "entry": 29397,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,1,26,12,11,14,19,9,null,null,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 8,
+      "R": 0.979,
+      "O": 0.536,
+      "P": 51,
+      "entryIdx": 48
+    },
+    {
+      "q": "video downloader and player",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,50,8,348,6,52,53,40,199,25,2,5,-1,4,385,18,377,9,367,-1,22,-1,55,349,10,350,17,7,357],
+      "nb": 10,
+      "niche": 0.87,
+      "vol": 149855720,
+      "entry": 202665,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,12,2,15,13,6,29,4,19,26,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 10,
+      "R": 0.955,
+      "O": 0.554,
+      "P": 50,
+      "entryIdx": 53
+    },
+    {
+      "q": "video downloader free",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,19,2,349,4,39,6,3,31,25,35,48,5,45,47,38,8,367,7,9,42,138,17,18,43,55,128,57,27],
+      "nb": 9,
+      "niche": 0.98,
+      "vol": 74653915,
+      "entry": 266150,
+      "entryRank": 4,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,4,9,6,14,8,20,18,21,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.511,
+      "P": 50,
+      "entryIdx": 2
+    },
+    {
+      "q": "free video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,39,4,2,3,349,19,6,31,35,25,48,5,47,42,38,8,7,367,138,-1,18,55,17,128,27,57,75,357],
+      "nb": 9,
+      "niche": 0.98,
+      "vol": 74653915,
+      "entry": 266150,
+      "entryRank": 5,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,5,6,4,14,9,19,18,null,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.993,
+      "O": 0.511,
+      "P": 50,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader for android",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,2,25,31,35,39,45,4,349,6,8,42,48,5,3,55,367,19,40,36,7,-1,18,43,17,47,38,138,357],
+      "nb": 9,
+      "niche": 0.96,
+      "vol": 64791541,
+      "entry": 249023,
+      "entryRank": 4,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,3,16,9,15,11,22,12,null,null,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 8,
+      "R": 0.986,
+      "O": 0.51,
+      "P": 50,
+      "entryIdx": 25
+    },
+    {
+      "q": "video download app",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,3,349,19,39,17,4,52,2,199,6,47,35,25,50,38,5,8,7,42,9,367,138,54,129,114,18,55,-1],
+      "nb": 9,
+      "niche": 0.92,
+      "vol": 236276464,
+      "entry": 266150,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,10,3,8,18,12,20,19,22,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 9,
+      "R": 0.97,
+      "O": 0.519,
+      "P": 49,
+      "entryIdx": 2
+    },
+    {
+      "q": "downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 11,
+      "ids": [69,1,114,39,75,56,76,71,58,358,2],
+      "nb": 10,
+      "niche": 1,
+      "vol": 87167338,
+      "entry": 343910,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,11,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 2,
+      "R": 0.933,
+      "O": 0.544,
+      "P": 47,
+      "entryIdx": 76
+    },
+    {
+      "q": "instagram video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,7,123,5,1,107,42,106,108,124,10,66,109,357,36,31,146,3,8,157,-1,-1,159,2,6,38,385,-1,47,-1],
+      "nb": 10,
+      "niche": 0.9,
+      "vol": 133921,
+      "entry": 229,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [5,24,18,1,4,25,2,19,null,11,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 9,
+      "R": 0.8,
+      "O": 0.576,
+      "P": 37,
+      "entryIdx": 124
+    },
+    {
+      "q": "video downloader for instagram",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [106,4,5,7,1,107,42,108,10,109,66,36,123,159,-1,157,-1,-1,-1,3,8,38,357,-1,385,6,97,47,-1,126],
+      "nb": 10,
+      "niche": 0.92,
+      "vol": 13028866,
+      "entry": 13929,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [5,null,20,2,3,26,4,21,null,9,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.807,
+      "O": 0.565,
+      "P": 37,
+      "entryIdx": 107
+    },
+    {
+      "q": "reels downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [84,4,5,86,85,1,7,120,97,98,2,-1,108,42,10,38,109,-1,107,8,36,121,3,99,-1,74,138,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.88,
+      "vol": 54767,
+      "entry": 219,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [6,11,23,2,3,null,7,20,null,15,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.793,
+      "O": 0.57,
+      "P": 36,
+      "entryIdx": 120
+    },
+    {
+      "q": "reel saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [97,5,4,86,84,85,120,7,121,98,-1,-1,-1,129,-1,-1,66,65,108,10,107,-1,159,-1,104,62,-1,-1,63,191],
+      "nb": 10,
+      "niche": 0.86,
+      "vol": 6811,
+      "entry": 110,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,3,2,null,8,null,null,20,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 4,
+      "R": 0.786,
+      "O": 0.563,
+      "P": 35,
+      "entryIdx": 121
+    },
+    {
+      "q": "story saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 0,
+      "depth": 30,
+      "ids": [61,4,359,360,5,64,62,63,7,103,102,361,66,-1,65,110,67,387,-1,-1,-1,-1,159,10,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.83,
+      "vol": 7481536,
+      "entry": 21289,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,2,5,null,9,null,null,24,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 4,
+      "R": 0.775,
+      "O": 0.556,
+      "P": 33,
+      "entryIdx": 63
+    },
+    {
+      "q": "story saver for instagram",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,61,62,359,5,361,103,64,66,7,360,63,65,102,-1,109,-1,-1,159,-1,-1,-1,110,-1,-1,-1,67,387,-1,-1],
+      "nb": 10,
+      "niche": 0.84,
+      "vol": 7481536,
+      "entry": 50802,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,1,5,null,10,null,null,null,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 3,
+      "R": 0.779,
+      "O": 0.547,
+      "P": 33,
+      "entryIdx": 361
+    },
+    {
+      "q": "x video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [176,1,170,178,177,19,179,172,6,171,375,168,374,3,-1,-1,173,25,377,8,-1,385,5,175,21,9,10,27,-1,169],
+      "nb": 10,
+      "niche": 0.9,
+      "vol": 9394749,
+      "entry": 8285,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,null,14,null,23,9,null,20,26,27,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 7,
+      "R": 0.767,
+      "O": 0.568,
+      "P": 33,
+      "entryIdx": 179
+    },
+    {
+      "q": "insta downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,7,159,5,66,146,10,108,1,109,107,123,106,42,-1,-1,-1,36,191,3,62,-1,157,-1,31,38,-1,360,64,-1],
+      "nb": 9,
+      "niche": 0.86,
+      "vol": 19591899,
+      "entry": 35089,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [9,null,20,1,4,null,2,null,null,7,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 6,
+      "R": 0.786,
+      "O": 0.523,
+      "P": 32,
+      "entryIdx": 108
+    },
+    {
+      "q": "4k video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 5,
+      "ids": [77,1,25,2,35],
+      "nb": 5,
+      "niche": 0.92,
+      "vol": 1217400,
+      "entry": 249023,
+      "entryRank": 3,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,4,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 2,
+      "R": 0.939,
+      "O": 0.342,
+      "P": 30,
+      "entryIdx": 25
+    },
+    {
+      "q": "tiktok video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [38,47,45,129,1,128,42,150,132,131,127,368,149,-1,-1,130,363,-1,4,5,151,147,10,-1,3,-1,-1,-1,-1,31],
+      "nb": 10,
+      "niche": 0.9,
+      "vol": 9329466,
+      "entry": 25597,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [5,null,25,19,20,null,null,null,null,23,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 5,
+      "R": 0.733,
+      "O": 0.556,
+      "P": 30,
+      "entryIdx": 132
+    },
+    {
+      "q": "fb video downloader app",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [-1,1,362,57,79,42,-1,80,81,4,5,-1,-1,78,126,2,82,3,385,125,10,-1,370,-1,-1,25,-1,7,-1,-1],
+      "nb": 8,
+      "niche": 0.87,
+      "vol": 1686085,
+      "entry": 12753,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,16,18,10,11,null,28,null,null,21,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 7,
+      "R": 0.758,
+      "O": 0.481,
+      "P": 28,
+      "entryIdx": 80
+    },
+    {
+      "q": "tiktok downloader no watermark",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [38,129,128,47,45,149,150,148,363,151,-1,-1,131,368,-1,-1,-1,42,147,132,127,-1,-1,-1,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.96,
+      "vol": 5059662,
+      "entry": 342412,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.721,
+      "O": 0.523,
+      "P": 27,
+      "entryIdx": 151
+    },
+    {
+      "q": "status saver for whatsapp",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [88,89,87,90,92,91,93,96,94,364,-1,95,391,-1,-1,152,-1,161,122,160,365,-1,-1,-1,-1,-1,-1,-1,378,-1],
+      "nb": 10,
+      "niche": 0.8,
+      "vol": 18272082,
+      "entry": 28401,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.665,
+      "O": 0.56,
+      "P": 25,
+      "entryIdx": 96
+    },
+    {
+      "q": "whatsapp status saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [87,88,89,161,92,90,93,91,365,94,381,-1,96,-1,160,-1,152,-1,364,-1,122,391,-1,-1,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.72,
+      "vol": 19397861,
+      "entry": 2120,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.637,
+      "O": 0.588,
+      "P": 24,
+      "entryIdx": 365
+    },
+    {
+      "q": "facebook video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [-1,362,1,-1,80,57,79,42,-1,81,5,4,-1,126,3,2,125,385,82,10,27,112,-1,-1,-1,78,7,-1,-1,-1],
+      "nb": 7,
+      "niche": 0.86,
+      "vol": 1137468,
+      "entry": 12753,
+      "entryRank": 5,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [3,16,15,12,11,null,27,null,null,20,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 7,
+      "R": 0.718,
+      "O": 0.443,
+      "P": 23,
+      "entryIdx": 80
+    },
+    {
+      "q": "status saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 0,
+      "depth": 30,
+      "ids": [161,88,87,89,152,93,94,91,92,366,96,90,95,384,-1,378,-1,122,-1,160,105,-1,-1,364,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.72,
+      "vol": 19397861,
+      "entry": 286829,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.637,
+      "O": 0.535,
+      "P": 22,
+      "entryIdx": 93
+    },
+    {
+      "q": "twitter video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 5,
+      "ids": [19,1,42,179,45],
+      "nb": 5,
+      "niche": 0.84,
+      "vol": 684294,
+      "entry": 8285,
+      "entryRank": 4,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 1,
+      "R": 0.712,
+      "O": 0.374,
+      "P": 19,
+      "entryIdx": 179
+    }
+  ],
+  "DE": [
+    {
+      "q": "all video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,20,3,348,39,2,8,6,4,27,19,25,35,50,45,48,42,47,367,38,5,350,55,-1,49,7,9,18,-1,-1],
+      "nb": 10,
+      "niche": 1,
+      "vol": 74653915,
+      "entry": 266150,
+      "entryRank": 6,
+      "demand": 100,
+      "demandAt": "all",
+      "comps": [1,6,3,9,21,8,26,7,27,null,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 9,
+      "R": 1,
+      "O": 0.846,
+      "P": 85,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,17,2,3,348,8,18,4,6,19,367,55,39,20,35,25,-1,31,34,47,-1,5,38,7,9,-1,138,40,52,357],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 19077211,
+      "entry": 266150,
+      "entryRank": 3,
+      "demand": 94,
+      "demandAt": "vid",
+      "comps": [1,3,4,8,22,9,24,6,25,null,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.818,
+      "P": 81,
+      "entryIdx": 2
+    },
+    {
+      "q": "fast video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [32,1,3,2,34,6,8,57,31,25,21,20,9,10,42,39,5,-1,377,55,22,157,17,385,4,-1,46,367,27,-1],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13689906,
+      "entry": 249023,
+      "entryRank": 10,
+      "demand": 71,
+      "demandAt": "fast v",
+      "comps": [2,4,3,25,17,6,null,7,13,14,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 1,
+      "O": 0.747,
+      "P": 75,
+      "entryIdx": 25
+    },
+    {
+      "q": "social video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [42,1,2,25,31,48,49,351,45,35,371,4,19,-1,-1,5,55,-1,43,348,-1,7,8,126,-1,367,6,47,-1,38],
+      "nb": 10,
+      "niche": 0.94,
+      "vol": 266150,
+      "entry": 282,
+      "entryRank": 8,
+      "demand": 75,
+      "demandAt": "social v",
+      "comps": [2,3,null,12,16,27,22,23,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 7,
+      "R": 0.946,
+      "O": 0.804,
+      "P": 72,
+      "entryIdx": 351
+    },
+    {
+      "q": "download video",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,19,352,40,25,3,2,35,45,39,6,17,50,34,52,4,8,42,20,18,114,47,31,38,5,-1,367,7,54],
+      "nb": 10,
+      "niche": 0.92,
+      "vol": 19077211,
+      "entry": 249023,
+      "entryRank": 6,
+      "demand": 60,
+      "demandAt": "download v",
+      "comps": [1,8,7,17,26,12,29,18,null,null,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 8,
+      "R": 0.972,
+      "O": 0.716,
+      "P": 68,
+      "entryIdx": 25
+    },
+    {
+      "q": "video downloader app",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,17,8,19,39,2,4,6,3,25,35,47,114,367,18,5,38,55,74,7,138,-1,-1,40,26,375,372,54,357],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 64791541,
+      "entry": 266150,
+      "entryRank": 7,
+      "demand": 38,
+      "demandAt": "video downloader a",
+      "comps": [1,7,10,8,17,9,21,4,null,null,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 8,
+      "R": 0.993,
+      "O": 0.659,
+      "P": 65,
+      "entryIdx": 2
+    },
+    {
+      "q": "all video downloader and saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,8,4,31,9,5,6,10,26,7,27,21,20,2,-1,25,57,47,195,-1,385,46,-1,-1,11,12,-1,-1,42],
+      "nb": 10,
+      "niche": 1,
+      "vol": 53554550,
+      "entry": 157368,
+      "entryRank": 10,
+      "demand": 35,
+      "demandAt": "all video downloader a",
+      "comps": [1,15,2,4,7,8,11,3,6,9,26,27,null,null,null,null],
+      "c10": 8,
+      "c30": 12,
+      "R": 1,
+      "O": 0.654,
+      "P": 65,
+      "entryIdx": 26
+    },
+    {
+      "q": "video downloader browser",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,39,353,6,352,2,55,25,8,31,54,35,42,58,3,5,377,-1,348,43,-1,10,385,-1,375,382,57,195,17,-1],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 13689906,
+      "entry": 201888,
+      "entryRank": 7,
+      "demand": 38,
+      "demandAt": "video downloader b",
+      "comps": [1,6,15,null,16,4,null,9,null,22,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 7,
+      "R": 0.993,
+      "O": 0.65,
+      "P": 64,
+      "entryIdx": 55
+    },
+    {
+      "q": "save video",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 9,
+      "ids": [37,1,68,19,42,348,2,66,35],
+      "nb": 9,
+      "niche": 0.91,
+      "vol": 2407641,
+      "entry": 747,
+      "entryRank": 3,
+      "demand": 60,
+      "demandAt": "save v",
+      "comps": [2,7,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 2,
+      "R": 0.936,
+      "O": 0.73,
+      "P": 64,
+      "entryIdx": 68
+    },
+    {
+      "q": "video saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,4,-1,5,31,7,6,47,2,8,42,45,3,35,38,138,57,129,348,10,19,128,87,18,9,55,90,385,39,-1],
+      "nb": 9,
+      "niche": 1,
+      "vol": 13970550,
+      "entry": 266150,
+      "entryRank": 9,
+      "demand": 40,
+      "demandAt": "video sav",
+      "comps": [1,9,13,2,4,7,6,10,25,20,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 10,
+      "R": 1,
+      "O": 0.618,
+      "P": 62,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader and saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,4,3,6,5,31,2,8,9,7,25,57,21,10,47,-1,138,42,35,-1,-1,17,55,90,46,357,27,40,385,22],
+      "nb": 10,
+      "niche": 1,
+      "vol": 19231602,
+      "entry": 266150,
+      "entryRank": 7,
+      "demand": 26,
+      "demandAt": "video downloader and s",
+      "comps": [1,7,3,2,5,4,10,8,9,14,null,null,null,null,null,null],
+      "c10": 9,
+      "c30": 10,
+      "R": 1,
+      "O": 0.614,
+      "P": 61,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader free",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,4,2,19,3,39,6,48,25,31,35,17,45,42,367,8,47,5,7,38,43,55,-1,138,128,-1,357,18,168],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 64791541,
+      "entry": 29397,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,4,6,3,19,8,20,17,null,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.993,
+      "O": 0.568,
+      "P": 56,
+      "entryIdx": 48
+    },
+    {
+      "q": "private video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,9,28,6,3,8,2,21,5,30,385,377,29,4,375,20,25,27,10,46,-1,-1,-1,-1,178,35,31,-1,383,45],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13970550,
+      "entry": 27368,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,7,5,14,9,4,null,6,2,19,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 9,
+      "R": 1,
+      "O": 0.558,
+      "P": 56,
+      "entryIdx": 30
+    },
+    {
+      "q": "free video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [41,1,348,17,2,4,39,6,3,18,25,35,31,19,48,8,21,5,42,7,47,38,367,138,-1,55,-1,57,128,9],
+      "nb": 10,
+      "niche": 1,
+      "vol": 74653915,
+      "entry": 266150,
+      "entryRank": 5,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,5,9,6,18,8,20,16,30,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 1,
+      "O": 0.546,
+      "P": 55,
+      "entryIdx": 2
+    },
+    {
+      "q": "hd video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [23,1,22,6,3,356,24,8,2,355,34,26,20,50,187,377,21,-1,-1,25,-1,-1,10,5,27,-1,-1,46,-1,42],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13689906,
+      "entry": 266150,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,9,5,null,24,4,null,8,null,23,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 7,
+      "R": 1,
+      "O": 0.533,
+      "P": 53,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader and player",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,8,3,50,348,52,40,6,53,2,25,5,199,4,-1,367,-1,55,385,18,182,377,42,7,-1,357,22,183,10,83],
+      "nb": 10,
+      "niche": 0.93,
+      "vol": 149855720,
+      "entry": 202665,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,10,3,14,12,8,24,2,null,29,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 0.977,
+      "O": 0.554,
+      "P": 53,
+      "entryIdx": 53
+    },
+    {
+      "q": "online video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,6,20,8,31,18,2,4,367,348,5,17,25,35,34,55,138,39,357,27,10,38,157,47,-1,42,9,139,57],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13970550,
+      "entry": 266150,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,8,2,9,12,3,null,5,28,22,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 9,
+      "R": 1,
+      "O": 0.533,
+      "P": 53,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader for android",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,2,348,6,8,4,25,31,3,5,35,367,45,55,39,42,48,18,47,17,-1,7,40,138,357,57,38,385,10,-1],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13970550,
+      "entry": 249023,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,2,9,6,10,4,22,5,null,29,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 9,
+      "R": 1,
+      "O": 0.534,
+      "P": 53,
+      "entryIdx": 25
+    },
+    {
+      "q": "video download app",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,348,17,50,52,4,39,19,2,6,34,25,35,47,5,8,38,54,42,367,199,7,138,18,129,55,-1,40,83],
+      "nb": 10,
+      "niche": 0.92,
+      "vol": 149855720,
+      "entry": 266150,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,10,2,7,16,11,23,17,null,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.97,
+      "O": 0.551,
+      "P": 52,
+      "entryIdx": 2
+    },
+    {
+      "q": "download videos",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,19,348,40,31,8,2,25,35,6,3,17,45,39,38,55,5,4,42,18,-1,47,57,367,48,7,138,375,385,-1],
+      "nb": 10,
+      "niche": 0.96,
+      "vol": 13689906,
+      "entry": 249023,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,7,11,18,17,10,26,6,null,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.986,
+      "O": 0.534,
+      "P": 52,
+      "entryIdx": 25
+    },
+    {
+      "q": "video downloader without ads",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [2,1,25,35,42,31,48,45,8,55,5,39,348,4,6,-1,367,47,352,7,3,43,385,-1,17,18,357,38,375,138],
+      "nb": 10,
+      "niche": 0.94,
+      "vol": 684294,
+      "entry": 29397,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,1,21,14,11,15,20,9,null,null,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 8,
+      "R": 0.979,
+      "O": 0.536,
+      "P": 51,
+      "entryIdx": 48
+    },
+    {
+      "q": "video saver downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,4,31,5,7,6,25,2,-1,8,47,35,138,42,3,45,26,55,57,93,38,90,367,10,348,89,357,39,385,18],
+      "nb": 9,
+      "niche": 1,
+      "vol": 13689906,
+      "entry": 249023,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,8,15,2,4,6,5,10,null,24,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 9,
+      "R": 1,
+      "O": 0.499,
+      "P": 50,
+      "entryIdx": 25
+    },
+    {
+      "q": "downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [69,1,70,71,34,72,73,74,3,75,373,348,76,114,386,-1,-1,-1,39,56,6,19,4,-1,-1,2,-1,372,-1,-1],
+      "nb": 8,
+      "niche": 0.8,
+      "vol": 236276464,
+      "entry": 4642540,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,26,9,23,null,21,null,null,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 5,
+      "R": 0.897,
+      "O": 0.453,
+      "P": 36,
+      "entryIdx": 74
+    },
+    {
+      "q": "reels downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [84,4,5,86,85,1,-1,7,97,10,2,120,42,-1,98,109,3,-1,108,-1,8,38,-1,121,99,-1,-1,-1,-1,62],
+      "nb": 9,
+      "niche": 0.91,
+      "vol": 13028866,
+      "entry": 1497,
+      "entryRank": 4,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [6,11,17,2,3,null,8,21,null,10,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.804,
+      "O": 0.554,
+      "P": 36,
+      "entryIdx": 86
+    },
+    {
+      "q": "video downloader for instagram",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [106,4,5,1,-1,7,42,107,108,10,109,66,-1,31,123,-1,-1,157,3,159,-1,-1,-1,385,8,6,38,357,126,97],
+      "nb": 9,
+      "niche": 0.93,
+      "vol": 13028866,
+      "entry": 13929,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [4,null,19,2,3,26,6,25,null,10,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.812,
+      "O": 0.53,
+      "P": 35,
+      "entryIdx": 107
+    },
+    {
+      "q": "instagram video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,7,5,123,-1,1,42,106,107,124,108,10,66,109,-1,31,-1,3,159,8,2,357,157,-1,-1,-1,-1,6,385,25],
+      "nb": 9,
+      "niche": 0.89,
+      "vol": 133921,
+      "entry": 229,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [6,21,18,1,3,28,2,20,null,12,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 9,
+      "R": 0.796,
+      "O": 0.541,
+      "P": 34,
+      "entryIdx": 124
+    },
+    {
+      "q": "facebook video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [362,1,79,57,-1,80,42,81,3,5,4,126,125,10,-1,2,112,82,385,-1,20,-1,27,-1,157,-1,-1,195,-1,7],
+      "nb": 9,
+      "niche": 0.89,
+      "vol": 1686085,
+      "entry": 12753,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,16,9,11,10,null,30,null,null,14,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 7,
+      "R": 0.796,
+      "O": 0.516,
+      "P": 33,
+      "entryIdx": 80
+    },
+    {
+      "q": "reel saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [97,4,-1,5,86,84,85,120,7,121,98,10,-1,129,-1,-1,-1,66,-1,65,109,-1,-1,107,159,62,108,-1,-1,99],
+      "nb": 9,
+      "niche": 0.87,
+      "vol": 5399,
+      "entry": 110,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,2,4,null,9,null,null,12,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 4,
+      "R": 0.788,
+      "O": 0.526,
+      "P": 33,
+      "entryIdx": 121
+    },
+    {
+      "q": "story saver for instagram",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,62,64,5,66,7,65,63,103,-1,61,359,102,109,-1,-1,361,159,-1,-1,-1,-1,-1,110,-1,-1,-1,-1,10,-1],
+      "nb": 9,
+      "niche": 0.84,
+      "vol": 5473342,
+      "entry": 21289,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,1,4,null,6,null,null,29,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 4,
+      "R": 0.781,
+      "O": 0.519,
+      "P": 32,
+      "entryIdx": 63
+    },
+    {
+      "q": "4k video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 5,
+      "ids": [77,1,2,25,42],
+      "nb": 5,
+      "niche": 0.92,
+      "vol": 266150,
+      "entry": 133921,
+      "entryRank": 5,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,3,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 2,
+      "R": 0.939,
+      "O": 0.337,
+      "P": 30,
+      "entryIdx": 42
+    },
+    {
+      "q": "tiktok video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [38,127,47,45,129,128,131,147,1,368,149,42,132,150,-1,151,-1,-1,363,130,10,-1,-1,-1,3,-1,126,-1,4,2],
+      "nb": 10,
+      "niche": 0.94,
+      "vol": 19561637,
+      "entry": 250537,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [9,30,25,29,null,null,null,null,null,21,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 5,
+      "R": 0.747,
+      "O": 0.537,
+      "P": 30,
+      "entryIdx": 131
+    },
+    {
+      "q": "twitter video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [19,168,170,171,172,1,169,173,175,369,376,42,-1,5,179,374,-1,-1,6,-1,4,-1,-1,47,-1,45,57,7,-1,-1],
+      "nb": 10,
+      "niche": 0.84,
+      "vol": 4650347,
+      "entry": 1084,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [6,null,null,21,14,19,28,null,null,null,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 5,
+      "R": 0.712,
+      "O": 0.585,
+      "P": 30,
+      "entryIdx": 173
+    },
+    {
+      "q": "x video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [1,170,176,179,178,177,172,19,168,171,374,375,6,-1,8,-1,3,173,175,-1,377,25,-1,-1,385,-1,169,20,21,369],
+      "nb": 10,
+      "niche": 0.88,
+      "vol": 8773164,
+      "entry": 8285,
+      "entryRank": 4,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,null,17,null,null,13,null,15,null,null,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 4,
+      "R": 0.726,
+      "O": 0.568,
+      "P": 30,
+      "entryIdx": 179
+    },
+    {
+      "q": "fb video downloader app",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [79,1,370,57,-1,42,362,78,80,4,81,5,125,126,-1,-1,82,2,3,385,10,354,-1,-1,25,-1,-1,-1,-1,-1],
+      "nb": 9,
+      "niche": 0.87,
+      "vol": 1103389,
+      "entry": 12753,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,18,19,10,12,null,null,null,null,21,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 6,
+      "R": 0.755,
+      "O": 0.513,
+      "P": 29,
+      "entryIdx": 80
+    },
+    {
+      "q": "story saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 0,
+      "depth": 30,
+      "ids": [4,61,64,62,103,359,5,63,-1,66,7,65,110,67,102,361,-1,-1,-1,-1,10,-1,-1,159,-1,109,-1,-1,-1,-1],
+      "nb": 9,
+      "niche": 0.82,
+      "vol": 5473342,
+      "entry": 21289,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,1,7,null,11,null,null,21,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 4,
+      "R": 0.739,
+      "O": 0.519,
+      "P": 28,
+      "entryIdx": 63
+    },
+    {
+      "q": "insta downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,7,-1,5,66,159,1,146,10,109,106,107,108,123,42,-1,-1,191,3,-1,31,-1,-1,62,-1,6,47,-1,-1,157],
+      "nb": 8,
+      "niche": 0.84,
+      "vol": 19591899,
+      "entry": 499002,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [7,null,19,1,4,26,2,null,null,9,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 7,
+      "R": 0.781,
+      "O": 0.459,
+      "P": 28,
+      "entryIdx": 109
+    },
+    {
+      "q": "tiktok downloader no watermark",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 17,
+      "ids": [38,129,128,47,45,149,148,150,363,151,-1,368,131,-1,42,132,-1],
+      "nb": 10,
+      "niche": 0.96,
+      "vol": 5059662,
+      "entry": 342412,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.721,
+      "O": 0.523,
+      "P": 27,
+      "entryIdx": 151
+    },
+    {
+      "q": "whatsapp status saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [87,89,88,90,92,93,91,94,162,96,152,364,391,-1,365,-1,-1,95,381,-1,122,-1,-1,-1,160,-1,-1,-1,105,389],
+      "nb": 10,
+      "niche": 0.8,
+      "vol": 19397861,
+      "entry": 28401,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.665,
+      "O": 0.56,
+      "P": 25,
+      "entryIdx": 96
+    },
+    {
+      "q": "status saver for whatsapp",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [87,88,162,89,90,92,91,160,94,93,96,161,364,365,95,-1,152,-1,391,-1,-1,-1,-1,122,-1,-1,381,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.79,
+      "vol": 48428534,
+      "entry": 286829,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.661,
+      "O": 0.542,
+      "P": 24,
+      "entryIdx": 93
+    },
+    {
+      "q": "status saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 0,
+      "depth": 30,
+      "ids": [87,88,89,161,93,152,162,91,90,94,92,384,95,366,96,378,122,-1,-1,364,-1,-1,-1,-1,-1,160,-1,-1,105,391],
+      "nb": 10,
+      "niche": 0.72,
+      "vol": 65063067,
+      "entry": 286829,
+      "entryRank": 5,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.637,
+      "O": 0.544,
+      "P": 22,
+      "entryIdx": 93
+    }
+  ],
+  "ES": [
+    {
+      "q": "all video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,3,20,27,39,2,4,19,6,25,35,8,45,31,48,47,5,38,42,367,50,7,18,55,43,9,-1,26,-1],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 74653915,
+      "entry": 266150,
+      "entryRank": 7,
+      "demand": 100,
+      "demandAt": "all",
+      "comps": [1,7,3,8,18,10,23,13,27,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.846,
+      "P": 83,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,18,348,3,2,4,39,6,19,55,35,25,47,8,36,367,350,5,38,7,-1,-1,-1,74,40,138,372,9,357,34],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 64791541,
+      "entry": 201888,
+      "entryRank": 10,
+      "demand": 94,
+      "demandAt": "vid",
+      "comps": [1,5,4,6,18,8,20,14,28,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.83,
+      "P": 82,
+      "entryIdx": 55
+    },
+    {
+      "q": "fast video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,2,6,57,33,8,32,31,25,9,21,20,34,39,5,157,10,42,18,4,-1,36,377,55,48,367,46,385,27],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13689906,
+      "entry": 249023,
+      "entryRank": 10,
+      "demand": 71,
+      "demandAt": "fast v",
+      "comps": [1,3,2,21,16,4,null,7,11,18,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 1,
+      "O": 0.747,
+      "P": 75,
+      "entryIdx": 25
+    },
+    {
+      "q": "social video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [42,1,2,48,31,25,351,49,45,371,35,4,19,-1,-1,5,-1,-1,55,7,43,348,-1,126,36,8,47,-1,6,38],
+      "nb": 10,
+      "niche": 0.94,
+      "vol": 249023,
+      "entry": 282,
+      "entryRank": 7,
+      "demand": 75,
+      "demandAt": "social v",
+      "comps": [2,3,null,12,16,29,20,26,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 7,
+      "R": 0.946,
+      "O": 0.804,
+      "P": 72,
+      "entryIdx": 351
+    },
+    {
+      "q": "save video",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 11,
+      "ids": [37,1,19,348,42,2,25,68,66,35,48],
+      "nb": 10,
+      "niche": 0.92,
+      "vol": 2407641,
+      "entry": 747,
+      "entryRank": 8,
+      "demand": 60,
+      "demandAt": "save v",
+      "comps": [2,6,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 2,
+      "R": 0.939,
+      "O": 0.765,
+      "P": 67,
+      "entryIdx": 68
+    },
+    {
+      "q": "video downloader app",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,3,6,2,39,56,19,4,25,35,47,8,5,38,114,367,18,74,7,55,138,40,57,-1,26,128,9,372,36],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 74653915,
+      "entry": 249023,
+      "entryRank": 10,
+      "demand": 38,
+      "demandAt": "video downloader a",
+      "comps": [1,5,3,9,14,4,20,13,28,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.66,
+      "P": 65,
+      "entryIdx": 25
+    },
+    {
+      "q": "all video downloader and saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,4,8,5,31,9,6,26,7,10,2,27,20,36,21,57,-1,47,-1,25,-1,46,385,195,-1,-1,-1,12,42],
+      "nb": 10,
+      "niche": 1,
+      "vol": 19231602,
+      "entry": 157368,
+      "entryRank": 9,
+      "demand": 35,
+      "demandAt": "all video downloader a",
+      "comps": [1,12,2,3,5,8,10,4,7,11,null,29,null,null,null,null],
+      "c10": 8,
+      "c30": 11,
+      "R": 1,
+      "O": 0.646,
+      "P": 65,
+      "entryIdx": 26
+    },
+    {
+      "q": "download video",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,19,352,25,40,35,2,45,34,3,39,6,50,18,4,52,42,47,31,114,38,7,5,9,8,367,-1,138,55],
+      "nb": 10,
+      "niche": 0.92,
+      "vol": 19077211,
+      "entry": 249023,
+      "entryRank": 5,
+      "demand": 60,
+      "demandAt": "download v",
+      "comps": [1,8,11,16,24,13,23,26,25,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 9,
+      "R": 0.939,
+      "O": 0.716,
+      "P": 63,
+      "entryIdx": 25
+    },
+    {
+      "q": "video saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,4,5,31,47,7,3,-1,6,8,2,10,57,-1,42,36,38,9,350,45,138,87,18,35,-1,-1,90,157,-1,21],
+      "nb": 9,
+      "niche": 1,
+      "vol": 19231602,
+      "entry": 740557,
+      "entryRank": 4,
+      "demand": 40,
+      "demandAt": "video sav",
+      "comps": [1,11,7,2,3,9,6,10,18,12,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 10,
+      "R": 1,
+      "O": 0.61,
+      "P": 61,
+      "entryIdx": 31
+    },
+    {
+      "q": "video downloader and saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,4,31,5,3,6,2,9,7,8,25,57,36,21,-1,47,10,138,42,-1,35,90,55,357,-1,46,27,26,385,-1],
+      "nb": 10,
+      "niche": 1,
+      "vol": 19231602,
+      "entry": 266150,
+      "entryRank": 7,
+      "demand": 26,
+      "demandAt": "video downloader and s",
+      "comps": [1,7,5,2,4,6,9,10,8,17,null,null,null,null,null,null],
+      "c10": 9,
+      "c30": 10,
+      "R": 1,
+      "O": 0.614,
+      "P": 61,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader browser",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,39,6,2,352,8,25,31,55,54,58,3,42,35,5,-1,377,348,10,385,43,-1,375,-1,382,57,195,7,353,157],
+      "nb": 9,
+      "niche": 0.94,
+      "vol": 13970550,
+      "entry": 201888,
+      "entryRank": 9,
+      "demand": 38,
+      "demandAt": "video downloader b",
+      "comps": [1,4,12,null,15,3,28,6,null,19,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.977,
+      "O": 0.615,
+      "P": 59,
+      "entryIdx": 55
+    },
+    {
+      "q": "free video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,18,39,2,4,6,3,25,31,19,35,48,47,42,5,8,367,38,7,138,55,-1,-1,57,128,372,36,357,41],
+      "nb": 10,
+      "niche": 1,
+      "vol": 64791541,
+      "entry": 249023,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,5,8,6,16,7,20,17,null,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 1,
+      "O": 0.545,
+      "P": 55,
+      "entryIdx": 25
+    },
+    {
+      "q": "hd video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,22,6,3,23,24,355,2,356,26,8,187,34,20,-1,5,25,-1,-1,377,-1,50,21,10,27,40,-1,4,-1,46],
+      "nb": 10,
+      "niche": 1,
+      "vol": 11384742,
+      "entry": 157368,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,8,4,28,16,3,null,11,null,24,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 1,
+      "O": 0.538,
+      "P": 54,
+      "entryIdx": 26
+    },
+    {
+      "q": "video downloader and player",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,50,348,8,6,52,40,2,25,-1,5,53,385,4,18,367,199,-1,22,-1,20,377,55,10,357,9,42,7,-1],
+      "nb": 10,
+      "niche": 0.93,
+      "vol": 149855720,
+      "entry": 249023,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,9,2,15,12,6,29,5,27,25,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 10,
+      "R": 0.977,
+      "O": 0.551,
+      "P": 53,
+      "entryIdx": 25
+    },
+    {
+      "q": "online video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,31,2,348,25,6,4,39,35,367,8,5,3,42,55,19,48,18,36,47,40,138,357,7,38,-1,-1,375,74,43],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 13689906,
+      "entry": 249023,
+      "entryRank": 5,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,3,13,7,12,6,24,11,null,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.993,
+      "O": 0.534,
+      "P": 53,
+      "entryIdx": 25
+    },
+    {
+      "q": "video downloader for android",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,2,6,8,4,25,31,5,3,35,367,45,39,55,42,48,18,36,-1,7,47,357,40,38,138,57,157,385,-1],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13970550,
+      "entry": 249023,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,3,10,6,9,4,21,5,null,null,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 8,
+      "R": 1,
+      "O": 0.534,
+      "P": 53,
+      "entryIdx": 25
+    },
+    {
+      "q": "video download app",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,52,3,50,39,2,19,4,6,35,25,47,48,5,38,8,42,367,83,7,199,138,114,55,18,-1,40,-1,57],
+      "nb": 10,
+      "niche": 0.91,
+      "vol": 149855720,
+      "entry": 266150,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,7,4,9,15,10,21,17,null,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.97,
+      "O": 0.551,
+      "P": 52,
+      "entryIdx": 2
+    },
+    {
+      "q": "download videos",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,19,348,31,18,3,2,25,8,35,39,40,6,45,4,5,55,38,42,-1,47,57,157,48,367,7,36,375,138,20],
+      "nb": 10,
+      "niche": 0.96,
+      "vol": 13970550,
+      "entry": 249023,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,7,6,15,16,13,26,9,null,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.986,
+      "O": 0.534,
+      "P": 52,
+      "entryIdx": 25
+    },
+    {
+      "q": "video downloader without ads",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [2,1,25,35,31,42,48,45,8,5,55,39,4,348,-1,6,367,47,36,7,352,3,18,43,357,385,19,-1,-1,375],
+      "nb": 10,
+      "niche": 0.94,
+      "vol": 740557,
+      "entry": 29397,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,1,22,13,10,16,20,9,null,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.979,
+      "O": 0.536,
+      "P": 51,
+      "entryIdx": 48
+    },
+    {
+      "q": "video saver downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,4,31,5,7,25,6,-1,2,36,47,8,35,138,42,45,3,26,57,48,55,93,90,38,367,10,357,18,348,385],
+      "nb": 9,
+      "niche": 1,
+      "vol": 13028866,
+      "entry": 249023,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,9,17,2,4,7,5,12,null,26,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 9,
+      "R": 1,
+      "O": 0.499,
+      "P": 50,
+      "entryIdx": 25
+    },
+    {
+      "q": "private video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,28,9,6,3,4,5,21,2,-1,8,375,20,385,377,25,29,30,10,36,27,46,7,35,-1,-1,-1,-1,-1,-1],
+      "nb": 9,
+      "niche": 1,
+      "vol": 23937324,
+      "entry": 266150,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,9,5,6,7,4,23,11,3,19,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 10,
+      "R": 1,
+      "O": 0.502,
+      "P": 50,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader free",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,2,19,39,48,25,35,45,42,31,4,6,3,367,47,5,8,55,7,38,-1,138,36,357,-1,128,18,168,57],
+      "nb": 10,
+      "niche": 0.92,
+      "vol": 2407641,
+      "entry": 29397,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,3,14,12,17,13,20,18,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 8,
+      "R": 0.939,
+      "O": 0.545,
+      "P": 48,
+      "entryIdx": 48
+    },
+    {
+      "q": "video downloader for instagram",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [106,4,5,7,1,-1,42,107,108,10,109,66,-1,123,31,-1,36,157,3,-1,-1,159,-1,-1,8,357,385,6,97,-1],
+      "nb": 9,
+      "niche": 0.93,
+      "vol": 13028866,
+      "entry": 13929,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [5,null,19,2,3,28,4,25,null,10,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.812,
+      "O": 0.53,
+      "P": 35,
+      "entryIdx": 107
+    },
+    {
+      "q": "reels downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,84,5,86,85,1,-1,7,97,120,10,-1,2,42,98,3,109,108,-1,-1,-1,-1,-1,107,8,-1,99,157,121,38],
+      "nb": 9,
+      "niche": 0.89,
+      "vol": 54767,
+      "entry": 219,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [6,13,16,1,3,null,8,25,null,11,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.796,
+      "O": 0.535,
+      "P": 34,
+      "entryIdx": 120
+    },
+    {
+      "q": "story saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 0,
+      "depth": 30,
+      "ids": [61,64,4,62,103,5,63,7,359,66,-1,65,67,110,361,102,-1,-1,-1,-1,-1,10,-1,-1,159,-1,-1,-1,-1,109],
+      "nb": 10,
+      "niche": 0.84,
+      "vol": 7481536,
+      "entry": 21289,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,3,6,null,8,null,null,22,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 4,
+      "R": 0.779,
+      "O": 0.556,
+      "P": 34,
+      "entryIdx": 63
+    },
+    {
+      "q": "story saver for instagram",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,62,64,5,66,7,63,65,103,61,-1,359,102,109,-1,361,-1,159,-1,-1,-1,-1,-1,-1,110,-1,-1,-1,67,387],
+      "nb": 10,
+      "niche": 0.84,
+      "vol": 7481536,
+      "entry": 21289,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,1,4,null,6,null,null,null,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 3,
+      "R": 0.779,
+      "O": 0.556,
+      "P": 34,
+      "entryIdx": 63
+    },
+    {
+      "q": "downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [69,1,70,74,71,72,73,76,372,373,56,348,386,-1,-1,75,-1,114,19,-1,-1,39,-1,6,4,2,-1,-1,-1,35],
+      "nb": 8,
+      "niche": 0.7,
+      "vol": 236276464,
+      "entry": 343910,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,26,null,25,null,24,null,null,null,null,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 4,
+      "R": 0.828,
+      "O": 0.481,
+      "P": 33,
+      "entryIdx": 76
+    },
+    {
+      "q": "facebook video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [1,79,362,80,57,42,-1,81,5,4,3,126,10,125,-1,112,82,20,27,2,385,-1,78,-1,157,-1,-1,7,-1,-1],
+      "nb": 9,
+      "niche": 0.89,
+      "vol": 1686085,
+      "entry": 12753,
+      "entryRank": 4,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,20,11,10,9,null,28,null,null,13,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 7,
+      "R": 0.796,
+      "O": 0.516,
+      "P": 33,
+      "entryIdx": 80
+    },
+    {
+      "q": "reel saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [97,4,5,-1,86,84,85,120,7,121,98,10,-1,-1,66,129,-1,65,-1,107,-1,159,108,-1,62,-1,109,104,42,-1],
+      "nb": 9,
+      "niche": 0.87,
+      "vol": 5399,
+      "entry": 110,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,2,3,null,9,null,null,12,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 4,
+      "R": 0.788,
+      "O": 0.526,
+      "P": 33,
+      "entryIdx": 121
+    },
+    {
+      "q": "fb video downloader app",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [1,57,79,42,362,4,-1,80,81,5,126,78,2,3,385,-1,125,10,25,-1,370,82,-1,-1,-1,7,157,-1,-1,-1],
+      "nb": 9,
+      "niche": 0.89,
+      "vol": 1686085,
+      "entry": 12753,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,13,14,6,10,null,26,null,null,18,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 7,
+      "R": 0.796,
+      "O": 0.516,
+      "P": 33,
+      "entryIdx": 80
+    },
+    {
+      "q": "instagram video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,123,1,5,-1,7,42,107,106,108,10,124,357,109,66,-1,3,36,31,-1,157,8,-1,159,2,-1,6,-1,385,-1],
+      "nb": 9,
+      "niche": 0.91,
+      "vol": 133921,
+      "entry": 13929,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [3,25,17,1,4,27,6,22,null,11,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 9,
+      "R": 0.804,
+      "O": 0.497,
+      "P": 32,
+      "entryIdx": 107
+    },
+    {
+      "q": "x video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [176,1,170,179,172,177,178,374,375,168,171,19,6,173,-1,175,-1,3,-1,-1,25,377,369,-1,-1,-1,385,9,169,20],
+      "nb": 10,
+      "niche": 0.9,
+      "vol": 4248697,
+      "entry": 3217,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,null,18,null,null,13,null,null,28,null,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 4,
+      "R": 0.733,
+      "O": 0.573,
+      "P": 31,
+      "entryIdx": 374
+    },
+    {
+      "q": "4k video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 5,
+      "ids": [77,1,2,25,42],
+      "nb": 5,
+      "niche": 0.92,
+      "vol": 266150,
+      "entry": 133921,
+      "entryRank": 5,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,3,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 2,
+      "R": 0.939,
+      "O": 0.337,
+      "P": 30,
+      "entryIdx": 42
+    },
+    {
+      "q": "tiktok video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [47,38,45,127,1,42,128,131,132,150,368,-1,149,-1,363,-1,130,10,3,151,4,129,147,-1,5,-1,-1,-1,-1,126],
+      "nb": 10,
+      "niche": 0.88,
+      "vol": 19561637,
+      "entry": 25597,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [5,null,19,21,25,null,null,null,null,18,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 5,
+      "R": 0.726,
+      "O": 0.561,
+      "P": 30,
+      "entryIdx": 132
+    },
+    {
+      "q": "twitter video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [19,168,170,171,1,172,175,173,369,376,42,169,-1,179,5,374,-1,-1,6,4,-1,-1,-1,47,-1,-1,7,45,57,174],
+      "nb": 10,
+      "niche": 0.82,
+      "vol": 4248697,
+      "entry": 118,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [5,null,null,20,15,19,27,null,null,null,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 5,
+      "R": 0.705,
+      "O": 0.609,
+      "P": 30,
+      "entryIdx": 376
+    },
+    {
+      "q": "insta downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,5,7,66,-1,146,1,108,107,106,109,10,42,123,159,-1,-1,36,-1,3,191,-1,-1,31,47,6,62,157,-1,-1],
+      "nb": 8,
+      "niche": 0.82,
+      "vol": 13028866,
+      "entry": 13929,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [7,null,20,1,2,26,3,null,null,12,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 7,
+      "R": 0.773,
+      "O": 0.495,
+      "P": 30,
+      "entryIdx": 107
+    },
+    {
+      "q": "tiktok downloader no watermark",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [38,129,128,47,45,149,150,148,363,151,-1,368,-1,-1,42,131,-1,-1,132,127,147,-1,-1,-1,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.96,
+      "vol": 5059662,
+      "entry": 342412,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.721,
+      "O": 0.523,
+      "P": 27,
+      "entryIdx": 151
+    },
+    {
+      "q": "whatsapp status saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [87,88,90,89,92,91,93,94,96,365,-1,122,381,391,364,-1,-1,-1,-1,161,-1,-1,-1,-1,160,-1,152,95,-1,-1],
+      "nb": 10,
+      "niche": 0.8,
+      "vol": 18272082,
+      "entry": 2120,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.665,
+      "O": 0.588,
+      "P": 26,
+      "entryIdx": 365
+    },
+    {
+      "q": "status saver for whatsapp",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [87,88,90,92,89,91,93,96,94,364,-1,95,162,391,-1,-1,122,160,152,-1,365,161,-1,-1,-1,-1,-1,-1,-1,381],
+      "nb": 10,
+      "niche": 0.8,
+      "vol": 18272082,
+      "entry": 28401,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.665,
+      "O": 0.56,
+      "P": 25,
+      "entryIdx": 96
+    },
+    {
+      "q": "status saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 0,
+      "depth": 30,
+      "ids": [87,88,161,89,94,91,90,93,96,92,95,384,378,122,-1,366,-1,-1,364,-1,-1,-1,-1,-1,105,391,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.73,
+      "vol": 19397861,
+      "entry": 28401,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.641,
+      "O": 0.56,
+      "P": 23,
+      "entryIdx": 96
+    }
+  ],
+  "IT": [
+    {
+      "q": "all video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,3,27,39,19,2,4,6,9,25,35,45,8,20,48,350,34,47,42,367,38,5,41,55,49,7,18,-1,43],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 64791541,
+      "entry": 266150,
+      "entryRank": 7,
+      "demand": 100,
+      "demandAt": "all",
+      "comps": [1,7,3,8,23,9,27,14,10,null,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.845,
+      "P": 83,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,17,3,18,348,20,34,2,41,19,6,39,4,9,8,55,-1,31,47,25,5,38,367,7,138,40,157,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 236276464,
+      "entry": 266150,
+      "entryRank": 8,
+      "demand": 94,
+      "demandAt": "vid",
+      "comps": [1,8,3,13,21,11,24,15,14,null,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.836,
+      "P": 82,
+      "entryIdx": 2
+    },
+    {
+      "q": "social video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [42,1,31,2,25,48,49,351,35,45,371,4,19,-1,-1,5,-1,55,-1,348,43,7,126,8,-1,367,-1,6,157,47],
+      "nb": 10,
+      "niche": 0.94,
+      "vol": 266150,
+      "entry": 282,
+      "entryRank": 8,
+      "demand": 75,
+      "demandAt": "social v",
+      "comps": [2,4,null,12,16,28,22,24,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 7,
+      "R": 0.946,
+      "O": 0.804,
+      "P": 72,
+      "entryIdx": 351
+    },
+    {
+      "q": "fast video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,21,3,2,6,-1,57,31,8,32,25,20,9,34,39,10,42,5,157,18,17,4,-1,377,55,367,385,48,26,27],
+      "nb": 9,
+      "niche": 1,
+      "vol": 13689906,
+      "entry": 266150,
+      "entryRank": 4,
+      "demand": 71,
+      "demandAt": "fast v",
+      "comps": [1,4,3,22,18,5,null,9,13,16,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 1,
+      "O": 0.711,
+      "P": 71,
+      "entryIdx": 2
+    },
+    {
+      "q": "download video",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,19,352,34,25,2,35,3,39,40,17,20,50,4,52,6,18,-1,42,55,9,47,8,114,31,38,5,367,7],
+      "nb": 10,
+      "niche": 0.94,
+      "vol": 74653915,
+      "entry": 249023,
+      "entryRank": 6,
+      "demand": 60,
+      "demandAt": "download v",
+      "comps": [1,7,9,15,28,17,30,24,22,null,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 9,
+      "R": 0.979,
+      "O": 0.726,
+      "P": 70,
+      "entryIdx": 25
+    },
+    {
+      "q": "video downloader app",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,348,39,2,6,19,56,4,17,8,34,25,35,47,114,38,5,367,74,7,138,55,18,40,-1,57,-1,41,128],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 74653915,
+      "entry": 266150,
+      "entryRank": 5,
+      "demand": 38,
+      "demandAt": "video downloader a",
+      "comps": [1,5,2,9,18,6,21,11,null,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.993,
+      "O": 0.66,
+      "P": 65,
+      "entryIdx": 2
+    },
+    {
+      "q": "all video downloader and saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,8,4,31,5,6,9,26,10,7,2,27,20,57,21,47,25,-1,-1,-1,385,46,-1,195,42,-1,12,-1,11],
+      "nb": 10,
+      "niche": 1,
+      "vol": 53554550,
+      "entry": 157368,
+      "entryRank": 9,
+      "demand": 35,
+      "demandAt": "all video downloader a",
+      "comps": [1,12,2,4,6,7,11,3,8,10,30,28,null,null,null,null],
+      "c10": 8,
+      "c30": 12,
+      "R": 1,
+      "O": 0.654,
+      "P": 65,
+      "entryIdx": 26
+    },
+    {
+      "q": "save video",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 9,
+      "ids": [37,1,19,348,68,42,2,66,35],
+      "nb": 9,
+      "niche": 0.91,
+      "vol": 2407641,
+      "entry": 747,
+      "entryRank": 5,
+      "demand": 60,
+      "demandAt": "save v",
+      "comps": [2,7,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 2,
+      "R": 0.936,
+      "O": 0.73,
+      "P": 64,
+      "entryIdx": 68
+    },
+    {
+      "q": "video saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,4,5,31,47,7,6,-1,8,2,42,3,38,45,35,138,57,10,129,348,19,18,87,-1,90,128,385,55,66,107],
+      "nb": 9,
+      "niche": 1,
+      "vol": 13970550,
+      "entry": 266150,
+      "entryRank": 10,
+      "demand": 40,
+      "demandAt": "video sav",
+      "comps": [1,10,12,2,3,7,6,9,null,18,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 9,
+      "R": 1,
+      "O": 0.618,
+      "P": 62,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader and saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,4,3,31,5,6,2,8,9,7,25,57,21,10,47,-1,138,42,35,-1,17,55,90,357,-1,27,40,348,26,46],
+      "nb": 10,
+      "niche": 1,
+      "vol": 19231602,
+      "entry": 266150,
+      "entryRank": 7,
+      "demand": 26,
+      "demandAt": "video downloader and s",
+      "comps": [1,7,3,2,5,6,10,8,9,14,null,null,null,null,null,null],
+      "c10": 9,
+      "c30": 10,
+      "R": 1,
+      "O": 0.614,
+      "P": 61,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader browser",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,352,25,2,39,54,6,35,348,8,31,58,3,55,60,42,377,10,382,59,-1,-1,5,9,385,-1,17,-1,20,195],
+      "nb": 9,
+      "niche": 0.91,
+      "vol": 24690801,
+      "entry": 249023,
+      "entryRank": 3,
+      "demand": 38,
+      "demandAt": "video downloader b",
+      "comps": [1,4,13,null,23,7,null,10,24,18,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.97,
+      "O": 0.617,
+      "P": 58,
+      "entryIdx": 25
+    },
+    {
+      "q": "private video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,28,6,9,3,4,2,5,8,21,375,25,20,377,385,10,29,30,27,46,35,-1,7,31,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 1,
+      "vol": 23937324,
+      "entry": 266150,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,7,5,6,8,3,23,9,4,16,null,null,null,null,null,null],
+      "c10": 8,
+      "c30": 10,
+      "R": 1,
+      "O": 0.537,
+      "P": 54,
+      "entryIdx": 2
+    },
+    {
+      "q": "free video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,41,348,3,2,39,4,6,25,35,31,19,48,8,18,42,47,367,5,38,7,138,-1,55,17,-1,57,128,357,-1],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 74653915,
+      "entry": 249023,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,5,4,7,19,8,21,14,null,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.993,
+      "O": 0.546,
+      "P": 54,
+      "entryIdx": 25
+    },
+    {
+      "q": "hd video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,354,6,22,23,3,24,9,2,356,34,355,8,26,-1,187,20,21,5,377,25,50,-1,-1,-1,-1,27,-1,10,-1],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13689906,
+      "entry": 266150,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,9,6,null,19,3,null,13,8,29,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 1,
+      "O": 0.533,
+      "P": 53,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader and player",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,8,50,348,52,6,40,2,53,25,5,4,-1,385,199,18,377,367,-1,22,10,-1,55,17,9,-1,357,42,182],
+      "nb": 10,
+      "niche": 0.93,
+      "vol": 149855720,
+      "entry": 202665,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,9,2,13,12,7,null,3,26,22,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 0.977,
+      "O": 0.554,
+      "P": 53,
+      "entryIdx": 53
+    },
+    {
+      "q": "video downloader free",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,19,2,39,4,6,8,31,25,48,3,35,45,367,47,5,42,38,7,55,138,-1,-1,128,357,18,168,57,17],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 19077211,
+      "entry": 249023,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,4,12,6,17,7,20,8,null,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.993,
+      "O": 0.536,
+      "P": 53,
+      "entryIdx": 25
+    },
+    {
+      "q": "online video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,6,31,18,367,8,4,2,348,5,25,17,39,55,34,35,20,138,357,157,27,10,47,38,42,57,9,139,7],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13970550,
+      "entry": 266150,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,9,2,8,11,3,30,7,28,23,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 10,
+      "R": 1,
+      "O": 0.533,
+      "P": 53,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader for android",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,2,6,8,4,25,31,5,3,35,367,39,55,45,42,48,18,17,-1,47,7,40,357,38,57,138,385,157,10],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13970550,
+      "entry": 249023,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,3,10,6,9,4,22,5,null,30,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 9,
+      "R": 1,
+      "O": 0.534,
+      "P": 53,
+      "entryIdx": 25
+    },
+    {
+      "q": "video download app",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,34,52,50,19,3,39,4,2,6,47,35,25,8,20,5,38,17,42,367,7,54,138,57,199,18,40,55,-1],
+      "nb": 10,
+      "niche": 0.91,
+      "vol": 159077152,
+      "entry": 266150,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,10,7,9,17,11,22,15,null,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.97,
+      "O": 0.551,
+      "P": 52,
+      "entryIdx": 2
+    },
+    {
+      "q": "download videos",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,19,348,3,31,8,35,2,40,6,25,18,45,39,55,5,4,38,42,-1,367,57,47,7,48,375,138,385,-1,34],
+      "nb": 10,
+      "niche": 0.96,
+      "vol": 13970550,
+      "entry": 266150,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,8,4,17,16,10,24,6,null,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.986,
+      "O": 0.533,
+      "P": 52,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader without ads",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [2,1,25,35,31,42,48,45,8,5,39,55,4,348,6,-1,367,352,7,47,3,17,43,18,385,357,-1,375,38,-1],
+      "nb": 10,
+      "niche": 0.94,
+      "vol": 740557,
+      "entry": 29397,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,1,21,13,10,15,19,9,null,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.979,
+      "O": 0.536,
+      "P": 51,
+      "entryIdx": 48
+    },
+    {
+      "q": "video saver downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,4,31,5,6,7,25,-1,2,8,47,35,138,42,3,45,26,93,57,55,38,90,367,10,348,92,357,18,385,17],
+      "nb": 9,
+      "niche": 1,
+      "vol": 13689906,
+      "entry": 249023,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,9,15,2,4,5,6,10,null,24,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 9,
+      "R": 1,
+      "O": 0.499,
+      "P": 50,
+      "entryIdx": 25
+    },
+    {
+      "q": "downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [69,1,70,34,71,72,74,73,76,348,-1,386,-1,373,3,75,56,-1,114,39,6,19,-1,-1,372,-1,4,2,8,-1],
+      "nb": 8,
+      "niche": 0.8,
+      "vol": 236276464,
+      "entry": 343910,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,28,15,27,null,21,null,29,null,null,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 6,
+      "R": 0.863,
+      "O": 0.481,
+      "P": 36,
+      "entryIdx": 76
+    },
+    {
+      "q": "video downloader for instagram",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [106,4,5,7,1,-1,42,107,108,10,109,66,-1,31,-1,123,3,157,-1,-1,-1,-1,159,357,8,385,97,6,38,126],
+      "nb": 9,
+      "niche": 0.93,
+      "vol": 13028866,
+      "entry": 13929,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [5,null,17,2,3,28,4,25,null,10,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.812,
+      "O": 0.53,
+      "P": 35,
+      "entryIdx": 107
+    },
+    {
+      "q": "reels downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [84,5,4,86,85,1,-1,7,97,120,10,42,-1,2,98,109,3,108,-1,-1,-1,-1,99,-1,38,121,107,-1,-1,8],
+      "nb": 9,
+      "niche": 0.89,
+      "vol": 54767,
+      "entry": 219,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [6,14,17,3,2,null,8,30,null,11,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.796,
+      "O": 0.535,
+      "P": 34,
+      "entryIdx": 120
+    },
+    {
+      "q": "story saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 0,
+      "depth": 30,
+      "ids": [61,4,64,359,5,62,103,7,63,66,-1,65,102,361,67,110,-1,-1,-1,-1,-1,10,-1,-1,-1,159,109,387,-1,-1],
+      "nb": 10,
+      "niche": 0.84,
+      "vol": 7481536,
+      "entry": 21289,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,2,5,null,8,null,null,22,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 4,
+      "R": 0.779,
+      "O": 0.556,
+      "P": 34,
+      "entryIdx": 63
+    },
+    {
+      "q": "story saver for instagram",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [61,103,4,5,64,62,66,7,63,65,-1,359,102,109,361,-1,-1,-1,159,-1,-1,-1,-1,-1,110,-1,-1,-1,10,-1],
+      "nb": 10,
+      "niche": 0.84,
+      "vol": 7481536,
+      "entry": 21289,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,3,4,null,8,null,null,29,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 4,
+      "R": 0.779,
+      "O": 0.556,
+      "P": 34,
+      "entryIdx": 63
+    },
+    {
+      "q": "reel saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,97,5,-1,86,84,85,120,7,121,98,10,-1,-1,129,66,-1,-1,-1,108,109,-1,-1,107,159,65,62,-1,104,99],
+      "nb": 9,
+      "niche": 0.87,
+      "vol": 5399,
+      "entry": 110,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,1,3,null,9,null,null,12,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 4,
+      "R": 0.788,
+      "O": 0.526,
+      "P": 33,
+      "entryIdx": 121
+    },
+    {
+      "q": "fb video downloader app",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [1,362,57,79,42,80,-1,4,81,5,78,126,3,2,10,-1,125,385,82,-1,370,-1,-1,157,-1,-1,-1,25,-1,-1],
+      "nb": 9,
+      "niche": 0.89,
+      "vol": 1686085,
+      "entry": 12753,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,14,13,8,10,null,null,null,null,15,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 6,
+      "R": 0.796,
+      "O": 0.516,
+      "P": 33,
+      "entryIdx": 80
+    },
+    {
+      "q": "instagram video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,7,5,123,1,-1,42,107,106,108,10,124,-1,66,109,31,-1,3,157,357,8,2,-1,-1,-1,159,6,385,146,-1],
+      "nb": 9,
+      "niche": 0.91,
+      "vol": 133921,
+      "entry": 13929,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [5,22,18,1,3,27,2,21,null,11,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 9,
+      "R": 0.804,
+      "O": 0.497,
+      "P": 32,
+      "entryIdx": 107
+    },
+    {
+      "q": "tiktok video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [38,47,127,45,128,1,147,149,42,132,129,150,-1,368,-1,-1,131,363,151,10,-1,3,130,4,-1,-1,-1,5,-1,126],
+      "nb": 10,
+      "niche": 0.92,
+      "vol": 19561637,
+      "entry": 25597,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [6,null,22,24,28,null,null,null,null,20,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 5,
+      "R": 0.74,
+      "O": 0.561,
+      "P": 31,
+      "entryIdx": 132
+    },
+    {
+      "q": "4k video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 5,
+      "ids": [77,1,25,2,42],
+      "nb": 5,
+      "niche": 0.92,
+      "vol": 266150,
+      "entry": 133921,
+      "entryRank": 5,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,4,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 2,
+      "R": 0.939,
+      "O": 0.337,
+      "P": 30,
+      "entryIdx": 42
+    },
+    {
+      "q": "facebook video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [362,1,57,79,80,-1,42,81,125,4,5,126,3,10,2,385,82,20,112,-1,-1,-1,-1,27,157,-1,-1,-1,25,370],
+      "nb": 9,
+      "niche": 0.89,
+      "vol": 1686085,
+      "entry": 12753,
+      "entryRank": 5,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,15,13,10,11,null,null,null,null,14,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 6,
+      "R": 0.763,
+      "O": 0.516,
+      "P": 30,
+      "entryIdx": 80
+    },
+    {
+      "q": "twitter video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [19,170,168,171,1,172,175,173,369,376,42,169,-1,-1,374,179,-1,5,-1,6,4,-1,-1,-1,-1,47,174,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.82,
+      "vol": 4248697,
+      "entry": 118,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [5,null,null,21,18,20,null,null,null,null,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 4,
+      "R": 0.705,
+      "O": 0.609,
+      "P": 30,
+      "entryIdx": 376
+    },
+    {
+      "q": "insta downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,5,66,7,-1,1,146,108,107,10,106,109,42,123,-1,159,-1,3,191,-1,31,-1,157,-1,38,47,6,62,-1,64],
+      "nb": 8,
+      "niche": 0.84,
+      "vol": 19231602,
+      "entry": 13929,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [6,null,18,1,2,27,4,null,null,10,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 7,
+      "R": 0.781,
+      "O": 0.498,
+      "P": 30,
+      "entryIdx": 107
+    },
+    {
+      "q": "x video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [1,176,170,19,179,172,178,177,168,171,3,375,6,374,25,377,-1,-1,8,-1,173,385,-1,20,21,-1,5,-1,175,10],
+      "nb": 10,
+      "niche": 0.88,
+      "vol": 8773164,
+      "entry": 8285,
+      "entryRank": 5,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,null,11,null,27,13,null,19,null,30,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 6,
+      "R": 0.726,
+      "O": 0.568,
+      "P": 30,
+      "entryIdx": 179
+    },
+    {
+      "q": "tiktok downloader no watermark",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 18,
+      "ids": [38,129,147,128,47,45,149,148,150,363,151,-1,131,-1,368,-1,42,132],
+      "nb": 10,
+      "niche": 0.96,
+      "vol": 5586740,
+      "entry": 684294,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.721,
+      "O": 0.517,
+      "P": 27,
+      "entryIdx": 45
+    },
+    {
+      "q": "status saver for whatsapp",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [87,88,89,90,92,91,93,162,96,94,161,364,-1,152,-1,391,95,-1,160,-1,365,122,-1,-1,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.8,
+      "vol": 19397861,
+      "entry": 28401,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.665,
+      "O": 0.56,
+      "P": 25,
+      "entryIdx": 96
+    },
+    {
+      "q": "whatsapp status saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [87,89,88,90,92,93,152,94,91,96,365,381,-1,391,364,-1,-1,-1,160,-1,-1,-1,122,-1,161,95,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.8,
+      "vol": 19397861,
+      "entry": 28401,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.665,
+      "O": 0.56,
+      "P": 25,
+      "entryIdx": 96
+    },
+    {
+      "q": "status saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 0,
+      "depth": 30,
+      "ids": [87,161,88,89,152,93,90,94,91,92,160,95,96,384,378,-1,122,-1,366,-1,-1,364,-1,-1,-1,-1,391,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.72,
+      "vol": 65063067,
+      "entry": 286829,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.637,
+      "O": 0.544,
+      "P": 22,
+      "entryIdx": 93
+    }
+  ],
+  "AU": [
+    {
+      "q": "video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,9,6,3,18,41,348,17,21,19,2,4,39,-1,55,8,33,31,35,47,25,-1,5,367,38,138,7,34,-1,57],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 53554550,
+      "entry": 5071274,
+      "entryRank": 5,
+      "demand": 100,
+      "demandAt": "vid",
+      "comps": [1,11,4,12,23,3,27,16,2,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.811,
+      "P": 80,
+      "entryIdx": 18
+    },
+    {
+      "q": "all video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,9,20,348,3,8,27,39,6,2,19,4,50,25,35,31,48,47,42,49,38,5,367,55,21,7,43,377,17,18],
+      "nb": 10,
+      "niche": 1,
+      "vol": 74653915,
+      "entry": 266150,
+      "entryRank": 10,
+      "demand": 86,
+      "demandAt": "all v",
+      "comps": [1,10,5,12,22,9,26,6,2,null,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 9,
+      "R": 1,
+      "O": 0.804,
+      "P": 80,
+      "entryIdx": 2
+    },
+    {
+      "q": "fast video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,23,350,3,21,2,6,32,31,57,8,25,9,39,-1,20,42,5,10,34,18,157,17,55,377,4,367,48,26,22],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13689906,
+      "entry": 266150,
+      "entryRank": 6,
+      "demand": 71,
+      "demandAt": "fast v",
+      "comps": [1,6,4,26,18,7,null,11,13,19,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 9,
+      "R": 1,
+      "O": 0.746,
+      "P": 75,
+      "entryIdx": 2
+    },
+    {
+      "q": "social video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [42,1,25,48,31,2,49,351,45,35,19,371,4,-1,-1,-1,5,55,348,43,-1,7,126,-1,8,6,47,-1,157,-1],
+      "nb": 10,
+      "niche": 0.94,
+      "vol": 266150,
+      "entry": 282,
+      "entryRank": 8,
+      "demand": 75,
+      "demandAt": "social v",
+      "comps": [2,6,null,13,17,26,22,25,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 7,
+      "R": 0.946,
+      "O": 0.804,
+      "P": 72,
+      "entryIdx": 351
+    },
+    {
+      "q": "download video",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,19,348,352,25,35,2,3,6,56,39,50,40,9,52,4,114,17,42,31,47,18,38,8,5,367,55,7,138,57],
+      "nb": 10,
+      "niche": 0.94,
+      "vol": 24690801,
+      "entry": 249023,
+      "entryRank": 5,
+      "demand": 60,
+      "demandAt": "download v",
+      "comps": [1,7,8,16,25,9,28,24,14,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 9,
+      "R": 0.979,
+      "O": 0.718,
+      "P": 69,
+      "entryIdx": 25
+    },
+    {
+      "q": "video downloader browser",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,39,6,2,352,25,31,54,58,8,35,42,55,45,348,3,5,-1,377,60,43,-1,382,-1,-1,10,385,19,375,9],
+      "nb": 9,
+      "niche": 0.93,
+      "vol": 13970550,
+      "entry": 249023,
+      "entryRank": 6,
+      "demand": 66,
+      "demandAt": "video d",
+      "comps": [1,4,16,null,17,3,null,10,30,26,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.977,
+      "O": 0.697,
+      "P": 67,
+      "entryIdx": 25
+    },
+    {
+      "q": "video downloader app",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,23,178,3,348,39,19,2,6,4,35,25,47,8,5,38,9,17,367,74,114,55,7,138,40,-1,18,57,-1,128],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 74653915,
+      "entry": 266150,
+      "entryRank": 8,
+      "demand": 38,
+      "demandAt": "video downloader a",
+      "comps": [1,8,4,10,15,9,23,14,17,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.66,
+      "P": 65,
+      "entryIdx": 2
+    },
+    {
+      "q": "all video downloader and saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,8,4,31,5,9,6,7,26,10,21,27,2,-1,20,25,57,47,195,-1,46,-1,385,-1,42,-1,-1,11,12],
+      "nb": 10,
+      "niche": 1,
+      "vol": 19231602,
+      "entry": 157368,
+      "entryRank": 10,
+      "demand": 35,
+      "demandAt": "all video downloader a",
+      "comps": [1,14,2,4,6,8,9,3,7,11,29,30,null,null,null,null],
+      "c10": 8,
+      "c30": 12,
+      "R": 1,
+      "O": 0.646,
+      "P": 65,
+      "entryIdx": 26
+    },
+    {
+      "q": "save video",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 9,
+      "ids": [37,1,348,19,42,2,68,66,35],
+      "nb": 9,
+      "niche": 0.91,
+      "vol": 2407641,
+      "entry": 747,
+      "entryRank": 7,
+      "demand": 60,
+      "demandAt": "save v",
+      "comps": [2,6,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 2,
+      "R": 0.936,
+      "O": 0.73,
+      "P": 64,
+      "entryIdx": 68
+    },
+    {
+      "q": "video saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,4,5,31,6,47,7,-1,8,2,42,3,38,45,35,138,57,10,19,18,-1,129,348,55,128,87,385,107,9,171],
+      "nb": 9,
+      "niche": 1,
+      "vol": 13970550,
+      "entry": 266150,
+      "entryRank": 10,
+      "demand": 40,
+      "demandAt": "video sav",
+      "comps": [1,10,12,2,3,5,7,9,29,18,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 10,
+      "R": 1,
+      "O": 0.618,
+      "P": 62,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader and saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,21,4,6,31,3,5,2,9,8,7,25,10,57,-1,47,42,138,35,18,55,348,357,27,17,-1,26,385,46,90],
+      "nb": 10,
+      "niche": 1,
+      "vol": 23937324,
+      "entry": 266150,
+      "entryRank": 8,
+      "demand": 26,
+      "demandAt": "video downloader and s",
+      "comps": [1,8,6,3,7,4,11,10,9,13,null,null,null,null,null,null],
+      "c10": 8,
+      "c30": 10,
+      "R": 1,
+      "O": 0.615,
+      "P": 62,
+      "entryIdx": 2
+    },
+    {
+      "q": "private video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [28,1,9,6,3,21,30,8,2,377,29,5,4,25,385,375,20,-1,27,-1,10,46,-1,-1,31,178,383,35,45,-1],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13970550,
+      "entry": 27368,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,9,5,13,12,4,null,8,3,21,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 9,
+      "R": 1,
+      "O": 0.558,
+      "P": 56,
+      "entryIdx": 30
+    },
+    {
+      "q": "hd video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,6,22,3,24,2,8,356,355,26,25,5,21,20,377,187,34,-1,10,-1,-1,50,27,42,9,-1,-1,-1,46,-1],
+      "nb": 10,
+      "niche": 1,
+      "vol": 11384742,
+      "entry": 157368,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,6,4,null,12,2,null,7,25,19,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 1,
+      "O": 0.538,
+      "P": 54,
+      "entryIdx": 26
+    },
+    {
+      "q": "video downloader free",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,19,25,35,2,45,48,39,3,31,42,4,6,47,8,5,55,367,7,38,138,18,17,128,-1,-1,57,10,357],
+      "nb": 10,
+      "niche": 0.94,
+      "vol": 19077211,
+      "entry": 29397,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,6,10,13,17,14,20,16,null,29,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 9,
+      "R": 0.979,
+      "O": 0.56,
+      "P": 54,
+      "entryIdx": 48
+    },
+    {
+      "q": "free video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,41,34,348,4,3,2,39,6,19,31,35,25,8,48,5,42,47,367,38,7,55,18,75,57,138,-1,17,-1,128],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 159077152,
+      "entry": 266150,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,7,6,5,16,9,21,14,null,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.993,
+      "O": 0.551,
+      "P": 54,
+      "entryIdx": 2
+    },
+    {
+      "q": "online video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,31,348,2,25,6,39,35,4,8,367,42,5,55,48,19,18,47,138,357,38,7,17,-1,375,43,-1,57,53],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 64791541,
+      "entry": 249023,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,5,2,10,14,7,23,11,null,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.993,
+      "O": 0.545,
+      "P": 54,
+      "entryIdx": 25
+    },
+    {
+      "q": "video downloader and player",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,50,348,8,52,6,3,53,2,25,40,5,4,199,367,-1,-1,55,385,83,18,42,182,22,9,-1,377,7,357,181],
+      "nb": 10,
+      "niche": 0.93,
+      "vol": 149855720,
+      "entry": 202665,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,9,7,13,12,6,28,4,25,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 0.977,
+      "O": 0.554,
+      "P": 53,
+      "entryIdx": 53
+    },
+    {
+      "q": "video downloader for android",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,4,348,2,6,25,31,8,5,35,3,367,39,45,55,42,48,-1,18,7,17,47,357,38,40,138,57,-1,385,157],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 13689906,
+      "entry": 249023,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,4,11,2,9,5,20,8,null,null,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 8,
+      "R": 0.993,
+      "O": 0.534,
+      "P": 53,
+      "entryIdx": 25
+    },
+    {
+      "q": "video download app",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,50,3,52,39,19,4,2,6,35,25,47,5,83,54,38,8,42,367,7,199,138,55,18,-1,-1,40,17,129],
+      "nb": 10,
+      "niche": 0.91,
+      "vol": 149855720,
+      "entry": 266150,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,9,4,8,14,10,21,18,null,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.97,
+      "O": 0.551,
+      "P": 52,
+      "entryIdx": 2
+    },
+    {
+      "q": "download videos",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,19,348,31,25,8,6,2,35,40,39,55,5,45,3,42,4,38,18,7,48,367,57,157,17,-1,47,-1,21,375],
+      "nb": 10,
+      "niche": 0.96,
+      "vol": 13689906,
+      "entry": 249023,
+      "entryRank": 5,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,8,15,17,13,7,20,6,null,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.986,
+      "O": 0.534,
+      "P": 52,
+      "entryIdx": 25
+    },
+    {
+      "q": "video downloader without ads",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [2,1,25,35,31,42,48,45,8,5,55,6,39,4,348,-1,367,352,47,7,43,-1,3,18,-1,17,357,375,385,38],
+      "nb": 10,
+      "niche": 0.94,
+      "vol": 740557,
+      "entry": 29397,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,1,23,14,10,12,20,9,null,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.979,
+      "O": 0.536,
+      "P": 51,
+      "entryIdx": 48
+    },
+    {
+      "q": "video saver downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,4,31,5,6,25,7,2,-1,8,42,47,138,35,3,45,26,55,93,57,367,90,38,357,39,348,10,18,92,385],
+      "nb": 9,
+      "niche": 1,
+      "vol": 13689906,
+      "entry": 249023,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,8,15,2,4,5,7,10,null,27,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 9,
+      "R": 1,
+      "O": 0.499,
+      "P": 50,
+      "entryIdx": 25
+    },
+    {
+      "q": "downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [69,1,70,71,72,73,74,6,75,56,386,348,-1,373,114,-1,39,-1,-1,19,4,-1,76,-1,2,8,-1,-1,-1,35],
+      "nb": 8,
+      "niche": 0.8,
+      "vol": 236276464,
+      "entry": 4642540,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,25,null,21,null,8,null,26,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 5,
+      "R": 0.897,
+      "O": 0.453,
+      "P": 36,
+      "entryIdx": 74
+    },
+    {
+      "q": "video downloader for instagram",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [106,4,5,1,7,-1,42,107,108,10,109,-1,-1,31,66,123,157,-1,3,-1,159,-1,-1,6,357,8,385,97,377,126],
+      "nb": 9,
+      "niche": 0.93,
+      "vol": 13028866,
+      "entry": 13929,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [4,null,19,2,3,24,5,26,null,10,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.812,
+      "O": 0.53,
+      "P": 35,
+      "entryIdx": 107
+    },
+    {
+      "q": "reels downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [84,5,4,86,85,1,-1,7,97,120,10,-1,42,2,98,109,3,108,-1,-1,-1,-1,8,107,-1,99,121,-1,106,38],
+      "nb": 9,
+      "niche": 0.89,
+      "vol": 54767,
+      "entry": 219,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [6,14,17,3,2,null,8,23,null,11,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.796,
+      "O": 0.535,
+      "P": 34,
+      "entryIdx": 120
+    },
+    {
+      "q": "story saver for instagram",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,62,64,66,5,7,63,65,103,61,-1,359,102,109,-1,-1,361,159,-1,-1,-1,-1,-1,110,-1,-1,-1,67,10,-1],
+      "nb": 10,
+      "niche": 0.84,
+      "vol": 7481536,
+      "entry": 21289,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,1,5,null,6,null,null,29,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 4,
+      "R": 0.779,
+      "O": 0.556,
+      "P": 34,
+      "entryIdx": 63
+    },
+    {
+      "q": "reel saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [97,5,4,-1,86,84,85,120,7,121,98,10,-1,-1,-1,-1,129,107,66,-1,65,108,104,159,-1,-1,-1,62,-1,42],
+      "nb": 9,
+      "niche": 0.87,
+      "vol": 5399,
+      "entry": 110,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,3,2,null,9,null,null,12,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 4,
+      "R": 0.788,
+      "O": 0.526,
+      "P": 33,
+      "entryIdx": 121
+    },
+    {
+      "q": "x video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [1,168,19,170,176,179,171,6,172,375,3,178,374,177,25,377,173,-1,385,8,-1,175,5,-1,10,21,20,9,42,-1],
+      "nb": 10,
+      "niche": 0.88,
+      "vol": 8773164,
+      "entry": 8285,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,null,11,null,23,8,null,20,28,25,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 7,
+      "R": 0.76,
+      "O": 0.568,
+      "P": 33,
+      "entryIdx": 179
+    },
+    {
+      "q": "instagram video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,7,123,5,1,-1,106,42,107,108,10,357,124,109,-1,-1,66,31,3,157,8,-1,159,6,2,-1,-1,385,97,377],
+      "nb": 9,
+      "niche": 0.91,
+      "vol": 133921,
+      "entry": 13929,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [5,25,19,1,4,24,2,21,null,11,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 9,
+      "R": 0.804,
+      "O": 0.497,
+      "P": 32,
+      "entryIdx": 107
+    },
+    {
+      "q": "fb video downloader app",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [-1,1,57,42,362,80,4,5,79,-1,81,3,-1,-1,10,385,2,25,126,-1,78,-1,125,6,7,-1,82,-1,8,21],
+      "nb": 8,
+      "niche": 0.9,
+      "vol": 12887883,
+      "entry": 12753,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,17,12,7,8,24,25,29,null,15,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 9,
+      "R": 0.8,
+      "O": 0.496,
+      "P": 32,
+      "entryIdx": 80
+    },
+    {
+      "q": "4k video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 5,
+      "ids": [77,1,25,2,42],
+      "nb": 5,
+      "niche": 0.92,
+      "vol": 266150,
+      "entry": 133921,
+      "entryRank": 5,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,4,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 2,
+      "R": 0.939,
+      "O": 0.337,
+      "P": 30,
+      "entryIdx": 42
+    },
+    {
+      "q": "tiktok video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [47,38,45,1,42,132,128,150,129,131,368,-1,149,-1,363,-1,130,4,10,5,151,147,127,3,-1,2,8,31,-1,-1],
+      "nb": 10,
+      "niche": 0.9,
+      "vol": 9329466,
+      "entry": 25597,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [4,26,24,18,20,null,null,27,null,19,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 7,
+      "R": 0.733,
+      "O": 0.556,
+      "P": 30,
+      "entryIdx": 132
+    },
+    {
+      "q": "insta downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [7,4,5,-1,66,159,1,106,146,108,107,10,109,42,-1,123,-1,191,3,6,31,-1,157,-1,-1,47,-1,-1,38,62],
+      "nb": 8,
+      "niche": 0.84,
+      "vol": 19231602,
+      "entry": 35089,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [7,null,19,2,3,20,1,null,null,12,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 7,
+      "R": 0.781,
+      "O": 0.488,
+      "P": 30,
+      "entryIdx": 108
+    },
+    {
+      "q": "twitter video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [19,168,170,171,1,172,173,175,42,369,376,169,-1,374,5,179,-1,-1,6,4,-1,-1,-1,47,-1,7,45,-1,57,174],
+      "nb": 10,
+      "niche": 0.82,
+      "vol": 4248697,
+      "entry": 1084,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [5,null,null,20,15,19,26,null,null,null,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 5,
+      "R": 0.705,
+      "O": 0.585,
+      "P": 29,
+      "entryIdx": 173
+    },
+    {
+      "q": "story saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 0,
+      "depth": 30,
+      "ids": [64,61,4,62,5,359,63,65,-1,66,7,67,110,103,102,-1,361,-1,-1,10,-1,-1,-1,159,-1,-1,-1,-1,109,-1],
+      "nb": 9,
+      "niche": 0.82,
+      "vol": 5473342,
+      "entry": 21289,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,3,5,null,11,null,null,20,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 4,
+      "R": 0.739,
+      "O": 0.519,
+      "P": 28,
+      "entryIdx": 63
+    },
+    {
+      "q": "tiktok downloader no watermark",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 17,
+      "ids": [38,129,128,47,45,149,148,150,363,151,-1,-1,42,-1,368,131,132],
+      "nb": 10,
+      "niche": 0.96,
+      "vol": 5059662,
+      "entry": 342412,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.721,
+      "O": 0.523,
+      "P": 27,
+      "entryIdx": 151
+    },
+    {
+      "q": "whatsapp status saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [87,88,89,92,90,93,91,94,96,365,364,-1,-1,391,122,-1,381,-1,95,-1,-1,-1,160,-1,152,-1,-1,-1,-1,161],
+      "nb": 10,
+      "niche": 0.8,
+      "vol": 18272082,
+      "entry": 2120,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.665,
+      "O": 0.588,
+      "P": 26,
+      "entryIdx": 365
+    },
+    {
+      "q": "status saver for whatsapp",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [88,87,90,89,92,91,93,96,94,364,-1,95,391,-1,-1,-1,161,122,160,152,365,-1,-1,-1,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.8,
+      "vol": 18272082,
+      "entry": 28401,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.665,
+      "O": 0.56,
+      "P": 25,
+      "entryIdx": 96
+    },
+    {
+      "q": "status saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 0,
+      "depth": 30,
+      "ids": [87,88,89,91,161,93,92,90,96,378,122,-1,366,95,-1,-1,364,-1,-1,94,-1,-1,-1,-1,105,391,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.73,
+      "vol": 19397861,
+      "entry": 1849,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.641,
+      "O": 0.59,
+      "P": 24,
+      "entryIdx": 378
+    },
+    {
+      "q": "facebook video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [79,-1,1,57,80,-1,42,362,-1,81,3,4,5,126,125,-1,10,112,-1,27,20,385,82,-1,-1,2,-1,-1,78,195],
+      "nb": 7,
+      "niche": 0.86,
+      "vol": 1137468,
+      "entry": 12753,
+      "entryRank": 5,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [3,26,11,12,13,null,null,null,null,17,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 6,
+      "R": 0.718,
+      "O": 0.443,
+      "P": 23,
+      "entryIdx": 80
+    }
+  ],
+  "AE": [
+    {
+      "q": "video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,17,8,367,348,19,34,4,2,6,349,55,41,35,47,39,25,38,5,138,377,18,40,7,-1,-1,128,-1,22],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 64791541,
+      "entry": 266150,
+      "entryRank": 10,
+      "demand": 94,
+      "demandAt": "vid",
+      "comps": [1,10,2,9,20,11,25,4,null,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.993,
+      "O": 0.827,
+      "P": 82,
+      "entryIdx": 2
+    },
+    {
+      "q": "social video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [42,1,25,2,48,31,351,49,35,4,45,19,371,5,-1,-1,-1,348,-1,43,55,8,126,7,367,-1,6,47,-1,385],
+      "nb": 10,
+      "niche": 0.96,
+      "vol": 266150,
+      "entry": 282,
+      "entryRank": 7,
+      "demand": 75,
+      "demandAt": "social v",
+      "comps": [2,4,null,10,14,27,24,22,null,null,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 7,
+      "R": 0.986,
+      "O": 0.804,
+      "P": 78,
+      "entryIdx": 351
+    },
+    {
+      "q": "all video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,20,348,8,349,27,9,19,39,2,6,34,4,25,35,48,21,47,38,367,42,5,49,41,55,18,7,-1,43],
+      "nb": 9,
+      "niche": 0.98,
+      "vol": 236276464,
+      "entry": 13970550,
+      "entryRank": 5,
+      "demand": 100,
+      "demandAt": "all",
+      "comps": [1,11,2,14,23,12,28,5,8,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.776,
+      "P": 77,
+      "entryIdx": 8
+    },
+    {
+      "q": "hd video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,354,22,6,3,24,356,8,355,26,23,34,377,-1,27,2,187,25,20,5,21,-1,-1,-1,10,-1,-1,40,50,-1],
+      "nb": 10,
+      "niche": 1,
+      "vol": 11384742,
+      "entry": 157368,
+      "entryRank": 10,
+      "demand": 65,
+      "demandAt": "hd v",
+      "comps": [1,16,5,null,20,4,null,8,null,25,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 7,
+      "R": 1,
+      "O": 0.733,
+      "P": 73,
+      "entryIdx": 26
+    },
+    {
+      "q": "fast video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,32,3,6,2,349,34,8,57,39,31,25,21,10,9,5,348,27,-1,20,377,42,17,-1,22,367,4,46,-1,385],
+      "nb": 9,
+      "niche": 1,
+      "vol": 74653915,
+      "entry": 266150,
+      "entryRank": 5,
+      "demand": 66,
+      "demandAt": "fast v",
+      "comps": [1,5,3,27,16,4,null,8,15,14,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 1,
+      "O": 0.709,
+      "P": 71,
+      "entryIdx": 2
+    },
+    {
+      "q": "download video",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [40,1,8,19,3,348,349,17,39,352,4,6,2,47,35,25,45,31,38,367,5,34,42,138,89,7,55,128,57,18],
+      "nb": 9,
+      "niche": 0.96,
+      "vol": 74653915,
+      "entry": 484585,
+      "entryRank": 1,
+      "demand": 60,
+      "demandAt": "download v",
+      "comps": [2,13,5,11,21,12,26,3,null,null,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 8,
+      "R": 0.986,
+      "O": 0.684,
+      "P": 67,
+      "entryIdx": 40
+    },
+    {
+      "q": "video downloader and saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,9,4,3,5,6,31,8,2,7,25,10,57,21,47,-1,138,42,27,-1,35,17,348,357,-1,90,367,40,46,22],
+      "nb": 10,
+      "niche": 1,
+      "vol": 19231602,
+      "entry": 266150,
+      "entryRank": 9,
+      "demand": 35,
+      "demandAt": "video downloader an",
+      "comps": [1,9,4,3,5,6,10,8,2,12,null,null,null,null,null,null],
+      "c10": 9,
+      "c30": 10,
+      "R": 1,
+      "O": 0.641,
+      "P": 64,
+      "entryIdx": 2
+    },
+    {
+      "q": "all video downloader and saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,8,4,31,5,6,9,27,10,26,7,2,21,-1,57,20,47,25,-1,-1,-1,195,42,11,385,46,-1,12,22],
+      "nb": 10,
+      "niche": 1,
+      "vol": 53554550,
+      "entry": 740557,
+      "entryRank": 5,
+      "demand": 35,
+      "demandAt": "all video downloader a",
+      "comps": [1,13,2,4,6,7,12,3,8,10,25,29,null,null,null,null],
+      "c10": 8,
+      "c30": 12,
+      "R": 1,
+      "O": 0.637,
+      "P": 64,
+      "entryIdx": 31
+    },
+    {
+      "q": "video saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,4,5,31,-1,6,47,7,8,2,42,3,38,89,19,35,138,45,129,87,348,57,93,10,90,128,385,-1,171,18],
+      "nb": 9,
+      "niche": 1,
+      "vol": 13970550,
+      "entry": 266150,
+      "entryRank": 10,
+      "demand": 40,
+      "demandAt": "video sav",
+      "comps": [1,10,12,2,3,6,8,9,null,24,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 9,
+      "R": 1,
+      "O": 0.618,
+      "P": 62,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader app",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,348,367,349,19,8,4,2,39,17,6,25,47,51,35,5,38,74,54,114,40,55,7,138,-1,-1,26,375,372],
+      "nb": 9,
+      "niche": 0.98,
+      "vol": 74653915,
+      "entry": 266150,
+      "entryRank": 9,
+      "demand": 38,
+      "demandAt": "video downloader a",
+      "comps": [1,9,2,8,17,12,24,7,null,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.993,
+      "O": 0.625,
+      "P": 62,
+      "entryIdx": 2
+    },
+    {
+      "q": "save video",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 8,
+      "ids": [37,1,42,19,348,68,2,35],
+      "nb": 8,
+      "niche": 0.92,
+      "vol": 2407641,
+      "entry": 747,
+      "entryRank": 6,
+      "demand": 60,
+      "demandAt": "save v",
+      "comps": [2,7,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 2,
+      "R": 0.94,
+      "O": 0.695,
+      "P": 61,
+      "entryIdx": 68
+    },
+    {
+      "q": "video downloader browser",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,39,54,349,352,6,2,25,31,8,35,58,42,348,55,377,3,5,-1,43,60,-1,10,19,382,385,-1,-1,-1,375],
+      "nb": 8,
+      "niche": 0.93,
+      "vol": 24690801,
+      "entry": 249023,
+      "entryRank": 8,
+      "demand": 38,
+      "demandAt": "video downloader b",
+      "comps": [1,7,17,null,18,6,null,10,null,23,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 7,
+      "R": 0.977,
+      "O": 0.582,
+      "P": 56,
+      "entryIdx": 25
+    },
+    {
+      "q": "private video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [28,1,6,9,3,21,8,377,5,2,4,30,375,385,29,25,27,20,10,-1,46,-1,-1,178,-1,35,31,-1,383,-1],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13970550,
+      "entry": 266150,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,10,5,11,9,3,null,7,4,19,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 9,
+      "R": 1,
+      "O": 0.533,
+      "P": 53,
+      "entryIdx": 2
+    },
+    {
+      "q": "online video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,6,31,3,34,367,8,4,5,348,2,25,35,39,18,55,47,138,42,357,19,38,48,17,40,7,57,-1,-1,-1],
+      "nb": 10,
+      "niche": 1,
+      "vol": 64791541,
+      "entry": 740557,
+      "entryRank": 3,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,11,4,8,9,2,26,7,null,null,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 8,
+      "R": 1,
+      "O": 0.533,
+      "P": 53,
+      "entryIdx": 31
+    },
+    {
+      "q": "video downloader for android",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,348,3,6,8,2,4,25,5,31,17,367,35,18,39,10,45,27,349,42,20,55,157,57,48,21,47,34,-1,9],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13970550,
+      "entry": 249023,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,6,3,7,9,4,null,5,30,16,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 9,
+      "R": 1,
+      "O": 0.534,
+      "P": 53,
+      "entryIdx": 25
+    },
+    {
+      "q": "free video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [41,1,3,348,349,20,27,39,2,4,6,19,23,35,25,8,31,47,48,367,5,42,38,7,138,17,9,-1,18,55],
+      "nb": 9,
+      "niche": 1,
+      "vol": 277373379,
+      "entry": 266150,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,9,3,10,21,11,24,16,27,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 9,
+      "R": 1,
+      "O": 0.52,
+      "P": 52,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader without ads",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [2,1,25,35,42,31,48,45,8,5,4,6,348,-1,39,55,349,367,47,352,19,3,43,7,-1,17,385,357,10,38],
+      "nb": 10,
+      "niche": 0.94,
+      "vol": 740557,
+      "entry": 29397,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,1,22,11,10,12,24,9,null,29,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 9,
+      "R": 0.979,
+      "O": 0.536,
+      "P": 51,
+      "entryIdx": 48
+    },
+    {
+      "q": "video downloader free",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,17,348,4,349,19,8,2,39,6,25,31,47,48,35,45,367,5,42,38,7,138,55,-1,128,-1,357,18,-1],
+      "nb": 9,
+      "niche": 0.98,
+      "vol": 74653915,
+      "entry": 266150,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,9,2,5,19,11,22,8,null,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.993,
+      "O": 0.511,
+      "P": 50,
+      "entryIdx": 2
+    },
+    {
+      "q": "video saver downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,4,31,5,6,25,-1,8,2,7,47,138,42,35,3,93,26,45,38,57,89,55,90,367,10,357,19,348,92,39],
+      "nb": 9,
+      "niche": 1,
+      "vol": 13689906,
+      "entry": 249023,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,9,15,2,4,5,10,8,null,25,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 9,
+      "R": 1,
+      "O": 0.499,
+      "P": 50,
+      "entryIdx": 25
+    },
+    {
+      "q": "download videos",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [40,8,19,1,348,3,31,349,25,6,35,2,39,5,4,45,38,42,-1,47,367,55,57,18,48,-1,375,138,357,7],
+      "nb": 9,
+      "niche": 0.98,
+      "vol": 19077211,
+      "entry": 249023,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [4,12,6,15,14,10,30,2,null,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.993,
+      "O": 0.501,
+      "P": 49,
+      "entryIdx": 25
+    },
+    {
+      "q": "video downloader and player",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [3,1,40,8,51,50,348,52,6,53,-1,2,25,377,5,-1,-1,4,22,18,349,385,21,199,10,9,367,27,-1,20],
+      "nb": 9,
+      "niche": 0.87,
+      "vol": 236276464,
+      "entry": 202665,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,12,1,18,15,9,null,4,26,25,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 9,
+      "R": 0.955,
+      "O": 0.522,
+      "P": 48,
+      "entryIdx": 53
+    },
+    {
+      "q": "video downloader for instagram",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [106,4,5,-1,1,7,42,107,108,10,109,-1,66,31,123,-1,157,159,-1,-1,-1,3,-1,357,8,97,6,126,38,385],
+      "nb": 9,
+      "niche": 0.93,
+      "vol": 13028866,
+      "entry": 13929,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [5,null,22,2,3,27,6,25,null,10,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.812,
+      "O": 0.53,
+      "P": 35,
+      "entryIdx": 107
+    },
+    {
+      "q": "downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [69,1,70,3,71,72,34,74,73,373,56,348,386,-1,19,-1,75,-1,114,39,-1,-1,76,42,-1,4,8,2,6,-1],
+      "nb": 8,
+      "niche": 0.7,
+      "vol": 383593932,
+      "entry": 4642540,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,28,4,26,null,29,null,27,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 6,
+      "R": 0.862,
+      "O": 0.456,
+      "P": 34,
+      "entryIdx": 74
+    },
+    {
+      "q": "video download app",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,17,51,34,348,349,52,54,19,39,4,2,6,50,47,25,35,8,5,38,367,42,138,7,129,128,40,-1,-1],
+      "nb": 7,
+      "niche": 0.8,
+      "vol": 420731505,
+      "entry": 5751288,
+      "entryRank": 3,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,13,2,12,20,14,25,19,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 8,
+      "R": 0.898,
+      "O": 0.42,
+      "P": 34,
+      "entryIdx": 17
+    },
+    {
+      "q": "instagram video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,123,5,159,1,7,-1,106,10,42,107,108,3,-1,124,109,157,66,-1,-1,31,-1,357,8,126,27,-1,-1,2,377],
+      "nb": 9,
+      "niche": 0.93,
+      "vol": 19231602,
+      "entry": 34890,
+      "entryRank": 2,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [5,29,13,1,3,null,6,24,null,9,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.812,
+      "O": 0.523,
+      "P": 34,
+      "entryIdx": 123
+    },
+    {
+      "q": "story saver for instagram",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [61,62,4,64,5,66,7,65,63,103,359,-1,102,159,360,109,-1,-1,361,-1,-1,-1,-1,-1,-1,-1,110,-1,67,-1],
+      "nb": 10,
+      "niche": 0.84,
+      "vol": 7481536,
+      "entry": 21289,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,3,5,null,7,null,null,null,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 3,
+      "R": 0.779,
+      "O": 0.556,
+      "P": 34,
+      "entryIdx": 63
+    },
+    {
+      "q": "reels downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [5,4,379,84,85,86,-1,1,97,10,7,-1,120,-1,98,-1,-1,-1,62,3,2,42,109,108,-1,-1,-1,-1,99,121],
+      "nb": 9,
+      "niche": 0.89,
+      "vol": 298422,
+      "entry": 1497,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [8,21,20,2,1,null,11,null,null,10,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 7,
+      "R": 0.796,
+      "O": 0.527,
+      "P": 33,
+      "entryIdx": 86
+    },
+    {
+      "q": "reel saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [97,4,5,-1,86,84,85,120,7,121,98,10,129,-1,-1,-1,-1,-1,-1,159,107,-1,108,66,65,-1,104,62,99,-1],
+      "nb": 9,
+      "niche": 0.87,
+      "vol": 5399,
+      "entry": 110,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,2,3,null,9,null,null,12,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 4,
+      "R": 0.788,
+      "O": 0.526,
+      "P": 33,
+      "entryIdx": 121
+    },
+    {
+      "q": "x video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [380,1,19,170,176,172,178,3,179,168,177,171,6,375,374,377,25,-1,-1,173,8,-1,385,27,20,21,5,10,-1,9],
+      "nb": 10,
+      "niche": 0.88,
+      "vol": 8773164,
+      "entry": 8285,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,null,8,null,27,13,null,21,30,28,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 7,
+      "R": 0.76,
+      "O": 0.568,
+      "P": 33,
+      "entryIdx": 179
+    },
+    {
+      "q": "4k video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 5,
+      "ids": [77,1,2,25,42],
+      "nb": 5,
+      "niche": 0.92,
+      "vol": 266150,
+      "entry": 133921,
+      "entryRank": 5,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,3,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 2,
+      "R": 0.939,
+      "O": 0.337,
+      "P": 30,
+      "entryIdx": 42
+    },
+    {
+      "q": "tiktok video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [127,38,47,128,131,45,129,149,1,42,150,132,-1,363,-1,-1,368,147,10,130,151,-1,-1,-1,-1,3,4,-1,126,5],
+      "nb": 10,
+      "niche": 0.92,
+      "vol": 19561637,
+      "entry": 133921,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [9,null,26,27,30,null,null,null,null,19,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 5,
+      "R": 0.74,
+      "O": 0.543,
+      "P": 30,
+      "entryIdx": 42
+    },
+    {
+      "q": "twitter video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [19,168,172,171,170,169,1,175,173,369,42,376,-1,-1,5,179,-1,374,-1,6,4,-1,-1,47,-1,57,174,-1,-1,45],
+      "nb": 10,
+      "niche": 0.84,
+      "vol": 4650347,
+      "entry": 1084,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [7,null,null,21,15,20,null,null,null,null,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 4,
+      "R": 0.712,
+      "O": 0.585,
+      "P": 30,
+      "entryIdx": 173
+    },
+    {
+      "q": "insta downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,159,5,-1,7,66,10,106,1,146,108,109,107,123,42,-1,-1,-1,62,-1,-1,3,-1,-1,-1,157,191,-1,126,47],
+      "nb": 8,
+      "niche": 0.84,
+      "vol": 19591899,
+      "entry": 45305,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [9,null,22,1,3,null,5,null,null,7,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 6,
+      "R": 0.781,
+      "O": 0.485,
+      "P": 30,
+      "entryIdx": 106
+    },
+    {
+      "q": "story saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 0,
+      "depth": 30,
+      "ids": [4,359,64,62,61,159,5,63,-1,360,66,65,7,103,102,67,-1,110,-1,361,10,-1,-1,-1,-1,-1,387,-1,-1,-1],
+      "nb": 9,
+      "niche": 0.84,
+      "vol": 7481536,
+      "entry": 21289,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,1,7,null,13,null,null,21,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 4,
+      "R": 0.747,
+      "O": 0.521,
+      "P": 29,
+      "entryIdx": 63
+    },
+    {
+      "q": "tiktok downloader no watermark",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 16,
+      "ids": [38,129,128,47,149,45,148,150,363,151,-1,131,368,42,-1,-1],
+      "nb": 10,
+      "niche": 0.96,
+      "vol": 5059662,
+      "entry": 342412,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.721,
+      "O": 0.523,
+      "P": 27,
+      "entryIdx": 151
+    },
+    {
+      "q": "fb video downloader app",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [-1,362,1,79,57,42,370,-1,4,-1,80,81,5,126,-1,-1,10,3,2,125,385,82,25,-1,-1,-1,-1,6,-1,27],
+      "nb": 7,
+      "niche": 0.89,
+      "vol": 1686085,
+      "entry": 98777,
+      "entryRank": 2,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [3,19,18,9,13,28,null,null,null,17,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 7,
+      "R": 0.762,
+      "O": 0.424,
+      "P": 25,
+      "entryIdx": 362
+    },
+    {
+      "q": "status saver for whatsapp",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [88,87,89,92,90,93,91,96,94,364,391,-1,-1,95,152,-1,160,-1,-1,-1,-1,-1,161,122,365,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.8,
+      "vol": 18272082,
+      "entry": 28401,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.665,
+      "O": 0.56,
+      "P": 25,
+      "entryIdx": 96
+    },
+    {
+      "q": "status saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 0,
+      "depth": 30,
+      "ids": [87,88,161,89,152,96,90,162,93,160,94,91,92,388,384,389,366,95,-1,378,-1,122,-1,-1,-1,-1,-1,-1,364,-1],
+      "nb": 10,
+      "niche": 0.73,
+      "vol": 65063067,
+      "entry": 28401,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.641,
+      "O": 0.569,
+      "P": 23,
+      "entryIdx": 96
+    },
+    {
+      "q": "facebook video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [362,-1,-1,1,79,57,-1,80,42,81,370,5,3,4,126,10,125,-1,27,-1,-1,112,82,385,-1,20,2,-1,-1,-1],
+      "nb": 7,
+      "niche": 0.86,
+      "vol": 1137468,
+      "entry": 12753,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [4,27,13,14,12,null,null,null,null,16,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 6,
+      "R": 0.718,
+      "O": 0.443,
+      "P": 23,
+      "entryIdx": 80
+    },
+    {
+      "q": "whatsapp status saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [88,87,89,90,92,93,381,161,152,91,94,160,96,365,364,391,-1,-1,-1,122,-1,-1,-1,-1,-1,-1,-1,95,-1,-1],
+      "nb": 10,
+      "niche": 0.72,
+      "vol": 65063067,
+      "entry": 81513,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.637,
+      "O": 0.557,
+      "P": 23,
+      "entryIdx": 381
+    }
+  ],
+  "IN": [
+    {
+      "q": "all video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,20,27,34,41,21,9,2,4,8,50,6,42,5,39,367,25,7,52,55,43,-1,48,19,-1,375,22,57,51],
+      "nb": 10,
+      "niche": 1,
+      "vol": 159077152,
+      "entry": 266150,
+      "entryRank": 9,
+      "demand": 100,
+      "demandAt": "all",
+      "comps": [1,9,2,10,15,13,19,11,8,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 1,
+      "O": 0.851,
+      "P": 85,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,41,4,39,34,2,19,17,6,52,31,5,25,8,367,7,55,9,43,-1,-1,-1,51,22,357,138,47,20,38],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 74653915,
+      "entry": 266150,
+      "entryRank": 7,
+      "demand": 88,
+      "demandAt": "vid",
+      "comps": [1,7,2,4,13,10,17,15,19,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.81,
+      "P": 80,
+      "entryIdx": 2
+    },
+    {
+      "q": "social video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [42,1,2,48,25,49,31,351,4,35,5,371,45,19,-1,-1,126,43,-1,7,55,-1,8,36,-1,-1,6,99,357,385],
+      "nb": 10,
+      "niche": 0.96,
+      "vol": 266150,
+      "entry": 282,
+      "entryRank": 8,
+      "demand": 75,
+      "demandAt": "social v",
+      "comps": [2,3,null,9,11,27,20,23,null,null,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 7,
+      "R": 0.986,
+      "O": 0.804,
+      "P": 78,
+      "entryIdx": 351
+    },
+    {
+      "q": "fast video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,41,21,34,32,2,362,6,9,57,20,5,4,27,-1,31,8,-1,10,-1,357,22,42,7,25,26,17,377,385],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 53554550,
+      "entry": 98777,
+      "entryRank": 8,
+      "demand": 71,
+      "demandAt": "fast v",
+      "comps": [1,7,2,14,13,9,25,18,10,20,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 10,
+      "R": 0.993,
+      "O": 0.767,
+      "P": 76,
+      "entryIdx": 362
+    },
+    {
+      "q": "download video",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,19,3,56,34,4,39,2,6,89,55,25,51,31,35,375,-1,41,42,8,183,92,5,47,52,114,367,43,138,38],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 159077152,
+      "entry": 266150,
+      "entryRank": 8,
+      "demand": 60,
+      "demandAt": "download v",
+      "comps": [1,8,3,6,23,9,null,20,null,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 7,
+      "R": 0.993,
+      "O": 0.731,
+      "P": 72,
+      "entryIdx": 2
+    },
+    {
+      "q": "video saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,4,5,3,89,7,31,37,6,2,36,10,-1,138,8,27,47,-1,21,42,9,57,353,46,-1,22,-1,385,17,384],
+      "nb": 10,
+      "niche": 1,
+      "vol": 19231602,
+      "entry": 266150,
+      "entryRank": 10,
+      "demand": 40,
+      "demandAt": "video sav",
+      "comps": [1,10,4,2,3,9,6,15,21,12,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 10,
+      "R": 1,
+      "O": 0.656,
+      "P": 66,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader app",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,2,56,34,4,41,17,39,19,8,23,51,367,6,7,55,5,25,20,-1,-1,375,22,38,9,47,138,357,36],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 159077152,
+      "entry": 266150,
+      "entryRank": 3,
+      "demand": 38,
+      "demandAt": "video downloader a",
+      "comps": [1,3,2,6,18,15,16,11,26,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.665,
+      "P": 66,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader browser",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,39,6,2,55,8,31,3,25,382,375,42,58,377,5,4,60,-1,35,-1,-1,385,43,10,34,-1,9,27,-1,-1],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13689906,
+      "entry": 201888,
+      "entryRank": 5,
+      "demand": 38,
+      "demandAt": "video downloader",
+      "comps": [1,4,8,16,15,3,null,6,27,24,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 1,
+      "O": 0.65,
+      "P": 65,
+      "entryIdx": 55
+    },
+    {
+      "q": "video downloader and saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,9,4,3,21,383,5,31,6,2,7,8,27,138,10,-1,25,357,-1,42,57,36,22,-1,47,35,89,46,385,55],
+      "nb": 10,
+      "niche": 1,
+      "vol": 23937324,
+      "entry": 266150,
+      "entryRank": 10,
+      "demand": 35,
+      "demandAt": "video downloader an",
+      "comps": [1,10,4,3,7,9,11,12,2,15,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 10,
+      "R": 1,
+      "O": 0.642,
+      "P": 64,
+      "entryIdx": 2
+    },
+    {
+      "q": "all video downloader and saver",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [12,1,3,4,8,27,9,5,31,21,26,6,10,20,2,7,-1,-1,36,46,22,-1,-1,385,-1,-1,57,-1,195,42],
+      "nb": 10,
+      "niche": 1,
+      "vol": 35664600,
+      "entry": 740557,
+      "entryRank": 9,
+      "demand": 38,
+      "demandAt": "all video downloader a",
+      "comps": [2,15,3,4,8,12,16,5,7,13,null,1,null,null,null,null],
+      "c10": 7,
+      "c30": 11,
+      "R": 1,
+      "O": 0.643,
+      "P": 64,
+      "entryIdx": 31
+    },
+    {
+      "q": "save video",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 9,
+      "ids": [37,1,68,2,42,384,19,92,35],
+      "nb": 9,
+      "niche": 0.87,
+      "vol": 779547,
+      "entry": 747,
+      "entryRank": 3,
+      "demand": 66,
+      "demandAt": "save",
+      "comps": [2,4,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 2,
+      "R": 0.92,
+      "O": 0.739,
+      "P": 63,
+      "entryIdx": 68
+    },
+    {
+      "q": "private video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [28,1,21,9,3,6,383,156,30,2,27,4,29,5,8,377,375,385,20,25,46,10,36,31,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13689906,
+      "entry": 27368,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,10,5,12,14,6,null,15,4,22,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 1,
+      "O": 0.558,
+      "P": 56,
+      "entryIdx": 30
+    },
+    {
+      "q": "free video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [41,23,1,3,27,34,4,2,39,56,6,31,25,20,5,48,42,8,35,19,47,7,55,38,367,138,75,-1,22,357],
+      "nb": 10,
+      "niche": 1,
+      "vol": 159077152,
+      "entry": 266150,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [3,8,4,7,15,11,22,18,null,null,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 1,
+      "O": 0.551,
+      "P": 55,
+      "entryIdx": 2
+    },
+    {
+      "q": "hd video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [23,1,34,22,3,6,354,355,41,24,2,27,-1,21,356,5,-1,26,4,-1,50,20,377,8,52,-1,-1,198,-1,-1],
+      "nb": 10,
+      "niche": 1,
+      "vol": 142867928,
+      "entry": 496659,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,11,5,19,16,6,null,24,null,null,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 7,
+      "R": 1,
+      "O": 0.544,
+      "P": 54,
+      "entryIdx": 24
+    },
+    {
+      "q": "video downloader free",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,41,17,4,2,39,19,20,5,25,35,31,34,6,48,8,367,7,138,47,38,42,27,52,43,357,-1,128,55],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 74653915,
+      "entry": 266150,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,6,2,5,10,15,19,17,null,null,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 8,
+      "R": 0.993,
+      "O": 0.546,
+      "P": 54,
+      "entryIdx": 2
+    },
+    {
+      "q": "video saver downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [4,1,5,31,89,2,7,6,138,25,-1,8,3,36,42,26,47,357,48,35,57,92,55,10,22,27,385,-1,43,17],
+      "nb": 10,
+      "niche": 0.98,
+      "vol": 13689906,
+      "entry": 249023,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,6,13,1,3,8,7,12,null,24,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 9,
+      "R": 0.993,
+      "O": 0.534,
+      "P": 53,
+      "entryIdx": 25
+    },
+    {
+      "q": "online video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,34,6,31,2,4,17,5,8,39,367,25,55,27,357,138,41,22,20,42,36,21,52,377,10,57,35,51,385],
+      "nb": 10,
+      "niche": 1,
+      "vol": 13970550,
+      "entry": 266150,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,6,2,7,9,4,null,10,null,26,null,null,null,null,null,null],
+      "c10": 7,
+      "c30": 8,
+      "R": 1,
+      "O": 0.533,
+      "P": 53,
+      "entryIdx": 2
+    },
+    {
+      "q": "video downloader for android",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,2,25,31,3,4,35,39,42,48,6,8,5,55,367,-1,19,52,-1,357,36,-1,17,7,138,27,51,385,22,10],
+      "nb": 10,
+      "niche": 0.96,
+      "vol": 2407641,
+      "entry": 29397,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,2,5,6,13,11,24,12,null,30,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 9,
+      "R": 0.986,
+      "O": 0.545,
+      "P": 53,
+      "entryIdx": 48
+    },
+    {
+      "q": "download videos",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,19,4,2,31,39,3,8,6,42,35,5,55,56,-1,48,375,34,40,367,45,357,138,36,51,7,38,89,47,17],
+      "nb": 10,
+      "niche": 0.96,
+      "vol": 19077211,
+      "entry": 133921,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,4,7,3,12,9,26,8,null,null,null,null,null,null,null,null],
+      "c10": 6,
+      "c30": 8,
+      "R": 0.986,
+      "O": 0.543,
+      "P": 53,
+      "entryIdx": 42
+    },
+    {
+      "q": "video downloader without ads",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [2,1,25,31,42,35,48,8,4,5,-1,6,55,3,39,367,357,-1,36,17,7,385,43,375,27,47,10,138,21,-1],
+      "nb": 10,
+      "niche": 0.96,
+      "vol": 2407641,
+      "entry": 29397,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,1,14,9,10,12,21,8,null,27,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 9,
+      "R": 0.986,
+      "O": 0.545,
+      "P": 53,
+      "entryIdx": 48
+    },
+    {
+      "q": "video downloader and player",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,51,8,50,52,53,6,385,183,2,199,377,-1,40,5,4,22,55,25,-1,21,-1,355,-1,10,83,357,27,198],
+      "nb": 9,
+      "niche": 0.78,
+      "vol": 236276464,
+      "entry": 202665,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,11,2,17,16,8,null,4,null,26,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.925,
+      "O": 0.522,
+      "P": 45,
+      "entryIdx": 53
+    },
+    {
+      "q": "video download app",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,3,51,34,183,4,41,52,56,50,17,39,19,2,8,42,6,35,89,199,25,5,-1,55,-1,83,21,375,20,138],
+      "nb": 9,
+      "niche": 0.81,
+      "vol": 332918517,
+      "entry": 64791541,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,14,2,6,22,17,null,15,null,null,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 7,
+      "R": 0.932,
+      "O": 0.462,
+      "P": 40,
+      "entryIdx": 4
+    },
+    {
+      "q": "video downloader for instagram",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,106,5,1,7,-1,42,159,108,10,107,-1,109,123,31,36,97,66,357,157,-1,-1,-1,3,27,-1,385,-1,146,126],
+      "nb": 9,
+      "niche": 0.96,
+      "vol": 19231602,
+      "entry": 35089,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [4,null,24,1,3,null,5,null,null,10,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 6,
+      "R": 0.819,
+      "O": 0.523,
+      "P": 35,
+      "entryIdx": 108
+    },
+    {
+      "q": "downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 30,
+      "ids": [1,34,69,70,71,73,3,75,386,56,39,-1,114,-1,19,-1,4,76,-1,-1,41,74,-1,-1,2,42,6,372,21,-1],
+      "nb": 8,
+      "niche": 0.7,
+      "vol": 258334720,
+      "entry": 4926308,
+      "entryRank": 8,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [1,25,7,17,null,27,null,null,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 5,
+      "R": 0.862,
+      "O": 0.453,
+      "P": 34,
+      "entryIdx": 75
+    },
+    {
+      "q": "tiktok video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [38,47,1,45,42,128,131,129,4,132,150,5,2,368,149,-1,10,363,3,-1,31,-1,8,126,-1,27,7,62,-1,151],
+      "nb": 10,
+      "niche": 0.92,
+      "vol": 19561637,
+      "entry": 25597,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [3,13,19,9,12,null,27,23,null,17,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 8,
+      "R": 0.774,
+      "O": 0.561,
+      "P": 34,
+      "entryIdx": 132
+    },
+    {
+      "q": "reel saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,97,5,159,-1,86,85,84,7,120,121,-1,98,10,-1,104,-1,62,-1,-1,-1,99,-1,-1,384,108,102,-1,-1,-1],
+      "nb": 9,
+      "niche": 0.89,
+      "vol": 54767,
+      "entry": 219,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,1,3,null,9,null,null,14,null,null,null,null,null,null],
+      "c10": 3,
+      "c30": 4,
+      "R": 0.796,
+      "O": 0.535,
+      "P": 34,
+      "entryIdx": 120
+    },
+    {
+      "q": "reels downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,5,84,86,85,379,1,7,97,-1,120,2,-1,10,-1,42,99,-1,108,-1,-1,109,-1,62,-1,3,357,159,104,-1],
+      "nb": 9,
+      "niche": 0.89,
+      "vol": 298422,
+      "entry": 1497,
+      "entryRank": 4,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [7,12,26,1,2,null,8,null,null,14,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 7,
+      "R": 0.796,
+      "O": 0.527,
+      "P": 33,
+      "entryIdx": 86
+    },
+    {
+      "q": "story saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 0,
+      "depth": 30,
+      "ids": [359,4,62,64,361,5,159,102,103,63,360,-1,7,-1,66,110,89,65,67,-1,-1,387,-1,-1,-1,-1,10,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.85,
+      "vol": 5473342,
+      "entry": 21289,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,2,6,null,13,null,null,27,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 4,
+      "R": 0.749,
+      "O": 0.554,
+      "P": 31,
+      "entryIdx": 63
+    },
+    {
+      "q": "x video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [176,1,178,177,179,172,375,170,19,168,6,-1,3,-1,374,171,-1,377,383,25,175,21,-1,27,-1,9,385,20,-1,-1],
+      "nb": 10,
+      "niche": 0.9,
+      "vol": 8773164,
+      "entry": 8285,
+      "entryRank": 5,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,null,13,null,null,11,null,null,26,null,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 4,
+      "R": 0.733,
+      "O": 0.568,
+      "P": 31,
+      "entryIdx": 179
+    },
+    {
+      "q": "4k video downloader",
+      "tier": "A",
+      "src": "core",
+      "tm": 0,
+      "depth": 5,
+      "ids": [77,1,2,25,42],
+      "nb": 5,
+      "niche": 0.92,
+      "vol": 266150,
+      "entry": 133921,
+      "entryRank": 5,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,3,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 2,
+      "R": 0.939,
+      "O": 0.337,
+      "P": 30,
+      "entryIdx": 42
+    },
+    {
+      "q": "insta downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,5,159,7,10,-1,1,66,108,146,106,-1,107,123,42,109,62,-1,-1,191,-1,-1,3,97,-1,36,126,2,-1,-1],
+      "nb": 8,
+      "niche": 0.87,
+      "vol": 19591899,
+      "entry": 35089,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [7,28,23,1,2,null,4,null,null,5,null,null,null,null,null,null],
+      "c10": 5,
+      "c30": 7,
+      "R": 0.788,
+      "O": 0.488,
+      "P": 30,
+      "entryIdx": 108
+    },
+    {
+      "q": "story saver for instagram",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [359,4,103,361,64,62,102,5,63,387,7,66,159,360,65,-1,-1,109,-1,-1,-1,-1,-1,-1,-1,110,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.82,
+      "vol": 872448,
+      "entry": 21289,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,2,8,null,11,null,null,null,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 3,
+      "R": 0.739,
+      "O": 0.541,
+      "P": 30,
+      "entryIdx": 63
+    },
+    {
+      "q": "instagram video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [4,5,123,7,159,1,-1,146,106,42,10,108,107,3,-1,124,357,109,66,36,2,97,31,8,157,-1,27,-1,-1,385],
+      "nb": 8,
+      "niche": 0.82,
+      "vol": 19231602,
+      "entry": 34890,
+      "entryRank": 3,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [6,21,14,1,2,null,4,24,null,11,null,null,null,null,null,null],
+      "c10": 4,
+      "c30": 8,
+      "R": 0.773,
+      "O": 0.488,
+      "P": 29,
+      "entryIdx": 123
+    },
+    {
+      "q": "tiktok downloader no watermark",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [38,129,128,47,149,148,150,45,363,151,-1,42,368,131,-1,-1,-1,132,-1,-1,-1,-1,-1,-1,-1,-1,-1,5,-1,-1],
+      "nb": 10,
+      "niche": 0.96,
+      "vol": 5059662,
+      "entry": 342412,
+      "entryRank": 10,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,28,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 1,
+      "R": 0.721,
+      "O": 0.523,
+      "P": 27,
+      "entryIdx": 151
+    },
+    {
+      "q": "fb video downloader app",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [-1,-1,370,362,79,57,1,-1,4,42,5,80,126,2,-1,-1,125,385,3,82,10,27,-1,-1,-1,357,113,-1,-1,25],
+      "nb": 7,
+      "niche": 0.89,
+      "vol": 1686085,
+      "entry": 98777,
+      "entryRank": 4,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [7,14,19,9,11,null,null,null,null,21,null,null,null,null,null,null],
+      "c10": 2,
+      "c30": 6,
+      "R": 0.762,
+      "O": 0.424,
+      "P": 25,
+      "entryIdx": 362
+    },
+    {
+      "q": "facebook video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [-1,362,-1,1,79,57,80,-1,42,125,-1,4,5,3,126,27,370,82,2,10,-1,-1,-1,385,20,-1,-1,113,-1,357],
+      "nb": 7,
+      "niche": 0.89,
+      "vol": 1686085,
+      "entry": 12753,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [4,19,14,12,13,null,null,null,null,20,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 6,
+      "R": 0.728,
+      "O": 0.446,
+      "P": 24,
+      "entryIdx": 80
+    },
+    {
+      "q": "status saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 0,
+      "depth": 30,
+      "ids": [89,161,152,93,388,96,389,390,92,91,384,-1,-1,-1,122,366,378,-1,-1,391,364,-1,-1,-1,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.67,
+      "vol": 6121431,
+      "entry": 28401,
+      "entryRank": 6,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.619,
+      "O": 0.552,
+      "P": 21,
+      "entryIdx": 96
+    },
+    {
+      "q": "whatsapp status saver",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [89,381,161,152,388,92,389,390,96,93,-1,365,391,91,-1,-1,364,-1,-1,-1,-1,122,-1,-1,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.67,
+      "vol": 4194862,
+      "entry": 28401,
+      "entryRank": 9,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.619,
+      "O": 0.549,
+      "P": 21,
+      "entryIdx": 96
+    },
+    {
+      "q": "status saver for whatsapp",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 30,
+      "ids": [89,161,152,92,381,389,96,388,91,391,93,-1,-1,-1,390,-1,365,364,-1,-1,-1,122,-1,-1,-1,-1,-1,-1,-1,-1],
+      "nb": 10,
+      "niche": 0.61,
+      "vol": 6121431,
+      "entry": 28401,
+      "entryRank": 7,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 0,
+      "c30": 0,
+      "R": 0.599,
+      "O": 0.552,
+      "P": 20,
+      "entryIdx": 96
+    },
+    {
+      "q": "twitter video downloader",
+      "tier": "B",
+      "src": "plat",
+      "tm": 1,
+      "depth": 5,
+      "ids": [19,1,179,42,45],
+      "nb": 5,
+      "niche": 0.84,
+      "vol": 684294,
+      "entry": 8285,
+      "entryRank": 3,
+      "demand": 0,
+      "demandAt": null,
+      "comps": [2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
+      "c10": 1,
+      "c30": 1,
+      "R": 0.712,
+      "O": 0.374,
+      "P": 19,
+      "entryIdx": 179
+    }
+  ]
+}
+```
+
+### data.claims
+
+```json
+[
+  ["paste","Paste link to download"],
+  ["browser","Built-in browser with auto-detect"],
+  ["quality","Choose video quality / HD"],
+  ["background","Background downloads · pause & resume"],
+  ["multi","Multiple / batch downloads"],
+  ["story","Story & reels saver"],
+  ["status","WhatsApp status saver"],
+  ["mp3","MP3 / audio extraction"],
+  ["private","Private folder / vault / lock"],
+  ["editor","Built-in video editor (cut, crop, merge)"],
+  ["player","Video player"],
+  ["languages","Multi-language interface"]
+]
+```
+
+### data.collectedAt
+
+```json
+"2026-09-16T11:05:37.590Z"
+```
+
+### data.compIdx
+
+```json
+[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
+```
+
+### data.marketSummary
+
+```json
+[
+  {
+    "gl": "US",
+    "keywords": 40,
+    "avgNonBrand": 9.6,
+    "medianEntry": 157368,
+    "compTop10": 155,
+    "avgDepth": 28.8,
+    "best": [
+      {"q":"video downloader","P":83,"nb":10,"entry":266150,"c10":5,"tm":0},
+      {"q":"hd video downloader","P":80,"nb":10,"entry":157368,"c10":5,"tm":0},
+      {"q":"all video downloader","P":79,"nb":10,"entry":266150,"c10":6,"tm":0},
+      {"q":"private video downloader","P":77,"nb":10,"entry":27368,"c10":6,"tm":0},
+      {"q":"fast video downloader","P":75,"nb":10,"entry":266150,"c10":5,"tm":0},
+      {"q":"online video downloader","P":75,"nb":10,"entry":249023,"c10":6,"tm":0}
+    ]
+  },
+  {
+    "gl": "BR",
+    "keywords": 40,
+    "avgNonBrand": 9.3,
+    "medianEntry": 249023,
+    "compTop10": 143,
+    "avgDepth": 27.8,
+    "best": [
+      {"q":"all video downloader","P":80,"nb":9,"entry":266150,"c10":5,"tm":0},
+      {"q":"video downloader","P":77,"nb":10,"entry":5071274,"c10":5,"tm":0},
+      {"q":"social video downloader","P":72,"nb":10,"entry":282,"c10":2,"tm":0},
+      {"q":"fast video downloader","P":71,"nb":9,"entry":249023,"c10":6,"tm":0},
+      {"q":"video saver","P":66,"nb":10,"entry":266150,"c10":7,"tm":0},
+      {"q":"all video downloader and saver","P":65,"nb":10,"entry":157368,"c10":8,"tm":0}
+    ]
+  },
+  {
+    "gl": "DE",
+    "keywords": 40,
+    "avgNonBrand": 9.5,
+    "medianEntry": 249023,
+    "compTop10": 155,
+    "avgDepth": 28.5,
+    "best": [
+      {"q":"all video downloader","P":85,"nb":10,"entry":266150,"c10":6,"tm":0},
+      {"q":"video downloader","P":81,"nb":10,"entry":266150,"c10":6,"tm":0},
+      {"q":"fast video downloader","P":75,"nb":10,"entry":249023,"c10":5,"tm":0},
+      {"q":"social video downloader","P":72,"nb":10,"entry":282,"c10":2,"tm":0},
+      {"q":"download video","P":68,"nb":10,"entry":249023,"c10":3,"tm":0},
+      {"q":"video downloader app","P":65,"nb":10,"entry":266150,"c10":6,"tm":0}
+    ]
+  },
+  {
+    "gl": "ES",
+    "keywords": 40,
+    "avgNonBrand": 9.5,
+    "medianEntry": 157368,
+    "compTop10": 145,
+    "avgDepth": 28.9,
+    "best": [
+      {"q":"all video downloader","P":83,"nb":10,"entry":266150,"c10":5,"tm":0},
+      {"q":"video downloader","P":82,"nb":10,"entry":201888,"c10":5,"tm":0},
+      {"q":"fast video downloader","P":75,"nb":10,"entry":249023,"c10":5,"tm":0},
+      {"q":"social video downloader","P":72,"nb":10,"entry":282,"c10":2,"tm":0},
+      {"q":"save video","P":67,"nb":10,"entry":747,"c10":2,"tm":0},
+      {"q":"video downloader app","P":65,"nb":10,"entry":249023,"c10":5,"tm":0}
+    ]
+  },
+  {
+    "gl": "IT",
+    "keywords": 40,
+    "avgNonBrand": 9.5,
+    "medianEntry": 249023,
+    "compTop10": 153,
+    "avgDepth": 28.6,
+    "best": [
+      {"q":"all video downloader","P":83,"nb":10,"entry":266150,"c10":6,"tm":0},
+      {"q":"video downloader","P":82,"nb":10,"entry":266150,"c10":3,"tm":0},
+      {"q":"social video downloader","P":72,"nb":10,"entry":282,"c10":2,"tm":0},
+      {"q":"fast video downloader","P":71,"nb":9,"entry":266150,"c10":5,"tm":0},
+      {"q":"download video","P":70,"nb":10,"entry":249023,"c10":3,"tm":0},
+      {"q":"video downloader app","P":65,"nb":10,"entry":266150,"c10":5,"tm":0}
+    ]
+  },
+  {
+    "gl": "AU",
+    "keywords": 40,
+    "avgNonBrand": 9.4,
+    "medianEntry": 133921,
+    "compTop10": 146,
+    "avgDepth": 28.5,
+    "best": [
+      {"q":"video downloader","P":80,"nb":10,"entry":5071274,"c10":4,"tm":0},
+      {"q":"all video downloader","P":80,"nb":10,"entry":266150,"c10":6,"tm":0},
+      {"q":"fast video downloader","P":75,"nb":10,"entry":266150,"c10":4,"tm":0},
+      {"q":"social video downloader","P":72,"nb":10,"entry":282,"c10":2,"tm":0},
+      {"q":"download video","P":69,"nb":10,"entry":249023,"c10":4,"tm":0},
+      {"q":"video downloader browser","P":67,"nb":9,"entry":249023,"c10":4,"tm":0}
+    ]
+  },
+  {
+    "gl": "AE",
+    "keywords": 40,
+    "avgNonBrand": 9.1,
+    "medianEntry": 202665,
+    "compTop10": 147,
+    "avgDepth": 28.5,
+    "best": [
+      {"q":"video downloader","P":82,"nb":10,"entry":266150,"c10":5,"tm":0},
+      {"q":"social video downloader","P":78,"nb":10,"entry":282,"c10":3,"tm":0},
+      {"q":"all video downloader","P":77,"nb":9,"entry":13970550,"c10":4,"tm":0},
+      {"q":"hd video downloader","P":73,"nb":10,"entry":157368,"c10":4,"tm":0},
+      {"q":"fast video downloader","P":71,"nb":9,"entry":266150,"c10":5,"tm":0},
+      {"q":"download video","P":67,"nb":9,"entry":484585,"c10":3,"tm":0}
+    ]
+  },
+  {
+    "gl": "IN",
+    "keywords": 40,
+    "avgNonBrand": 9.3,
+    "medianEntry": 98777,
+    "compTop10": 143,
+    "avgDepth": 28.2,
+    "best": [
+      {"q":"all video downloader","P":85,"nb":10,"entry":266150,"c10":5,"tm":0},
+      {"q":"video downloader","P":80,"nb":10,"entry":266150,"c10":5,"tm":0},
+      {"q":"social video downloader","P":78,"nb":10,"entry":282,"c10":3,"tm":0},
+      {"q":"fast video downloader","P":76,"nb":10,"entry":98777,"c10":5,"tm":0},
+      {"q":"download video","P":72,"nb":10,"entry":266150,"c10":5,"tm":0},
+      {"q":"video saver","P":66,"nb":10,"entry":266150,"c10":7,"tm":0}
+    ]
+  }
+]
+```
+
+### data.markets
+
+```json
+["US","BR","DE","ES","IT","AU","AE","IN"]
+```
+
+### data.profiles
+
+```json
+[
+  {
+    "id": "video.downloader.videodownloader",
+    "idx": 1,
+    "title": "Video Downloader",
+    "titleLen": 16,
+    "summary": "A Simple app to download Video & Music from the Internet.",
+    "summaryLen": 57,
+    "description": "Easily download videos and music directly from the Internet onto your device. All formats are supported. 100% free!\n\nVideo downloader auto detects videos, you can download them with just one click. The powerful download manager allows you to pause and resume downloads, download in the background and download several files at the same time. Preview the video first, fast download and play it offline.\n\nFeatures\n* Browse videos with the built-in browser\n* Play videos offline with the built-in player\n* All download formats supported, mp3, m4a, mp4, m4v, mov, avi, wmv, doc, xls, pdf, txt, etc.\n* Auto detect videos and easily download\n* Full-featured download manager to pause, resume and remove downloads\n* Download several files at the same time\n* Save downloaded files in a password-protected folder\n* Download videos in the background\n* SD card supported\n* Resume failed downloads\n* Fast download speed\n* Check the progress in the download bar \n* HD video download supported\n* Large file download supported\n* Download video, music and pictures\n* Add bookmarks for your favorite websites\n\nHow to Use This Video Downloader\n* Browse website with the built-in browser\n* Auto detect videos, and tap the download button\n* Choose which video you want to download\n* Done!\n\nVideo Downloader Manager\nIf you are looking for powerful video downloader manager, try this video downloader manager to download video, you won't regret it!\n\nBrowser Private Downloader\nThe best browser private downloader and browser downloader. This browser downloader can keep your videos safe. Download with this browser private downloader and browser downloader.\n\nDownload Manager\nDownload manager for video download. Enjoy your downloading with this download manager.\n\nFast Video Downloader\nWanna download video with fast speed? Try this fast video downloader to download video. It's the simple and fast video downloader for video download in the market.\n\nVideo Downloader App\nThis video downloader app help you download video with just one click. Enjoy video download with this free video downloader app.\n\nDownload Video\nIf you're looking for video, you really need to try this download video app! \n\nPermission\n- Network - to download files\n- Read and write SD card - to save your downloaded files to SD card",
+    "descLen": 2283,
+    "descWords": 353,
+    "developer": "InShot Inc.",
+    "installs": 236276464,
+    "installsLabel": "100,000,000+",
+    "score": 4.722918,
+    "ratings": 2719684,
+    "released": "Mar 16, 2018",
+    "updated": "2026-08-24",
+    "genre": "Video Players & Editors",
+    "ads": 1,
+    "iap": "$2.99 - $6.99 per item",
+    "video": 0,
+    "shots": 17,
+    "titleKw": ["video downloader","downloader"],
+    "kwDens": [
+      {"q":"video downloader","n":11,"d":6.2},
+      {"q":"fast video downloader","n":3,"d":2.5},
+      {"q":"download video","n":7,"d":4},
+      {"q":"free video downloader","n":1,"d":0.8}
+    ],
+    "perMarket": {
+      "US": {"top3":39,"top10":51,"any":57,"best":1},
+      "BR": {"top3":28,"top10":33,"any":33,"best":1},
+      "DE": {"top3":27,"top10":33,"any":33,"best":1},
+      "ES": {"top3":28,"top10":33,"any":33,"best":1},
+      "IT": {"top3":27,"top10":33,"any":33,"best":1},
+      "AU": {"top3":27,"top10":33,"any":33,"best":1},
+      "AE": {"top3":25,"top10":33,"any":33,"best":1},
+      "IN": {"top3":27,"top10":33,"any":33,"best":1}
+    },
+    "claims": {"paste":0,"browser":1,"quality":1,"background":1,"multi":1,"story":0,"status":0,"mp3":1,"private":1,"editor":0,"player":1,"languages":0},
+    "mine": false,
+    "iapRange": {"min":2.99,"max":6.99}
+  },
+  {
+    "id": "com.gamma.videodownloader",
+    "idx": 2,
+    "title": "Video Downloader - without ads",
+    "titleLen": 30,
+    "summary": "Video downloader for up to 4K videos. Auto-detect, save, watch offline fast.",
+    "summaryLen": 76,
+    "description": "Video Downloader saves clips from the web straight to your phone, so your favourite videos are ready to watch offline, on a flight, on the train, in a dead zone, or anywhere you would rather not burn mobile data. A reliable video downloader app lets you download video files quickly and easily.\n\nOpen the built-in browser, find a video, and Video Downloader detects it automatically. Tap once and it is saved. No sign-up, no clutter, no hunting through pop-ups to find the download button when you want to download video clips from the web.\n\nWHY PEOPLE CHOOSE THIS VIDEO DOWNLOADER\nA fast, clean experience is the whole point. The multi-thread download manager pulls files at full speed and functions as a true fast video downloader. Everything lives on one simple screen.\n\nKEY FEATURES\n\nAuto-detect: open a page in the built-in browser and the video is ready to save.\n\nOne-tap download: choose the quality, tap, done—easiest way to download video content.\n\nFast download manager: pause, resume, queue several files, recover failed downloads without starting over.\n\nBackground download: keep saving while you use other apps.\n\nBuilt-in player: watch downloaded videos offline without switching apps.\n\nPrivate folder: lock saved files in a secure space with a private video downloader app.\n\nHD video downloader & 4K quality: save clips in high resolution up to 4K.\n\nBookmarks: save the sites you visit most for faster access next time\n\nAd blocker: block ads and pop-ups while you browse\n\nPRIVATE, AND IN YOUR CONTROL\nDownload from the social apps and sites you already browse using a powerful social media downloader, then keep what you save in a password-protected folder. Use the browser private downloader to browse in incognito mode so nothing is left behind, open several tabs at once, pick the resolution you want, and delete anything you no longer need in one tap.\n\nHOW TO DOWNLOAD A VIDEO\n\nOpen the built-in browser or paste the video link.\n\nPlay the clip; the app detects it automatically.\n\nPick the resolution you want in this HD video downloader.\n\nTap download video. The file lands in your gallery, ready offline.\n\nMADE TO STAY OUT OF YOUR WAY\nThis is a lightweight fast video downloader built for speed and simplicity. Manage every download from a single view: track progress, rename, share, or delete in a couple of taps. \n\nOFFLINE, ANYTIME\nOnce a video is saved with this video downloader, it is yours to watch. Build a small offline library for long trips, commutes, or slow networks, and stop re-streaming the same clips over and over.\n\nRESPONSIBLE USE\nPlease download only videos you have the right to save, and get the owner's permission before reposting someone else's work.\n\nMORE WAYS TO USE IT\nSave a lecture to rewatch before an exam, keep a recipe clip handy in the kitchen, or line up cartoons for the kids before a long drive. It works as a story saver, reel downloader, or short video downloader. All stored on your phone, so your video collection plays even when the signal drops.\n\nCOMMON QUESTIONS\n\nIs it a real download manager?\nYes, pause, resume, queue, and retry are all built in to this fast video downloader.\n\nCan it act as a private video downloader app?\nYes, lock saved files in a password-protected folder using our private video downloader setup.\n\nDoes it support high resolution content?\nYes, it functions as an HD video downloader that saves clips up to 4K quality.\n\nWill it save from the sites I already open?\nYes, load them in the browser private downloader and tap once to download video files.\n\nONE APP, MANY NAMES\nLooking for a complete media downloader and file saver? This app acts as a fast video downloader with a built-in download manager, a browser private downloader, and a secure private video downloader. All-in-one social media downloader, short video downloader, reel downloader, and story saver. Get an HD video downloader and offline player in one.\n\nInstall Video Downloader today to download video clips in high quality and keep what matters.",
+    "descLen": 4000,
+    "descWords": 687,
+    "developer": "Gamma Play",
+    "installs": 266150,
+    "installsLabel": "100,000+",
+    "score": 4.6309524,
+    "ratings": 3097,
+    "released": "Jul 14, 2026",
+    "updated": null,
+    "genre": "Video Players & Editors",
+    "ads": 0,
+    "iap": null,
+    "video": 0,
+    "shots": 21,
+    "titleKw": ["video downloader","video downloader without ads","downloader"],
+    "kwDens": [
+      {"q":"video downloader","n":20,"d":5.8},
+      {"q":"hd video downloader","n":4,"d":1.7},
+      {"q":"private video downloader","n":4,"d":1.7},
+      {"q":"fast video downloader","n":4,"d":1.7},
+      {"q":"download video","n":6,"d":1.7}
+    ],
+    "perMarket": {
+      "US": {"top3":9,"top10":32,"any":47,"best":1},
+      "BR": {"top3":3,"top10":18,"any":28,"best":1},
+      "DE": {"top3":5,"top10":22,"any":29,"best":1},
+      "ES": {"top3":7,"top10":21,"any":28,"best":1},
+      "IT": {"top3":2,"top10":22,"any":28,"best":1},
+      "AU": {"top3":1,"top10":21,"any":29,"best":1},
+      "AE": {"top3":2,"top10":15,"any":28,"best":1},
+      "IN": {"top3":5,"top10":19,"any":30,"best":1}
+    },
+    "claims": {"paste":1,"browser":1,"quality":1,"background":1,"multi":1,"story":1,"status":0,"mp3":0,"private":1,"editor":0,"player":0,"languages":0},
+    "mine": false,
+    "iapRange": null
+  },
+  {
+    "id": "videoplayer.videodownloader.downloader",
+    "idx": 3,
+    "title": "All Video Downloader & Player",
+    "titleLen": 29,
+    "summary": "HD Video player and downloader for all formats, fast & smooth 4K video playback.",
+    "summaryLen": 80,
+    "description": "Best free video player for android phones and tablets.\nVideo Player - AcePlayer supports fast and stable playback of 4K/UHD videos.\nIt is also a powerful video downloader that can fast download HD videos in all formats. You can hide personal videos in private folders.\n\nDownload some movies and enjoy the audiovisual feast that AcePlayer brought to you!\n\nKey Features\n* Fast playback of all HD, UHD, 4K, 1080P videos\n* Smooth playback of all videos: MKV, MP4, M4V, MOV, 3GP, FLV, F4V, WEBM, etc.\n* Pop-up window playback\n* Super fast HD video player & video downloader\n* Auto detect local videos\n* A-B Repeat & loop mode\n* Hide private videos in a password-protected folder\n* Smart gesture operation\n* Background download \n* Multiple download\n* Sleep timer\n\nAll video downloader - Download online hot videos in high resolution at lightning speed.\nPopup video player - Play videos in a pop-up window for easy multitasking.\nBackground video player - Play videos in the background and enjoy them while doing other things.\nPrivate folder - Keep your private videos and movies in password-protected folders.\n\nThis full-featured Video Player - AcePlayer is completely free now, don’t miss it!\n\nWe are always working hard for a better user experience. If you have any suggestions or feedback, please feel free to contact us at aceplayerfeedback@gmail.com.",
+    "descLen": 1348,
+    "descWords": 214,
+    "developer": "QR Code Scanner.",
+    "installs": 383593932,
+    "installsLabel": "100,000,000+",
+    "score": 4.5262523,
+    "ratings": 1880043,
+    "released": "Jan 29, 2022",
+    "updated": "2026-09-16",
+    "genre": "Tools",
+    "ads": 1,
+    "iap": null,
+    "video": 0,
+    "shots": 8,
+    "titleKw": ["video downloader","all video downloader","downloader"],
+    "kwDens": [
+      {"q":"video downloader","n":3,"d":2.8},
+      {"q":"all video downloader","n":1,"d":1.4}
+    ],
+    "perMarket": {
+      "US": {"top3":10,"top10":26,"any":42,"best":2},
+      "BR": {"top3":5,"top10":13,"any":28,"best":2},
+      "DE": {"top3":7,"top10":17,"any":29,"best":2},
+      "ES": {"top3":5,"top10":14,"any":28,"best":2},
+      "IT": {"top3":8,"top10":15,"any":29,"best":2},
+      "AU": {"top3":2,"top10":14,"any":28,"best":2},
+      "AE": {"top3":10,"top10":18,"any":29,"best":1},
+      "IN": {"top3":10,"top10":19,"any":29,"best":2}
+    },
+    "claims": {"paste":0,"browser":1,"quality":1,"background":1,"multi":0,"story":0,"status":0,"mp3":0,"private":1,"editor":0,"player":1,"languages":0},
+    "mine": false,
+    "iapRange": null
+  },
+  {
+    "id": "instagram.video.downloader.story.saver.ig",
+    "idx": 4,
+    "title": "Video downloader - Story Saver",
+    "titleLen": 30,
+    "summary": "Video downloader for story saver. Instsave helps download save & repost video.",
+    "summaryLen": 78,
+    "description": "While scrolling of social media app and want to share photo & video with others, this is the time that Photo & Video downloader & Story downloader for social media – story saver came to help you. \n\nPhoto & Video downloader & Story downloader for social media – story saver is the easiest video downloader to download social media video and social media stories.\n\nYou can save Video & Photo & Story & Music  from social media and to your phone with story saver story downloader.\n\nstory saver story downloader for social media is safe and simple to use. 100% Automatic social media story download by copying link or sharing videos. \n\nTry this super-fast & easy video downloader for social media & story downloader for social media &  Music downloader app now!\n\n Copy the link to get social media's Stories, Videos, and Photos. \n① Copy the links for the social media videos, photos, and Music.\n② social media stories and videos will be downloaded automatically.\n\n Save social media Stories, Videos, and Photos by sharing. \n① Select story saver story downloader from the \"Share to\" menu.\n② social media stories and videos will be downloaded automatically.\n\n Video downloader and story downloader for Story Saver Features.  \n☆ Download photos and videos for story saver. \n☆ social media Music, hsocial mediahlsocial mediahtand story videos are all easily saveable.\n☆ Downloading of videos from Story Saver is supported.\n☆ Get images and videos from private accounts. \n☆  post Downloader & social media Picture Downloader.\n☆ Watch offline videos whenever and wherever you choose. \n☆ Copy the save tags and descriptions. \n☆ Safe and simple to use! \n☆ social media videos and photos can be downloaded in batch \n\nstory saver story downloader & video downloader for social media & story downloader app is the easiest and safest app to save stories & download video & save Music video & social media photos from social media. Download this fast video downloader & story downloader to save social media video easily!\n\nDisclaimer of story saver story downloader:\n\n- The ownership, intellectual property rsocial mediahts and any other interests of the Video, Photo, social media Story, Music Video even Hsocial mediahlsocial mediaht on the platform belong to its publishers or owners. Please obtain permission before download and use the content and indicate the source of the content when using the downloaded files. \n\n- This video downloader is not associated with social media",
+    "descLen": 2465,
+    "descWords": 371,
+    "developer": "Video Downloader Story Saver",
+    "installs": 64791541,
+    "installsLabel": "50,000,000+",
+    "score": 4.7444468,
+    "ratings": 1420154,
+    "released": "Oct 13, 2023",
+    "updated": "2026-09-14",
+    "genre": "Social",
+    "ads": 1,
+    "iap": "$0.09 - $119.99 per item",
+    "video": 0,
+    "shots": 6,
+    "titleKw": ["video downloader","downloader","story saver"],
+    "kwDens": [
+      {"q":"video downloader","n":8,"d":4.3},
+      {"q":"fast video downloader","n":1,"d":0.8},
+      {"q":"download video","n":1,"d":0.5}
+    ],
+    "perMarket": {
+      "US": {"top3":21,"top10":36,"any":52,"best":1},
+      "BR": {"top3":10,"top10":18,"any":29,"best":1},
+      "DE": {"top3":11,"top10":20,"any":31,"best":1},
+      "ES": {"top3":11,"top10":21,"any":32,"best":1},
+      "IT": {"top3":10,"top10":21,"any":31,"best":1},
+      "AU": {"top3":11,"top10":17,"any":31,"best":1},
+      "AE": {"top3":10,"top10":19,"any":31,"best":1},
+      "IN": {"top3":11,"top10":25,"any":32,"best":1}
+    },
+    "claims": {"paste":1,"browser":0,"quality":0,"background":0,"multi":1,"story":1,"status":0,"mp3":1,"private":0,"editor":0,"player":0,"languages":0},
+    "mine": false,
+    "iapRange": {"min":0.09,"max":119.99}
+  },
+  {
+    "id": "instagram.video.downloader.story.saver.ig.insaver",
+    "idx": 5,
+    "title": "InSaver: All Video Downloader",
+    "titleLen": 29,
+    "summary": "Free Repost & Story Saver: Use Instsaver all video downloader to download video.",
+    "summaryLen": 80,
+    "description": "👋🏼 Wanting to download photos and videos in social media and share with others? This is when Photo & Video & GIF Downloader for Social Media – All Video Downloader comes to your aid!🫶🏼\n\n🔺 You can descargar Videos & Photos & Story & Music from any social media  to your phone using this insaver, and as your private downloader it is definitely safe!🔐\n\nInsaver's Key Features\n1️⃣ No Login Required:\n All Video Downloader - Story Saver eliminates the need for login operations. Downloading social media content is simple and secure. \n2️⃣ Free Downloads:\nDownload videos, photos, stories, and music from social media for free. \n3️⃣ Batch Downloads:\n Insaver - Story Saver supports individual and batch downloads of multiple videos and photos. \n4️⃣ Powerful Story Downloader:\nWe support all types of social media stories, download them with a single click. \nAccess Content from Private Accounts:\nDownload photos and videos from private accounts with Video Downloader - Story Saver. \n5️⃣ Offline Viewing:\n All Video Downloader - Story Saver supports offline storage of all downloaded content. \n6️⃣ High-Quality Downloads:\n All Video Downloader - Story Saver supports high-definition downloads, ensuring every video and photo you save is crisp and clear.\n7️⃣ Safe and Reliable:\n Insaver ensures your downloading process is safe, protecting your personal information.\n\nWhy Choose  All Video Downloader - Insaver?\n\n⭐️ Easy to Use:\nAll Video Downloader - Story Saver’s interface is simple and intuitive. Just copy the social media content link, open Video Downloader - Story Saver, click the download button, and leave the rest to us.\n\n⭐️ Fast Downloads:\n All Video Downloader - Story Saver ensures your downloads are completed quickly. Get all the social media content you need in a flash.\n\n⭐️Comprehensive Social Media Support:\nFrom videos, photos, stories, to music, Video Downloader - Insaver supports all types of content from social media platforms. \n\n⭐️ Powerful Multimedia Management:\nDownloaded content can be categorized and managed within Insaver. Easily view, play, and delete downloaded files.\n\n⭐️ Supports Multiple Formats:\n Insaver supports various video and photo formats for download and storage.\n\nAll Video Downloader - insaver stands out as a story saver and media downloader, empowering users to download social media stories simply. \n\nAll Video Downloader - Story Saver is not just any video downloader; it's a solution for downloading and managing social media content. Whether it's HD videos, photos, or music,  All Video Downloader - Story Saver supports it all. \n\nAll Video Downloader - Insaver is a powerful tool for downloading videos, photos, stories, and music from social media platforms without logging in. This free downloader allows you to enjoy offline videos anytime, anywhere. With support for batch downloads, simple interface,  All Video Downloader - Story Saver is your go-to solution for managing and saving social media content safely and easily. Whether you need a story saver, a video downloader, or a story downloader,  All Video Downloader - Story Saver has got you covered.\n\nDisclaimer for Insaver:\n\n- All ownership, intellectual property rights, and any other rights of the videos, photos, social media stories, music videos, and other content on the platform belong to their respective publishers or owners. Please obtain permission before downloading or using the content, and cite the source of the content when using the downloaded files.\n\n- This video downloader is not affiliated with any social media platforms.",
+    "descLen": 3561,
+    "descWords": 530,
+    "developer": "Video Downloader Story Saver",
+    "installs": 13028866,
+    "installsLabel": "10,000,000+",
+    "score": 4.74722,
+    "ratings": 295406,
+    "released": "May 29, 2024",
+    "updated": "2026-09-14",
+    "genre": "Video Players & Editors",
+    "ads": 1,
+    "iap": "$1.99 - $29.99 per item",
+    "video": 0,
+    "shots": 7,
+    "titleKw": ["video downloader","all video downloader","downloader"],
+    "kwDens": [
+      {"q":"video downloader","n":19,"d":7.2},
+      {"q":"all video downloader","n":13,"d":7.4}
+    ],
+    "perMarket": {
+      "US": {"top3":13,"top10":33,"any":54,"best":1},
+      "BR": {"top3":4,"top10":14,"any":31,"best":2},
+      "DE": {"top3":3,"top10":14,"any":31,"best":3},
+      "ES": {"top3":5,"top10":16,"any":32,"best":2},
+      "IT": {"top3":6,"top10":15,"any":33,"best":2},
+      "AU": {"top3":5,"top10":14,"any":33,"best":2},
+      "AE": {"top3":6,"top10":15,"any":33,"best":1},
+      "IN": {"top3":7,"top10":14,"any":32,"best":2}
+    },
+    "claims": {"paste":1,"browser":0,"quality":1,"background":0,"multi":1,"story":1,"status":0,"mp3":1,"private":0,"editor":0,"player":0,"languages":0},
+    "mine": false,
+    "iapRange": {"min":1.99,"max":29.99}
+  },
+  {
+    "id": "hub.browser.video.downloader.saver",
+    "idx": 6,
+    "title": "Hub Video Downloader",
+    "titleLen": 20,
+    "summary": "Download Hub, easy and private way to download and enjoy your videos offline",
+    "summaryLen": 76,
+    "description": "Save Hub: All Video Downloader Browser – Download Videos Fast & Keep it Private!Want to save videos, movies, and files to your device without sharing your data? The Save Hub: All Video Downloader Browser has you covered. Its smart built-in browser and cutting-edge tools let you pull web content onto your device in total lack of prying eyes. Getting your hands on HD videos or using the Private Downloader App you trust has never been simpler or faster.\n \nThe HD Downloader From Websites app runs super smoothly and lets you pause, resume, or keep downloads going in the background. That means your favorite movies and videos are one single tap away, whenever you want them.\n\n📄 Why You’ll Love Save Hub: All Video Downloader Browser:📄\n📥 Automatically spot and grab videos the moment you visit a site;\n📥 Browse with a Private Downloader App that offers unlimited tabs;\n📥 Enjoy unlimited downloading with the built-in Movie Downloader: All Video Saver;\n📥 Surf the web in the built-in Private Browser for better security;\n📥 Experience lightning-fast downloads with the Download Hub tool;\n📥 Save HD videos in 2K and 4K directly from websites;\n📥 Keep downloads running in the background with pause, resume, and cancel at your fingertips;\n📥 Automatically store videos straight to your gallery for super-easy access.\n\nYour All-in-One Instant Download Solution!With Save Hub: All Video Downloader Browser, multitasking your downloads is a breeze. This handy tool kicks multiple files into gear, so you save time. The built-in Download Hub Tool keeps everything flowing, even with movies that want to drag. Get Download Videos: Private Browser Downloader to snag the highest video quality every single time, no exceptions.\n\nYour Private Playground:🔒\nDon’t want prying eyes? The built-in private browser has you covered. Surf, stream, and save while it blocks pesky sites. All your downloads and searches vanish the moment you close the app. Bookmark must-see sites so they're a one-click-job later, and use Download Videos: Private Browser Downloader to re-open them at a blink.\n\nQuick Downloads, No Hassles:🎬\nFrom a 30-second clip to the latest blockbuster, Movie Downloader: All Video Saver gets it done fast. Press play, hit download, and pick the quality that fits your screen. The HD Downloader From Websites setting makes every frame pop, so your movies look theatre-fresh.\n\nUltimate Download Control:⚡\nJuggling several downloads at the same time? The Download Videos: Private Browser Downloader lets you pause, resume, or stop files anytime you want. Thanks to Save Hub: All Video Downloader Browser, everything lands in your gallery neat and tidy, ready to binge in seconds.\n\nQuick Steps to Begin:📲\n1. Open the private browser;\n2. Play the video you want;\n3. Tap the download icon;\n4. Pick the quality you need and let the Movie Downloader: All Video Saver handle it.\n\nStart Downloading With Confidence Today!Seize control over your videos using Save Hub: All Video Downloader Browser. Looking for a private downloader app? Want a full Movie Downloader: All Video Saver? Need a HD Downloader From Websites? This app ticks every box. Enjoy speedy downloads, strict privacy, and the dependable Download Hub Tool. With it, your favorite videos will always be right where you want them.\n\nDisclaimer: The download of copyrighted materials is prohibited and regulated by the laws of your country. This application does not support downloading content from YouTube or copyrighted streaming platforms in compliance with Google Play Store policies. Unauthorized reposting or downloading of content and/or violations of intellectual property rights is the sole responsibility of the user. Please get permission from the owner before you repost videos.",
+    "descLen": 3754,
+    "descWords": 608,
+    "developer": "DOSA Apps",
+    "installs": 13689906,
+    "installsLabel": "10,000,000+",
+    "score": 4.3660564,
+    "ratings": 81935,
+    "released": "Jun 7, 2023",
+    "updated": "2026-08-10",
+    "genre": "Video Players & Editors",
+    "ads": 1,
+    "iap": "$0.99 - $99.99 per item",
+    "video": 0,
+    "shots": 25,
+    "titleKw": ["video downloader","downloader"],
+    "kwDens": [
+      {"q":"video downloader","n":6,"d":2},
+      {"q":"all video downloader","n":6,"d":3},
+      {"q":"video saver","n":4,"d":1.3}
+    ],
+    "perMarket": {
+      "US": {"top3":3,"top10":26,"any":39,"best":3},
+      "BR": {"top3":1,"top10":16,"any":24,"best":3},
+      "DE": {"top3":1,"top10":17,"any":27,"best":3},
+      "ES": {"top3":2,"top10":16,"any":27,"best":3},
+      "IT": {"top3":3,"top10":16,"any":27,"best":3},
+      "AU": {"top3":3,"top10":20,"any":28,"best":2},
+      "AE": {"top3":2,"top10":12,"any":26,"best":2},
+      "IN": {"top3":1,"top10":12,"any":23,"best":3}
+    },
+    "claims": {"paste":0,"browser":1,"quality":1,"background":1,"multi":1,"story":0,"status":0,"mp3":0,"private":1,"editor":0,"player":0,"languages":0},
+    "mine": false,
+    "iapRange": {"min":0.99,"max":99.99}
+  },
+  {
+    "id": "videodownloader.instagram.videosaver",
+    "idx": 7,
+    "title": "Video Downloader & Story Saver",
+    "titleLen": 30,
+    "summary": "Video downloader & Story Saver to save stories and download videos, No watermark",
+    "summaryLen": 80,
+    "description": "With Video Downloader & Story downloader & Story Saver for social media, you can easily simple and reliable Story downloader to save stories you love.\n\nThe Video Downloader & Story downloader & Story Saver for social media to save stories and video downloader from social media in HD.\n\nWhether you want to download of your own stories, videos, short-form social videos, and photos from social media or download creative stories, videos, short-form social videos, and photos from social media you love with Video Downloader & Story Downloader & Story Saver for social media \n\nDownload videos or download creative stories, photos, short-form social videos from social media is automatically saved to your gallery, allowing you to access it anytime.\n\nDiscover more inside the Video Downloader & Story Downloader & Story Saver for social media — easy, stable, and powerful.\n\nCopy the link to save stories, videos, short-form social videos, and photos from social media.\n- Copy the link of the social media stories, videos, short-form social videos, and photos\n- Stories, videos, short-form social videos, and photos from social media will be downloaded automatically.\n\nShare to save stories, videos, short-form social videos, and photos from social media.\n- Select Video Downloader & Story downloader & Story Saver for social media from the \"Share to\" menu.\n- Stories, videos, short-form social videos, and photos from social media will be downloaded automatically.\n\nVideo Downloader & Story Downloader & Story Saver for social media Features\n- HD video saver for social media\n- Save story for social media\n- Download short-form social videos in high quality\n- download videos and photos from private accounts (where allowed)\n- Download clean videos without watermark\n- Multi-download support\n- Auto save stories, videos, short-form social videos, and photos directly to your gallery\n- Ultra-fast download speed\n- One-tap link paste & instant save\n\nVideo Downloader & Story Downloader & Story Saver for social media  supports HD and high-quality saving so your stories, photos, short-form social videos from social media remain clear after downloading to your device. Whether it is lifestyle posts, creative edits, daily updates, or trending content, you can easily keep what inspires you and view it anytime.\n\nDisclaimer of Video Downloader & Story Saver for social media app:\nAll copyrights, intellectual property rights, and any other rights in the stories, videos, short-form social videos, photos, and other content you download belong to their respective creators or owners. You should obtain authorization before downloading or using such content, and acknowledge the original source when using any downloaded material.\nThis app is not affiliated with any social media platform.\n\nIf you find Rposty helpful, please support us with a rating.\nFor feedback or feature suggestions, contact us anytime at support_rposty@vidtak.net",
+    "descLen": 2928,
+    "descWords": 442,
+    "developer": "Video Downloader & Fast Saver",
+    "installs": 19231602,
+    "installsLabel": "10,000,000+",
+    "score": 4.8078337,
+    "ratings": 377121,
+    "released": "Mar 28, 2024",
+    "updated": "2026-08-26",
+    "genre": "Video Players & Editors",
+    "ads": 1,
+    "iap": "$0.99 - $8.99 per item",
+    "video": 0,
+    "shots": 5,
+    "titleKw": ["video downloader","downloader","story saver"],
+    "kwDens": [
+      {"q":"video downloader","n":9,"d":4.1},
+      {"q":"video saver","n":1,"d":0.5}
+    ],
+    "perMarket": {
+      "US": {"top3":4,"top10":22,"any":47,"best":1},
+      "BR": {"top3":2,"top10":11,"any":27,"best":2},
+      "DE": {"top3":2,"top10":9,"any":25,"best":2},
+      "ES": {"top3":1,"top10":11,"any":29,"best":3},
+      "IT": {"top3":1,"top10":10,"any":24,"best":2},
+      "AU": {"top3":2,"top10":9,"any":26,"best":1},
+      "AE": {"top3":0,"top10":8,"any":22,"best":5},
+      "IN": {"top3":0,"top10":7,"any":22,"best":4}
+    },
+    "claims": {"paste":1,"browser":0,"quality":1,"background":0,"multi":0,"story":1,"status":0,"mp3":0,"private":0,"editor":0,"player":0,"languages":0},
+    "mine": false,
+    "iapRange": {"min":0.99,"max":8.99}
+  },
+  {
+    "id": "com.videodownload.browser.videodownloader",
+    "idx": 8,
+    "title": "All Video Downloader & Player",
+    "titleLen": 29,
+    "summary": "HD video downloader & player. Save any video & watch offline in 1 tap",
+    "summaryLen": 69,
+    "description": "All Video Downloader & Player helps you download videos quickly, save them securely and watch them offline anytime.\nBrowse websites, detect videos automatically and download HD videos with just one tap. Enjoy a fast video downloader and video saver, smart browser, private video vault, download manager and offline player in one easy-to-use app.\n\n⭐ Fast HD Video Downloader\nDownload videos in high quality and save them directly to your device for offline viewing.\nThe app automatically detects downloadable videos while browsing and lets you save them quickly with a simple tap. Enjoy fast and stable downloading with support for multiple video formats.\nWhether you want to save videos for offline access or manage your media collection, All Video Downloader & Player makes the process easy and efficient.\n\n🌐 Built-in Browser\nBrowse websites directly inside the app and discover videos quickly.\nThe integrated browser helps you search, navigate and find downloadable media without switching between apps. Once a video is detected, you can start downloading immediately.\nDesigned for convenience, the browser offers a smooth and user-friendly experience.\n\n📥 Powerful Download Manager\nManage all your downloads in one place.\nFeatures include:\n• Multiple downloads at the same time\n• Pause and resume downloads\n• Retry failed downloads\n• Background downloading\n• Download progress tracking\n• Fast and stable performance\nKeep your downloads organized and accessible whenever you need them.\n\n🎬 HD Video Quality\nChoose the video quality that fits your needs.\nAvailable video qualities:\n• HD\n• Full HD\n• Multiple high-quality formats\nSave videos in the resolution you prefer and enjoy smooth offline playback.\n\n▶ Built-in Video Player\nWatch downloaded videos anytime without installing an additional player.\nThe built-in video player supports popular video formats and provides smooth playback directly inside the app.\nEnjoy your favorite videos offline wherever you are.\n\n🔒 Private Video Vault\nProtect your personal videos with a secure private folder.\nKeep important or private content separate from your regular media library and enjoy greater privacy when storing videos on your device.\nYour videos remain organized, secure and easy to access.\n\n✨ Key Features\n✓ Fast HD Video Downloader & Saver\n✓ Smart Built-in Browser\n✓ Automatic Video Detection\n✓ Download Manager\n✓ Offline Video Playback\n✓ Built-in Video Player\n✓ Private Video Vault\n✓ Download Progress Tracking\n✓ Background Downloads\n✓ Multiple Video Formats Support\n✓ Easy-to-Use Interface\n✓ Lightweight and Fast\n\nDownload All Video Downloader & Player today and enjoy fast video downloads, private storage and convenient offline playback in one powerful app.",
+    "descLen": 2718,
+    "descWords": 396,
+    "developer": "AppTool-Browser-Video",
+    "installs": 13970550,
+    "installsLabel": "10,000,000+",
+    "score": 4.366337,
+    "ratings": 65572,
+    "released": "Feb 26, 2024",
+    "updated": "2026-08-28",
+    "genre": "Tools",
+    "ads": 0,
+    "iap": null,
+    "video": 0,
+    "shots": 7,
+    "titleKw": ["video downloader","all video downloader","downloader"],
+    "kwDens": [
+      {"q":"video downloader","n":6,"d":3},
+      {"q":"hd video downloader","n":2,"d":1.5},
+      {"q":"all video downloader","n":3,"d":2.3},
+      {"q":"fast video downloader","n":1,"d":0.8},
+      {"q":"video saver","n":1,"d":0.5}
+    ],
+    "perMarket": {
+      "US": {"top3":1,"top10":17,"any":38,"best":3},
+      "BR": {"top3":2,"top10":14,"any":25,"best":3},
+      "DE": {"top3":2,"top10":16,"any":25,"best":2},
+      "ES": {"top3":0,"top10":9,"any":24,"best":4},
+      "IT": {"top3":2,"top10":13,"any":26,"best":3},
+      "AU": {"top3":1,"top10":12,"any":28,"best":3},
+      "AE": {"top3":3,"top10":18,"any":25,"best":2},
+      "IN": {"top3":0,"top10":6,"any":23,"best":4}
+    },
+    "claims": {"paste":0,"browser":1,"quality":1,"background":1,"multi":1,"story":0,"status":0,"mp3":0,"private":1,"editor":0,"player":1,"languages":0},
+    "mine": false,
+    "iapRange": null
+  },
+  {
+    "id": "downloader.video.download.free",
+    "idx": 9,
+    "title": "Video Downloader & Video Saver",
+    "titleLen": 30,
+    "summary": "Fast & Private Video Downloader App. Save all videos easily from the Internet.",
+    "summaryLen": 78,
+    "description": "The Best Private HD Video Downloader & File Saver for You. With the 4x faster download speed, absolute security of files, it would be the best video downloader choice for you.\n \nDo you not only want to download video and images from social media but also manage all the downloaded files easily within the video downloader app? What about directly sharing the downloaded videos and posts with your friends? It's never too greedy to ask for them all! Since all you need is this Video Downloader & Video Saver app. One video downloader caters to all!\n\nTired of complicated and unsafe ways to download video and save online content? Try this Video Downloader and Video Saver! It has never been easier to download, save and repost videos from social media. Super fast and easy to use! \n \nReady to download another marvelous video post? Follow my lead! Copy the link to the video you want to download, paste it into our neat and simple built-in browser, click the video download button... there you go! Let the magic of our Video Downloader & Video Saver app take you all the way until the end of the video download journey. Save trouble and videos with only one quick tap!\n\nHow to use:\n1. Tap the icon or input the website address on the app homepage to open the built-in browser.\n2. The app will automatically detect videos. Tap the video download button to start downloading.\n3. Play and manage all the downloaded video files in the \"Files\" tab.\n \nKey Features:\n* Fastest video downloader to download videos and save all files from the Internet...Stable and Safe.\n* Support multi-threading downloading and accelerate video downloads by several times\n* Select different resolutions: save space by choosing a small size and enjoy HD videos by selecting high-definition mode.\n* Download multiple files at the same time & Download videos in the background.\n* Built-in browser and built-in file manager. Pause, resume, and remove downloads. Rename, play, share, and delete the files with one video downloader app.\n* Private folder in this video downloader. Create your own private folder with a password. Protect your files and your privacy with our super private and secure video downloader app.\n \nIt is a high-speed video downloader for your Android device. This video downloader app can help you download videos from your social media homepage in just one tap. Extremely fast, safe and easy to use! All video formats and different resolutions are supported. Play all downloaded videos with the built-in video player, adjust video playback speed, repeat video mode and you can even convert videos into audios super easily.\n \nIt's also a handy file manager for your downloaded videos and files. You can easily download, manage, repost, play, share, and delete all your video files within the video downloader & video saver. Download your favorite videos and enjoy them anywhere and anytime. The best tool to back up your social media videos and share them with your fans and friends. You can also change light and dark themes, manage your video download location, and... so much more awaiting you to explore.\n \nWhat are you still waiting for? Let's get down to load with this super fast Video Downloader & Video Saver!\n \nDisclaimer:\n* Please get permission from the content owner before you repost videos.\n* We are not responsible for any intellectual property violation that results from unauthorized reposts of videos.\n* This app is not officially associated with Instagram, Facebook, Twitter, TikTok, etc.\n* Downloading files protected by copyright is prohibited and regulated by the law of the country.\n* This app doesn't support downloading Youtube videos due to the policy of Play Store.\n \nTerms of Service: https://downloader.easylife.studio/termsofservice.html\nPrivacy Policy: https://downloader.easylife.studio/policy.html",
+    "descLen": 3824,
+    "descWords": 629,
+    "developer": "All Video Downloader, Saver & Player Studio",
+    "installs": 53554550,
+    "installsLabel": "50,000,000+",
+    "score": 4.4288754,
+    "ratings": 357387,
+    "released": "Nov 25, 2020",
+    "updated": "2026-08-17",
+    "genre": "Video Players & Editors",
+    "ads": 1,
+    "iap": null,
+    "video": 0,
+    "shots": 21,
+    "titleKw": ["video downloader","video saver","downloader"],
+    "kwDens": [
+      {"q":"video downloader","n":15,"d":4.8},
+      {"q":"hd video downloader","n":1,"d":0.5},
+      {"q":"fast video downloader","n":1,"d":0.5},
+      {"q":"download video","n":2,"d":0.6},
+      {"q":"video saver","n":5,"d":1.6}
+    ],
+    "perMarket": {
+      "US": {"top3":4,"top10":8,"any":26,"best":1},
+      "BR": {"top3":1,"top10":4,"any":15,"best":3},
+      "DE": {"top3":1,"top10":3,"any":9,"best":2},
+      "ES": {"top3":1,"top10":3,"any":11,"best":3},
+      "IT": {"top3":0,"top10":5,"any":11,"best":4},
+      "AU": {"top3":3,"top10":5,"any":13,"best":2},
+      "AE": {"top3":1,"top10":4,"any":9,"best":2},
+      "IN": {"top3":1,"top10":5,"any":10,"best":2}
+    },
+    "claims": {"paste":1,"browser":1,"quality":1,"background":1,"multi":1,"story":0,"status":0,"mp3":0,"private":1,"editor":0,"player":1,"languages":0},
+    "mine": false,
+    "iapRange": null
+  },
+  {
+    "id": "instasaver.videodownloader.photodownloader.repost",
+    "idx": 10,
+    "title": "All Video Downloader & Browser",
+    "titleLen": 30,
+    "summary": "Download videos, photos and repost them with video downloader - Story Downloader",
+    "summaryLen": 80,
+    "description": "Video Downloader Story Saver is a free and simple tool that allows you to download videos, stories, reels, and images from multiple social media platforms.Video downloader auto fetch videos link you can download them with just one click. Whether you want to save videos, stories and video status our hd video downloader ensures a smooth experience. you can enjoy your saved content anytime in HD, Full HD, 4K, or 1080p quality with free video downloader.\n\nKey Features of Video Downloader - Story Saver\n Download HD videos with one click\n* Browse videos with the built-in browser\n* Download videos in the background\n* Download HD videos, reels, and stories from popular platforms.\n* Save images, photos, and video statuses directly to your device.\n* Multiple downloads supported at the same time.\n* Automatic detection of copied links for instant download.\n* Works in the background while you see other apps.\n* Built-in video player and photo viewer for offline access.\n* Pause, resume, or cancel downloads anytime.\n* Organize and manage your saved files in separate tabs.\n* Choose video quality before downloading – from HD to 4K\n\n✔️ All Video Downloader: \nSave your favorite videos in just a few steps and watch them anytime offline. Our video downloader works with multiple formats and resolutions, including HD quality. It downloads videos quickly and smoothly.\n\n✔️ Download videos for social media \nDownload reels with our video downloader app. Save engaging and creative reels effortlessly and watch them anytime with our video downloader.\n\n✔️How Video Downloader Works: \n Open your favorite platform and find the video or story you want to save. Copy video link and use our all video downloader tool auto  fetch link and download videos effortlessly. The simple and clean interface makes it easy for anyone to use.\n\nWe are always working for a better user experience. If you have any suggestions or feedback, please feel free to contact us at goofflinemaps@gmail.com",
+    "descLen": 1973,
+    "descWords": 312,
+    "developer": "Fast Video Downloader & Story Saver - DevBay",
+    "installs": 67490521,
+    "installsLabel": "50,000,000+",
+    "score": 3.8952587,
+    "ratings": 649420,
+    "released": "May 18, 2020",
+    "updated": "2026-07-31",
+    "genre": "Video Players & Editors",
+    "ads": 1,
+    "iap": "$2.99 - $49.99 per item",
+    "video": 0,
+    "shots": 21,
+    "titleKw": ["video downloader","all video downloader","video downloader browser","downloader","browser"],
+    "kwDens": [
+      {"q":"video downloader","n":11,"d":7.1},
+      {"q":"hd video downloader","n":1,"d":1},
+      {"q":"all video downloader","n":2,"d":1.9},
+      {"q":"free video downloader","n":1,"d":1}
+    ],
+    "perMarket": {
+      "US": {"top3":0,"top10":6,"any":39,"best":6},
+      "BR": {"top3":0,"top10":2,"any":18,"best":7},
+      "DE": {"top3":0,"top10":4,"any":21,"best":9},
+      "ES": {"top3":0,"top10":1,"any":18,"best":10},
+      "IT": {"top3":0,"top10":3,"any":22,"best":10},
+      "AU": {"top3":0,"top10":1,"any":20,"best":10},
+      "AE": {"top3":0,"top10":5,"any":21,"best":7},
+      "IN": {"top3":0,"top10":2,"any":20,"best":5}
+    },
+    "claims": {"paste":1,"browser":1,"quality":1,"background":1,"multi":1,"story":1,"status":1,"mp3":0,"private":0,"editor":0,"player":1,"languages":0},
+    "mine": false,
+    "iapRange": {"min":2.99,"max":49.99}
+  },
+  {
+    "id": "com.allvideodownloader.hdvideodownloader.savevideos",
+    "idx": 11,
+    "title": "All Video Downloader & Saver",
+    "titleLen": 28,
+    "summary": "HD Video Downloader & Story Saver app Download, play, and share videos easily",
+    "summaryLen": 77,
+    "description": "All Video Downloader – Fast & Easy Video Saving App\n\n📥 Want to Download videos in seconds! Save, share, and watch videos with our fast All Video Downloader and saver.\n\nThe All Video Downloader app lets you save videos from social media anytime, anywhere even offline in just a few taps. Download videos quickly, easily, free in all formats with this All Video Downloader & saver 100% free.\n\nAre you looking for a best video downloader app to download videos in high quality?\nAll Video Downloader & saver, the ultimate video downloader app that makes it effortless to download HD video from multiple platforms. Whether you need a 4K video downloader, MP4 downloader, or private video downloader, this app has you covered. Experience seamless downloads with our fast video downloader, video saver & story saver, designed for quick and hassle-free video saving.\n\n🚀 Features of All Video Downloader & Story Saver\n✅  Fast Video Downloader – Video saver saves videos at blazing speeds.\n✅  HD Video Downloader – Download and watch videos in crystal-clear quality.\n✅  Social Media Video Downloader – Easily save videos from any social platform.\n✅  Instant Save & Story Saver – Download stories and reels in a single tap.\n✅  Download Private Videos – Securely store private videos with ease.\n✅  All-in-One File Downloader – Supports multiple formats, including MP4.\n✅  Free Video Downloader – 100% free, with no restrictions or hidden fees.\n\n📥 Effortless Video Downloads\nWith this all video downloader, you can grab videos in various formats from any platform. If you're searching for a simple video downloader, this app guarantees a smooth experience.\n\n💡 How to Use This Online Video Downloader?\nReady to download another amazing video with our All Video Downloader App? \nJust follow these simple steps! Copy the link to the video you want to download, paste it into our smooth and user-friendly built-in browser, and tap the download button. That’s it! Let our all-in-one Video Downloader and video saver app work its magic and guide you effortlessly through the download process.\n\n🔥 Video Downloader for Android\nThis  All Video Downloader & saver allows you to save clips from social media, streaming services, and websites. Whether you're looking for a story saver or a video downloader, this app has everything you need.\n\n⭐  Download HD Video App – Save high-definition content in no time.\n⭐  Download Video - Video Saver – Supports various video formats, including MP4.\n⭐  HD Video Downloader App – Get high-resolution downloads instantly.\n⭐  Free Download Videos \n⭐  Private Video Downloader – Securely save private content.\n\nGet All Video Downloader Now! The most reliable video downloader app for downloading HD videos.\n\nAll Video Downloader and saver app offers speed, simplicity, and powerful features, making it the top choice for users. Easily save videos from your favourite social media platforms. Download the HD Video Downloader and saver now to enjoy offline viewing anytime, anywhere!\n\n📌 Disclaimer\nThis All Video Downloader & saver is an independent tool and is not affiliated with any platform. All videos, images, stories, and other content belong to their respective owners.",
+    "descLen": 3194,
+    "descWords": 491,
+    "developer": "Sky Vision Apps Lab",
+    "installs": 18203494,
+    "installsLabel": "10,000,000+",
+    "score": 4.09,
+    "ratings": 24362,
+    "released": "Apr 10, 2025",
+    "updated": "2026-08-26",
+    "genre": "Video Players & Editors",
+    "ads": 1,
+    "iap": "$3.99 - $14.99 per item",
+    "video": 0,
+    "shots": 21,
+    "titleKw": ["video downloader","all video downloader","downloader"],
+    "kwDens": [
+      {"q":"video downloader","n":30,"d":12.2},
+      {"q":"hd video downloader","n":3,"d":1.8},
+      {"q":"all video downloader","n":12,"d":7.3},
+      {"q":"private video downloader","n":2,"d":1.2},
+      {"q":"fast video downloader","n":2,"d":1.2},
+      {"q":"online video downloader","n":1,"d":0.6},
+      {"q":"download video","n":1,"d":0.4},
+      {"q":"free video downloader","n":1,"d":0.6},
+      {"q":"video saver","n":4,"d":1.6}
+    ],
+    "perMarket": {
+      "US": {"top3":0,"top10":0,"any":0,"best":null},
+      "BR": {"top3":0,"top10":0,"any":0,"best":null},
+      "DE": {"top3":0,"top10":0,"any":1,"best":26},
+      "ES": {"top3":0,"top10":0,"any":0,"best":null},
+      "IT": {"top3":0,"top10":0,"any":1,"best":30},
+      "AU": {"top3":0,"top10":0,"any":1,"best":29},
+      "AE": {"top3":0,"top10":0,"any":1,"best":25},
+      "IN": {"top3":0,"top10":0,"any":0,"best":null}
+    },
+    "claims": {"paste":1,"browser":1,"quality":1,"background":0,"multi":0,"story":1,"status":0,"mp3":0,"private":1,"editor":0,"player":0,"languages":0},
+    "mine": false,
+    "iapRange": {"min":3.99,"max":14.99}
+  },
+  {
+    "id": "allinone.videodownloader.savevideos",
+    "idx": 12,
+    "title": "All video downloader and saver",
+    "titleLen": 30,
+    "summary": "One-tap All video downloader & Player! Download, play, and share videos easily.",
+    "summaryLen": 79,
+    "description": "📥 Download videos in seconds! Save, share, and watch videos with our fast  All Video Downloader and saver.\n\nAll Video Downloader app lets you save videos from social media anytime, anywhere—even offline in just a few taps. Download videos fast, simple, and hassle-free in all formats with this  All Video Downloader and saver- 100% free. Whether it’s HD tutorials, entertaining reels, or personal stories, capture it all effortlessly. Start downloading now and enjoy hassle-free, unlimited video saving at your fingertips!\n\n Key Features \nOur  All Video Downloader and Saver is packed with features to meet all your needs\n\n✅ Download videos in seconds, regardless of size or quality using this all-in-one video Downloader\n✅ Our story saver is compatible with popular websites and social media platforms for seamless downloads.\n✅ Save videos in your preferred resolution like 240p, 720p, 1080p & HD videos.\n✅ Intuitive design of our HD Video Downloader ensures everyone can use it, no matter what their technical skills are.\n✅ Download as many videos as you want without any limits with this all video downloader.\n✅ Access your videos anytime, without an internet connection.\n✅ Watch videos within the story saver app using the built-in video player.\n\nThis powerful HD Video downloader app can download images & save videos from websites and social media platforms in just a few taps. Try this  All Video Downloader and saver! It has never been easier to download, repost and save videos from social media. \n\n How to Download Videos?  \nReady to download another amazing video post with our All Video Downloader App? Just follow these simple steps! Copy the link to the video you wish to download, paste it into our smooth and user-friendly built-in browser, and tap the download button. That’s it! Let our all-in-one Video Downloader and video saver app work its magic and guide you effortlessly through the download process. \n\nThis Story saver is a high-speed all Video Downloader for your Android device. With this video saver app, you can quickly download and save videos from your social media feed with just one tap. It's amazingly fast, secure, and completely free! The All Video Downloader app supports multiple resolutions, and you can enjoy your download videos anytime with the built-in video player.\n\nOur All Video Downloader and saver app offers a perfect blend of speed, simplicity, and powerful features, making it the top choice for users. Effortlessly save videos from your favourite social media platforms. Download the HD Video Downloader and saver now to enjoy offline viewing anytime, anywhere!\n\nThis full-featured  All Video Downloader and saver is completely free now, don’t miss it!",
+    "descLen": 2705,
+    "descWords": 442,
+    "developer": "Attractive Apps Valley",
+    "installs": 26789772,
+    "installsLabel": "10,000,000+",
+    "score": 3.99,
+    "ratings": 23291,
+    "released": "Dec 23, 2024",
+    "updated": "2026-08-05",
+    "genre": "Video Players & Editors",
+    "ads": 1,
+    "iap": "$6.49 - $29.99 per item",
+    "video": 0,
+    "shots": 18,
+    "titleKw": ["video downloader","all video downloader","video downloader and saver","all video downloader and saver","downloader"],
+    "kwDens": [
+      {"q":"video downloader","n":16,"d":7.2},
+      {"q":"hd video downloader","n":3,"d":2},
+      {"q":"all video downloader","n":11,"d":7.5},
+      {"q":"video saver","n":2,"d":0.9}
+    ],
+    "perMarket": {
+      "US": {"top3":0,"top10":0,"any":0,"best":null},
+      "BR": {"top3":0,"top10":0,"any":0,"best":null},
+      "DE": {"top3":0,"top10":0,"any":1,"best":27},
+      "ES": {"top3":0,"top10":0,"any":1,"best":29},
+      "IT": {"top3":0,"top10":0,"any":1,"best":28},
+      "AU": {"top3":0,"top10":0,"any":1,"best":30},
+      "AE": {"top3":0,"top10":0,"any":1,"best":29},
+      "IN": {"top3":1,"top10":1,"any":1,"best":1}
+    },
+    "claims": {"paste":1,"browser":1,"quality":1,"background":0,"multi":0,"story":1,"status":0,"mp3":0,"private":0,"editor":0,"player":1,"languages":0},
+    "mine": false,
+    "iapRange": {"min":6.49,"max":29.99}
+  },
+  {
+    "id": "com.videosaver.savevideos.story.saverapp",
+    "idx": 13,
+    "title": "Video Downloader & Save Video",
+    "titleLen": 29,
+    "summary": "Simple Video Downloader to download all formats of HD videos from any site",
+    "summaryLen": 74,
+    "description": "Tired of finding a reliable and efficient Video Downloader? Don't go anywhere, Video Downloader & Save Video is your solution to download videos.\n\nDownload Videos in all formats on your any device through this Video Saver app. After detecting the link of the video, you can save Video with one click on the download button. You can pause & resume, download in the background, and play videos in this All Video Downloader app.\n\nSimple HD video saver for your favorite reels and stories on your phone. Easily download videos from this fast private videos downloader, which is a perfect tool to save videos & trending clips for you.\n\nVideo Saver can download multiple videos in the background at the same time, with auto-detection of any video link. Enjoy the video download manager for your saved videos from this online video downloader, which protects your private videos. This videodownloader downloads hot & online videos in the background from any site, and also resumes the failed downloads due to internet disconnection.\n\n🎬 Download Movies and Video Clips \nA movie downloader that downloads your favourite movie clips and videos without any interruption during downloading. Enjoy this video downloader and player on your different devices for audio & video formats\n\n📺Different Resolution of Videos \nHD Downloader supports fast and stable playback of 4K/UHD videos. All download formats are supported, like MP3, M4a, MP4, m4v, 3GP, FLV, F4V, WEBM,etc. Preview all the videos first, fast download, and play them offline after downloading them from the free video downloader.\n\n📥All Video Downloader Browser \nDownloads the video clips very proficiently with auto-detect link to video in an easy way through the video downloader & save video. For HD video download from the internet, use this video saver app to save videos and images. \n\n💥 Main Features of Downloader Video \n✶ Auto-detect all local videos\n✶ Download Multiple files in the background\n✶ Large and HD video download are supported\n✶ Browse & Play videos offline with the built-in player\n✶ Save your downloaded files in a password-protected folder of the URL downloader\n✶ Download videos from your favorite bookmark websites\n✶ Unlimited downloads of files\n✶ Story saver and download reels\n\nLet’s try this perfect HD downloader to save all types of videos. Enjoy the video download manager to pause, resume, and remove downloads from your protected folder of the video save app. \n\nDownload Video Downloader & Save Video now, to enjoy the non-stop video downloading experience with just one click.\n\n🚨Attention:  \nThis video download app is not a YouTube downloader due to the policies of YouTube, so enjoy all other sites for downloading. Use this downloader ethically and legally to avoid any inconvenience or violations of intellectual property rights.\n\nYour advice & feedback are important for us, so feel free to give your precious feedback on ksk960793@gmail.com",
+    "descLen": 2932,
+    "descWords": 464,
+    "developer": "Markhoor Studio",
+    "installs": 11079615,
+    "installsLabel": "10,000,000+",
+    "score": 4,
+    "ratings": 9549,
+    "released": "Apr 25, 2024",
+    "updated": "2026-09-09",
+    "genre": "Entertainment",
+    "ads": 1,
+    "iap": "$3.49 per item",
+    "video": 0,
+    "shots": 27,
+    "titleKw": ["video downloader","save video","downloader"],
+    "kwDens": [
+      {"q":"video downloader","n":9,"d":3.9},
+      {"q":"all video downloader","n":2,"d":1.3},
+      {"q":"online video downloader","n":1,"d":0.6},
+      {"q":"download video","n":1,"d":0.4},
+      {"q":"free video downloader","n":1,"d":0.6},
+      {"q":"video saver","n":4,"d":1.7}
+    ],
+    "perMarket": {
+      "US": {"top3":0,"top10":0,"any":0,"best":null},
+      "BR": {"top3":0,"top10":0,"any":0,"best":null},
+      "DE": {"top3":0,"top10":0,"any":0,"best":null},
+      "ES": {"top3":0,"top10":0,"any":0,"best":null},
+      "IT": {"top3":0,"top10":0,"any":0,"best":null},
+      "AU": {"top3":0,"top10":0,"any":0,"best":null},
+      "AE": {"top3":0,"top10":0,"any":0,"best":null},
+      "IN": {"top3":0,"top10":0,"any":0,"best":null}
+    },
+    "claims": {"paste":0,"browser":1,"quality":1,"background":1,"multi":1,"story":1,"status":0,"mp3":1,"private":1,"editor":0,"player":1,"languages":0},
+    "mine": false,
+    "iapRange": {"min":3.49,"max":3.49}
+  },
+  {
+    "id": "com.videodownloder.alldownloadvideos",
+    "idx": 14,
+    "title": "Video Downloader - Player",
+    "titleLen": 25,
+    "summary": "Fast video downloader to save HD videos and watch offline.",
+    "summaryLen": 58,
+    "description": "Struggling to save online videos? Video Downloader - Player delivers HD downloads from websites and social media with lightning speed and zero interruptions!\n\nSave videos instantly with one-click video downloader. It includes an all-format video player and works as a music downloader for trending reels, so you can keep viral sounds offline. This high-speed video saver helps you download videos and play them smoothly without an internet connection.\n\n⚡ Features of Fast Video Downloader:\n• Instant Video Downloads: Save videos quickly and easily\n• Story Downloader: Stories, reels, and social media videos\n• Built-in Browser: Detect videos for downloading purpose\n• Resume Downloads: Pause and continue anytime\n• Private Downloads: Keep your saved videos secure\n• Multiple Formats & Quality: Choose what fits your storage\n• Clean & Simple UI: Lightweight and easy to use downloader\n• Offline Video Player: Watch downloaded videos anytime, anywhere\n\nReels & Story Downloader\nDownload short videos, reels, and story clips in just a few taps. This download videos app is made for quick saves, smooth downloads, and offline viewing, so you can keep your favorite short content ready without hassle.\n\nDownload Videos & Save Offline\nWith this HD Video Downloader - Player, save videos to your gallery for offline use. Whether you want to save social media videos, reels, or stories, this app makes the process simple and smooth.\n\nHD Video Saver with Browser\nThe app includes a video browser that helps detect videos. Just browse, tap, and download. Advanced download manager features background downloading and resume video download for a seamless experience.\n\nMultiple Video Formats\nChoose from multiple video formats and resolutions based on your needs. This video saver for android supports high-quality downloads while keeping the app lightweight and easy to use.\n\nSecure Video Downloads\nProtect your videos with private folder options. Social video downloader app keep your files secure while giving you full control over your downloaded content.\n\nSimple & User-Friendly\nDesigned with a clean interface, our background video download - video saver is for everyone. No complicated steps, just quick video downloading at your fingertips.\n\n▶️ Download the fast Video Downloader - Player and enjoy instant downloads with secure storage, all in one app.",
+    "descLen": 2349,
+    "descWords": 351,
+    "developer": "Mobile Notepad Apps",
+    "installs": 8405820,
+    "installsLabel": "5,000,000+",
+    "score": 3.8349514,
+    "ratings": 7477,
+    "released": "May 29, 2023",
+    "updated": "2026-09-11",
+    "genre": "Video Players & Editors",
+    "ads": 1,
+    "iap": "$1.99 - $14.99 per item",
+    "video": 0,
+    "shots": 32,
+    "titleKw": ["video downloader","downloader"],
+    "kwDens": [
+      {"q":"video downloader","n":6,"d":3.4},
+      {"q":"hd video downloader","n":1,"d":0.9},
+      {"q":"fast video downloader","n":2,"d":1.7},
+      {"q":"video saver","n":4,"d":2.3}
+    ],
+    "perMarket": {
+      "US": {"top3":0,"top10":0,"any":0,"best":null},
+      "BR": {"top3":0,"top10":0,"any":0,"best":null},
+      "DE": {"top3":0,"top10":0,"any":0,"best":null},
+      "ES": {"top3":0,"top10":0,"any":0,"best":null},
+      "IT": {"top3":0,"top10":0,"any":0,"best":null},
+      "AU": {"top3":0,"top10":0,"any":0,"best":null},
+      "AE": {"top3":0,"top10":0,"any":0,"best":null},
+      "IN": {"top3":0,"top10":0,"any":0,"best":null}
+    },
+    "claims": {"paste":0,"browser":1,"quality":1,"background":1,"multi":0,"story":1,"status":0,"mp3":1,"private":1,"editor":0,"player":1,"languages":0},
+    "mine": false,
+    "iapRange": {"min":1.99,"max":14.99}
+  },
+  {
+    "id": "com.hdvideodownloader.downloaderapp",
+    "idx": 15,
+    "title": "Video Downloader HD - Vidow",
+    "titleLen": 27,
+    "summary": "Watch and save videos for offline viewing and cast videos to TV",
+    "summaryLen": 63,
+    "description": " Easy Video Downloader \n\nDownload videos and watch them offline anytime. The HD video saver app allows you to save publicly accessible videos for personal use and manage them easily in one place. You can also cast downloaded videos to your TV. The Video Downloader HD - Vidow app supports common video formats such as MP4, M4V, MOV, and more. You can choose the resolution before downloading. Also, multiple videos can be downloaded at the same time. Background downloading is fully supported for convenience.\n\n Organize Downloaded Files \n\nPause, resume, or retry downloads anytime. Easily rename, delete, or share your downloaded videos. The app also keeps track of completed and in-progress downloads for easy management.\n\n Built-in Video Player \n\nWatch your videos offline directly in the HD video downloader app without needing any other player. The built-in video player supports smooth HD playback and helps you manage your saved videos easily. \n\n Cast Videos to TV \n\nEnjoy your saved videos on a bigger screen by casting them to smart TVs. This feature allows seamless playback between your smartphone and TV for a better viewing experience.\n\n Key Features of Video Downloader HD - Vidow \n✦ Download videos for offline viewing\n✦ Save, watch, and share videos easily\n✦ Video player for smooth offline playback\n✦ Cast downloaded videos to smart TVs\n✦ Supports common formats (MP4, M4V, MOV, etc.)\n✦ Pause, resume, delete, rename, or share downloads\n✦ Background downloading supported\n✦ Easy track of completed and in-progress downloads\n\n How it Works \n● Copy the video link\n● Open the Video Downloader HD - Vidow app\n● Choose your preferred format to save video\n● Click download and enjoy offline playback anytime.\n\n Disclaimer \nThis app allows video downloads only from supported platforms within the app. Downloading from YouTube or any platform that prohibits downloading is not supported. Only publicly accessible content may be downloaded. Users must ensure they have proper permission before downloading, using, or reposting any content. Any unauthorized downloading, re‑uploading, or violation of intellectual property rights is the sole responsibility of the user.\n\nFor feedback or queries: support@vidoxe.com\n\nPrivacy policy link: \nhttp://videodownloaderhd.vidoxe.com/privacy.html",
+    "descLen": 2294,
+    "descWords": 346,
+    "developer": "Vidow™",
+    "installs": 108093926,
+    "installsLabel": "100,000,000+",
+    "score": 3.9678714,
+    "ratings": 335197,
+    "released": "Aug 31, 2022",
+    "updated": "2026-05-18",
+    "genre": "Social",
+    "ads": 1,
+    "iap": "$14.99 per item",
+    "video": 0,
+    "shots": 18,
+    "titleKw": ["video downloader","downloader"],
+    "kwDens": [
+      {"q":"video downloader","n":5,"d":2.9},
+      {"q":"hd video downloader","n":1,"d":0.9},
+      {"q":"video saver","n":1,"d":0.6}
+    ],
+    "perMarket": {
+      "US": {"top3":0,"top10":0,"any":0,"best":null},
+      "BR": {"top3":0,"top10":0,"any":0,"best":null},
+      "DE": {"top3":0,"top10":0,"any":0,"best":null},
+      "ES": {"top3":0,"top10":0,"any":0,"best":null},
+      "IT": {"top3":0,"top10":0,"any":0,"best":null},
+      "AU": {"top3":0,"top10":0,"any":0,"best":null},
+      "AE": {"top3":0,"top10":0,"any":0,"best":null},
+      "IN": {"top3":0,"top10":0,"any":0,"best":null}
+    },
+    "claims": {"paste":1,"browser":0,"quality":1,"background":1,"multi":1,"story":0,"status":0,"mp3":0,"private":0,"editor":0,"player":1,"languages":0},
+    "mine": false,
+    "iapRange": {"min":14.99,"max":14.99}
+  },
+  {
+    "id": "free.video.downloader.freevideodownloader2021.video.saver.videosaverlite",
+    "idx": 16,
+    "title": "Video Downloader and 4k Player",
+    "titleLen": 30,
+    "summary": "Seamless video downloader and player for all formats with 4K playback.",
+    "summaryLen": 70,
+    "description": "Discover the most powerful and easy-to-use tool for downloading and playing videos with Video Downloader and 4k Player. This app is your one-stop solution for saving videos from social media, websites, and streaming platforms. Enjoy fast downloads, smooth playback, and complete control over your video library—all in a secure and user-friendly interface.\n\nKey Features:\n\n🚀Lightning-Fast Video Downloads:\nQuickly download videos from your favorite websites and apps. With advanced download technology, you can save videos faster than ever before.\n\n🎥Crystal-Clear HD Playback:\nWatch your videos in stunning HD quality. Our built-in player ensures smooth playback and supports a wide range of video formats for maximum compatibility.\n\n🔗Effortless URL-Based Downloads:\nJust copy the link of the video you want to save, paste it into the app, and start downloading. No complicated steps—just instant results!\n\n📂Streamlined Video Management:\nOrganize your downloaded videos with ease. Create categories, sort files, and manage your library effortlessly for quick access anytime.\n\n🔐Private and Secure Video Saving:\nYour downloads are safe and secure. We prioritize your privacy with built-in features to keep your data protected.\n\n🌐All-in-One Video Browser and Downloader:\nBrowse your favorite video platforms directly within the app. Preview videos and download them instantly without leaving the app.\n\n📱Seamless Offline Viewing Experience:\nSave videos to your device and enjoy them offline, wherever and whenever you want. Ideal for travel, commutes, or when you’re offline.\n\n🖥️Flexible Multi-Platform Support:\nDownload videos from various platforms, including social media sites and streaming services, in multiple resolutions and formats.\n\n🔄Stay Updated with Regular Enhancements:\nEnjoy a consistently improving experience with regular updates introducing new features and performance enhancements.\n\n💡Easy-to-Use Interface:\nWhether you’re a tech-savvy user or a beginner, this app is designed for everyone. Navigate easily and enjoy a seamless experience.\n\n**Why Choose Our\n\n\"Video Downloader and 4k Player\"?\nTake control of your video downloads with an app built for speed, security, and simplicity. Whether you want to save social media videos, educational content, or entertainment, this app has everything you need. With its advanced features, including offline playback, URL-based downloads, and a built-in browser, managing your video content has never been easier.\n\nDon’t miss out on the ultimate video downloader experience. Download Video Downloader and 4k Player today and enjoy videos your way!",
+    "descLen": 2613,
+    "descWords": 394,
+    "developer": "Vidpal Apps Studio",
+    "installs": 79543373,
+    "installsLabel": "50,000,000+",
+    "score": 4.25969,
+    "ratings": 401654,
+    "released": "Jun 22, 2021",
+    "updated": "2026-08-31",
+    "genre": "Entertainment",
+    "ads": 1,
+    "iap": "$1.99 - $34.99 per item",
+    "video": 0,
+    "shots": 35,
+    "titleKw": ["video downloader","downloader"],
+    "kwDens": [
+      {"q":"video downloader","n":4,"d":2},
+      {"q":"download video","n":1,"d":0.5}
+    ],
+    "perMarket": {
+      "US": {"top3":0,"top10":0,"any":0,"best":null},
+      "BR": {"top3":0,"top10":0,"any":0,"best":null},
+      "DE": {"top3":0,"top10":0,"any":0,"best":null},
+      "ES": {"top3":0,"top10":0,"any":0,"best":null},
+      "IT": {"top3":0,"top10":0,"any":0,"best":null},
+      "AU": {"top3":0,"top10":0,"any":0,"best":null},
+      "AE": {"top3":0,"top10":0,"any":0,"best":null},
+      "IN": {"top3":0,"top10":0,"any":0,"best":null}
+    },
+    "claims": {"paste":1,"browser":1,"quality":1,"background":0,"multi":0,"story":0,"status":0,"mp3":0,"private":0,"editor":0,"player":1,"languages":0},
+    "mine": false,
+    "iapRange": {"min":1.99,"max":34.99}
+  },
+  {
+    "id": "com.video.downloader.instagram.videosaver",
+    "idx": 0,
+    "title": "All Video Downloader & Saver",
+    "titleLen": 28,
+    "summary": "Fast video downloader for HD videos, stories, clips and offline viewing",
+    "summaryLen": 71,
+    "description": "Save the videos you love and enjoy them anytime with All Video Downloader & Saver, a simple, fast and convenient video downloader built for everyday use.\nCopy a supported video link, paste it into the app and save the video directly to your device. Whether you want to keep short videos, stories, status videos or useful clips, the built-in video saver makes downloading and managing media easy.\nKEY FEATURES\n• Fast Video Downloader\nSave supported online videos quickly with a smooth and straightforward download process.\n• HD Video Saver\nDownload available videos in clear, high-quality formats for a better offline viewing experience.\n• Simple Link-Based Downloading\nCopy a video link from a supported source, paste it into the app and start the download in just a few taps.\n• Story and Status Saver\nKeep supported stories, status videos and short clips on your device before they disappear.\n• Offline Video Access\nWatch downloaded videos whenever you want, even when an internet connection is unavailable.\n• Download Manager\nView download progress and keep your saved videos organised in one convenient place.\n• Easy Video Controls\nOpen, play, share or delete downloaded videos directly from the app.\n• Clean and User-Friendly Design\nA simple interface helps you save videos without complicated steps.\nHOW TO DOWNLOAD A VIDEO\nCopy the link of the video you have permission to save.\nOpen All Video Downloader & Saver.\nPaste the link into the download field.\nTap the download button.\nOpen the saved video and enjoy it offline.\nWHY USE ALL VIDEO DOWNLOADER & SAVER?\nAll Video Downloader & Saver combines a fast video downloader, HD video saver, story saver and offline media manager in one practical app.\nIt is designed for users who want a quick way to save supported social media videos and keep their favourite clips available on their device.\nUse the app for personal videos, educational clips, creative references, memorable stories and other content that you own or are authorised to download.\nIMPORTANT\nFeatures, supported websites and downloadable formats may vary depending on the source and content availability.\nPlease respect copyright and intellectual property rights. Download or share only content that you own, content in the public domain, or content for which you have permission from the owner.\nAll Video Downloader & Saver is an independent application and is not affiliated with, endorsed by or sponsored by any social media platform.",
+    "descLen": 2455,
+    "descWords": 389,
+    "developer": "Cell Cave",
+    "installs": 9,
+    "installsLabel": "5+",
+    "updated": null,
+    "genre": "Productivity",
+    "ads": 1,
+    "iap": "$4.99 - $19.99 per item",
+    "video": 0,
+    "shots": 4,
+    "titleKw": ["video downloader","all video downloader","downloader"],
+    "kwDens": [
+      {"q":"video downloader","n":8,"d":4.1},
+      {"q":"all video downloader","n":5,"d":3.9},
+      {"q":"fast video downloader","n":2,"d":1.5},
+      {"q":"video saver","n":3,"d":1.5}
+    ],
+    "perMarket": {
+      "US": {"top3":0,"top10":0,"any":0,"best":null},
+      "BR": {"top3":0,"top10":0,"any":0,"best":null},
+      "DE": {"top3":0,"top10":0,"any":0,"best":null},
+      "ES": {"top3":0,"top10":0,"any":0,"best":null},
+      "IT": {"top3":0,"top10":0,"any":0,"best":null},
+      "AU": {"top3":0,"top10":0,"any":0,"best":null},
+      "AE": {"top3":0,"top10":0,"any":0,"best":null},
+      "IN": {"top3":0,"top10":0,"any":0,"best":null}
+    },
+    "claims": {"paste":1,"browser":0,"quality":1,"background":0,"multi":0,"story":1,"status":1,"mp3":0,"private":0,"editor":0,"player":0,"languages":0},
+    "mine": true,
+    "iapRange": {"min":4.99,"max":19.99}
+  }
+]
+```
+
+### data.secondary
+
+```json
+[
+  "video downloader", "all video downloader", "video saver", "download video", "hd video downloader", "video downloader app",
+  "video downloader and saver", "all video downloader and saver", "fast video downloader", "social video downloader", "video downloader browser",
+  "save video", "downloader", "video downloader and player", "video downloader free", "video saver downloader", "private video downloader",
+  "free video downloader", "4k video downloader", "video download app", "online video downloader", "video downloader for android", "download videos",
+  "video downloader without ads", "instagram video downloader", "video downloader for instagram", "reels downloader", "story saver", "status saver",
+  "facebook video downloader", "tiktok video downloader", "twitter video downloader", "insta downloader", "reel saver", "fb video downloader app",
+  "story saver for instagram", "status saver for whatsapp", "whatsapp status saver", "tiktok downloader no watermark", "x video downloader"
+]
+```
+
+### features
+
+```json
+{
+  "audit": {
+    "apps": [
+      {"n":"All Video Downloader","dev":"Our app","installs":"5+","ours":true,"comp":-1},
+      {"n":"All Video Downloader & Saver","dev":"Sky Vision","installs":"10M+","comp":10},
+      {"n":"All video downloader and saver","dev":"Attractive Apps Valley","installs":"10M+","comp":11},
+      {"n":"Video Downloader & Save Video","dev":"Markhoor Studio","installs":"5M+","comp":12},
+      {"n":"Video Downloader · Player","dev":"Mobile Notepad","installs":"5M+","comp":13},
+      {"n":"Video Downloader HD","dev":"Vidow (VIDOXE)","installs":"100M+","comp":14},
+      {"n":"4K Downloader","dev":"Vidpal","installs":"50M+","comp":15}
+    ],
+    "groups": [
+      {
+        "g": "Downloading",
+        "rows": [
+          {"f":"WebView browser + link sniffer","v":"FFFFFFF"},
+          {"f":"HLS / DASH stream download","v":"FFFFFNF"},
+          {"f":"Clipboard paste-to-download","v":"FFNFFNF"},
+          {"f":"Offline library + background downloads","v":"FFFFFFF"},
+          {"f":"Batch downloads","v":"FNNNNNN"}
+        ]
+      },
+      {
+        "g": "Saving & audio",
+        "rows": [
+          {"f":"WhatsApp status saver (+ WA Business)","v":"FNNFFNF"},
+          {"f":"MP3 / audio extraction","v":"FNNNNNN"}
+        ]
+      },
+      {
+        "g": "Privacy",
+        "rows": [{"f":"Private vault + biometric / PIN lock","v":"FNNNNNN"}]
+      },
+      {
+        "g": "Playback & experience",
+        "rows": [
+          {"f":"Media3 / ExoPlayer player","v":"FFFFFFF"},
+          {"f":"Onboarding + dark mode","v":"FFFFFFF"}
+        ]
+      }
+    ],
+    "excluded": "The slide also lists “Jetpack Compose modern UI” with our app marked ✓. The Product Dossier’s spec, read from app/build.gradle, shows Android Views + ViewBinding, so the row is left out rather than shown with a claim the build does not support."
+  },
+  "oursOnly": [
+    {
+      "h": "A 9-tool video editor",
+      "p": "Trim, split, crop, merge, aspect ratio, add audio, extract audio, filters & effects and watermark — built on Media3 Transformer and checked frame by frame on a device."
+    },
+    {
+      "h": "A private vault with PIN and biometrics",
+      "p": "Hide videos, pictures and audio behind a 4-digit PIN with fingerprint unlock and a security question to reset. None of the six audited competitors ships a locked vault."
+    },
+    {"h":"MP3 and audio extraction","p":"Pick a range and save the audio. The only app in the audit that extracts audio."},
+    {
+      "h": "Batch downloads that survive the background",
+      "p": "Parallel downloads with pause, resume and retry, kept alive by a foreground service. The only app in the audit with batch downloading."
+    },
+    {
+      "h": "Nine languages, including right-to-left",
+      "p": "English, Urdu, Arabic, Hindi, Turkish, German, French, Brazilian Portuguese and Chinese, with mirrored layouts for Urdu and Arabic."
+    }
+  ],
+  "ourClaims": {"paste":1,"browser":1,"quality":1,"background":1,"multi":1,"story":1,"status":1,"mp3":1,"private":1,"editor":1,"player":1,"languages":1},
+  "inventory": [
+    {
+      "screen": "Download",
+      "items": [
+        "Paste a link, share into the app, or pick from Quick Platforms",
+        "Quick Platforms: Facebook, Instagram, TikTok, LinkedIn, X, Dailymotion, Likee, Snapchat, WhatsApp and WhatsApp Business",
+        "Quality picker (for example 720p, 360p, 240p)", "Parallel downloads with pause, resume and retry",
+        "Foreground service keeps large downloads alive"
+      ]
+    },
+    {
+      "screen": "Video cutter · 9 tools",
+      "items": [
+        "Cut & compress, crop, split and merge", "Aspect ratio with colour or blur fill", "Add audio and extract MP3", "Filters & effects",
+        "Add watermark with image or styled text", "Trim start, trim middle, trim end, volume and speed"
+      ]
+    },
+    {
+      "screen": "Vault",
+      "items": ["Hidden videos, pictures and audio","4-digit PIN with biometric unlock","Security question to reset the PIN","Change PIN"]
+    },
+    {
+      "screen": "Manage & settings",
+      "items": [
+        "Rename, share, delete and favourite", "WhatsApp and WhatsApp Business status saver", "Download location and subscription settings",
+        "Nine languages with right-to-left layouts"
+      ]
+    },
+    {
+      "screen": "Verified on a real phone",
+      "items": [
+        "TikTok, Facebook, Instagram (reels, videos, carousels), LinkedIn, X, Dailymotion and Vimeo downloaded end to end",
+        "0 crashes and 0 ANRs across the device rounds", "QA score 95 / 100"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "h": "InShot · Video Downloader",
+      "p": "The category leader: 100M+ installs, a 4.7 rating from about 2.7M ratings, a browser with auto-detect and a password-protected folder."
+    },
+    {"h":"Vidow · Video Downloader HD","p":"100M+ installs with a resolution picker and casting to a TV."},
+    {"h":"Vidpal · 4K Downloader","p":"50M+ installs, paste-link downloading and a 4K player."}
+  ],
+  "plans": {
+    "note": "Premium removes all ads. Prices as Google Play shows them in Pakistan.",
+    "items": [
+      {"p":"Weekly","price":"Rs 1,400","sku":"weekly_plan"},
+      {"p":"Monthly","price":"Rs 5,600","sku":"monthly_plan"}
+    ]
+  }
+}
+```
+
+### listing
+
+```json
+{
+  "current": {
+    "title": "All Video Downloader & Saver",
+    "summary": "Fast video downloader for HD videos, stories, clips and offline viewing",
+    "description": "Save the videos you love and enjoy them anytime with All Video Downloader & Saver, a simple, fast and convenient video downloader built for everyday use.\nCopy a supported video link, paste it into the app and save the video directly to your device. Whether you want to keep short videos, stories, status videos or useful clips, the built-in video saver makes downloading and managing media easy.\nKEY FEATURES\n• Fast Video Downloader\nSave supported online videos quickly with a smooth and straightforward download process.\n• HD Video Saver\nDownload available videos in clear, high-quality formats for a better offline viewing experience.\n• Simple Link-Based Downloading\nCopy a video link from a supported source, paste it into the app and start the download in just a few taps.\n• Story and Status Saver\nKeep supported stories, status videos and short clips on your device before they disappear.\n• Offline Video Access\nWatch downloaded videos whenever you want, even when an internet connection is unavailable.\n• Download Manager\nView download progress and keep your saved videos organised in one convenient place.\n• Easy Video Controls\nOpen, play, share or delete downloaded videos directly from the app.\n• Clean and User-Friendly Design\nA simple interface helps you save videos without complicated steps.\nHOW TO DOWNLOAD A VIDEO\nCopy the link of the video you have permission to save.\nOpen All Video Downloader & Saver.\nPaste the link into the download field.\nTap the download button.\nOpen the saved video and enjoy it offline.\nWHY USE ALL VIDEO DOWNLOADER & SAVER?\nAll Video Downloader & Saver combines a fast video downloader, HD video saver, story saver and offline media manager in one practical app.\nIt is designed for users who want a quick way to save supported social media videos and keep their favourite clips available on their device.\nUse the app for personal videos, educational clips, creative references, memorable stories and other content that you own or are authorised to download.\nIMPORTANT\nFeatures, supported websites and downloadable formats may vary depending on the source and content availability.\nPlease respect copyright and intellectual property rights. Download or share only content that you own, content in the public domain, or content for which you have permission from the owner.\nAll Video Downloader & Saver is an independent application and is not affiliated with, endorsed by or sponsored by any social media platform.",
+    "iap": "$4.99 - $19.99 per item",
+    "ads": true,
+    "privacy": "https://cellcave.github.io/cell-cave-website/apps/all-video-downloader-saver/privacy/",
+    "site": "https://cellcave.github.io/cell-cave-website/",
+    "developer": "Cell Cave",
+    "installs": "5+",
+    "url": "https://play.google.com/store/apps/details?id=com.video.downloader.instagram.videosaver&hl=en&gl=US",
+    "id": "com.video.downloader.instagram.videosaver",
+    "genre": "Productivity",
+    "privacyStatus": 200
+  },
+  "titles": [
+    {
+      "t": "All Video Downloader & Saver",
+      "len": 28,
+      "taken": true,
+      "current": true,
+      "score": 729,
+      "hits": [
+        "video downloader", "all video downloader", "video saver - video downloader", "video saver", "video saver downloader",
+        "video downloader and saver", "all video downloader and saver", "downloader"
+      ],
+      "exact": ["video downloader","all video downloader","video downloader and saver","all video downloader and saver","downloader"]
+    },
+    {
+      "t": "HD Video Downloader & Saver",
+      "len": 27,
+      "taken": false,
+      "current": false,
+      "score": 634,
+      "hits": [
+        "video downloader", "hd video downloader", "video saver - video downloader", "video saver", "video saver downloader",
+        "video downloader and saver", "downloader"
+      ],
+      "exact": ["video downloader","hd video downloader","video downloader and saver","downloader"]
+    },
+    {
+      "t": "Fast Video Downloader & Saver",
+      "len": 29,
+      "taken": false,
+      "current": false,
+      "score": 627,
+      "hits": [
+        "video downloader", "fast video downloader", "video saver - video downloader", "video saver", "video saver downloader",
+        "video downloader and saver", "downloader"
+      ],
+      "exact": ["video downloader","fast video downloader","video downloader and saver","downloader"]
+    },
+    {
+      "t": "All Video Downloader: HD Saver",
+      "len": 30,
+      "taken": true,
+      "current": false,
+      "score": 617,
+      "hits": [
+        "video downloader", "hd video downloader", "all video downloader", "video saver - video downloader", "video saver", "video saver downloader",
+        "downloader"
+      ],
+      "exact": ["video downloader","all video downloader","downloader"]
+    },
+    {
+      "t": "Video Downloader & Saver: HD",
+      "len": 28,
+      "taken": false,
+      "current": false,
+      "score": 594,
+      "hits": [
+        "video downloader", "hd video downloader", "video saver - video downloader", "video saver", "video saver downloader",
+        "video downloader and saver", "downloader"
+      ],
+      "exact": ["video downloader","video downloader and saver","downloader"]
+    },
+    {
+      "t": "Video Saver: HD Downloader",
+      "len": 26,
+      "taken": false,
+      "current": false,
+      "score": 491,
+      "hits": ["video downloader","hd video downloader","video saver - video downloader","video saver","video saver downloader","downloader"],
+      "exact": ["video saver","downloader"]
+    },
+    {
+      "t": "HD Video Downloader: Save Link",
+      "len": 30,
+      "taken": false,
+      "current": false,
+      "score": 452,
+      "hits": ["video downloader","hd video downloader","video save","save video","downloader"],
+      "exact": ["video downloader","hd video downloader","downloader"]
+    },
+    {
+      "t": "Private Video Downloader: HD",
+      "len": 28,
+      "taken": false,
+      "current": false,
+      "score": 406,
+      "hits": ["video downloader","hd video downloader","private video downloader","downloader"],
+      "exact": ["video downloader","private video downloader","downloader"]
+    },
+    {
+      "t": "Video Downloader: HD & Private",
+      "len": 30,
+      "taken": false,
+      "current": false,
+      "score": 367,
+      "hits": ["video downloader","hd video downloader","private video downloader","downloader"],
+      "exact": ["video downloader","downloader"]
+    },
+    {
+      "t": "HD Video Downloader & Cutter",
+      "len": 28,
+      "taken": false,
+      "current": false,
+      "score": 345,
+      "hits": ["video downloader","hd video downloader","downloader","video cutter"],
+      "exact": ["video downloader","hd video downloader","downloader"]
+    },
+    {
+      "t": "All Video Downloader & Cutter",
+      "len": 29,
+      "taken": false,
+      "current": false,
+      "score": 344,
+      "hits": ["video downloader","all video downloader","downloader","video cutter"],
+      "exact": ["video downloader","all video downloader","downloader"]
+    },
+    {
+      "t": "Video Downloader: Save & Cut",
+      "len": 28,
+      "taken": false,
+      "current": false,
+      "score": 332,
+      "hits": ["video downloader","video save","save video","downloader"],
+      "exact": ["video downloader","downloader"]
+    },
+    {
+      "t": "All Video Downloader & Vault",
+      "len": 28,
+      "taken": false,
+      "current": false,
+      "score": 329,
+      "hits": ["video downloader","all video downloader","downloader"],
+      "exact": ["video downloader","all video downloader","downloader"]
+    },
+    {
+      "t": "Video Downloader & Cutter",
+      "len": 25,
+      "taken": false,
+      "current": false,
+      "score": 225,
+      "hits": ["video downloader","downloader","video cutter"],
+      "exact": ["video downloader","downloader"]
+    }
+  ],
+  "rec": [
+    {
+      "t": "HD Video Downloader & Saver",
+      "len": 27,
+      "taken": false,
+      "current": false,
+      "score": 634,
+      "hits": [
+        "video downloader", "hd video downloader", "video saver - video downloader", "video saver", "video saver downloader",
+        "video downloader and saver", "downloader"
+      ],
+      "exact": ["video downloader","hd video downloader","video downloader and saver","downloader"]
+    },
+    {
+      "t": "Fast Video Downloader & Saver",
+      "len": 29,
+      "taken": false,
+      "current": false,
+      "score": 627,
+      "hits": [
+        "video downloader", "fast video downloader", "video saver - video downloader", "video saver", "video saver downloader",
+        "video downloader and saver", "downloader"
+      ],
+      "exact": ["video downloader","fast video downloader","video downloader and saver","downloader"]
+    },
+    {
+      "t": "Video Downloader & Saver: HD",
+      "len": 28,
+      "taken": false,
+      "current": false,
+      "score": 594,
+      "hits": [
+        "video downloader", "hd video downloader", "video saver - video downloader", "video saver", "video saver downloader",
+        "video downloader and saver", "downloader"
+      ],
+      "exact": ["video downloader","video downloader and saver","downloader"]
+    }
+  ],
+  "shorts": [
+    {
+      "s": "Download videos from links in HD. Video cutter, MP3 extractor and private vault.",
+      "len": 80,
+      "score": 911,
+      "hits": [
+        "video downloader", "hd video downloader", "private video downloader", "video saver - video downloader", "download video", "video saver",
+        "video saver downloader", "video downloader and saver", "download videos", "downloader", "private video vault", "video cutter"
+      ],
+      "exact": ["video downloader","hd video downloader","video downloader and saver","download videos","downloader","video cutter"]
+    },
+    {
+      "s": "Fast video saver: download HD videos, cut clips, extract MP3 and hide videos",
+      "len": 76,
+      "score": 899,
+      "hits": [
+        "video downloader", "hd video downloader", "fast video downloader", "video saver - video downloader", "download video", "video saver",
+        "video saver downloader", "video downloader and saver", "download videos", "downloader", "hide videos"
+      ],
+      "exact": ["video downloader","hd video downloader","video saver","video downloader and saver","downloader","hide videos"]
+    }
+  ],
+  "long": "{name} saves videos from a link in the quality you choose, with a built-in video cutter and a private vault. Copy a video link, paste it into the app and download video straight to your phone — then trim it, extract the audio or lock it away behind a PIN.\n\n## Download videos from a link\n• Paste a link or share it straight into the app to download video in one step\n• Choose the quality before you save, from HD down to smaller files\n• Download several videos at once with pause, resume and retry\n• Downloads keep running in the background, even for large files\n• Works with links from Facebook, Instagram, TikTok, X, LinkedIn, Dailymotion and Vimeo\n\n## HD video saver and player\n• All video downloader and player in one app\n• Watch saved videos offline with the built-in video player\n• Rename, share, delete or favourite any download\n• Status saver for statuses you are allowed to keep\n\n## Video cutter and editor · 9 tools\n• Trim, split, crop and merge videos\n• Change the aspect ratio with a colour or blur background\n• Add music to a video, or extract audio and save it as MP3\n• Filters and effects, plus an image or text watermark\n\n## Private video downloader with a vault\n• Hide videos, pictures and audio in a PIN-locked vault\n• Unlock with your fingerprint, and reset your PIN with a security question\n• Keep private downloads out of your gallery\n\n## Made for everyone\n• 9 languages: English, Urdu, Arabic, Hindi, Turkish, German, French, Portuguese and Chinese\n• Right-to-left layouts for Urdu and Arabic\n• A clean app built for fast, simple saving\n\n## How to download a video\nCopy the link of a video you have permission to save.\nOpen {name} and paste the link, or share the link into the app.\nPick the quality and tap Download.\nOpen the saved video to watch, cut or move it to the vault.\n\n## Questions people ask\nWhere are my downloads saved? In the app, sorted into a folder for each platform. Move any video to the vault in one tap.\nWill a large download stop if I leave the app? No. Downloads keep running in the background and resume after a network drop.\nWhat does Premium change? Premium removes ads. Downloads work the same way with or without it.\n\n## Important\nDownload only videos you own, videos in the public domain, or videos the owner lets you save. Please respect copyright.\n{name} is an independent app and is not affiliated with, endorsed by or sponsored by any of the platforms named above."
+}
+```
+
+### offersChecked
+
+```json
+{
+  "video.downloader.videodownloader": false,
+  "com.gamma.videodownloader": false,
+  "videoplayer.videodownloader.downloader": false,
+  "instagram.video.downloader.story.saver.ig": false,
+  "instagram.video.downloader.story.saver.ig.insaver": false,
+  "hub.browser.video.downloader.saver": false,
+  "videodownloader.instagram.videosaver": false,
+  "com.videodownload.browser.videodownloader": false,
+  "downloader.video.download.free": false,
+  "instasaver.videodownloader.photodownloader.repost": false,
+  "com.allvideodownloader.hdvideodownloader.savevideos": false,
+  "allinone.videodownloader.savevideos": false,
+  "com.videosaver.savevideos.story.saverapp": false,
+  "com.videodownloder.alldownloadvideos": false,
+  "com.hdvideodownloader.downloaderapp": false,
+  "free.video.downloader.freevideodownloader2021.video.saver.videosaverlite": false,
+  "com.video.downloader.instagram.videosaver": false
+}
+```
+
+### tiksta.long
+
+```json
+"Tiksta is a reels downloader and social video downloader in one fast app. Copy the link of a reel, a story or any public video, paste it into Tiksta and save video files straight to your phone in HD.\n\nDownload video from link in one tap, or share the link into the app. Built as an online video downloader for Android, Tiksta is also a private video downloader and video saver: keep downloads in a locked vault, watch them offline or cut them with the built-in editor.\n\nSAVE REELS AND VIDEOS\n• Paste a link or share it into Tiksta to download videos and reels\n• Video downloader browser: open a page and Tiksta finds the video\n• Choose the quality before you save, from HD 720p to smaller files\n• Photo downloader too: saves every photo and video in a multi-item post\n• Download several videos at once with pause, resume and retry\n• Downloads keep running in the background, even for large files\n\nREEL SAVER, STORY SAVER AND STATUS SAVER\n• A story saver app for stories you are allowed to keep\n• A status saver app for statuses shared with you, including business accounts\n• Every download is filed in its own folder by source\n\nHD VIDEO PLAYER AND DOWNLOAD MANAGER\n• An all video downloader and player for everything you save\n• Offline video player: watch saved videos without a connection\n• Download manager to rename, share, delete or favourite any file\n\nVIDEO DOWNLOADER WITH EDITOR\n• Video cutter and video trimmer: trim the start, middle or end\n• Video merger: split clips or join them into one\n• Crop video and change the aspect ratio with a colour or blur fill\n• Add music to video, or extract audio from video as MP3\n• Filters, effects, speed and volume controls\n• Watermark video with an image or styled text\n• Video compressor: cut and compress files to save space\n\nPRIVATE VIDEO VAULT\n• Video locker with a 4-digit PIN for videos, pictures and audio\n• Hide videos, unlock with your fingerprint and reset the PIN with a security question\n• Private downloads stay out of your gallery\n\nMADE FOR EVERYONE\n• 9 languages, with right-to-left layouts for Urdu and Arabic\n• A fast video downloader with dark mode and a clean, simple design\n\nHOW TO DOWNLOAD REELS AND VIDEOS\n1. Copy the link of a reel or video you have permission to save.\n2. Open Tiksta and paste the link, or share the link into the app.\n3. Pick the quality and tap Download.\n4. Watch the video, cut it or move it to the vault.\n\nQUESTIONS PEOPLE ASK\nWhere are my downloads saved? In Tiksta, sorted into a folder for each source. Move any video to the vault in one tap.\nWill a large download stop if I leave the app? No. Downloads keep running in the background and resume after a network drop.\nWhat does Premium change? Premium removes all ads, including the one shown before a download. Quality and speed stay the same.\n\nIMPORTANT\nDownload only videos you own, videos in the public domain, or videos the owner lets you save. Please respect copyright.\nTiksta is an independent app and is not affiliated with, endorsed by or sponsored by any social media platform."
+```
+
+### tiksta.pc
+
+```json
+{
+  "collectedAt": "2026-09-16T11:41:23.7794628Z",
+  "queries": [
+    "reels downloader", "reels video downloader", "reels saver", "video downloader for reels", "insta downloader", "insta saver", "tiktok downloader",
+    "tik tok video downloader", "video downloader for tiktok", "instagram downloader", "video downloader for instagram", "tiksta",
+    "reels downloader app", "social video downloader", "private video downloader", "save video"
+  ],
+  "apps": 143,
+  "terms": [
+    {
+      "key": "reels",
+      "label": "Reels / Reel",
+      "n": 22,
+      "m1": 1,
+      "y2": 6,
+      "both": 1,
+      "ex": [
+        {"t":"Story Saver & Reels Downloader","b":"1M+","d":"PinKaal","f":"2024-03-16"},
+        {"t":"Copy Caption Reels Downloader","b":"50K+","d":"Infast Video Downloader & Story Saver","f":"2023-05-02"},
+        {"t":"All Video Downloader & Reels","b":"50K+","d":"Nubivio Apps","f":"2026-07-23"},
+        {"t":"Reels Downloader","b":"50K+","d":"MobileByteSensei","f":"2025-02-24"}
+      ]
+    },
+    {
+      "key": "story",
+      "label": "Story (generic baseline)",
+      "n": 18,
+      "m1": 7,
+      "y2": 11,
+      "both": 7,
+      "ex": [
+        {"t":"Video downloader - Story Saver","b":"50M+","d":"Video Downloader Story Saver","f":"2023-10-13"},
+        {"t":"Video Downloader : Story Saver","b":"10M+","d":"Video Downloader & Photo Downloader & Saver","f":"2020-12-07"},
+        {"t":"Video Downloader & Story Saver","b":"10M+","d":"Video Downloader & Fast Saver","f":"2024-03-28"},
+        {"t":"Story Saver - Video Downloader","b":"5M+","d":"Story Saver&Video Downloader","f":"2023-02-09"}
+      ]
+    },
+    {
+      "key": "tik",
+      "label": "Tik- prefix (the Tiksta name)",
+      "n": 8,
+      "m1": 3,
+      "y2": 7,
+      "both": 3,
+      "ex": [
+        {"t":"TikBoost - Followers & Likes","b":"1M+","d":"Stix LLC","f":"2021-08-12"},
+        {"t":"TikMate: Download No Watermark","b":"1M+","d":"Video Downloader & Voice Translator & Story Saver","f":"2023-12-13"},
+        {"t":"HD Tik Downloader No Watermark","b":"1M+","d":"TapGap Studio","f":"2022-11-20"},
+        {"t":"Tikget - Video Downloader","b":"500K+","d":"Spaple","f":"2023-08-16"}
+      ]
+    },
+    {
+      "key": "insta",
+      "label": "Insta",
+      "n": 4,
+      "m1": 0,
+      "y2": 0,
+      "both": 0,
+      "ex": [
+        {"t":"Insta Saver - Video Downloader","b":"1K+","d":"India apps","f":"2026-07-14"},
+        {"t":"Reels Downloader | Insta Saver","b":"1K+","d":"Code Multiverse","f":"2026-04-18"},
+        {"t":"Insta Reel Download & Organize","b":"100+","d":"Lan Apps","f":"2026-07-26"},
+        {"t":"Insta Saver: Reel Downloader","b":"0+","d":"Jawad108","f":"2026-09-11"}
+      ]
+    },
+    {
+      "key": "tiktok",
+      "label": "TikTok",
+      "n": 4,
+      "m1": 1,
+      "y2": 2,
+      "both": 1,
+      "ex": [
+        {"t":"Downloader for TikTok","b":"10M+","d":"application.development.studio","f":"2019-02-22"},
+        {"t":"TikVid - TikTok Downloader","b":"100K+","d":"MobilesWorld","f":"2023-06-04"},
+        {"t":"Video Downloader For Tiktok","b":"10K+","d":"IFM Project","f":"2025-06-15"},
+        {"t":"Video Downloader for TikTok","b":"100+","d":"Vd Brains","f":"2026-06-15"}
+      ]
+    },
+    {
+      "key": "instagram",
+      "label": "Instagram",
+      "n": 3,
+      "m1": 0,
+      "y2": 2,
+      "both": 0,
+      "ex": [
+        {"t":"Video Downloader for Instagram","b":"10K+","d":"Bytecode.one","f":"2024-08-21"},
+        {"t":"Instagram Video Downloader","b":"10K+","d":"Nazar Tech","f":"2026-07-05"},
+        {"t":"Video Downloader for Instagram","b":"1K+","d":"Hanif Abuvani","f":"2020-01-28"}
+      ]
+    }
+  ],
+  "serp": [
+    {"t":"InSaver: All Video Downloader","b":"10M+","f":"2024-05-29","has":false},
+    {"t":"Video downloader - Story Saver","b":"50M+","f":"2023-10-13","has":false},
+    {"t":"Reels Downloader","b":"50K+","f":"2025-02-24","has":true},
+    {"t":"Video Downloader","b":"100M+","f":"2018-03-16","has":false},
+    {"t":"ReelSave - Reels Downloader","b":"1K+","f":"2026-09-03","has":true},
+    {"t":"SaveReels - Reels Downloader","b":"1K+","f":"2026-05-08","has":true},
+    {"t":"Video Downloader & Story Saver","b":"10M+","f":"2024-03-28","has":false},
+    {"t":"Reel Saver - Video Downloader","b":"5K+","f":"2026-06-26","has":true},
+    {"t":"iReels Save – Reels Downloader","b":"100+","f":"2026-04-04","has":true},
+    {"t":"Social Video Downloader","b":"100K+","f":"2024-04-13","has":false}
+  ],
+  "tikstaSerp": [
+    "TikTok - Videos, Shop & LIVE", "TkStar - Followers Likes Views", "TikTok Lite - Faster TikTok", "TikBoost - Followers & Likes", "TikTok Studio",
+    "TikTok Pro - Events", "TickTick:To Do List & Calendar", "FanTick - Real Followers Likes", "TikBooster - Followers & Likes",
+    "TickViral Gain Likes Followers"
+  ],
+  "tikstaNamed": 0
+}
+```
+
+### tiksta.short
+
+```json
+"Save & download reels & social videos in HD from a link. Private story saver app"
+```
+
+### tiksta.shortAlt
+
+```json
+"Save & download reels and social videos in HD from a link. Fast story saver app"
+```
+
+### tiksta.titles
+
+```json
+["Tiksta: Reels Video Downloader","Tiksta Social Video Downloader","Tiksta: Reels Downloader App"]
+```
+

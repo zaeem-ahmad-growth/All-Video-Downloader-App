@@ -1,6 +1,6 @@
 # Video Downloader
 
-> **Generated file: do not edit by hand.** Full visible text of the tab as it renders by default, produced by `node tools/export-docs.js` on 2026-09-22.
+> **Generated file: do not edit by hand.** Full visible text of the tab as it renders by default, produced by `node tools/export-docs.js`, which GitHub runs after every push.
 > Live page: https://zaeem-ahmad-growth.github.io/All-Video-Downloader-App/tabs/01-video-downloader/ · Source: [tabs/01-video-downloader/index.html](../../tabs/01-video-downloader/index.html) · Where each section comes from: [code map](../code-map.md#01-video-downloader)
 > Controls on the page (market pickers, version switches, filters, "show more") change the view; this snapshot shows their default state. The data behind every state is in [assets/data.js](../../assets/data.js), described in the [data dictionary](../data-dictionary.md).
 
