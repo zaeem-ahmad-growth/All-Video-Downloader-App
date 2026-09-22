@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Features Comparison · All Video Downloader</title>
+<meta name="description" content="Feature audit of All Video Downloader against competitor apps, listing claims and in-app purchase comparison.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@75..150,500..900&family=Albert+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body data-page="features">
+
+<nav class="bar" aria-label="Tabs, sections and controls" id="bar">
+  <div class="wrap bar-top">
+    <div class="tabs" id="site-tabs" aria-label="Tabs"></div>
+  </div>
+  <div class="wrap bar-sections" aria-label="Sections">
+    <div class="jump" id="jump-features">
+      <a href="#f-overview">Overview</a><a href="#f-lead">Only in our app</a><a href="#f-audit">Audit matrix</a><a href="#f-claims">Listing claims</a><a href="#f-inventory">What ships</a><a href="#f-edges">Competitor strengths</a><a href="#f-iap">IAP comparison</a><a href="#f-method">Method</a>
+    </div>
+  </div>
+</nav>
+<script src="../../assets/nav.js"></script>
+
+<main class="wrap doc" id="features">
+  <header class="g-head" id="f-overview">
+    <div class="eyebrow"><span><b>Features Comparison</b></span><span>Feature audit · listing claims · IAP</span><span>Verified against the Product Dossier</span></div>
+    <h1>Features Comparison</h1>
+    <p class="lede" id="f-lede"></p>
+    <div class="tiles" id="f-tiles"></div>
+  </header>
+
+  <section id="f-lead">
+    <div class="sec-head"><p class="kicker">Where we lead</p><h2>What only this app does</h2></div>
+    <div class="cards" id="f-only"></div>
+  </section>
+
+  <section id="f-audit">
+    <div class="sec-head">
+      <p class="kicker">The audit · seven apps · static APK analysis</p>
+      <h2>Feature audit matrix</h2>
+      <p class="sub">Your team’s audit of six competitor builds against ours, grouped by job. The last column counts how many of the six ship each feature. Each competitor’s header shows how many US keywords it ranks in the top 10 for, from the ASO Playbook.</p>
+    </div>
+    <div class="legend" id="f-legend"></div>
+    <div class="tscroll"><table class="matrix fmx" id="f-audit-table"></table></div>
+    <p class="note" id="f-excluded"></p>
+  </section>
+
+  <section id="f-claims">
+    <div class="sec-head">
+      <p class="kicker">Listing claims · all 16 competitors · live Play descriptions</p>
+      <h2>What each listing tells users it can do</h2>
+      <p class="sub">Read from every competitor’s live title, short and full description. Our column shows what the app ships; a “not in listing” mark means the feature exists but your current listing never mentions it.</p>
+    </div>
+    <div class="tscroll"><table class="matrix fmx" id="f-claims-table"></table></div>
+    <p class="note" id="f-claims-note"></p>
+  </section>
+
+  <section id="f-inventory">
+    <div class="sec-head"><p class="kicker">Evidence · device-tested build</p><h2>What ships in the app</h2><p class="sub">From the Product Dossier and the app’s own screens.</p></div>
+    <div class="cards" id="f-inv"></div>
+  </section>
+
+  <section id="f-edges">
+    <div class="sec-head"><p class="kicker">Honest read</p><h2>Where competitors are strong</h2></div>
+    <div class="cards" id="f-edge-cards"></div>
+  </section>
+
+  <section id="f-iap">
+    <div class="sec-head">
+      <p class="kicker">IAP comparison · Google Play · United States</p>
+      <h2>In-app purchase ranges</h2>
+      <p class="sub">The price range each listing shows for in-app purchases in the US, alongside ads. The bar spans each app’s cheapest to most expensive item on a $0–$100 scale.</p>
+    </div>
+    <div class="tscroll"><table id="f-iap-table"></table></div>
+    <div class="panel" style="padding:16px 18px;margin-top:16px" id="f-plans"></div>
+  </section>
+
+  <section id="f-method" style="padding-bottom:40px">
+    <div class="sec-head"><p class="kicker">Method</p><h2>Where this comes from</h2></div>
+    <div class="g-cols" id="f-method-text" style="margin-top:0"></div>
+  </section>
+</main>
+
+<div id="tip" hidden></div>
+
+<script src="../../assets/data.js"></script>
+<script src="../../assets/app.js"></script>
+
+</body>
+</html>

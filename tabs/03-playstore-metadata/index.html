@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>PlayStore Metadata · All Video Downloader</title>
+<meta name="description" content="Play Store metadata for All Video Downloader: the new Tiksta listing copy against the live listing, keyword coverage and policy checks.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@75..150,500..900&family=Albert+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body data-page="metadata">
+
+<nav class="bar" aria-label="Tabs, sections and controls" id="bar">
+  <div class="wrap bar-top">
+    <div class="tabs" id="site-tabs" aria-label="Tabs"></div>
+    <div class="mk" id="mv">
+      <span class="mk-label" id="mv-label">Metadata</span>
+      <div class="seg" role="group" aria-labelledby="mv-label"><button type="button" data-ver="tiksta" aria-pressed="true">Tiksta · new</button><button type="button" data-ver="live" aria-pressed="false">Live listing</button></div>
+    </div>
+  </div>
+  <div class="wrap bar-sections" aria-label="Sections">
+    <div class="jump" id="jump-metadata">
+      <a href="#m-overview">Listing</a><a href="#m-assets">Store assets</a><a href="#m-current">Metadata</a><a href="#m-targets">Targeted keywords</a><a href="#m-platform" id="jl-platform">Platform-name keywords</a><a href="#m-keywords">Finalized keywords</a><a href="#m-ladder">Ladder</a><a href="#m-used">Competitor ranks</a><a href="#m-policy">Policy record</a><a href="#m-method">Method</a>
+    </div>
+  </div>
+</nav>
+<script src="../../assets/nav.js"></script>
+
+<main class="wrap doc" id="metadata">
+  <header class="g-head" id="m-overview">
+    <div class="eyebrow"><span><b>PlayStore Metadata</b></span><span id="m-src">Live Google Play listing</span><span>United States · English</span></div>
+    <div class="m-app" id="m-app"></div>
+    <div class="tiles" id="m-tiles"></div>
+  </header>
+
+  <section id="m-assets">
+    <div class="sec-head">
+      <p class="kicker">Store assets · as published</p>
+      <h2>Graphics on the listing</h2>
+      <p class="sub">The icon, feature graphic and screenshots currently published on Google Play, measured against Play’s asset requirements.</p>
+    </div>
+    <div class="assets-top" id="m-assets-top"></div>
+    <div class="shotrow" id="m-shots"></div>
+    <div class="tscroll" style="margin-top:18px"><table class="checks-table" id="m-asset-checks"></table></div>
+  </section>
+
+  <section id="m-current">
+    <div class="sec-head">
+      <p class="kicker" id="m-cur-kicker">Metadata · United States</p>
+      <h2>Title, short description and full description</h2>
+      <p class="sub" id="m-cur-sub">The listing’s metadata as live on Google Play. Every keyword it targets from the playbook’s US board is marked.</p>
+    </div>
+    <div id="m-options" style="margin-bottom:22px" hidden></div>
+    <div class="m-legend"><span><mark class="kwm">targeted keyword</mark></span></div>
+    <div class="store">
+      <div class="listing" id="m-listing"></div>
+      <div class="side" id="m-side"></div>
+    </div>
+    <div id="m-copy" style="margin-top:14px" hidden></div>
+  </section>
+
+  <section id="m-targets">
+    <div class="sec-head">
+      <p class="kicker">Targeted keywords · where each one came from</p>
+      <h2>Every keyword this metadata targets</h2>
+      <p class="sub" id="m-targets-sub">All board keywords carried by the title, short description and full description, grouped by field, with how many competitors hold a top-10 rank and which competitors carry the keyword in their own title.</p>
+    </div>
+    <div class="tscroll"><table class="board" id="m-targets-table"></table></div>
+    <p class="note" id="m-targets-note"></p>
+  </section>
+
+  <section id="m-platform">
+    <div class="sec-head">
+      <p class="kicker">Platform-name keywords · evidence, not targets</p>
+      <h2>Keywords that name another company’s product</h2>
+      <p class="sub">The demand and competitor ranks behind platform-name searches, and where your metadata mentions each one. These stay out of the title and short description.</p>
+    </div>
+    <div class="tscroll"><table class="board" id="m-platform-table"></table></div>
+  </section>
+
+  <section id="m-keywords">
+    <div class="sec-head">
+      <p class="kicker">Keyword analysis · United States · from “Keyword opportunity board, relevance first”</p>
+      <h2>Finalized keywords</h2>
+      <p class="sub" id="m-kw-sub">The 24 highest-priority US keywords with core or adjacent intent, relevance of 80 or above and no platform name, split by whether this metadata targets them.</p>
+    </div>
+    <h3 style="margin:0 0 10px" id="m-kw-now-h"></h3>
+    <div class="tscroll"><table class="board" id="m-kw-now"></table></div>
+    <h3 style="margin:28px 0 10px" id="m-kw-future-h"></h3>
+    <div class="tscroll"><table class="board" id="m-kw-future"></table></div>
+  </section>
+
+  <section id="m-ladder">
+    <div class="sec-head">
+      <p class="kicker">Roadmap · United States</p>
+      <h2>Launch keyword ladder of this metadata</h2>
+      <p class="sub" id="m-ladder-sub">The US ladder with each keyword marked by how this metadata covers it: T = title, T+S = every word across title and short description, S = short description, L = full description, and a dash = not in this version.</p>
+    </div>
+    <div class="ladder" id="m-ladder-list"></div>
+  </section>
+
+  <section id="m-used">
+    <div class="sec-head">
+      <p class="kicker">Competitor rankings · United States · keywords in this metadata</p>
+      <h2>How your competitors rank on the keywords you use</h2>
+      <p class="sub">Every board keyword this metadata carries, with each competitor’s verified US rank. Keywords where at least one competitor ranks come first, then the rest; each group sorted by relevance, then priority.</p>
+    </div>
+    <div class="tscroll"><table class="matrix" id="m-used-table"></table></div>
+  </section>
+
+  <section id="m-policy">
+    <div class="sec-head"><p class="kicker">Policy &amp; listing record</p><h2>Metadata policy record</h2></div>
+    <div class="tscroll"><table class="checks-table" id="m-policy-table"></table></div>
+    <div id="m-terms" hidden></div>
+  </section>
+
+  <section id="m-method" style="padding-bottom:40px">
+    <div class="sec-head"><p class="kicker">Method</p><h2>How this tab was built</h2></div>
+    <div class="g-cols" id="m-method-text" style="margin-top:0"></div>
+  </section>
+</main>
+
+<div id="tip" hidden></div>
+
+<script src="../../assets/data.js"></script>
+<script src="../../assets/app.js"></script>
+
+</body>
+</html>
