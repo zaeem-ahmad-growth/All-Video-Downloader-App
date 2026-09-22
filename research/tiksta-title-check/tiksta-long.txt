@@ -1,0 +1,54 @@
+Tiksta is a reels downloader and social video downloader in one fast app. Copy the link of a reel, a story or any public video, paste it into Tiksta and save video files straight to your phone in HD.
+
+Download video from link in one tap, or share the link into the app. Built as an online video downloader for Android, Tiksta is also a private video downloader and video saver: keep downloads in a locked vault, watch them offline or cut them with the built-in editor.
+
+SAVE REELS AND VIDEOS
+• Paste a link or share it into Tiksta to download videos and reels
+• Video downloader browser: open a page and Tiksta finds the video
+• Choose the quality before you save, from HD 720p to smaller files
+• Photo downloader too: saves every photo and video in a multi-item post
+• Download several videos at once with pause, resume and retry
+• Downloads keep running in the background, even for large files
+
+REEL SAVER, STORY SAVER AND STATUS SAVER
+• A story saver app for stories you are allowed to keep
+• A status saver app for statuses shared with you, including business accounts
+• Every download is filed in its own folder by source
+
+HD VIDEO PLAYER AND DOWNLOAD MANAGER
+• An all video downloader and player for everything you save
+• Offline video player: watch saved videos without a connection
+• Download manager to rename, share, delete or favourite any file
+
+VIDEO DOWNLOADER WITH EDITOR
+• Video cutter and video trimmer: trim the start, middle or end
+• Video merger: split clips or join them into one
+• Crop video and change the aspect ratio with a colour or blur fill
+• Add music to video, or extract audio from video as MP3
+• Filters, effects, speed and volume controls
+• Watermark video with an image or styled text
+• Video compressor: cut and compress files to save space
+
+PRIVATE VIDEO VAULT
+• Video locker with a 4-digit PIN for videos, pictures and audio
+• Hide videos, unlock with your fingerprint and reset the PIN with a security question
+• Private downloads stay out of your gallery
+
+MADE FOR EVERYONE
+• 9 languages, with right-to-left layouts for Urdu and Arabic
+• A fast video downloader with dark mode and a clean, simple design
+
+HOW TO DOWNLOAD REELS AND VIDEOS
+1. Copy the link of a reel or video you have permission to save.
+2. Open Tiksta and paste the link, or share the link into the app.
+3. Pick the quality and tap Download.
+4. Watch the video, cut it or move it to the vault.
+
+QUESTIONS PEOPLE ASK
+Where are my downloads saved? In Tiksta, sorted into a folder for each source. Move any video to the vault in one tap.
+Will a large download stop if I leave the app? No. Downloads keep running in the background and resume after a network drop.
+What does Premium change? Premium removes all ads, including the one shown before a download. Quality and speed stay the same.
+
+IMPORTANT
+Download only videos you own, videos in the public domain, or videos the owner lets you save. Please respect copyright.
+Tiksta is an independent app and is not affiliated with, endorsed by or sponsored by any social media platform.

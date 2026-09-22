@@ -1,0 +1,34 @@
+{
+ "icon": {
+  "file": "listing/icon.png",
+  "src": "https://play-lh.googleusercontent.com/qLNXtLkR4z4KiAhmkwjlXx1TpuC4aaH6qsMoZgkWzjg1-ZaXUh-KMfdG1gXfayu_gkStOl6S1w4tCfe2WMPBbQ",
+  "bytes": 369966
+ },
+ "feature": {
+  "file": "listing/feature-graphic.png",
+  "src": "https://play-lh.googleusercontent.com/q4weOoYNzbX0TD4RtvgBm1VsiywteBuYuZsb5Rr0JzQPEFYto2uU7Taj_ueFgCp65xXjCQ9zFHSZ9jwTq7lk8Q",
+  "bytes": 315561
+ },
+ "screenshots": [
+  {
+   "file": "listing/screenshot-01.png",
+   "src": "https://play-lh.googleusercontent.com/j2_25nIZRvSsEN0BlWJSIIRtIx-N1I7ugFgLUo5rDuBOnNTugt1bnMxlZt9p-RnjyAXdCFKK5KMAYzsaqTK8VA",
+   "bytes": 626837
+  },
+  {
+   "file": "listing/screenshot-02.png",
+   "src": "https://play-lh.googleusercontent.com/TDaaCxqjFa48ZfwV0k4SNIeBK-v0Cwt33ue3sNB5cqdlGlK4sYIZGuNKiKX2zGtm62hpnf9h3Zmc8ajaon7LXg",
+   "bytes": 668815
+  },
+  {
+   "file": "listing/screenshot-03.png",
+   "src": "https://play-lh.googleusercontent.com/iWFuKpcYqHVHeGgYoYhIrSjIrlR9FcRwAaGP1dZaP3WYRiq5zov4dfdatnjVHXoBdObNVJClXxRpLiWW2OhOTw",
+   "bytes": 798268
+  },
+  {
+   "file": "listing/screenshot-04.png",
+   "src": "https://play-lh.googleusercontent.com/3n20NxyQhoOWJOgRndJyj48dCylpmBu1lIGTP9GG5lS89ovMzjfum-Ps_cLIDr_54bKevER-jTLc-Um63vy_nw",
+   "bytes": 560921
+  }
+ ]
+}

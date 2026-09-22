@@ -1,0 +1,10 @@
+const raw = require('./raw.json');
+const d = require('./data.json');
+console.log('ALL KEYWORDS:\n' + raw.keywords.map((k, i) => `${i + 1}.${k}`).join(' | '));
+console.log('\nAudit competitors by market (top10 / any / best):');
+d.profiles.slice(10, 16).forEach(p => console.log(`  ${p.developer.padEnd(28)} ${d.markets.map(gl => `${gl} ${p.perMarket[gl].top10}/${p.perMarket[gl].any}/${p.perMarket[gl].best || '—'}`).join(' · ')}`));
+console.log('\nLive competitors by market (top10):');
+d.profiles.slice(0, 10).forEach(p => console.log(`  ${p.developer.slice(0, 28).padEnd(28)} ${d.markets.map(gl => `${gl} ${p.perMarket[gl].top10}`).join(' · ')}`));
+const me = raw.apps.find(a => a.appId === raw.mine);
+console.log('\nOUR LISTING\nTITLE (' + me.title.length + '): ' + me.title + '\nSHORT (' + me.summary.length + '): ' + me.summary + '\nLONG (' + me.description.length + '):\n' + me.description);
+console.log('\nshots', me.screenshots.length, '| feature', !!me.featureGraphic, '| video', !!me.video, '| iap', me.iap, '| privacy', me.privacyPolicy);

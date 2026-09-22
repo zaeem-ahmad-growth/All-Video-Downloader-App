@@ -1,0 +1,1879 @@
+[
+ {
+  "slug": "01-inshot",
+  "id": "video.downloader.videodownloader",
+  "title": "Video Downloader",
+  "developer": "InShot Inc.",
+  "installsLabel": "100,000,000+",
+  "installs": 236276464,
+  "score": 4.722918,
+  "ratings": 2719684,
+  "genre": "Video Players & Editors",
+  "updated": "2026-08-24",
+  "released": "Mar 16, 2018",
+  "video": false,
+  "url": "https://play.google.com/store/apps/details?id=video.downloader.videodownloader&hl=en&gl=US",
+  "icon": {
+   "file": "icon-01.png",
+   "bytes": 16962,
+   "src": "https://play-lh.googleusercontent.com/oju7a2AuqaQSc_l5O-2yRw8F_M0rUlHnBHjp_MqHNSAT3CXq7xbSqRVL7VSPNhMRjzaM2ft-LBoA05-q9hqmhg"
+  },
+  "feature": {
+   "file": "feature-graphic-01.jpg",
+   "bytes": 79009,
+   "src": "https://play-lh.googleusercontent.com/QrAO-trY2kMBozJxNbFVwlmHb6y4SyYaTsLlAOVW2na_Th8ED1XOKFJecVhVpj9hXeIaezkfd2Xmep1DQB2DSno"
+  },
+  "shots": [
+   {
+    "file": "screenshot-01.jpg",
+    "bytes": 127131,
+    "src": "https://play-lh.googleusercontent.com/NSGdsgwWRfwmx4fvTHQxemryYBrNUhWqMU2V8kQsrPQ9s3Z7d_X4x1SSyYZQ4f11L2-lD-3N-X8bKzW009-G"
+   },
+   {
+    "file": "screenshot-02.jpg",
+    "bytes": 86790,
+    "src": "https://play-lh.googleusercontent.com/gxUnDNwvtp0vd7HJX01UVlWG3OdKYfLHeSLUBcsRp3fe_ncRvXBTxjYs7-i19VEYvrXiqbzDDOaaXCHPoYtjxSA"
+   },
+   {
+    "file": "screenshot-03.jpg",
+    "bytes": 102361,
+    "src": "https://play-lh.googleusercontent.com/WFcH-IvsVpbLiJQx1pQC0Tr147jjjJNgmwvXbfeqC8MJRDPtgb68Yr6IFA-oOlY_Psa_U_8H4_bDW-ECltzt2g"
+   },
+   {
+    "file": "screenshot-04.jpg",
+    "bytes": 111115,
+    "src": "https://play-lh.googleusercontent.com/bUQFlAGdBI4UIMq2062v2WsBvk11Qb-v0JpULDAOmEonf54RZ9tapaeny4QYk0bS3shGIivg__F2bl3JbId7"
+   },
+   {
+    "file": "screenshot-05.jpg",
+    "bytes": 94783,
+    "src": "https://play-lh.googleusercontent.com/Uy3NFS-H0YcvUyv2n48dyX76CpLJbhOH8GfhhiXIWtpL1lHitb_gl99KtWrnH4Nk7qkngPekNJaUpY59Gp7yKg"
+   },
+   {
+    "file": "screenshot-06.jpg",
+    "bytes": 67491,
+    "src": "https://play-lh.googleusercontent.com/DLcnkImZEA7COuU2OJa2EAYTPWZnHVWWLDsY8fzqeOQvZRcIpoe_4L1_KWxgpPKcWlpY8quDIccYF7LFMHdkwg"
+   },
+   {
+    "file": "screenshot-07.jpg",
+    "bytes": 72426,
+    "src": "https://play-lh.googleusercontent.com/S3DOf7z5V0srj0YNUghtWNSJ9czeUIPsHKJrNDKbbb_4i7W1yfdC8iSrYYuhv-xli9HV68dOGKBsojC-8iWJ"
+   },
+   {
+    "file": "screenshot-08.jpg",
+    "bytes": 51113,
+    "src": "https://play-lh.googleusercontent.com/ptR_jkjvK244mVyx3FAnK27AOXDT_VLe28BoWu7ACUBGLrNq5OWbpkmX8Ca5xX35fSyTftIgVH71rXC1vLiEJmQ"
+   },
+   {
+    "file": "screenshot-09.jpg",
+    "bytes": 68591,
+    "src": "https://play-lh.googleusercontent.com/ikeGVPFcD4aTDVAaVbpkZiQObefirUMBUm_6AgzOrqCe7Yk7VD3E0zhd3AUx4H0iveBg0GJkK3m29VoGanM4"
+   },
+   {
+    "file": "screenshot-10.jpg",
+    "bytes": 73327,
+    "src": "https://play-lh.googleusercontent.com/pAAwl_n-Aotk9MTG417Iw7ngs5PmqrAAATFfDkZ1A3XIeXFrLfRdH44tZikXJDd1vLBa5zNlcszU2E5YWiCo68k"
+   },
+   {
+    "file": "screenshot-11.jpg",
+    "bytes": 53112,
+    "src": "https://play-lh.googleusercontent.com/SHIVzBVSqh4A_SMeJN_i2ytNEfptgaBB7cT_SV7FeLKrrdxuYUmL3QQ2nZvWP8aXnMG8qWqUg5-RbsYF7c6J"
+   },
+   {
+    "file": "screenshot-12.jpg",
+    "bytes": 58789,
+    "src": "https://play-lh.googleusercontent.com/mpczvO0kyudX2Q489yz1KszXfvG5LtSe5aARGtlQe-NwbYtEDlyQ3AIadsKD6ByiN1-FHkLTs_0KKGmc86A1"
+   },
+   {
+    "file": "screenshot-13.jpg",
+    "bytes": 51113,
+    "src": "https://play-lh.googleusercontent.com/ptR_jkjvK244mVyx3FAnK27AOXDT_VLe28BoWu7ACUBGLrNq5OWbpkmX8Ca5xX35fSyTftIgVH71rXC1vLiEJmQ"
+   },
+   {
+    "file": "screenshot-14.jpg",
+    "bytes": 68591,
+    "src": "https://play-lh.googleusercontent.com/ikeGVPFcD4aTDVAaVbpkZiQObefirUMBUm_6AgzOrqCe7Yk7VD3E0zhd3AUx4H0iveBg0GJkK3m29VoGanM4"
+   },
+   {
+    "file": "screenshot-15.jpg",
+    "bytes": 73327,
+    "src": "https://play-lh.googleusercontent.com/pAAwl_n-Aotk9MTG417Iw7ngs5PmqrAAATFfDkZ1A3XIeXFrLfRdH44tZikXJDd1vLBa5zNlcszU2E5YWiCo68k"
+   },
+   {
+    "file": "screenshot-16.jpg",
+    "bytes": 53112,
+    "src": "https://play-lh.googleusercontent.com/SHIVzBVSqh4A_SMeJN_i2ytNEfptgaBB7cT_SV7FeLKrrdxuYUmL3QQ2nZvWP8aXnMG8qWqUg5-RbsYF7c6J"
+   },
+   {
+    "file": "screenshot-17.jpg",
+    "bytes": 58789,
+    "src": "https://play-lh.googleusercontent.com/mpczvO0kyudX2Q489yz1KszXfvG5LtSe5aARGtlQe-NwbYtEDlyQ3AIadsKD6ByiN1-FHkLTs_0KKGmc86A1"
+   }
+  ]
+ },
+ {
+  "slug": "02-gamma-play",
+  "id": "com.gamma.videodownloader",
+  "title": "Video Downloader - without ads",
+  "developer": "Gamma Play",
+  "installsLabel": "100,000+",
+  "installs": 266150,
+  "score": 4.6309524,
+  "ratings": 3097,
+  "genre": "Video Players & Editors",
+  "updated": null,
+  "released": "Jul 14, 2026",
+  "video": false,
+  "url": "https://play.google.com/store/apps/details?id=com.gamma.videodownloader&hl=en&gl=US",
+  "icon": {
+   "file": "icon-01.jpg",
+   "bytes": 18820,
+   "src": "https://play-lh.googleusercontent.com/RvHeqNSaT1XdrxNeTuPMUi9ijxcZbApZtdpYeMrfuvTIGzWG3aliheg7xa1szlX5pObYgtVDwl_WaP0FAxYxrw"
+  },
+  "feature": {
+   "file": "feature-graphic-01.jpg",
+   "bytes": 202466,
+   "src": "https://play-lh.googleusercontent.com/R0RPcCkjGrOrSY69hOH5SMKaE0FH6do2bOYNETkwJWq-qAkSpsUQYdGDfB0Zg2qGFd_oYq515kOks7_ZqcT4-9E"
+  },
+  "shots": [
+   {
+    "file": "screenshot-01.jpg",
+    "bytes": 142663,
+    "src": "https://play-lh.googleusercontent.com/oYsZpI4a3bXy5PbjVvfXCNfa9uvjpRSzMPr6iHvCAs4Fcw8jisHC7JG--wymBT16ilE48aawj91WqS2L5oSiQQ"
+   },
+   {
+    "file": "screenshot-02.jpg",
+    "bytes": 128623,
+    "src": "https://play-lh.googleusercontent.com/2wyStNfqs-_WeoJN3myADhm2536ljQO1XfJTADIb2fti1C66_Ia8eDkdA36tphFW_oZArzXX1oAorvH9GQcRNQ"
+   },
+   {
+    "file": "screenshot-03.jpg",
+    "bytes": 123732,
+    "src": "https://play-lh.googleusercontent.com/PHM_AsD1T-vmvI1t2QmItglgPnyxKaFJKfqctNHBhql_XxeUo_FMLMy-YC511hwkIiIajvjvXVfZeGYBa4ZdO_M"
+   },
+   {
+    "file": "screenshot-04.jpg",
+    "bytes": 147887,
+    "src": "https://play-lh.googleusercontent.com/UusxHAzNEV8BuEh3c_-xrvq0w_a_BUGLMdckReTxj0TIAy5PXBhFHjKbaP2Z2EGfgk9qfwztPlQ0nlwsZ7XVIA"
+   },
+   {
+    "file": "screenshot-05.jpg",
+    "bytes": 128261,
+    "src": "https://play-lh.googleusercontent.com/wwa2IirJgbOfkGQFlC50jSdmi0XG9mgUCpkurSGWJwNh0Smyt2PsXatdcQWqz5_G_DTngVJmERmH4ZD7I7VzRA"
+   },
+   {
+    "file": "screenshot-06.jpg",
+    "bytes": 125207,
+    "src": "https://play-lh.googleusercontent.com/SitItRmkfJlFZ5E1xN3AxV4c4CEPG85ssKC0iNFqT95YEsC2cOnVWvKPviBrekNnksp-nz8gvhAJCTBbqJhTdg"
+   },
+   {
+    "file": "screenshot-07.jpg",
+    "bytes": 135753,
+    "src": "https://play-lh.googleusercontent.com/nzhAI2kUzKou3srM38WSe2XEEsYPhPqmINP8Mtkb51iNk1E0CkPTPNNHGNF4uoQLg9oiwNwNqz6mszeoURztaQA"
+   },
+   {
+    "file": "screenshot-08.jpg",
+    "bytes": 142663,
+    "src": "https://play-lh.googleusercontent.com/oYsZpI4a3bXy5PbjVvfXCNfa9uvjpRSzMPr6iHvCAs4Fcw8jisHC7JG--wymBT16ilE48aawj91WqS2L5oSiQQ"
+   },
+   {
+    "file": "screenshot-09.jpg",
+    "bytes": 128623,
+    "src": "https://play-lh.googleusercontent.com/2wyStNfqs-_WeoJN3myADhm2536ljQO1XfJTADIb2fti1C66_Ia8eDkdA36tphFW_oZArzXX1oAorvH9GQcRNQ"
+   },
+   {
+    "file": "screenshot-10.jpg",
+    "bytes": 123732,
+    "src": "https://play-lh.googleusercontent.com/PHM_AsD1T-vmvI1t2QmItglgPnyxKaFJKfqctNHBhql_XxeUo_FMLMy-YC511hwkIiIajvjvXVfZeGYBa4ZdO_M"
+   },
+   {
+    "file": "screenshot-11.jpg",
+    "bytes": 147887,
+    "src": "https://play-lh.googleusercontent.com/UusxHAzNEV8BuEh3c_-xrvq0w_a_BUGLMdckReTxj0TIAy5PXBhFHjKbaP2Z2EGfgk9qfwztPlQ0nlwsZ7XVIA"
+   },
+   {
+    "file": "screenshot-12.jpg",
+    "bytes": 128261,
+    "src": "https://play-lh.googleusercontent.com/wwa2IirJgbOfkGQFlC50jSdmi0XG9mgUCpkurSGWJwNh0Smyt2PsXatdcQWqz5_G_DTngVJmERmH4ZD7I7VzRA"
+   },
+   {
+    "file": "screenshot-13.jpg",
+    "bytes": 125207,
+    "src": "https://play-lh.googleusercontent.com/SitItRmkfJlFZ5E1xN3AxV4c4CEPG85ssKC0iNFqT95YEsC2cOnVWvKPviBrekNnksp-nz8gvhAJCTBbqJhTdg"
+   },
+   {
+    "file": "screenshot-14.jpg",
+    "bytes": 135753,
+    "src": "https://play-lh.googleusercontent.com/nzhAI2kUzKou3srM38WSe2XEEsYPhPqmINP8Mtkb51iNk1E0CkPTPNNHGNF4uoQLg9oiwNwNqz6mszeoURztaQA"
+   },
+   {
+    "file": "screenshot-15.jpg",
+    "bytes": 142663,
+    "src": "https://play-lh.googleusercontent.com/oYsZpI4a3bXy5PbjVvfXCNfa9uvjpRSzMPr6iHvCAs4Fcw8jisHC7JG--wymBT16ilE48aawj91WqS2L5oSiQQ"
+   },
+   {
+    "file": "screenshot-16.jpg",
+    "bytes": 128623,
+    "src": "https://play-lh.googleusercontent.com/2wyStNfqs-_WeoJN3myADhm2536ljQO1XfJTADIb2fti1C66_Ia8eDkdA36tphFW_oZArzXX1oAorvH9GQcRNQ"
+   },
+   {
+    "file": "screenshot-17.jpg",
+    "bytes": 123732,
+    "src": "https://play-lh.googleusercontent.com/PHM_AsD1T-vmvI1t2QmItglgPnyxKaFJKfqctNHBhql_XxeUo_FMLMy-YC511hwkIiIajvjvXVfZeGYBa4ZdO_M"
+   },
+   {
+    "file": "screenshot-18.jpg",
+    "bytes": 147887,
+    "src": "https://play-lh.googleusercontent.com/UusxHAzNEV8BuEh3c_-xrvq0w_a_BUGLMdckReTxj0TIAy5PXBhFHjKbaP2Z2EGfgk9qfwztPlQ0nlwsZ7XVIA"
+   },
+   {
+    "file": "screenshot-19.jpg",
+    "bytes": 128261,
+    "src": "https://play-lh.googleusercontent.com/wwa2IirJgbOfkGQFlC50jSdmi0XG9mgUCpkurSGWJwNh0Smyt2PsXatdcQWqz5_G_DTngVJmERmH4ZD7I7VzRA"
+   },
+   {
+    "file": "screenshot-20.jpg",
+    "bytes": 125207,
+    "src": "https://play-lh.googleusercontent.com/SitItRmkfJlFZ5E1xN3AxV4c4CEPG85ssKC0iNFqT95YEsC2cOnVWvKPviBrekNnksp-nz8gvhAJCTBbqJhTdg"
+   },
+   {
+    "file": "screenshot-21.jpg",
+    "bytes": 135753,
+    "src": "https://play-lh.googleusercontent.com/nzhAI2kUzKou3srM38WSe2XEEsYPhPqmINP8Mtkb51iNk1E0CkPTPNNHGNF4uoQLg9oiwNwNqz6mszeoURztaQA"
+   }
+  ]
+ },
+ {
+  "slug": "03-qr-code-scanner",
+  "id": "videoplayer.videodownloader.downloader",
+  "title": "All Video Downloader & Player",
+  "developer": "QR Code Scanner.",
+  "installsLabel": "100,000,000+",
+  "installs": 383593932,
+  "score": 4.5262523,
+  "ratings": 1880043,
+  "genre": "Tools",
+  "updated": "2026-09-16",
+  "released": "Jan 29, 2022",
+  "video": false,
+  "url": "https://play.google.com/store/apps/details?id=videoplayer.videodownloader.downloader&hl=en&gl=US",
+  "icon": {
+   "file": "icon-01.png",
+   "bytes": 235770,
+   "src": "https://play-lh.googleusercontent.com/4v1gAVBRKoO9aUUOhYJLY-aa8FytPXj0LRNJbV8CT743B3sajF54fcEbvQjfE6kuJrS9ddaFkbo7PDcWZ-iQBcI"
+  },
+  "feature": {
+   "file": "feature-graphic-01.jpg",
+   "bytes": 59786,
+   "src": "https://play-lh.googleusercontent.com/NnxBVfBMclFKOfLXSwK39BbujWhkjBAyZrx0-zQ6sLgxWFGivXetTkR1oBBxRDrXylf90EzuLoDG-FegNkG6-Zs"
+  },
+  "shots": [
+   {
+    "file": "screenshot-01.jpg",
+    "bytes": 122936,
+    "src": "https://play-lh.googleusercontent.com/aX4xYn_taZd_4YZVsNwfLauu8GCvJYLhyACRLQg_NL-y5wglpBnmbaG5QmUddK08k_2YKjv-mhETraz9kqg6Tw"
+   },
+   {
+    "file": "screenshot-02.jpg",
+    "bytes": 138797,
+    "src": "https://play-lh.googleusercontent.com/f4SN_7jfp2haU4WQppjFz40nxZlI-ioLEuNXOw88Ez0c0q0D2zr7w5w5rj3NAhFZkdSvXfJRCjoigMEbIOJ7SzE"
+   },
+   {
+    "file": "screenshot-03.jpg",
+    "bytes": 113274,
+    "src": "https://play-lh.googleusercontent.com/ZeWwBC7stXyThNLVA6jwWJeUeBdLbNfobRp3lcMLxFXLLJd-bRUGloCHHT9E-mOaieqoBj13233uyIJ5fHcdFA"
+   },
+   {
+    "file": "screenshot-04.jpg",
+    "bytes": 105618,
+    "src": "https://play-lh.googleusercontent.com/dcMlodih4_w17vIeCyCa8w7CzoUrL_9nvW_cWI_DakHdmCnEOVKJmR9_5ryJktF9f07LLWZn9m0IcH6i-YNEDlI"
+   },
+   {
+    "file": "screenshot-05.jpg",
+    "bytes": 160967,
+    "src": "https://play-lh.googleusercontent.com/eynwx6KX7Cn9uZeZpR1JLtduygRZwkgvxjpa8dR_kWk9cUK4KOjC4fMISk9UuQYfbyglGibNdVbnczOVMWRKZVs"
+   },
+   {
+    "file": "screenshot-06.jpg",
+    "bytes": 113790,
+    "src": "https://play-lh.googleusercontent.com/-Y2BOATxlPIwOJNqNqseBsbounIndJzehNDpjGBu9s3RJh5Uh5s5nOhWfskVmMSyjrHtP-ZMiqMMkypoqZ4"
+   },
+   {
+    "file": "screenshot-07.jpg",
+    "bytes": 141019,
+    "src": "https://play-lh.googleusercontent.com/QN-RvL8-G1boEFQDukxqdcRPEvnW2QIoLiybSKVFhLNobtVRYBxbHYaLmdZv9ZdVMYdn4OIgTiv1dRV0xMw_3Q"
+   },
+   {
+    "file": "screenshot-08.jpg",
+    "bytes": 148756,
+    "src": "https://play-lh.googleusercontent.com/hedBnHNe5y-8YGVb5SDVFcNYx2V-CjKjeA1RsKUHFt1RPoC-5QIaFs9Y8FMm_GtB6V1C4jb2AX-YoLKzRb0O4Dk"
+   }
+  ]
+ },
+ {
+  "slug": "04-story-saver",
+  "id": "instagram.video.downloader.story.saver.ig",
+  "title": "Video downloader - Story Saver",
+  "developer": "Video Downloader Story Saver",
+  "installsLabel": "50,000,000+",
+  "installs": 64791541,
+  "score": 4.7444468,
+  "ratings": 1420154,
+  "genre": "Social",
+  "updated": "2026-09-14",
+  "released": "Oct 13, 2023",
+  "video": false,
+  "url": "https://play.google.com/store/apps/details?id=instagram.video.downloader.story.saver.ig&hl=en&gl=US",
+  "icon": {
+   "file": "icon-01.jpg",
+   "bytes": 107283,
+   "src": "https://play-lh.googleusercontent.com/TBQtIR4nBImNflXpt21UXPoOX_JykpbhIVoAjjwcJeJBVi5PKmV6_Gi4pul-aqz78ntdpUl8dvWN_yzBOvYcJA"
+  },
+  "feature": {
+   "file": "feature-graphic-01.jpg",
+   "bytes": 298005,
+   "src": "https://play-lh.googleusercontent.com/bsU9OfF1Q7vV2d-wAAYS9VzvgknS78ba7C5WRqDFzkRlkG-j3PZJwCLP-6RpJC725CRrlf3gBya-HOMuSTqY"
+  },
+  "shots": [
+   {
+    "file": "screenshot-01.png",
+    "bytes": 106300,
+    "src": "https://play-lh.googleusercontent.com/026cg7-gFtD7o6Huk7RRt0AX56Pho4N_OK2a3W2i1Sx6yN6V-CI3dicRji9-3lNDK8OduffOWDuNwcxqDw8zDA"
+   },
+   {
+    "file": "screenshot-02.png",
+    "bytes": 289840,
+    "src": "https://play-lh.googleusercontent.com/kRXnbqX2ikWH9Hr5r92D-ZaxQDYKLaAtYVb1pcuYoOw8hRBBFB-tIZfEh5Jl22BBXJ75UTxBJj9z-kNCZpTQgA4"
+   },
+   {
+    "file": "screenshot-03.png",
+    "bytes": 226601,
+    "src": "https://play-lh.googleusercontent.com/0BANSyqcpXrMs3wGfHuXTMwP4PjpfPz3uu3lAcE0GXJVAhAxNsoEzxEOPGxBZuUzDT64oPGzPiklgOJr-MH3nA"
+   },
+   {
+    "file": "screenshot-04.jpg",
+    "bytes": 105522,
+    "src": "https://play-lh.googleusercontent.com/wMrHNUsStVRWicsBS6jrk4crq1u7B01RriIUDLDKQnF1eS-zrkuRXk6kpBQZ2SBZlQbuKRoTyqgEMG-0PmQU"
+   },
+   {
+    "file": "screenshot-05.png",
+    "bytes": 671583,
+    "src": "https://play-lh.googleusercontent.com/AP6qmSQOmzOPjwG1sAjrmxgEln8od8asGg5OcbmZSTqXbuunF3s5fKzmzrArDWOT7YrvGGovYB5uSeDzUp2txw"
+   },
+   {
+    "file": "screenshot-06.jpg",
+    "bytes": 118837,
+    "src": "https://play-lh.googleusercontent.com/F3MAJkAegk90GfaH7Xx_bKFuANXKpkrGkfNr-LWqFIMV-ukuobqpS-bHbf30oDX801ImXu67uO9FeYOn-XaHvQ"
+   }
+  ]
+ },
+ {
+  "slug": "05-insaver",
+  "id": "instagram.video.downloader.story.saver.ig.insaver",
+  "title": "InSaver: All Video Downloader",
+  "developer": "Video Downloader Story Saver",
+  "installsLabel": "10,000,000+",
+  "installs": 13028866,
+  "score": 4.74722,
+  "ratings": 295406,
+  "genre": "Video Players & Editors",
+  "updated": "2026-09-14",
+  "released": "May 29, 2024",
+  "video": false,
+  "url": "https://play.google.com/store/apps/details?id=instagram.video.downloader.story.saver.ig.insaver&hl=en&gl=US",
+  "icon": {
+   "file": "icon-01.jpg",
+   "bytes": 134718,
+   "src": "https://play-lh.googleusercontent.com/Gxa3y2D4_k3xVRi4GcEoCz2VOJodVWgcLdCyUQY67w6_bier_KwRrqxVtGauUlciDHRfVdSgh3VO7UPAo7sS"
+  },
+  "feature": {
+   "file": "feature-graphic-01.jpg",
+   "bytes": 334270,
+   "src": "https://play-lh.googleusercontent.com/NkXnlgo7Vi5rm86MfQLfW-gLoucel_vkCuCXJUi6aFpaU-iHpBN5ihBw2QREGPsCfFrwefFBnqO-zq2C3LMW"
+  },
+  "shots": [
+   {
+    "file": "screenshot-01.jpg",
+    "bytes": 187379,
+    "src": "https://play-lh.googleusercontent.com/EJJGQ0VKtrjO-ZIjF9_T4g6INHFpPUYBsGXGPnxD9hDsJyHXxZOUoi3j3mIAxJqXLWhW0b40UNwi25pqB6CiAkE"
+   },
+   {
+    "file": "screenshot-02.jpg",
+    "bytes": 128032,
+    "src": "https://play-lh.googleusercontent.com/YBRzMwVxKSM2fZQRcmBx_dD_NhZ7O8qXN38lpuWBI1NyKDdIeO13XMc9ti61N6Utcp3H1tR5wFYF_0GXZqG80w"
+   },
+   {
+    "file": "screenshot-03.jpg",
+    "bytes": 144705,
+    "src": "https://play-lh.googleusercontent.com/98xatWrG5bp7YKrJa-fRtUl0An0LnhxthLRpwGG2n0j0zH1cxNX--wUjecRmEM8yuxs8hpcPKEzpJo_xOOzCvg"
+   },
+   {
+    "file": "screenshot-04.jpg",
+    "bytes": 161699,
+    "src": "https://play-lh.googleusercontent.com/Wx30ELh6zRRnVV8NUwVC6JDVKPEncYwVMVommknCxGtO93BGhEyncQ28wIlEj0mDsRB3LG4T4iQ9HLMWkC4-uw"
+   },
+   {
+    "file": "screenshot-05.jpg",
+    "bytes": 141555,
+    "src": "https://play-lh.googleusercontent.com/m-M-0Rjcfdhq4qj_zA997K9ruIVkhZlTc_7sxKS_9hCuy-HTPNuwk8d-VwB4g8i_BvuPoSylvK2YeWS7-HAVmw"
+   },
+   {
+    "file": "screenshot-06.jpg",
+    "bytes": 155196,
+    "src": "https://play-lh.googleusercontent.com/z83FRL3aZlli1YRKP-rO6i-30hDdz9CsuQJEGamsQlVms0wmPieHfGpxoB9sdP9s8hARFn8hdGWU9zoyX5waJA"
+   },
+   {
+    "file": "screenshot-07.jpg",
+    "bytes": 102680,
+    "src": "https://play-lh.googleusercontent.com/WSluN0ZeZrsz-xz2SSOjz1HgwYhrs-PfQ0s1drpZw9NX8CG_PRBt5oUzBwYNcvC1Ihqage-j80pvS9kyPiXcXA"
+   }
+  ]
+ },
+ {
+  "slug": "06-hub-dosa",
+  "id": "hub.browser.video.downloader.saver",
+  "title": "Hub Video Downloader",
+  "developer": "DOSA Apps",
+  "installsLabel": "10,000,000+",
+  "installs": 13689906,
+  "score": 4.3660564,
+  "ratings": 81935,
+  "genre": "Video Players & Editors",
+  "updated": "2026-08-10",
+  "released": "Jun 7, 2023",
+  "video": false,
+  "url": "https://play.google.com/store/apps/details?id=hub.browser.video.downloader.saver&hl=en&gl=US",
+  "icon": {
+   "file": "icon-01.png",
+   "bytes": 207200,
+   "src": "https://play-lh.googleusercontent.com/KM2DCIFpt8qc_1150CumeH5rXCqgABmFVXFfQwQKC8wh8V5mF05R_8QNoX_wTNIWrytBpWP9ayRJ7_ayLM6jbws"
+  },
+  "feature": {
+   "file": "feature-graphic-01.png",
+   "bytes": 444842,
+   "src": "https://play-lh.googleusercontent.com/sSno7wEWk_kU4ec840CSjwmZSj1lMgdecvg86sn3Ne2tUdB1rcBWmVxwpaCN1OFWG28DTTiiROnxq2-LnQCI8NA"
+  },
+  "shots": [
+   {
+    "file": "screenshot-01.png",
+    "bytes": 332668,
+    "src": "https://play-lh.googleusercontent.com/afj_Z-9anpIZVKelRKnkQejs3RK4l_1nnzUSfpW48FvnMG_kx0jBVV6DMdVlZxHYjtqoE6VXUCe7uf8kgjR8tz4"
+   },
+   {
+    "file": "screenshot-02.png",
+    "bytes": 175082,
+    "src": "https://play-lh.googleusercontent.com/VkWpMEmastGGS-Pxks4_6hCXfU9BPCx9K_dWni4WpYITCIDZgUK_32HduUK9EEbFVGPQIISkImueXHNn0zP1ajQ"
+   },
+   {
+    "file": "screenshot-03.png",
+    "bytes": 129810,
+    "src": "https://play-lh.googleusercontent.com/DjdzA6nlXknddQAUfnT3qSLC2mXZkPIUl9Ji25aOGO_m1PrgMgBVX9QVbN4B2Gm5y-6sOfoC6fthsyMyb50R9g"
+   },
+   {
+    "file": "screenshot-04.png",
+    "bytes": 335255,
+    "src": "https://play-lh.googleusercontent.com/67eOVQpe-Rbi_64OI3Q8Dj0LvVQA8Y3E7e0HtkTIAU59ps-FRJ6yNWDmutySVv2EomkgF6ntfIT3hjE9e06Iiw"
+   },
+   {
+    "file": "screenshot-05.png",
+    "bytes": 444949,
+    "src": "https://play-lh.googleusercontent.com/G7e8fu2fjs8R8wgS6Xexzi-1tnL6j7xRgbGUhxfwGUDmjp2RBioMaD8NYljuWoAo0yn56duJk29zoRNmfDaPGtY"
+   },
+   {
+    "file": "screenshot-06.jpg",
+    "bytes": 92946,
+    "src": "https://play-lh.googleusercontent.com/zc_annhPsVoZMOtOLHe0_Hbsa8vsvA9UJrsZjqoA3u5ISGOIFK53SGO5zY5mmUE90K8oeKVeJ2eCISliZGkQ-Bo"
+   },
+   {
+    "file": "screenshot-07.jpg",
+    "bytes": 79548,
+    "src": "https://play-lh.googleusercontent.com/PEY3Zv09-aMUXwMxZZSX7t3eLbXCxZNpgGpiq52O2bPgjyXM4Tvw003G4JaAa48UCsTyPuALs40XMqMOJtrGK0M"
+   },
+   {
+    "file": "screenshot-08.jpg",
+    "bytes": 64405,
+    "src": "https://play-lh.googleusercontent.com/dZ41P729-tpDINiDuk_rZIVOyetSeFSeEu0mct-Tzlfi8Fj1LZbQmJNDpx_W6QlFg8dxoDAS9NyDqQXAd655QQ"
+   },
+   {
+    "file": "screenshot-09.jpg",
+    "bytes": 91929,
+    "src": "https://play-lh.googleusercontent.com/Ul8P3V5XsQoGU7e9gMfdAPbva4_a4gVlY8fzt4mfr--rBgtTKhONgAf0Zuqq7pb7YrhPNmve8jHFvYh2znO99w"
+   },
+   {
+    "file": "screenshot-10.jpg",
+    "bytes": 140159,
+    "src": "https://play-lh.googleusercontent.com/gnC39WYy2oCkUeNrCzZJbX_QiKue8R357Ile7Aqrfd4VeQFsnFomRvJrc-qcE6fp-U_9g_Bg5dcVACS4NQJ1QQ"
+   },
+   {
+    "file": "screenshot-11.jpg",
+    "bytes": 92946,
+    "src": "https://play-lh.googleusercontent.com/zc_annhPsVoZMOtOLHe0_Hbsa8vsvA9UJrsZjqoA3u5ISGOIFK53SGO5zY5mmUE90K8oeKVeJ2eCISliZGkQ-Bo"
+   },
+   {
+    "file": "screenshot-12.jpg",
+    "bytes": 79548,
+    "src": "https://play-lh.googleusercontent.com/PEY3Zv09-aMUXwMxZZSX7t3eLbXCxZNpgGpiq52O2bPgjyXM4Tvw003G4JaAa48UCsTyPuALs40XMqMOJtrGK0M"
+   },
+   {
+    "file": "screenshot-13.jpg",
+    "bytes": 64405,
+    "src": "https://play-lh.googleusercontent.com/dZ41P729-tpDINiDuk_rZIVOyetSeFSeEu0mct-Tzlfi8Fj1LZbQmJNDpx_W6QlFg8dxoDAS9NyDqQXAd655QQ"
+   },
+   {
+    "file": "screenshot-14.jpg",
+    "bytes": 91929,
+    "src": "https://play-lh.googleusercontent.com/Ul8P3V5XsQoGU7e9gMfdAPbva4_a4gVlY8fzt4mfr--rBgtTKhONgAf0Zuqq7pb7YrhPNmve8jHFvYh2znO99w"
+   },
+   {
+    "file": "screenshot-15.jpg",
+    "bytes": 140159,
+    "src": "https://play-lh.googleusercontent.com/gnC39WYy2oCkUeNrCzZJbX_QiKue8R357Ile7Aqrfd4VeQFsnFomRvJrc-qcE6fp-U_9g_Bg5dcVACS4NQJ1QQ"
+   },
+   {
+    "file": "screenshot-16.jpg",
+    "bytes": 92946,
+    "src": "https://play-lh.googleusercontent.com/zc_annhPsVoZMOtOLHe0_Hbsa8vsvA9UJrsZjqoA3u5ISGOIFK53SGO5zY5mmUE90K8oeKVeJ2eCISliZGkQ-Bo"
+   },
+   {
+    "file": "screenshot-17.jpg",
+    "bytes": 79548,
+    "src": "https://play-lh.googleusercontent.com/PEY3Zv09-aMUXwMxZZSX7t3eLbXCxZNpgGpiq52O2bPgjyXM4Tvw003G4JaAa48UCsTyPuALs40XMqMOJtrGK0M"
+   },
+   {
+    "file": "screenshot-18.jpg",
+    "bytes": 64405,
+    "src": "https://play-lh.googleusercontent.com/dZ41P729-tpDINiDuk_rZIVOyetSeFSeEu0mct-Tzlfi8Fj1LZbQmJNDpx_W6QlFg8dxoDAS9NyDqQXAd655QQ"
+   },
+   {
+    "file": "screenshot-19.jpg",
+    "bytes": 91929,
+    "src": "https://play-lh.googleusercontent.com/Ul8P3V5XsQoGU7e9gMfdAPbva4_a4gVlY8fzt4mfr--rBgtTKhONgAf0Zuqq7pb7YrhPNmve8jHFvYh2znO99w"
+   },
+   {
+    "file": "screenshot-20.jpg",
+    "bytes": 140159,
+    "src": "https://play-lh.googleusercontent.com/gnC39WYy2oCkUeNrCzZJbX_QiKue8R357Ile7Aqrfd4VeQFsnFomRvJrc-qcE6fp-U_9g_Bg5dcVACS4NQJ1QQ"
+   },
+   {
+    "file": "screenshot-21.jpg",
+    "bytes": 92946,
+    "src": "https://play-lh.googleusercontent.com/zc_annhPsVoZMOtOLHe0_Hbsa8vsvA9UJrsZjqoA3u5ISGOIFK53SGO5zY5mmUE90K8oeKVeJ2eCISliZGkQ-Bo"
+   },
+   {
+    "file": "screenshot-22.jpg",
+    "bytes": 79548,
+    "src": "https://play-lh.googleusercontent.com/PEY3Zv09-aMUXwMxZZSX7t3eLbXCxZNpgGpiq52O2bPgjyXM4Tvw003G4JaAa48UCsTyPuALs40XMqMOJtrGK0M"
+   },
+   {
+    "file": "screenshot-23.jpg",
+    "bytes": 64405,
+    "src": "https://play-lh.googleusercontent.com/dZ41P729-tpDINiDuk_rZIVOyetSeFSeEu0mct-Tzlfi8Fj1LZbQmJNDpx_W6QlFg8dxoDAS9NyDqQXAd655QQ"
+   },
+   {
+    "file": "screenshot-24.jpg",
+    "bytes": 91929,
+    "src": "https://play-lh.googleusercontent.com/Ul8P3V5XsQoGU7e9gMfdAPbva4_a4gVlY8fzt4mfr--rBgtTKhONgAf0Zuqq7pb7YrhPNmve8jHFvYh2znO99w"
+   },
+   {
+    "file": "screenshot-25.jpg",
+    "bytes": 140159,
+    "src": "https://play-lh.googleusercontent.com/gnC39WYy2oCkUeNrCzZJbX_QiKue8R357Ile7Aqrfd4VeQFsnFomRvJrc-qcE6fp-U_9g_Bg5dcVACS4NQJ1QQ"
+   }
+  ]
+ },
+ {
+  "slug": "07-fast-saver",
+  "id": "videodownloader.instagram.videosaver",
+  "title": "Video Downloader & Story Saver",
+  "developer": "Video Downloader & Fast Saver",
+  "installsLabel": "10,000,000+",
+  "installs": 19231602,
+  "score": 4.8078337,
+  "ratings": 377121,
+  "genre": "Video Players & Editors",
+  "updated": "2026-08-26",
+  "released": "Mar 28, 2024",
+  "video": false,
+  "url": "https://play.google.com/store/apps/details?id=videodownloader.instagram.videosaver&hl=en&gl=US",
+  "icon": {
+   "file": "icon-01.png",
+   "bytes": 23139,
+   "src": "https://play-lh.googleusercontent.com/wLtr4WqAcE6CWJkmK7sTpBds7m8rnv3V7lEmpo0IPsknqgSaYWQvk3L8cdmyM37aDIAkGHpemmjBUdu9pPlMjQ"
+  },
+  "feature": {
+   "file": "feature-graphic-01.png",
+   "bytes": 157997,
+   "src": "https://play-lh.googleusercontent.com/YnHVhcTPX5dm8XVwrEbqgTISNXdkTNmJsTC42u1ZpQB6E7Zy2VqDfIenSDaKR69q5UJVjgunWY_mwx26F13oGg"
+  },
+  "shots": [
+   {
+    "file": "screenshot-01.png",
+    "bytes": 310048,
+    "src": "https://play-lh.googleusercontent.com/J6pkKwqFaZOljdiVyz4-AkJJ6D9m2qHVrJR2uSicX1DbSOTwKsM-bQlwU_J1p2m9uM6Vh0fmoA6iFsrYay-BBbc"
+   },
+   {
+    "file": "screenshot-02.png",
+    "bytes": 328275,
+    "src": "https://play-lh.googleusercontent.com/cAaZ9N7-yf5_nECpM5RMMlWE0GqubpxAUqLtNkuadd9XK_vGOoCzngfXwq3FHkO1FEYDVPzwoNqjrw-7mSJRUJ8"
+   },
+   {
+    "file": "screenshot-03.png",
+    "bytes": 288211,
+    "src": "https://play-lh.googleusercontent.com/9cu6wZIYGYKLxLcKHWudlwxYrnLUgnluyWtuxlTLYAoE8DC9vw4ZutHHbL5vGduY6KHu-c5x-4f3pkZHhaUo"
+   },
+   {
+    "file": "screenshot-04.png",
+    "bytes": 215799,
+    "src": "https://play-lh.googleusercontent.com/TE7hWi__T-3ahcuFlL5LNf6jN81Y1U9LEuO2Dz1AkP7BVLiVHSDLf6ZBD2IvBakUiOKgxCgq7jNZnE3FoSyfpig"
+   },
+   {
+    "file": "screenshot-05.png",
+    "bytes": 216922,
+    "src": "https://play-lh.googleusercontent.com/n-oMAA-YNRQYp2sLL3uy-zpBitcgfg-q7WqdjS8bTcjXJiIhgslQg3tI8rEP2mzB0eTGdlkwik4em_C1nBNI-w"
+   }
+  ]
+ },
+ {
+  "slug": "08-apptool",
+  "id": "com.videodownload.browser.videodownloader",
+  "title": "All Video Downloader & Player",
+  "developer": "AppTool-Browser-Video",
+  "installsLabel": "10,000,000+",
+  "installs": 13970550,
+  "score": 4.366337,
+  "ratings": 65572,
+  "genre": "Tools",
+  "updated": "2026-08-28",
+  "released": "Feb 26, 2024",
+  "video": false,
+  "url": "https://play.google.com/store/apps/details?id=com.videodownload.browser.videodownloader&hl=en&gl=US",
+  "icon": {
+   "file": "icon-01.png",
+   "bytes": 143115,
+   "src": "https://play-lh.googleusercontent.com/5O3gW0o1MoJbI-z7ZxbzFkip1a74LSqN6xrL9U61lTg8FVAg6YX50zVbQHis2Bi1SAHX7VJ8hq2B2K_gVo6k-aw"
+  },
+  "feature": {
+   "file": "feature-graphic-01.png",
+   "bytes": 495888,
+   "src": "https://play-lh.googleusercontent.com/oBpdy9TOIkDchxD_mO2tgPWcnB_RvXhiYbrTHckeWZZEWWJWPCqnM9rvOO5RJGCi39ISI_VRy3kTQrHy-EF4og"
+  },
+  "shots": [
+   {
+    "file": "screenshot-01.png",
+    "bytes": 393147,
+    "src": "https://play-lh.googleusercontent.com/OpcFaGD48-58GHzVcBgimTrDUCrTEmX-bHoDhsAdaR7fpQ8PT9eoz-klcKYMoKWUDA3NsezwvraO_rLhL15um2w"
+   },
+   {
+    "file": "screenshot-02.png",
+    "bytes": 283965,
+    "src": "https://play-lh.googleusercontent.com/RF8OPAx4EWstRwWeO-ZrFe-vI2feAArSuwbDYQb3a8lvPU7z5TyasEzO-v8XJYEsjaGShsgsUvloEf1L0KyuOg"
+   },
+   {
+    "file": "screenshot-03.png",
+    "bytes": 631180,
+    "src": "https://play-lh.googleusercontent.com/CjhrwLPGN0lPRtNH7JUeeEXOLRvzKv2PG5USudp8xCJe4HGjFZdu6yPSD3An-1tfpnERxiWniQBoHi7dNHfgTg"
+   },
+   {
+    "file": "screenshot-04.png",
+    "bytes": 558744,
+    "src": "https://play-lh.googleusercontent.com/D_HYsn8jMovccoF_JUXtq8UZ4SmKDqS6vLejpJ9AMb5k4X4NOwy3DtjNf2F2XZmMoVgfJVNMxltsiAWp4AzUdg"
+   },
+   {
+    "file": "screenshot-05.png",
+    "bytes": 218926,
+    "src": "https://play-lh.googleusercontent.com/n99cFkZHSHKev4n4abr96GxOwXU6Yx-CAOUiDdAyuzC96hm7Jal9M0AJDnERy6vjs79FjaM2qMAhf0l_pQo3P9E"
+   },
+   {
+    "file": "screenshot-06.png",
+    "bytes": 215119,
+    "src": "https://play-lh.googleusercontent.com/m_yBshSMLsibiVn6mcr3D-OLcuU_31YM4LWpapNKNbfP5p6BUzna_FjLb8vTzxNhp2eeIgdofBX7iPTk08lWhg"
+   },
+   {
+    "file": "screenshot-07.png",
+    "bytes": 920458,
+    "src": "https://play-lh.googleusercontent.com/QQ_U3Wu00kgZpTmMWQDFgs0KKk2GQQ3M_23rr6sb6iTLi-XSYuSbgo1QxbnG_BqMdazsy8KGpuORrCMrU6C4l0M"
+   }
+  ]
+ },
+ {
+  "slug": "09-saver-player-studio",
+  "id": "downloader.video.download.free",
+  "title": "Video Downloader & Video Saver",
+  "developer": "All Video Downloader, Saver & Player Studio",
+  "installsLabel": "50,000,000+",
+  "installs": 53554550,
+  "score": 4.4288754,
+  "ratings": 357387,
+  "genre": "Video Players & Editors",
+  "updated": "2026-08-17",
+  "released": "Nov 25, 2020",
+  "video": false,
+  "url": "https://play.google.com/store/apps/details?id=downloader.video.download.free&hl=en&gl=US",
+  "icon": {
+   "file": "icon-01.jpg",
+   "bytes": 47435,
+   "src": "https://play-lh.googleusercontent.com/Ljy0jnX79twImhfJgIS4T2pNk_4by-em_C1r_dldfvTSbTdqqKO4PsxsezJhIZGcLAnc03l1d62QyX9FaBCy"
+  },
+  "feature": {
+   "file": "feature-graphic-01.jpg",
+   "bytes": 113176,
+   "src": "https://play-lh.googleusercontent.com/nqzrNRvz5GxCC5EMcfiv1xQfe0u41JUeXKFbEeHHzf0UIaEimWsqqCTL8iExgJ2XvaY9tzsTwfgdFotO9MIGkw"
+  },
+  "shots": [
+   {
+    "file": "screenshot-01.jpg",
+    "bytes": 279415,
+    "src": "https://play-lh.googleusercontent.com/s8QjR2fsZehuTv3VNe3VQQE3fQpKzGwY-dbM4ChAaPR1D1MWxVqH8sD-_1e6SCI-v7pgvdEl47go0RIo00M6Eu0"
+   },
+   {
+    "file": "screenshot-02.jpg",
+    "bytes": 107777,
+    "src": "https://play-lh.googleusercontent.com/L1NmEIiLe8rtWPooDPZaZIiVliBtDMlBZVOYRCEnPBYc0-2j8X0usZMtCgczxfS6zO3MOIxlxF2X5tq9zjs_jA"
+   },
+   {
+    "file": "screenshot-03.jpg",
+    "bytes": 79180,
+    "src": "https://play-lh.googleusercontent.com/Pv2OMBDlWDNYWR3RqlxuBIVLuUzI7D5XWVc0UBZaN789D54m5cD4SBStwGVlHCbxReLVBMDtWBIw9KmhaYxzJQ"
+   },
+   {
+    "file": "screenshot-04.jpg",
+    "bytes": 49339,
+    "src": "https://play-lh.googleusercontent.com/S5oL64tzAcc5KFMs6SeD7LuDMat2Du-H0A7AoEZikQyEzrCS3LFgZzRbEG8LpGwU4yImx8lLl2dSFT6dFcKd"
+   },
+   {
+    "file": "screenshot-05.jpg",
+    "bytes": 178842,
+    "src": "https://play-lh.googleusercontent.com/XXWTjbIXYUsDh37ZGJ9LcDgLn8SIijJ3msX-x140xS1kOS88xDzYt29Qm-pQMwGA8P9uxmXdjfT4Dp1VrFI6ix0"
+   },
+   {
+    "file": "screenshot-06.jpg",
+    "bytes": 240818,
+    "src": "https://play-lh.googleusercontent.com/qMaZ96t-kzUkjKvX5nd9pyErNMBSJq5iis6iQQmWz0U8eT8ALNK99W8VphPzD2vtVNV09VTIrPjYRWFnkbnd"
+   },
+   {
+    "file": "screenshot-07.jpg",
+    "bytes": 145616,
+    "src": "https://play-lh.googleusercontent.com/xe80AYPiO5yKBo3_noQcE437COwGwf03fU0eBV9TkHf1KmNZDDwZmn1adr7NMuAkzNSBo12Zsw_jPJBh-JSB"
+   },
+   {
+    "file": "screenshot-08.jpg",
+    "bytes": 131601,
+    "src": "https://play-lh.googleusercontent.com/RXJ6uThTRU833VpnqIm7iA7JvkKsrOlyzGB_vRxqe-m0AA8aL4GkuIzZ_2JXO2vYgzVwGa3GWEkHzMM9CuAh"
+   },
+   {
+    "file": "screenshot-09.jpg",
+    "bytes": 179317,
+    "src": "https://play-lh.googleusercontent.com/_tKtzsjklEko2W5tN3qInXgCFSF4Cd4kYni3Dl3a-KouWHSZepykMajcTgTaL1d5nAJeUqbjjuz72ZHYWXnYTQ"
+   },
+   {
+    "file": "screenshot-10.jpg",
+    "bytes": 128514,
+    "src": "https://play-lh.googleusercontent.com/0-T1GJz50-x4vEDs32fq_aICbnRVhCf3UbbTwSCsKf-03QtWMaOHWw5I3XLEmiGxMEOtfG8AdIr8rpL5ZuPo"
+   },
+   {
+    "file": "screenshot-11.jpg",
+    "bytes": 77975,
+    "src": "https://play-lh.googleusercontent.com/3_3JkIAM9oPDV40gcw8FpjAa3w4eTQVS-nPmfD8CU1g54_l8z9rv_D8BXfm5IRS-HFNHYjAOxxJqMb_GHglQNg"
+   },
+   {
+    "file": "screenshot-12.jpg",
+    "bytes": 101435,
+    "src": "https://play-lh.googleusercontent.com/2a2yG1B0cAjsgs9SsKiw5bdDszJbfc0v7As7kXwrcWXl5Mt8WYv5AUa3MJaN4StLj1fwBHy0ZGKy0ncmhj6U"
+   },
+   {
+    "file": "screenshot-13.jpg",
+    "bytes": 135980,
+    "src": "https://play-lh.googleusercontent.com/QqD9lWPyLRy_x9ROnctPdsp8SfPOnGw3KvdQ2ClO0tcwpxvzTOwfAbBSjIeSumjzkubkqvbgHxETd_wqb8ah"
+   },
+   {
+    "file": "screenshot-14.jpg",
+    "bytes": 158742,
+    "src": "https://play-lh.googleusercontent.com/eHAxgPvzSkXms-X_rPwAzTchKrUHxDwQ8DRCqCRA2HSK2Y1waFXw1EQLhUeRJIiHImqykvCRBpXy2i7IYgWXtw"
+   },
+   {
+    "file": "screenshot-15.jpg",
+    "bytes": 123449,
+    "src": "https://play-lh.googleusercontent.com/uBHzuhdLY7xUgzxdhAiyAj9bWwtR-1G0zTwIqalneggtPiG6phABJZS2wIlPnI1CQ8x-A8F6tnKxQ6Yusny7CHc"
+   },
+   {
+    "file": "screenshot-16.jpg",
+    "bytes": 168399,
+    "src": "https://play-lh.googleusercontent.com/MWI2xXp4U9pYf2KUsKR3SVXoBN4ZBLU-0R0iq78ZRni8JiFCITNZUWgen5l0PzwNxWN0mTLTJqmlsZ2jvgfM8A"
+   },
+   {
+    "file": "screenshot-17.jpg",
+    "bytes": 118470,
+    "src": "https://play-lh.googleusercontent.com/1gn2Hje9ZyHMiEHFHDrHdR6UkU92u2Z7GYJYOrnNIFlk97cEKUY-zl4U2bqJdoDxWMoGS4PD682n-fIqjQ0H"
+   },
+   {
+    "file": "screenshot-18.jpg",
+    "bytes": 71327,
+    "src": "https://play-lh.googleusercontent.com/lePznd7v76l1SxAd66ayX6Exy2OijnRZTEVlTS_KBvuxERw0iw4K1Vh_F3dQjsUgCUanUPPtxLvMIpZHiTUMyck"
+   },
+   {
+    "file": "screenshot-19.jpg",
+    "bytes": 92806,
+    "src": "https://play-lh.googleusercontent.com/OC-lMwi6Y1MggqjI5xhp4A_MzwnuC_GoOGOoG_oY0bd-5U6HWxa4OQcQp0clXl-8iwmXn8B8lKr16M1ZJcKe5ek"
+   },
+   {
+    "file": "screenshot-20.jpg",
+    "bytes": 126883,
+    "src": "https://play-lh.googleusercontent.com/aQm47a0Pb4dKLs36XIBScWDmVNUxYxJAyA3__3cJJU5jN8c8_UWvKgEXYawW-8Ewn7ATJZayPiDMbRJua_DcCug"
+   },
+   {
+    "file": "screenshot-21.jpg",
+    "bytes": 151726,
+    "src": "https://play-lh.googleusercontent.com/Ox5ekGcnjiMGFR0geoiS5O6Js7OUOnPLvMXZnxbjGHT5aZiMyr0olpkOGZLzfwpPZ8hwofpem-q1AQdckI6GLQ"
+   }
+  ]
+ },
+ {
+  "slug": "10-devbay",
+  "id": "instasaver.videodownloader.photodownloader.repost",
+  "title": "All Video Downloader & Browser",
+  "developer": "Fast Video Downloader & Story Saver - DevBay",
+  "installsLabel": "50,000,000+",
+  "installs": 67490521,
+  "score": 3.8952587,
+  "ratings": 649420,
+  "genre": "Video Players & Editors",
+  "updated": "2026-07-31",
+  "released": "May 18, 2020",
+  "video": false,
+  "url": "https://play.google.com/store/apps/details?id=instasaver.videodownloader.photodownloader.repost&hl=en&gl=US",
+  "icon": {
+   "file": "icon-01.png",
+   "bytes": 176346,
+   "src": "https://play-lh.googleusercontent.com/8nlpQOLVFaDrO7HjaY3k09WhRgJCVelbHF3groZbL9zj7ZaM2RRDvOeb_G6ydASZd2UAGtMoux0iZL9zemXq1Q"
+  },
+  "feature": {
+   "file": "feature-graphic-01.png",
+   "bytes": 140609,
+   "src": "https://play-lh.googleusercontent.com/dsB1ZAkEauERXsS4EJ9Xs-41JbAo0qaaOtCawqlJCIO2CBGkivNy8bPyT5X5bg1tbcMWkfptjMVxOK_7Z8vNdA"
+  },
+  "shots": [
+   {
+    "file": "screenshot-01.png",
+    "bytes": 444453,
+    "src": "https://play-lh.googleusercontent.com/fLJClOftqkkO9dqAvudwMP1iBF-NG0jv0DVhPnbG563BLq94xlVwX2FtFj00VsaZcX6Two7xxNQurGgEevW6oA"
+   },
+   {
+    "file": "screenshot-02.png",
+    "bytes": 812816,
+    "src": "https://play-lh.googleusercontent.com/KB1_2FN5EwzqR34bU5fEsz7cCUgAnhIHtKSMengBToq2aF5zQ-lWY2C3ClSxrhg56cJplqM5GGIXKJRXCHa8xw"
+   },
+   {
+    "file": "screenshot-03.png",
+    "bytes": 651477,
+    "src": "https://play-lh.googleusercontent.com/K_gM9kwcnOpvVVZeBNlJLsq_m-3s1-RApVgpxfSKwJGh8_ASHmvtIzwVfOUf_9RVKgQ5CkGDoSzkR1gzJOSJkA"
+   },
+   {
+    "file": "screenshot-04.png",
+    "bytes": 1176399,
+    "src": "https://play-lh.googleusercontent.com/nEe3_iWAEp_gk0TZnB0JohgHPwL_qoQCQrFngw2GmajI5srTGgL0IR0ykqA8u08rAaQ61cIMbsdMIg2aXFYbGQ"
+   },
+   {
+    "file": "screenshot-05.png",
+    "bytes": 909708,
+    "src": "https://play-lh.googleusercontent.com/hIz0SJIcuegdmkLsFb5hdr3MGSvp8I1JXXKEkctddeuUVphHfiuPJGIo_SUsE-d-47MyxTannIS3f7zqYqWLRQ"
+   },
+   {
+    "file": "screenshot-06.png",
+    "bytes": 1178228,
+    "src": "https://play-lh.googleusercontent.com/V0XSNBa6VyqR0CFMSrBV_MX8N-TdnpC42HJsye7RGsLKc2EHI0ZJApb-IccRlEgqitoyEtdVbrmMuVvhi80n2A"
+   },
+   {
+    "file": "screenshot-07.png",
+    "bytes": 536044,
+    "src": "https://play-lh.googleusercontent.com/8RQjUlpDiAny09Dv768DnvKNedj--xekG67YXhlCC-kc-IwpLFAdBVaBsRHw3463PiFDAEc6xpU_ZR-W6Gbcpw"
+   },
+   {
+    "file": "screenshot-08.png",
+    "bytes": 444453,
+    "src": "https://play-lh.googleusercontent.com/fLJClOftqkkO9dqAvudwMP1iBF-NG0jv0DVhPnbG563BLq94xlVwX2FtFj00VsaZcX6Two7xxNQurGgEevW6oA"
+   },
+   {
+    "file": "screenshot-09.png",
+    "bytes": 812816,
+    "src": "https://play-lh.googleusercontent.com/KB1_2FN5EwzqR34bU5fEsz7cCUgAnhIHtKSMengBToq2aF5zQ-lWY2C3ClSxrhg56cJplqM5GGIXKJRXCHa8xw"
+   },
+   {
+    "file": "screenshot-10.png",
+    "bytes": 651477,
+    "src": "https://play-lh.googleusercontent.com/K_gM9kwcnOpvVVZeBNlJLsq_m-3s1-RApVgpxfSKwJGh8_ASHmvtIzwVfOUf_9RVKgQ5CkGDoSzkR1gzJOSJkA"
+   },
+   {
+    "file": "screenshot-11.png",
+    "bytes": 1176399,
+    "src": "https://play-lh.googleusercontent.com/nEe3_iWAEp_gk0TZnB0JohgHPwL_qoQCQrFngw2GmajI5srTGgL0IR0ykqA8u08rAaQ61cIMbsdMIg2aXFYbGQ"
+   },
+   {
+    "file": "screenshot-12.png",
+    "bytes": 909708,
+    "src": "https://play-lh.googleusercontent.com/hIz0SJIcuegdmkLsFb5hdr3MGSvp8I1JXXKEkctddeuUVphHfiuPJGIo_SUsE-d-47MyxTannIS3f7zqYqWLRQ"
+   },
+   {
+    "file": "screenshot-13.png",
+    "bytes": 1178228,
+    "src": "https://play-lh.googleusercontent.com/V0XSNBa6VyqR0CFMSrBV_MX8N-TdnpC42HJsye7RGsLKc2EHI0ZJApb-IccRlEgqitoyEtdVbrmMuVvhi80n2A"
+   },
+   {
+    "file": "screenshot-14.png",
+    "bytes": 536044,
+    "src": "https://play-lh.googleusercontent.com/8RQjUlpDiAny09Dv768DnvKNedj--xekG67YXhlCC-kc-IwpLFAdBVaBsRHw3463PiFDAEc6xpU_ZR-W6Gbcpw"
+   },
+   {
+    "file": "screenshot-15.png",
+    "bytes": 444453,
+    "src": "https://play-lh.googleusercontent.com/fLJClOftqkkO9dqAvudwMP1iBF-NG0jv0DVhPnbG563BLq94xlVwX2FtFj00VsaZcX6Two7xxNQurGgEevW6oA"
+   },
+   {
+    "file": "screenshot-16.png",
+    "bytes": 812816,
+    "src": "https://play-lh.googleusercontent.com/KB1_2FN5EwzqR34bU5fEsz7cCUgAnhIHtKSMengBToq2aF5zQ-lWY2C3ClSxrhg56cJplqM5GGIXKJRXCHa8xw"
+   },
+   {
+    "file": "screenshot-17.png",
+    "bytes": 651477,
+    "src": "https://play-lh.googleusercontent.com/K_gM9kwcnOpvVVZeBNlJLsq_m-3s1-RApVgpxfSKwJGh8_ASHmvtIzwVfOUf_9RVKgQ5CkGDoSzkR1gzJOSJkA"
+   },
+   {
+    "file": "screenshot-18.png",
+    "bytes": 1176399,
+    "src": "https://play-lh.googleusercontent.com/nEe3_iWAEp_gk0TZnB0JohgHPwL_qoQCQrFngw2GmajI5srTGgL0IR0ykqA8u08rAaQ61cIMbsdMIg2aXFYbGQ"
+   },
+   {
+    "file": "screenshot-19.png",
+    "bytes": 909708,
+    "src": "https://play-lh.googleusercontent.com/hIz0SJIcuegdmkLsFb5hdr3MGSvp8I1JXXKEkctddeuUVphHfiuPJGIo_SUsE-d-47MyxTannIS3f7zqYqWLRQ"
+   },
+   {
+    "file": "screenshot-20.png",
+    "bytes": 1178228,
+    "src": "https://play-lh.googleusercontent.com/V0XSNBa6VyqR0CFMSrBV_MX8N-TdnpC42HJsye7RGsLKc2EHI0ZJApb-IccRlEgqitoyEtdVbrmMuVvhi80n2A"
+   },
+   {
+    "file": "screenshot-21.png",
+    "bytes": 536044,
+    "src": "https://play-lh.googleusercontent.com/8RQjUlpDiAny09Dv768DnvKNedj--xekG67YXhlCC-kc-IwpLFAdBVaBsRHw3463PiFDAEc6xpU_ZR-W6Gbcpw"
+   }
+  ]
+ },
+ {
+  "slug": "11-sky-vision",
+  "id": "com.allvideodownloader.hdvideodownloader.savevideos",
+  "title": "All Video Downloader & Saver",
+  "developer": "Sky Vision Apps Lab",
+  "installsLabel": "10,000,000+",
+  "installs": 18203494,
+  "score": 4.09,
+  "ratings": 24362,
+  "genre": "Video Players & Editors",
+  "updated": "2026-08-26",
+  "released": "Apr 10, 2025",
+  "video": false,
+  "url": "https://play.google.com/store/apps/details?id=com.allvideodownloader.hdvideodownloader.savevideos&hl=en&gl=US",
+  "icon": {
+   "file": "icon-01.png",
+   "bytes": 80904,
+   "src": "https://play-lh.googleusercontent.com/WYDfh31pnGcXOA47UxNqxtpja_wGFI7WoCSaaJ2ds5dP26aem1U0vT0oL6UIUIAeqac26Gb72y4be9VLRDpOfQ"
+  },
+  "feature": {
+   "file": "feature-graphic-01.png",
+   "bytes": 24466,
+   "src": "https://play-lh.googleusercontent.com/C2PO4WH7Gv29t-ooMW1PPM9A9-cbIqGvEAG9s6_9d3DMkonhbur9en9_JdkS3tRyHCS_UlJtFSK2EEKWimefVQ"
+  },
+  "shots": [
+   {
+    "file": "screenshot-01.png",
+    "bytes": 519557,
+    "src": "https://play-lh.googleusercontent.com/hcyKV8VTN9lfqV1F-8eav-4FeVQrRiFg8K5Nbzi0NxpJHvZWE8OzrnDuLDLYebFjFnJQBQXqwMaQDzgXqb6J"
+   },
+   {
+    "file": "screenshot-02.png",
+    "bytes": 672421,
+    "src": "https://play-lh.googleusercontent.com/UUPCqAJrAAajYHdRapIAu5-c4Mfcc5MLYW_c98CSASpvdgdEAh1_3rwpWspFnAs3A9URushu62VocmxIXtZ4"
+   },
+   {
+    "file": "screenshot-03.png",
+    "bytes": 860748,
+    "src": "https://play-lh.googleusercontent.com/DNu3H-FPml2vRXNenl1EJQT7xe8ysQL4X0-FhF-_PzNOKeqsk9ZblE9cG8gVgRDczTsnMJAmQjoCQBn3khtD7w"
+   },
+   {
+    "file": "screenshot-04.png",
+    "bytes": 1344812,
+    "src": "https://play-lh.googleusercontent.com/n0dZrGexmt38O6Tri6Ery8tboaddJdJm63INAyY9J7gNCBHXeLAnsuvkNJ9Sio3kd-1xNU7pZYGxXt0NE4y9aoQ"
+   },
+   {
+    "file": "screenshot-05.png",
+    "bytes": 1101035,
+    "src": "https://play-lh.googleusercontent.com/UyAnf-fFtQ1wgzLhUvs1fQowweZnopqFRUQedfDI6KcHqZ1Ipn3x6Iqxu9nIUjUnj8GD15_sNsFhXgcKMu38sA"
+   },
+   {
+    "file": "screenshot-06.png",
+    "bytes": 812973,
+    "src": "https://play-lh.googleusercontent.com/ikNKUKyBcSpH4vtNsu8Rbh7H3iZj8HaDkssa0qFpYGanNRT87IHopvnFta-rD0oZ6ahuFHukwKAUthtlXYMH"
+   },
+   {
+    "file": "screenshot-07.png",
+    "bytes": 710271,
+    "src": "https://play-lh.googleusercontent.com/RsVRXErJmSD97Vhb_Ab3Kv69ozw_hhDiL2kouwWhCy8N6LRm27-9fPUIgOsowfTCte7cM5I15aXqYEeIeYvh2g"
+   },
+   {
+    "file": "screenshot-08.png",
+    "bytes": 519557,
+    "src": "https://play-lh.googleusercontent.com/hcyKV8VTN9lfqV1F-8eav-4FeVQrRiFg8K5Nbzi0NxpJHvZWE8OzrnDuLDLYebFjFnJQBQXqwMaQDzgXqb6J"
+   },
+   {
+    "file": "screenshot-09.png",
+    "bytes": 672421,
+    "src": "https://play-lh.googleusercontent.com/UUPCqAJrAAajYHdRapIAu5-c4Mfcc5MLYW_c98CSASpvdgdEAh1_3rwpWspFnAs3A9URushu62VocmxIXtZ4"
+   },
+   {
+    "file": "screenshot-10.png",
+    "bytes": 860748,
+    "src": "https://play-lh.googleusercontent.com/DNu3H-FPml2vRXNenl1EJQT7xe8ysQL4X0-FhF-_PzNOKeqsk9ZblE9cG8gVgRDczTsnMJAmQjoCQBn3khtD7w"
+   },
+   {
+    "file": "screenshot-11.png",
+    "bytes": 1344812,
+    "src": "https://play-lh.googleusercontent.com/n0dZrGexmt38O6Tri6Ery8tboaddJdJm63INAyY9J7gNCBHXeLAnsuvkNJ9Sio3kd-1xNU7pZYGxXt0NE4y9aoQ"
+   },
+   {
+    "file": "screenshot-12.png",
+    "bytes": 1101035,
+    "src": "https://play-lh.googleusercontent.com/UyAnf-fFtQ1wgzLhUvs1fQowweZnopqFRUQedfDI6KcHqZ1Ipn3x6Iqxu9nIUjUnj8GD15_sNsFhXgcKMu38sA"
+   },
+   {
+    "file": "screenshot-13.png",
+    "bytes": 812973,
+    "src": "https://play-lh.googleusercontent.com/ikNKUKyBcSpH4vtNsu8Rbh7H3iZj8HaDkssa0qFpYGanNRT87IHopvnFta-rD0oZ6ahuFHukwKAUthtlXYMH"
+   },
+   {
+    "file": "screenshot-14.png",
+    "bytes": 710271,
+    "src": "https://play-lh.googleusercontent.com/RsVRXErJmSD97Vhb_Ab3Kv69ozw_hhDiL2kouwWhCy8N6LRm27-9fPUIgOsowfTCte7cM5I15aXqYEeIeYvh2g"
+   },
+   {
+    "file": "screenshot-15.png",
+    "bytes": 519557,
+    "src": "https://play-lh.googleusercontent.com/hcyKV8VTN9lfqV1F-8eav-4FeVQrRiFg8K5Nbzi0NxpJHvZWE8OzrnDuLDLYebFjFnJQBQXqwMaQDzgXqb6J"
+   },
+   {
+    "file": "screenshot-16.png",
+    "bytes": 672421,
+    "src": "https://play-lh.googleusercontent.com/UUPCqAJrAAajYHdRapIAu5-c4Mfcc5MLYW_c98CSASpvdgdEAh1_3rwpWspFnAs3A9URushu62VocmxIXtZ4"
+   },
+   {
+    "file": "screenshot-17.png",
+    "bytes": 860748,
+    "src": "https://play-lh.googleusercontent.com/DNu3H-FPml2vRXNenl1EJQT7xe8ysQL4X0-FhF-_PzNOKeqsk9ZblE9cG8gVgRDczTsnMJAmQjoCQBn3khtD7w"
+   },
+   {
+    "file": "screenshot-18.png",
+    "bytes": 1344812,
+    "src": "https://play-lh.googleusercontent.com/n0dZrGexmt38O6Tri6Ery8tboaddJdJm63INAyY9J7gNCBHXeLAnsuvkNJ9Sio3kd-1xNU7pZYGxXt0NE4y9aoQ"
+   },
+   {
+    "file": "screenshot-19.png",
+    "bytes": 1101035,
+    "src": "https://play-lh.googleusercontent.com/UyAnf-fFtQ1wgzLhUvs1fQowweZnopqFRUQedfDI6KcHqZ1Ipn3x6Iqxu9nIUjUnj8GD15_sNsFhXgcKMu38sA"
+   },
+   {
+    "file": "screenshot-20.png",
+    "bytes": 812973,
+    "src": "https://play-lh.googleusercontent.com/ikNKUKyBcSpH4vtNsu8Rbh7H3iZj8HaDkssa0qFpYGanNRT87IHopvnFta-rD0oZ6ahuFHukwKAUthtlXYMH"
+   },
+   {
+    "file": "screenshot-21.png",
+    "bytes": 710271,
+    "src": "https://play-lh.googleusercontent.com/RsVRXErJmSD97Vhb_Ab3Kv69ozw_hhDiL2kouwWhCy8N6LRm27-9fPUIgOsowfTCte7cM5I15aXqYEeIeYvh2g"
+   }
+  ]
+ },
+ {
+  "slug": "12-attractive-apps",
+  "id": "allinone.videodownloader.savevideos",
+  "title": "All video downloader and saver",
+  "developer": "Attractive Apps Valley",
+  "installsLabel": "10,000,000+",
+  "installs": 26789772,
+  "score": 3.99,
+  "ratings": 23291,
+  "genre": "Video Players & Editors",
+  "updated": "2026-08-05",
+  "released": "Dec 23, 2024",
+  "video": false,
+  "url": "https://play.google.com/store/apps/details?id=allinone.videodownloader.savevideos&hl=en&gl=US",
+  "icon": {
+   "file": "icon-01.png",
+   "bytes": 21842,
+   "src": "https://play-lh.googleusercontent.com/N77NqpfhamAt-kjsqbI-JkmYQRjUiHUFuyArYqEBGAwPOR_8NMHXgJlrcr5HQSTLilOfWqGt83J_ihpnPWExILI"
+  },
+  "feature": {
+   "file": "feature-graphic-01.png",
+   "bytes": 511558,
+   "src": "https://play-lh.googleusercontent.com/5r0E7gFgJq3qBZMhHLZiXfdAWVrfY5uAgDOxzjo748IXGoaOqb6qONlQ1vzWg67i90uSp0jCSt3cPv2oJ7SQgA"
+  },
+  "shots": [
+   {
+    "file": "screenshot-01.png",
+    "bytes": 1036832,
+    "src": "https://play-lh.googleusercontent.com/uxK7mKZUTzy45V1_Lz-Dg7Ipwf8NzE4jQr_dIedo043xckmst0ism4hXlE1MzF7oKzGe38FxZyKxM2Fepz36"
+   },
+   {
+    "file": "screenshot-02.png",
+    "bytes": 962543,
+    "src": "https://play-lh.googleusercontent.com/U_ZMWxVaNm339SvHpDwBY-dYD0-ONmwU7F32ITsvEO-q9ZasUJhSnJQBGGhbkDNGi8E9AYH1_ySFqTY_V0Wr"
+   },
+   {
+    "file": "screenshot-03.png",
+    "bytes": 1322294,
+    "src": "https://play-lh.googleusercontent.com/QOfY8a2u8I6sGDfyJS5xxn5LV62PvYbfNtRsFcgGPcsr738FAqpnicENhAGBuOq44x0U9ZmaAWvEpJYfpx59"
+   },
+   {
+    "file": "screenshot-04.png",
+    "bytes": 770942,
+    "src": "https://play-lh.googleusercontent.com/qycURS3fte4w4kXirs7hcdPqV_XCucRfXLNhCibJsiC3a0_-OuoWpb0aH3Rgo_pdJWL4R5I2mRp1xy-GPXoSBw"
+   },
+   {
+    "file": "screenshot-05.png",
+    "bytes": 628675,
+    "src": "https://play-lh.googleusercontent.com/Malrw9bpDCIhpmGMi_JZvM9SrIb5oqkyHUpo5gp6LtcHTzlBWTRR0-xjiZ11ny0bzGGPGeje542hmqMBlgR1Tns"
+   },
+   {
+    "file": "screenshot-06.png",
+    "bytes": 581230,
+    "src": "https://play-lh.googleusercontent.com/Iu_xtDmhcKvvEcf5_aCUEQLN7ZjwwQMm9kx005iuPrlDdZSRmK6qZtqypnXybKv-4dEkIN1nDy5bHHJ7q6zCE3s"
+   },
+   {
+    "file": "screenshot-07.png",
+    "bytes": 1036832,
+    "src": "https://play-lh.googleusercontent.com/uxK7mKZUTzy45V1_Lz-Dg7Ipwf8NzE4jQr_dIedo043xckmst0ism4hXlE1MzF7oKzGe38FxZyKxM2Fepz36"
+   },
+   {
+    "file": "screenshot-08.png",
+    "bytes": 962543,
+    "src": "https://play-lh.googleusercontent.com/U_ZMWxVaNm339SvHpDwBY-dYD0-ONmwU7F32ITsvEO-q9ZasUJhSnJQBGGhbkDNGi8E9AYH1_ySFqTY_V0Wr"
+   },
+   {
+    "file": "screenshot-09.png",
+    "bytes": 1322294,
+    "src": "https://play-lh.googleusercontent.com/QOfY8a2u8I6sGDfyJS5xxn5LV62PvYbfNtRsFcgGPcsr738FAqpnicENhAGBuOq44x0U9ZmaAWvEpJYfpx59"
+   },
+   {
+    "file": "screenshot-10.png",
+    "bytes": 770942,
+    "src": "https://play-lh.googleusercontent.com/qycURS3fte4w4kXirs7hcdPqV_XCucRfXLNhCibJsiC3a0_-OuoWpb0aH3Rgo_pdJWL4R5I2mRp1xy-GPXoSBw"
+   },
+   {
+    "file": "screenshot-11.png",
+    "bytes": 628675,
+    "src": "https://play-lh.googleusercontent.com/Malrw9bpDCIhpmGMi_JZvM9SrIb5oqkyHUpo5gp6LtcHTzlBWTRR0-xjiZ11ny0bzGGPGeje542hmqMBlgR1Tns"
+   },
+   {
+    "file": "screenshot-12.png",
+    "bytes": 581230,
+    "src": "https://play-lh.googleusercontent.com/Iu_xtDmhcKvvEcf5_aCUEQLN7ZjwwQMm9kx005iuPrlDdZSRmK6qZtqypnXybKv-4dEkIN1nDy5bHHJ7q6zCE3s"
+   },
+   {
+    "file": "screenshot-13.png",
+    "bytes": 1036832,
+    "src": "https://play-lh.googleusercontent.com/uxK7mKZUTzy45V1_Lz-Dg7Ipwf8NzE4jQr_dIedo043xckmst0ism4hXlE1MzF7oKzGe38FxZyKxM2Fepz36"
+   },
+   {
+    "file": "screenshot-14.png",
+    "bytes": 962543,
+    "src": "https://play-lh.googleusercontent.com/U_ZMWxVaNm339SvHpDwBY-dYD0-ONmwU7F32ITsvEO-q9ZasUJhSnJQBGGhbkDNGi8E9AYH1_ySFqTY_V0Wr"
+   },
+   {
+    "file": "screenshot-15.png",
+    "bytes": 1322294,
+    "src": "https://play-lh.googleusercontent.com/QOfY8a2u8I6sGDfyJS5xxn5LV62PvYbfNtRsFcgGPcsr738FAqpnicENhAGBuOq44x0U9ZmaAWvEpJYfpx59"
+   },
+   {
+    "file": "screenshot-16.png",
+    "bytes": 770942,
+    "src": "https://play-lh.googleusercontent.com/qycURS3fte4w4kXirs7hcdPqV_XCucRfXLNhCibJsiC3a0_-OuoWpb0aH3Rgo_pdJWL4R5I2mRp1xy-GPXoSBw"
+   },
+   {
+    "file": "screenshot-17.png",
+    "bytes": 628675,
+    "src": "https://play-lh.googleusercontent.com/Malrw9bpDCIhpmGMi_JZvM9SrIb5oqkyHUpo5gp6LtcHTzlBWTRR0-xjiZ11ny0bzGGPGeje542hmqMBlgR1Tns"
+   },
+   {
+    "file": "screenshot-18.png",
+    "bytes": 581230,
+    "src": "https://play-lh.googleusercontent.com/Iu_xtDmhcKvvEcf5_aCUEQLN7ZjwwQMm9kx005iuPrlDdZSRmK6qZtqypnXybKv-4dEkIN1nDy5bHHJ7q6zCE3s"
+   }
+  ]
+ },
+ {
+  "slug": "13-markhoor",
+  "id": "com.videosaver.savevideos.story.saverapp",
+  "title": "Video Downloader & Save Video",
+  "developer": "Markhoor Studio",
+  "installsLabel": "10,000,000+",
+  "installs": 11079615,
+  "score": 4,
+  "ratings": 9549,
+  "genre": "Entertainment",
+  "updated": "2026-09-09",
+  "released": "Apr 25, 2024",
+  "video": false,
+  "url": "https://play.google.com/store/apps/details?id=com.videosaver.savevideos.story.saverapp&hl=en&gl=US",
+  "icon": {
+   "file": "icon-01.jpg",
+   "bytes": 29265,
+   "src": "https://play-lh.googleusercontent.com/PwdmwGsCYAewdUgshkWt8fMbOfYPOszRT-L7k0NunbyBL0UU_iPQsPkxEvgLOMHh1KC1SEjqW4Iys1ib9rQOPNk"
+  },
+  "feature": {
+   "file": "feature-graphic-01.png",
+   "bytes": 252217,
+   "src": "https://play-lh.googleusercontent.com/y2Eu9k8uHLfd4kJh9Oeyoz0oVaFA_j1vxz33AeA9e0AU6ojg1TVokD-TaUtSsiyO1a7AnVG6UPf3yYE0d9vL"
+  },
+  "shots": [
+   {
+    "file": "screenshot-01.png",
+    "bytes": 660769,
+    "src": "https://play-lh.googleusercontent.com/WTs1fV9jbtCTuWkWSzeFoH-YDL3FFGy4_Y0JaxClW059YEGFjnZRzkNsGoEXXX73RQPIQoUiCHFSpyGvlUCHYtI"
+   },
+   {
+    "file": "screenshot-02.png",
+    "bytes": 259190,
+    "src": "https://play-lh.googleusercontent.com/mxiKrmMB_C34OwHo6aebNbUIM3gxuaQrd7cKlOATG6so5Fds6DnIYbmTSsgA9zlevRLkC2003XpwIHlW24aW0w"
+   },
+   {
+    "file": "screenshot-03.png",
+    "bytes": 450730,
+    "src": "https://play-lh.googleusercontent.com/6CKhIJp4Lf3uqGBXENMI1OsjQL0_7bnUkZ3LXqhjfbIU0MpRrOUVbujO4Zh5a83vLfNw-8SShQYQ1Q022CA0Vg"
+   },
+   {
+    "file": "screenshot-04.png",
+    "bytes": 311199,
+    "src": "https://play-lh.googleusercontent.com/ESMs7OfP2yyl_AgRrVItBHTs9wYiorZ9gSlLx5aw7lcfjmKuIQY5xLQuS_LjgZwOjcFRQB3cF10bjsW3vLN-LZQ"
+   },
+   {
+    "file": "screenshot-05.png",
+    "bytes": 601861,
+    "src": "https://play-lh.googleusercontent.com/o2VfZOqMx8cbB3RhZfTPQmU4S5bcZmRt77fq0NsPC_nRR9L2RZKRp3JImPYygKBB4J1QP-BCCdNPdLbTsWaVCDo"
+   },
+   {
+    "file": "screenshot-06.png",
+    "bytes": 301727,
+    "src": "https://play-lh.googleusercontent.com/bwS0Fcn6BdurMEKOS5VT4URGALG1ID-LGSG-D3bNXNUmLLEaXpK8x_vXolUQXWgEWpWNKDQSLzICoIWaaEMBmw"
+   },
+   {
+    "file": "screenshot-07.png",
+    "bytes": 212682,
+    "src": "https://play-lh.googleusercontent.com/ZyDlMM2JmWg4p9xEKqCZdhQSXb-fjZkr_wp1Pzhozdogtd0iZY5yqse-CpK08l07jUjD5b_t4o9sU-UAY2u3cg"
+   },
+   {
+    "file": "screenshot-08.png",
+    "bytes": 660769,
+    "src": "https://play-lh.googleusercontent.com/WTs1fV9jbtCTuWkWSzeFoH-YDL3FFGy4_Y0JaxClW059YEGFjnZRzkNsGoEXXX73RQPIQoUiCHFSpyGvlUCHYtI"
+   },
+   {
+    "file": "screenshot-09.png",
+    "bytes": 259190,
+    "src": "https://play-lh.googleusercontent.com/mxiKrmMB_C34OwHo6aebNbUIM3gxuaQrd7cKlOATG6so5Fds6DnIYbmTSsgA9zlevRLkC2003XpwIHlW24aW0w"
+   },
+   {
+    "file": "screenshot-10.png",
+    "bytes": 450730,
+    "src": "https://play-lh.googleusercontent.com/6CKhIJp4Lf3uqGBXENMI1OsjQL0_7bnUkZ3LXqhjfbIU0MpRrOUVbujO4Zh5a83vLfNw-8SShQYQ1Q022CA0Vg"
+   },
+   {
+    "file": "screenshot-11.png",
+    "bytes": 311199,
+    "src": "https://play-lh.googleusercontent.com/ESMs7OfP2yyl_AgRrVItBHTs9wYiorZ9gSlLx5aw7lcfjmKuIQY5xLQuS_LjgZwOjcFRQB3cF10bjsW3vLN-LZQ"
+   },
+   {
+    "file": "screenshot-12.png",
+    "bytes": 601861,
+    "src": "https://play-lh.googleusercontent.com/o2VfZOqMx8cbB3RhZfTPQmU4S5bcZmRt77fq0NsPC_nRR9L2RZKRp3JImPYygKBB4J1QP-BCCdNPdLbTsWaVCDo"
+   },
+   {
+    "file": "screenshot-13.png",
+    "bytes": 301727,
+    "src": "https://play-lh.googleusercontent.com/bwS0Fcn6BdurMEKOS5VT4URGALG1ID-LGSG-D3bNXNUmLLEaXpK8x_vXolUQXWgEWpWNKDQSLzICoIWaaEMBmw"
+   },
+   {
+    "file": "screenshot-14.png",
+    "bytes": 212682,
+    "src": "https://play-lh.googleusercontent.com/ZyDlMM2JmWg4p9xEKqCZdhQSXb-fjZkr_wp1Pzhozdogtd0iZY5yqse-CpK08l07jUjD5b_t4o9sU-UAY2u3cg"
+   },
+   {
+    "file": "screenshot-15.png",
+    "bytes": 660769,
+    "src": "https://play-lh.googleusercontent.com/WTs1fV9jbtCTuWkWSzeFoH-YDL3FFGy4_Y0JaxClW059YEGFjnZRzkNsGoEXXX73RQPIQoUiCHFSpyGvlUCHYtI"
+   },
+   {
+    "file": "screenshot-16.png",
+    "bytes": 259190,
+    "src": "https://play-lh.googleusercontent.com/mxiKrmMB_C34OwHo6aebNbUIM3gxuaQrd7cKlOATG6so5Fds6DnIYbmTSsgA9zlevRLkC2003XpwIHlW24aW0w"
+   },
+   {
+    "file": "screenshot-17.png",
+    "bytes": 450730,
+    "src": "https://play-lh.googleusercontent.com/6CKhIJp4Lf3uqGBXENMI1OsjQL0_7bnUkZ3LXqhjfbIU0MpRrOUVbujO4Zh5a83vLfNw-8SShQYQ1Q022CA0Vg"
+   },
+   {
+    "file": "screenshot-18.png",
+    "bytes": 311199,
+    "src": "https://play-lh.googleusercontent.com/ESMs7OfP2yyl_AgRrVItBHTs9wYiorZ9gSlLx5aw7lcfjmKuIQY5xLQuS_LjgZwOjcFRQB3cF10bjsW3vLN-LZQ"
+   },
+   {
+    "file": "screenshot-19.png",
+    "bytes": 601861,
+    "src": "https://play-lh.googleusercontent.com/o2VfZOqMx8cbB3RhZfTPQmU4S5bcZmRt77fq0NsPC_nRR9L2RZKRp3JImPYygKBB4J1QP-BCCdNPdLbTsWaVCDo"
+   },
+   {
+    "file": "screenshot-20.png",
+    "bytes": 301727,
+    "src": "https://play-lh.googleusercontent.com/bwS0Fcn6BdurMEKOS5VT4URGALG1ID-LGSG-D3bNXNUmLLEaXpK8x_vXolUQXWgEWpWNKDQSLzICoIWaaEMBmw"
+   },
+   {
+    "file": "screenshot-21.png",
+    "bytes": 212682,
+    "src": "https://play-lh.googleusercontent.com/ZyDlMM2JmWg4p9xEKqCZdhQSXb-fjZkr_wp1Pzhozdogtd0iZY5yqse-CpK08l07jUjD5b_t4o9sU-UAY2u3cg"
+   },
+   {
+    "file": "screenshot-22.jpg",
+    "bytes": 132497,
+    "src": "https://play-lh.googleusercontent.com/j9EIWHS2P11EIgIdDUzAuzaiobSuka4G-2GCFKZHbunbMAaRHzueUU7nt-BojNuN_lzLbZEiIQh6iPxFJrG7RA"
+   },
+   {
+    "file": "screenshot-23.jpg",
+    "bytes": 153033,
+    "src": "https://play-lh.googleusercontent.com/KH62Q_h4TpBCNHMiJKN1UxtP3QBpE1UY-mfibPZcvXlTwsUUsbFT2Rn-mxGlBRbOu5PLbTsG1fxUVPid8bRONUk"
+   },
+   {
+    "file": "screenshot-24.jpg",
+    "bytes": 103715,
+    "src": "https://play-lh.googleusercontent.com/Vt8vfWMKKtUTYuuqQsX30AjhrUIwxLP2-8YeyFRDZLtXmfgEf7uOnsqU50mlrbqjGglbzmPqe6yw3819qQ9Z"
+   },
+   {
+    "file": "screenshot-25.jpg",
+    "bytes": 140251,
+    "src": "https://play-lh.googleusercontent.com/3eME3YM0pcytNqvVjGeXJ2hf7TT73LuSzW4rFf130Dk7ZiLRMxzMwqw1Ocvq4wpAO6rJvKY-cVAy5AFWZIZHTQ"
+   },
+   {
+    "file": "screenshot-26.jpg",
+    "bytes": 136908,
+    "src": "https://play-lh.googleusercontent.com/fNyoFDM0_K3S4Awqzr54JYfFy4rq_El1PSQ9RJ9xHx5rOM1mhCm216bt8of_8YVIm0YNATQWkE_ZJncDYAISsw"
+   },
+   {
+    "file": "screenshot-27.jpg",
+    "bytes": 138207,
+    "src": "https://play-lh.googleusercontent.com/jPJGIcBJdXESB53KgxGft5bVoMhPheURPQ9rxUBcXu69yzGW3IALT9dkOadQD1FYTwyponb2JxD2ATaVSDKmLQ"
+   }
+  ]
+ },
+ {
+  "slug": "14-mobile-notepad",
+  "id": "com.videodownloder.alldownloadvideos",
+  "title": "Video Downloader - Player",
+  "developer": "Mobile Notepad Apps",
+  "installsLabel": "5,000,000+",
+  "installs": 8405820,
+  "score": 3.8349514,
+  "ratings": 7477,
+  "genre": "Video Players & Editors",
+  "updated": "2026-09-11",
+  "released": "May 29, 2023",
+  "video": false,
+  "url": "https://play.google.com/store/apps/details?id=com.videodownloder.alldownloadvideos&hl=en&gl=US",
+  "icon": {
+   "file": "icon-01.png",
+   "bytes": 6951,
+   "src": "https://play-lh.googleusercontent.com/gUlLctSBw65S29hN4PVjRgblYBI40x4HYw5hjwGYp75c34jL_d9yUoD1OqrPmsYtvKIfCcbZN_YQMuXxrHNq"
+  },
+  "feature": {
+   "file": "feature-graphic-01.png",
+   "bytes": 484671,
+   "src": "https://play-lh.googleusercontent.com/qWfVvWHKmTRQ2vXnnUpzNP9abfuuFfV5onKZB9na02OqXtzX9T_2bGQf3eO_5p-a52OVjhATv-nYfccf_KTVlW4"
+  },
+  "shots": [
+   {
+    "file": "screenshot-01.png",
+    "bytes": 412997,
+    "src": "https://play-lh.googleusercontent.com/7CDQaUcBx-kBNUKxJEYmrYX977DxE77iKvTQDO5siBNkfIVz7wMoZSQXZZnndHA0F7D40bPOrBbeiw1XkeR9"
+   },
+   {
+    "file": "screenshot-02.png",
+    "bytes": 345608,
+    "src": "https://play-lh.googleusercontent.com/bdQutHXHv_72AO7j0ITmUKdv0Fw0Gf-NEwVjQfNW1nTC7cvfNw7m7ScfNTuv7u0Me8egoEOJxVUky4zFkAL0Q3s"
+   },
+   {
+    "file": "screenshot-03.png",
+    "bytes": 685988,
+    "src": "https://play-lh.googleusercontent.com/kYRtECXa0V-IoPNv-Oxa_2VXeKAsyuQw8qwVCz1vinb48DvxHZ8VEgwUichcS7XQ-rnAhGyUxdPbxRAJv8VdA4A"
+   },
+   {
+    "file": "screenshot-04.png",
+    "bytes": 601965,
+    "src": "https://play-lh.googleusercontent.com/fKHTdH9zNKC6btIBncFXf5O_5F95kdk6zUoy5Pc_80uuOyryR7JNjfNQPupz_GlZKySBybNKGUXpS59Q0MT9lw"
+   },
+   {
+    "file": "screenshot-05.png",
+    "bytes": 157317,
+    "src": "https://play-lh.googleusercontent.com/qCaDZQFxmzhc-rJyyCqfMvUh6a4URpQRVfRL8I7qea40G4bMvawqKgRysL0sMdFmwAyMmLIp2axe4w9ErY65Ug"
+   },
+   {
+    "file": "screenshot-06.png",
+    "bytes": 672221,
+    "src": "https://play-lh.googleusercontent.com/QL0azP3q03X2ucXdyufN59Mdh2xQxoTuypUoeH4cpvl7ZnCNIkNLagtHkpsNZPPLAe8yPDkOHqCalH2ubFai"
+   },
+   {
+    "file": "screenshot-07.png",
+    "bytes": 108287,
+    "src": "https://play-lh.googleusercontent.com/w34Tlfzc2wA5WGvz7jFAhqy0geEcJOC7jT701VQMGL4mLiQEo_ctLU5IYdCb5vZF-ioeVM6eFEH4cfleAFXFyA"
+   },
+   {
+    "file": "screenshot-08.png",
+    "bytes": 338257,
+    "src": "https://play-lh.googleusercontent.com/v2CFUFMBuZ0hyLgxNqXPD3NqMrHQj9fYkDaK9fmBWb9w8nAXtANN3ECXEgrFjS_mqR34dwyMyTkDjYv6xCAJLQ"
+   },
+   {
+    "file": "screenshot-09.png",
+    "bytes": 412997,
+    "src": "https://play-lh.googleusercontent.com/7CDQaUcBx-kBNUKxJEYmrYX977DxE77iKvTQDO5siBNkfIVz7wMoZSQXZZnndHA0F7D40bPOrBbeiw1XkeR9"
+   },
+   {
+    "file": "screenshot-10.png",
+    "bytes": 345608,
+    "src": "https://play-lh.googleusercontent.com/bdQutHXHv_72AO7j0ITmUKdv0Fw0Gf-NEwVjQfNW1nTC7cvfNw7m7ScfNTuv7u0Me8egoEOJxVUky4zFkAL0Q3s"
+   },
+   {
+    "file": "screenshot-11.png",
+    "bytes": 685988,
+    "src": "https://play-lh.googleusercontent.com/kYRtECXa0V-IoPNv-Oxa_2VXeKAsyuQw8qwVCz1vinb48DvxHZ8VEgwUichcS7XQ-rnAhGyUxdPbxRAJv8VdA4A"
+   },
+   {
+    "file": "screenshot-12.png",
+    "bytes": 601965,
+    "src": "https://play-lh.googleusercontent.com/fKHTdH9zNKC6btIBncFXf5O_5F95kdk6zUoy5Pc_80uuOyryR7JNjfNQPupz_GlZKySBybNKGUXpS59Q0MT9lw"
+   },
+   {
+    "file": "screenshot-13.png",
+    "bytes": 157317,
+    "src": "https://play-lh.googleusercontent.com/qCaDZQFxmzhc-rJyyCqfMvUh6a4URpQRVfRL8I7qea40G4bMvawqKgRysL0sMdFmwAyMmLIp2axe4w9ErY65Ug"
+   },
+   {
+    "file": "screenshot-14.png",
+    "bytes": 672221,
+    "src": "https://play-lh.googleusercontent.com/QL0azP3q03X2ucXdyufN59Mdh2xQxoTuypUoeH4cpvl7ZnCNIkNLagtHkpsNZPPLAe8yPDkOHqCalH2ubFai"
+   },
+   {
+    "file": "screenshot-15.png",
+    "bytes": 108287,
+    "src": "https://play-lh.googleusercontent.com/w34Tlfzc2wA5WGvz7jFAhqy0geEcJOC7jT701VQMGL4mLiQEo_ctLU5IYdCb5vZF-ioeVM6eFEH4cfleAFXFyA"
+   },
+   {
+    "file": "screenshot-16.png",
+    "bytes": 338257,
+    "src": "https://play-lh.googleusercontent.com/v2CFUFMBuZ0hyLgxNqXPD3NqMrHQj9fYkDaK9fmBWb9w8nAXtANN3ECXEgrFjS_mqR34dwyMyTkDjYv6xCAJLQ"
+   },
+   {
+    "file": "screenshot-17.png",
+    "bytes": 412997,
+    "src": "https://play-lh.googleusercontent.com/7CDQaUcBx-kBNUKxJEYmrYX977DxE77iKvTQDO5siBNkfIVz7wMoZSQXZZnndHA0F7D40bPOrBbeiw1XkeR9"
+   },
+   {
+    "file": "screenshot-18.png",
+    "bytes": 345608,
+    "src": "https://play-lh.googleusercontent.com/bdQutHXHv_72AO7j0ITmUKdv0Fw0Gf-NEwVjQfNW1nTC7cvfNw7m7ScfNTuv7u0Me8egoEOJxVUky4zFkAL0Q3s"
+   },
+   {
+    "file": "screenshot-19.png",
+    "bytes": 685988,
+    "src": "https://play-lh.googleusercontent.com/kYRtECXa0V-IoPNv-Oxa_2VXeKAsyuQw8qwVCz1vinb48DvxHZ8VEgwUichcS7XQ-rnAhGyUxdPbxRAJv8VdA4A"
+   },
+   {
+    "file": "screenshot-20.png",
+    "bytes": 601965,
+    "src": "https://play-lh.googleusercontent.com/fKHTdH9zNKC6btIBncFXf5O_5F95kdk6zUoy5Pc_80uuOyryR7JNjfNQPupz_GlZKySBybNKGUXpS59Q0MT9lw"
+   },
+   {
+    "file": "screenshot-21.png",
+    "bytes": 157317,
+    "src": "https://play-lh.googleusercontent.com/qCaDZQFxmzhc-rJyyCqfMvUh6a4URpQRVfRL8I7qea40G4bMvawqKgRysL0sMdFmwAyMmLIp2axe4w9ErY65Ug"
+   },
+   {
+    "file": "screenshot-22.png",
+    "bytes": 672221,
+    "src": "https://play-lh.googleusercontent.com/QL0azP3q03X2ucXdyufN59Mdh2xQxoTuypUoeH4cpvl7ZnCNIkNLagtHkpsNZPPLAe8yPDkOHqCalH2ubFai"
+   },
+   {
+    "file": "screenshot-23.png",
+    "bytes": 108287,
+    "src": "https://play-lh.googleusercontent.com/w34Tlfzc2wA5WGvz7jFAhqy0geEcJOC7jT701VQMGL4mLiQEo_ctLU5IYdCb5vZF-ioeVM6eFEH4cfleAFXFyA"
+   },
+   {
+    "file": "screenshot-24.png",
+    "bytes": 338257,
+    "src": "https://play-lh.googleusercontent.com/v2CFUFMBuZ0hyLgxNqXPD3NqMrHQj9fYkDaK9fmBWb9w8nAXtANN3ECXEgrFjS_mqR34dwyMyTkDjYv6xCAJLQ"
+   },
+   {
+    "file": "screenshot-25.png",
+    "bytes": 414925,
+    "src": "https://play-lh.googleusercontent.com/5__BZk1Pon79FPr1FYnp_N8ywI9c7lII5_NaAQy7M3mYDANBjSIS6-UO2dETVQjuJGgf_YhUOLg0fXMsgRJzAg"
+   },
+   {
+    "file": "screenshot-26.png",
+    "bytes": 503197,
+    "src": "https://play-lh.googleusercontent.com/ZaU1B8k2f0cM3zlgVVqChyUTcMuxK79Nd_g2ngtq3mxFTNI_3DcLWeevYuoBeqf_XfbLURhnZT7AVJst0_cA58c"
+   },
+   {
+    "file": "screenshot-27.png",
+    "bytes": 397230,
+    "src": "https://play-lh.googleusercontent.com/2jYD4ZfBwDt4efq1CKUo6dKFMuROfMf9nkhQXnnNWwZAoGw6SL_w4d-k94BJHDGILuzX7SyE0WNfEzMAyrp4eA"
+   },
+   {
+    "file": "screenshot-28.png",
+    "bytes": 595492,
+    "src": "https://play-lh.googleusercontent.com/hBQGK1_PvT9HnSjXaxr--nLP9fAHmu-IpVxZfJiVnO7qXU4A0_GJogkdKJ2FUZaolSXd0_Ik0WvYTx2a7b3tog"
+   },
+   {
+    "file": "screenshot-29.png",
+    "bytes": 669247,
+    "src": "https://play-lh.googleusercontent.com/TMlTj-dqW4frXwN0l845HKcQaa4aZJ7n6xFWfXKmpwKYGuY73yzKT82Gp1R14SnVWRjCqF9NKlxlT6dEhlMe"
+   },
+   {
+    "file": "screenshot-30.png",
+    "bytes": 156630,
+    "src": "https://play-lh.googleusercontent.com/mm__kZlBuunVHJab3DHLZUNg6K-E8fK-3chYjLVUtRXOjXOvVfwxsFfmSXLaw6oZ1dX_ZXNZ01Dw1QH1YxcR3g"
+   },
+   {
+    "file": "screenshot-31.png",
+    "bytes": 103387,
+    "src": "https://play-lh.googleusercontent.com/Mj0wzq2aLTdUjri9ECQkJyX_5qEIwY3KBW7Yeico2BfOelL1aMYZT_tidODIWrQ2VwxB2Z9QioaAfu9DlLzToA"
+   },
+   {
+    "file": "screenshot-32.png",
+    "bytes": 333775,
+    "src": "https://play-lh.googleusercontent.com/l5-CRTyeR2T9LJw8Mh6MIx8H_tT_ok2R9NtMRdxYo6g_ZZjUT5WfF-o7e_AQt0rfvQ0yL3K9tlDs_-oUnoDjSw"
+   }
+  ]
+ },
+ {
+  "slug": "15-vidow",
+  "id": "com.hdvideodownloader.downloaderapp",
+  "title": "Video Downloader HD - Vidow",
+  "developer": "Vidow™",
+  "installsLabel": "100,000,000+",
+  "installs": 108093926,
+  "score": 3.9678714,
+  "ratings": 335197,
+  "genre": "Social",
+  "updated": "2026-05-18",
+  "released": "Aug 31, 2022",
+  "video": false,
+  "url": "https://play.google.com/store/apps/details?id=com.hdvideodownloader.downloaderapp&hl=en&gl=US",
+  "icon": {
+   "file": "icon-01.png",
+   "bytes": 42367,
+   "src": "https://play-lh.googleusercontent.com/uFifs8KnukfNhGtIVf3NVSy2x6_pV3J_wkx5Uo1h5YxooDGn5mrUxaDFrRlbBDvKhv9CisADZ7ksZeH0M9OaHw"
+  },
+  "feature": {
+   "file": "feature-graphic-01.png",
+   "bytes": 634617,
+   "src": "https://play-lh.googleusercontent.com/ril_T7cBwEpev8WrRQwHByvNfT9Up3cm4e4enIU9INgTS5Ly4PhchS0ydj8Pu80Dm-xMn4e1-vk1WDHAk47VFA"
+  },
+  "shots": [
+   {
+    "file": "screenshot-01.jpg",
+    "bytes": 128076,
+    "src": "https://play-lh.googleusercontent.com/4Xv2pwHlA0d624K_iI5mt1xV_vicz4-Rw6GoMY-2_GF-wmFlAOuUCjP4FWF9qEbX-pp0kosADqBIQ69DlrxOSw"
+   },
+   {
+    "file": "screenshot-02.jpg",
+    "bytes": 140847,
+    "src": "https://play-lh.googleusercontent.com/OuwWTU3ash0ZQ7m6Ca8kp5IEpp4HJrJ2N-lLRuWJclj6ik-QvRCWE-rVuV0SjTdOkrV8IH4hlF0SZnderf4b"
+   },
+   {
+    "file": "screenshot-03.png",
+    "bytes": 632127,
+    "src": "https://play-lh.googleusercontent.com/PuOBAJh-w1CTXtW359PFIcxTbS247a5SXgHobKHPs4pEGGdMiGm9xj5Cmn4xsFAo6rWgPIHWq3xJeDj91QUo"
+   },
+   {
+    "file": "screenshot-04.jpg",
+    "bytes": 147687,
+    "src": "https://play-lh.googleusercontent.com/LcUomZFpR_QvB4REc8XBaGk9UgsbkJtKuppePVJNjB3E3XI6vp0TfcZ6eTcPk52-vvY0haLWEvYBtUxbV5z022Y"
+   },
+   {
+    "file": "screenshot-05.png",
+    "bytes": 684880,
+    "src": "https://play-lh.googleusercontent.com/23zrJcHN5KDiA74tFKt91--b_VnSQDelemy8g3j8x1Ej7vDjt1ycedTZVoprS515_ZrGp453QREoIrw6Sf5F-Q"
+   },
+   {
+    "file": "screenshot-06.jpg",
+    "bytes": 133336,
+    "src": "https://play-lh.googleusercontent.com/0Koebc4oYf7fnjJ-ytCOIsm5ev27bj3JcA0s58mlXGrpvb-tThnklztkJtqC0hF1ACv9ewll1MKpXeazWumFI5o"
+   },
+   {
+    "file": "screenshot-07.jpg",
+    "bytes": 128076,
+    "src": "https://play-lh.googleusercontent.com/4Xv2pwHlA0d624K_iI5mt1xV_vicz4-Rw6GoMY-2_GF-wmFlAOuUCjP4FWF9qEbX-pp0kosADqBIQ69DlrxOSw"
+   },
+   {
+    "file": "screenshot-08.jpg",
+    "bytes": 140847,
+    "src": "https://play-lh.googleusercontent.com/OuwWTU3ash0ZQ7m6Ca8kp5IEpp4HJrJ2N-lLRuWJclj6ik-QvRCWE-rVuV0SjTdOkrV8IH4hlF0SZnderf4b"
+   },
+   {
+    "file": "screenshot-09.png",
+    "bytes": 632127,
+    "src": "https://play-lh.googleusercontent.com/PuOBAJh-w1CTXtW359PFIcxTbS247a5SXgHobKHPs4pEGGdMiGm9xj5Cmn4xsFAo6rWgPIHWq3xJeDj91QUo"
+   },
+   {
+    "file": "screenshot-10.jpg",
+    "bytes": 147687,
+    "src": "https://play-lh.googleusercontent.com/LcUomZFpR_QvB4REc8XBaGk9UgsbkJtKuppePVJNjB3E3XI6vp0TfcZ6eTcPk52-vvY0haLWEvYBtUxbV5z022Y"
+   },
+   {
+    "file": "screenshot-11.png",
+    "bytes": 684880,
+    "src": "https://play-lh.googleusercontent.com/23zrJcHN5KDiA74tFKt91--b_VnSQDelemy8g3j8x1Ej7vDjt1ycedTZVoprS515_ZrGp453QREoIrw6Sf5F-Q"
+   },
+   {
+    "file": "screenshot-12.jpg",
+    "bytes": 133336,
+    "src": "https://play-lh.googleusercontent.com/0Koebc4oYf7fnjJ-ytCOIsm5ev27bj3JcA0s58mlXGrpvb-tThnklztkJtqC0hF1ACv9ewll1MKpXeazWumFI5o"
+   },
+   {
+    "file": "screenshot-13.jpg",
+    "bytes": 128076,
+    "src": "https://play-lh.googleusercontent.com/4Xv2pwHlA0d624K_iI5mt1xV_vicz4-Rw6GoMY-2_GF-wmFlAOuUCjP4FWF9qEbX-pp0kosADqBIQ69DlrxOSw"
+   },
+   {
+    "file": "screenshot-14.jpg",
+    "bytes": 140847,
+    "src": "https://play-lh.googleusercontent.com/OuwWTU3ash0ZQ7m6Ca8kp5IEpp4HJrJ2N-lLRuWJclj6ik-QvRCWE-rVuV0SjTdOkrV8IH4hlF0SZnderf4b"
+   },
+   {
+    "file": "screenshot-15.png",
+    "bytes": 632127,
+    "src": "https://play-lh.googleusercontent.com/PuOBAJh-w1CTXtW359PFIcxTbS247a5SXgHobKHPs4pEGGdMiGm9xj5Cmn4xsFAo6rWgPIHWq3xJeDj91QUo"
+   },
+   {
+    "file": "screenshot-16.jpg",
+    "bytes": 147687,
+    "src": "https://play-lh.googleusercontent.com/LcUomZFpR_QvB4REc8XBaGk9UgsbkJtKuppePVJNjB3E3XI6vp0TfcZ6eTcPk52-vvY0haLWEvYBtUxbV5z022Y"
+   },
+   {
+    "file": "screenshot-17.png",
+    "bytes": 684880,
+    "src": "https://play-lh.googleusercontent.com/23zrJcHN5KDiA74tFKt91--b_VnSQDelemy8g3j8x1Ej7vDjt1ycedTZVoprS515_ZrGp453QREoIrw6Sf5F-Q"
+   },
+   {
+    "file": "screenshot-18.jpg",
+    "bytes": 133336,
+    "src": "https://play-lh.googleusercontent.com/0Koebc4oYf7fnjJ-ytCOIsm5ev27bj3JcA0s58mlXGrpvb-tThnklztkJtqC0hF1ACv9ewll1MKpXeazWumFI5o"
+   }
+  ]
+ },
+ {
+  "slug": "16-vidpal",
+  "id": "free.video.downloader.freevideodownloader2021.video.saver.videosaverlite",
+  "title": "Video Downloader and 4k Player",
+  "developer": "Vidpal Apps Studio",
+  "installsLabel": "50,000,000+",
+  "installs": 79543373,
+  "score": 4.25969,
+  "ratings": 401654,
+  "genre": "Entertainment",
+  "updated": "2026-08-31",
+  "released": "Jun 22, 2021",
+  "video": false,
+  "url": "https://play.google.com/store/apps/details?id=free.video.downloader.freevideodownloader2021.video.saver.videosaverlite&hl=en&gl=US",
+  "icon": {
+   "file": "icon-01.png",
+   "bytes": 196516,
+   "src": "https://play-lh.googleusercontent.com/-WK5MPf7RSP-MV6t_a5WJw9RGoPPuGOW6U1FVYXLtNPdwESR7Gi6HGKQKtsrhYxw1eHkgRfgBSYqCmPC5UbF"
+  },
+  "feature": {
+   "file": "feature-graphic-01.png",
+   "bytes": 385236,
+   "src": "https://play-lh.googleusercontent.com/Ye-23wxIpXrZZEUTOGuDHyQRXVoo5_aQWbe1oQsdXpXmbdony9s9g4tx1flagohZFCfjvAWRkZ_ruu_1vntR"
+  },
+  "shots": [
+   {
+    "file": "screenshot-01.png",
+    "bytes": 694707,
+    "src": "https://play-lh.googleusercontent.com/-t92Hr0lKXo9B7nmBbUKNIclTQ1rZY2GHK6-X21yz65hIdpQlN1WoVarWAjUKswMrmExy8qeV_V9RpvA89mVAg"
+   },
+   {
+    "file": "screenshot-02.png",
+    "bytes": 861766,
+    "src": "https://play-lh.googleusercontent.com/fwrYux1igU4tWRw9CdApr-jix2D08oUmmoO92PHegbqV0AI63zd2MobErNHhvu5NPs0aPubXLeqOn_aWXqVrilU"
+   },
+   {
+    "file": "screenshot-03.png",
+    "bytes": 823054,
+    "src": "https://play-lh.googleusercontent.com/a72frnLpFdv-6QYDPPy8d6Z2Y81YVeZuAZKvBI84VQekhzqjA7wYSwo8zgWfaLZN1eTf38rO9e4vAHIBX32M"
+   },
+   {
+    "file": "screenshot-04.png",
+    "bytes": 808469,
+    "src": "https://play-lh.googleusercontent.com/4w_vifxYSDFxTix7izgPAI0WKmeLLghuDaFaZk4IdNKQzZHc1ya0igFpwPMQudUzm1bG58fXy50ISwrk9LsF7Q"
+   },
+   {
+    "file": "screenshot-05.png",
+    "bytes": 770459,
+    "src": "https://play-lh.googleusercontent.com/s22DXPsNeVGhHV19Lx8Uu1HFdEWAMifSLXuIoyF3Jyhsl1j7hCQLoym2_BFM4naA1qT_3MhQbIANMG1XWmdzcw"
+   },
+   {
+    "file": "screenshot-06.png",
+    "bytes": 443757,
+    "src": "https://play-lh.googleusercontent.com/liBrE_Gzs7T_PLXMxlJYHYhkI1M7eIMAbMZIEpV9wEAIPnPouxheZ8O28pRrwLVGfTmLC2aB3rOIG2sZyoea1WI"
+   },
+   {
+    "file": "screenshot-07.png",
+    "bytes": 878087,
+    "src": "https://play-lh.googleusercontent.com/Z-nhy_NPSOR_sFJSN5zAXVZobaJz-otSqXf9IGSM_kvdNukyEVcXNCazpfTSk_x-uwWQvxyjPR_0iRVMsy2o"
+   },
+   {
+    "file": "screenshot-08.png",
+    "bytes": 694707,
+    "src": "https://play-lh.googleusercontent.com/-t92Hr0lKXo9B7nmBbUKNIclTQ1rZY2GHK6-X21yz65hIdpQlN1WoVarWAjUKswMrmExy8qeV_V9RpvA89mVAg"
+   },
+   {
+    "file": "screenshot-09.png",
+    "bytes": 861766,
+    "src": "https://play-lh.googleusercontent.com/fwrYux1igU4tWRw9CdApr-jix2D08oUmmoO92PHegbqV0AI63zd2MobErNHhvu5NPs0aPubXLeqOn_aWXqVrilU"
+   },
+   {
+    "file": "screenshot-10.png",
+    "bytes": 823054,
+    "src": "https://play-lh.googleusercontent.com/a72frnLpFdv-6QYDPPy8d6Z2Y81YVeZuAZKvBI84VQekhzqjA7wYSwo8zgWfaLZN1eTf38rO9e4vAHIBX32M"
+   },
+   {
+    "file": "screenshot-11.png",
+    "bytes": 808469,
+    "src": "https://play-lh.googleusercontent.com/4w_vifxYSDFxTix7izgPAI0WKmeLLghuDaFaZk4IdNKQzZHc1ya0igFpwPMQudUzm1bG58fXy50ISwrk9LsF7Q"
+   },
+   {
+    "file": "screenshot-12.png",
+    "bytes": 770459,
+    "src": "https://play-lh.googleusercontent.com/s22DXPsNeVGhHV19Lx8Uu1HFdEWAMifSLXuIoyF3Jyhsl1j7hCQLoym2_BFM4naA1qT_3MhQbIANMG1XWmdzcw"
+   },
+   {
+    "file": "screenshot-13.png",
+    "bytes": 443757,
+    "src": "https://play-lh.googleusercontent.com/liBrE_Gzs7T_PLXMxlJYHYhkI1M7eIMAbMZIEpV9wEAIPnPouxheZ8O28pRrwLVGfTmLC2aB3rOIG2sZyoea1WI"
+   },
+   {
+    "file": "screenshot-14.png",
+    "bytes": 878087,
+    "src": "https://play-lh.googleusercontent.com/Z-nhy_NPSOR_sFJSN5zAXVZobaJz-otSqXf9IGSM_kvdNukyEVcXNCazpfTSk_x-uwWQvxyjPR_0iRVMsy2o"
+   },
+   {
+    "file": "screenshot-15.png",
+    "bytes": 694707,
+    "src": "https://play-lh.googleusercontent.com/-t92Hr0lKXo9B7nmBbUKNIclTQ1rZY2GHK6-X21yz65hIdpQlN1WoVarWAjUKswMrmExy8qeV_V9RpvA89mVAg"
+   },
+   {
+    "file": "screenshot-16.png",
+    "bytes": 861766,
+    "src": "https://play-lh.googleusercontent.com/fwrYux1igU4tWRw9CdApr-jix2D08oUmmoO92PHegbqV0AI63zd2MobErNHhvu5NPs0aPubXLeqOn_aWXqVrilU"
+   },
+   {
+    "file": "screenshot-17.png",
+    "bytes": 823054,
+    "src": "https://play-lh.googleusercontent.com/a72frnLpFdv-6QYDPPy8d6Z2Y81YVeZuAZKvBI84VQekhzqjA7wYSwo8zgWfaLZN1eTf38rO9e4vAHIBX32M"
+   },
+   {
+    "file": "screenshot-18.png",
+    "bytes": 808469,
+    "src": "https://play-lh.googleusercontent.com/4w_vifxYSDFxTix7izgPAI0WKmeLLghuDaFaZk4IdNKQzZHc1ya0igFpwPMQudUzm1bG58fXy50ISwrk9LsF7Q"
+   },
+   {
+    "file": "screenshot-19.png",
+    "bytes": 770459,
+    "src": "https://play-lh.googleusercontent.com/s22DXPsNeVGhHV19Lx8Uu1HFdEWAMifSLXuIoyF3Jyhsl1j7hCQLoym2_BFM4naA1qT_3MhQbIANMG1XWmdzcw"
+   },
+   {
+    "file": "screenshot-20.png",
+    "bytes": 443757,
+    "src": "https://play-lh.googleusercontent.com/liBrE_Gzs7T_PLXMxlJYHYhkI1M7eIMAbMZIEpV9wEAIPnPouxheZ8O28pRrwLVGfTmLC2aB3rOIG2sZyoea1WI"
+   },
+   {
+    "file": "screenshot-21.png",
+    "bytes": 878087,
+    "src": "https://play-lh.googleusercontent.com/Z-nhy_NPSOR_sFJSN5zAXVZobaJz-otSqXf9IGSM_kvdNukyEVcXNCazpfTSk_x-uwWQvxyjPR_0iRVMsy2o"
+   },
+   {
+    "file": "screenshot-22.png",
+    "bytes": 920038,
+    "src": "https://play-lh.googleusercontent.com/D2Jt5zosr9Xcd8HQ-7fiK7W1r1rKqO_MNEJ4dQPzVF85fw_35gZ3gBGIgGWQPnckm3H1AKXguZ71kA6XGpUK5EM"
+   },
+   {
+    "file": "screenshot-23.png",
+    "bytes": 1138375,
+    "src": "https://play-lh.googleusercontent.com/qZwXsUQpYZklkcCxpOJ9M7BY-0ooKPdvczFE1F0TPWhXlrX04k3ykScXdQuKeskELaiGpb0HdQzdBIAuH5rtbQ"
+   },
+   {
+    "file": "screenshot-24.png",
+    "bytes": 1099826,
+    "src": "https://play-lh.googleusercontent.com/oABTlUbtumGBwoBKhdBDoM_jmHcV1rJvgPl2hS_LbhwihFJAvc8eVmJvi4QBHPFb0JyLfxj7NddNSJvpaV-kxw"
+   },
+   {
+    "file": "screenshot-25.png",
+    "bytes": 1041497,
+    "src": "https://play-lh.googleusercontent.com/Ql9XVGkB8vE-LSnuZTFA6lv7stksKOFrjC7PZCjqXkvndH_nAh-9XZ15qvmDJzWXPAz04oECQkvX0Fd0zNaob-4"
+   },
+   {
+    "file": "screenshot-26.png",
+    "bytes": 871438,
+    "src": "https://play-lh.googleusercontent.com/31Vs57e4ua4ecChJ0ItE9JrMO6gvyQJpqpdDGASGo_-gw7HpZsjvxGJREAnp4_vGWrWI0DKz-XgiNzkq6KA5"
+   },
+   {
+    "file": "screenshot-27.png",
+    "bytes": 553767,
+    "src": "https://play-lh.googleusercontent.com/61q2wb7lOmClCEZLgQLZNGSvrpAXmKpofQymjU3c0ut0gNUjBUGnjqeg15npkbGWF8nMUrjcmueNjTU01y0KqQ"
+   },
+   {
+    "file": "screenshot-28.png",
+    "bytes": 1124211,
+    "src": "https://play-lh.googleusercontent.com/zUKENVTFyxVCRn2HCelx1XTf9j91sT9cXsTuOWEhNtHlKO75hXa5G1WRJvOSi9LV20l7cmpHeA_xIGTgzlClQw"
+   },
+   {
+    "file": "screenshot-29.png",
+    "bytes": 920038,
+    "src": "https://play-lh.googleusercontent.com/D2Jt5zosr9Xcd8HQ-7fiK7W1r1rKqO_MNEJ4dQPzVF85fw_35gZ3gBGIgGWQPnckm3H1AKXguZ71kA6XGpUK5EM"
+   },
+   {
+    "file": "screenshot-30.png",
+    "bytes": 1138375,
+    "src": "https://play-lh.googleusercontent.com/qZwXsUQpYZklkcCxpOJ9M7BY-0ooKPdvczFE1F0TPWhXlrX04k3ykScXdQuKeskELaiGpb0HdQzdBIAuH5rtbQ"
+   },
+   {
+    "file": "screenshot-31.png",
+    "bytes": 1099826,
+    "src": "https://play-lh.googleusercontent.com/oABTlUbtumGBwoBKhdBDoM_jmHcV1rJvgPl2hS_LbhwihFJAvc8eVmJvi4QBHPFb0JyLfxj7NddNSJvpaV-kxw"
+   },
+   {
+    "file": "screenshot-32.png",
+    "bytes": 1041497,
+    "src": "https://play-lh.googleusercontent.com/Ql9XVGkB8vE-LSnuZTFA6lv7stksKOFrjC7PZCjqXkvndH_nAh-9XZ15qvmDJzWXPAz04oECQkvX0Fd0zNaob-4"
+   },
+   {
+    "file": "screenshot-33.png",
+    "bytes": 871438,
+    "src": "https://play-lh.googleusercontent.com/31Vs57e4ua4ecChJ0ItE9JrMO6gvyQJpqpdDGASGo_-gw7HpZsjvxGJREAnp4_vGWrWI0DKz-XgiNzkq6KA5"
+   },
+   {
+    "file": "screenshot-34.png",
+    "bytes": 553767,
+    "src": "https://play-lh.googleusercontent.com/61q2wb7lOmClCEZLgQLZNGSvrpAXmKpofQymjU3c0ut0gNUjBUGnjqeg15npkbGWF8nMUrjcmueNjTU01y0KqQ"
+   },
+   {
+    "file": "screenshot-35.png",
+    "bytes": 1124211,
+    "src": "https://play-lh.googleusercontent.com/zUKENVTFyxVCRn2HCelx1XTf9j91sT9cXsTuOWEhNtHlKO75hXa5G1WRJvOSi9LV20l7cmpHeA_xIGTgzlClQw"
+   }
+  ]
+ }
+]

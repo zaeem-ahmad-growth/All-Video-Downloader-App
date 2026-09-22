@@ -1,0 +1,376 @@
+{
+ "video.downloader.videodownloader": {
+  "US": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "BR": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "DE": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "IN": {
+   "section": false,
+   "block": null,
+   "flags": []
+  }
+ },
+ "com.gamma.videodownloader": {
+  "US": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "BR": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "DE": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "IN": {
+   "section": false,
+   "block": null,
+   "flags": []
+  }
+ },
+ "videoplayer.videodownloader.downloader": {
+  "US": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "BR": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "DE": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "IN": {
+   "section": false,
+   "block": null,
+   "flags": []
+  }
+ },
+ "instagram.video.downloader.story.saver.ig": {
+  "US": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "BR": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "DE": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "IN": {
+   "section": false,
+   "block": null,
+   "flags": []
+  }
+ },
+ "instagram.video.downloader.story.saver.ig.insaver": {
+  "US": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "BR": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "DE": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "IN": {
+   "section": false,
+   "block": null,
+   "flags": []
+  }
+ },
+ "hub.browser.video.downloader.saver": {
+  "US": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "BR": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "DE": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "IN": {
+   "section": false,
+   "block": null,
+   "flags": []
+  }
+ },
+ "videodownloader.instagram.videosaver": {
+  "US": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "BR": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "DE": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "IN": {
+   "section": false,
+   "block": null,
+   "flags": []
+  }
+ },
+ "com.videodownload.browser.videodownloader": {
+  "US": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "BR": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "DE": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "IN": {
+   "section": false,
+   "block": null,
+   "flags": []
+  }
+ },
+ "downloader.video.download.free": {
+  "US": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "BR": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "DE": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "IN": {
+   "section": false,
+   "block": null,
+   "flags": []
+  }
+ },
+ "instasaver.videodownloader.photodownloader.repost": {
+  "US": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "BR": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "DE": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "IN": {
+   "section": false,
+   "block": null,
+   "flags": []
+  }
+ },
+ "com.allvideodownloader.hdvideodownloader.savevideos": {
+  "US": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "BR": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "DE": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "IN": {
+   "section": false,
+   "block": null,
+   "flags": []
+  }
+ },
+ "allinone.videodownloader.savevideos": {
+  "US": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "BR": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "DE": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "IN": {
+   "section": false,
+   "block": null,
+   "flags": []
+  }
+ },
+ "com.videosaver.savevideos.story.saverapp": {
+  "US": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "BR": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "DE": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "IN": {
+   "section": false,
+   "block": null,
+   "flags": []
+  }
+ },
+ "com.videodownloder.alldownloadvideos": {
+  "US": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "BR": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "DE": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "IN": {
+   "section": false,
+   "block": null,
+   "flags": []
+  }
+ },
+ "com.hdvideodownloader.downloaderapp": {
+  "US": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "BR": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "DE": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "IN": {
+   "section": false,
+   "block": null,
+   "flags": []
+  }
+ },
+ "free.video.downloader.freevideodownloader2021.video.saver.videosaverlite": {
+  "US": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "BR": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "DE": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "IN": {
+   "section": false,
+   "block": null,
+   "flags": []
+  }
+ },
+ "com.video.downloader.instagram.videosaver": {
+  "US": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "BR": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "DE": {
+   "section": false,
+   "block": null,
+   "flags": []
+  },
+  "IN": {
+   "section": false,
+   "block": null,
+   "flags": []
+  }
+ }
+}

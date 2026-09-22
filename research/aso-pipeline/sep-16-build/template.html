@@ -1,0 +1,835 @@
+<title>All Video Downloader</title>
+<meta name="description" content="ASO playbook, Play Store metadata, feature comparison and product dossier for All Video Downloader.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="__DOSSIER_FONTS__">
+<style>/*__CSS__*/</style>
+<style>
+  .mkt-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr)); gap:12px}
+  .mkt{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:14px 16px}
+  .mkt h3{font-size:1.02rem; display:flex; justify-content:space-between; gap:8px; align-items:baseline}
+  .mkt h3 small{font:600 11px var(--mono); color:var(--muted); letter-spacing:.06em}
+  .mkt dl{display:grid; grid-template-columns:1fr auto; gap:3px 10px; margin:10px 0 8px; font-size:13.5px}
+  .mkt dt{color:var(--muted)} .mkt dd{margin:0; font-weight:600; font-variant-numeric:tabular-nums; text-align:right}
+  .heat td.h{font:600 12.5px var(--mono); text-align:center; font-variant-numeric:tabular-nums}
+  .heat td.h.best{outline:2px solid var(--accent); outline-offset:-2px; border-radius:4px}
+  .cd-grid{display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); gap:16px; align-items:start}
+  @media (max-width:900px){ .cd-grid{grid-template-columns:1fr} }
+  .meta-field{border-top:1px solid var(--line); padding-top:10px; margin-top:10px}
+  .meta-field:first-child{border-top:0; margin-top:0; padding-top:0}
+  .meta-field p{font-size:15px}
+  details.desc summary{cursor:pointer; color:var(--accent); font-weight:600; padding:4px 0}
+  details.desc pre{white-space:pre-wrap; font:14px/1.55 var(--body); color:var(--ink-2); margin:8px 0 0; max-height:420px; overflow:auto; background:var(--sunk); padding:12px 14px; border-radius:8px}
+  .select{font:14px var(--body); padding:8px 10px; border:1px solid var(--line-strong); border-radius:8px; background:var(--surface); color:var(--ink); max-width:100%}
+  .shotrow{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; max-width:760px}
+  @media (max-width:520px){ .shotrow{grid-template-columns:repeat(2,minmax(0,1fr))} }
+  .shotrow figure, .fgfig{margin:0; background:var(--surface); border:1px solid var(--line); border-radius:10px; overflow:hidden}
+  .shotrow img, .fgfig img{display:block; width:100%; height:auto; background:var(--sunk)}
+  .shotrow figcaption, .fgfig figcaption{font-size:12.5px; color:var(--muted); padding:6px 9px}
+  .assets-top{display:grid; grid-template-columns:minmax(0,2fr) minmax(0,1fr); gap:14px; align-items:start; margin-bottom:14px; max-width:980px}
+  @media (max-width:760px){ .assets-top{grid-template-columns:1fr} }
+  .fv.unk{color:var(--muted); background:var(--sunk)}
+  .fv.gap{background:var(--warn-soft); color:var(--warn); width:auto; padding:0 6px; font-size:10.5px}
+  .liveb{display:inline-block; font:600 10px var(--mono); padding:0 6px; border-radius:999px; background:var(--accent-soft); color:var(--accent); margin-top:3px}
+  .tm{display:inline-block; font:600 10.5px/1.5 var(--mono); padding:1px 7px; border-radius:999px; background:var(--risk-soft); color:var(--risk)}
+  .callout-open{border:1px solid var(--line); border-left:3px solid var(--good); background:var(--surface); border-radius:0 12px 12px 0; padding:16px 20px}
+  .range{position:relative; height:16px; background:var(--sunk); border-radius:4px; min-width:160px}
+  .range span{position:absolute; top:0; bottom:0; border-radius:4px; background:var(--s-niche); min-width:4px}
+  .range.ours span{background:var(--accent)}
+</style>
+<style>/*__DOSSIER_CSS__*/</style>
+
+<nav class="bar" aria-label="Views, sections and market" id="bar">
+  <div class="wrap bar-top">
+    <div class="tabs" role="tablist" aria-label="Views">
+      <button type="button" role="tab" id="tab-playbook" aria-selected="true">ASO Playbook</button>
+      <button type="button" role="tab" id="tab-metadata" aria-selected="false">PlayStore Metadata</button>
+      <button type="button" role="tab" id="tab-features" aria-selected="false">Features Comparison</button>
+      <button type="button" role="tab" id="tab-dossier" aria-selected="false">Product Dossier</button>
+    </div>
+    <div class="mk" id="mk">
+      <span class="mk-label" id="mk-label">Market</span>
+      <select class="select" id="market-sel" aria-labelledby="mk-label"></select>
+    </div>
+  </div>
+  <div class="wrap bar-sections" aria-label="Sections">
+    <div class="jump" id="jump-playbook">
+      <a href="#categories">Categories</a><a href="#competitors">Competitors</a><a href="#comp-keywords">Keywords by competitor</a><a href="#events">Events &amp; offers</a><a href="#matrix">Rank tracker</a><a href="#serps">Result slots</a><a href="#keywords">Keyword board</a><a href="#markets">8 markets</a><a href="#ladder">Ladder</a><a href="#listing">Listing</a><a href="#practice">Practice</a><a href="#method">Method</a>
+    </div>
+    <div class="jump" id="jump-metadata" hidden>
+      <a href="#m-overview">Listing</a><a href="#m-assets">Store assets</a><a href="#m-current">Metadata</a><a href="#m-targets">Targeted keywords</a><a href="#m-platform">Platform-name keywords</a><a href="#m-keywords">Finalized keywords</a><a href="#m-ladder">Ladder</a><a href="#m-used">Competitor ranks</a><a href="#m-policy">Policy record</a><a href="#m-method">Method</a>
+    </div>
+    <div class="jump" id="jump-features" hidden>
+      <a href="#f-overview">Overview</a><a href="#f-lead">Only in our app</a><a href="#f-audit">Audit matrix</a><a href="#f-claims">Listing claims</a><a href="#f-inventory">What ships</a><a href="#f-edges">Competitor strengths</a><a href="#f-iap">IAP comparison</a><a href="#f-method">Method</a>
+    </div>
+    <div class="jump" id="jump-dossier" hidden></div>
+  </div>
+</nav>
+
+<!-- ============ TAB 1 · ASO PLAYBOOK ============ -->
+<header class="wrap masthead" data-tab="playbook">
+  <div class="eyebrow"><span><b>ASO research</b></span><span>Google Play</span><span>US + BR · DE · ES · IT · AU · AE · IN</span><span id="p-date"></span></div>
+  <h1>All Video Downloader ASO</h1>
+  <p class="lede">Live-scraped competitive research for a video downloader app — who ranks on the category’s keywords in eight markets, the verified rank of every competitor on every keyword, and the US metadata to ship.</p>
+  <div class="chips" id="p-chips"></div>
+  <div class="verdict">
+    <div class="verdict-main"><div class="tag">The verdict</div><p id="p-verdict"></p></div>
+    <div class="refresh"><h3>What the data shows</h3><ol id="p-findings"></ol></div>
+  </div>
+  <div class="tiles" id="p-tiles"></div>
+</header>
+
+<main class="wrap doc" data-tab="playbook">
+  <section id="categories">
+    <div class="sec-head">
+      <p class="kicker">Category map · <span class="scope" data-scope></span></p>
+      <h2>Who fills the top-10 slots</h2>
+      <p class="sub">Every top-10 position across the market’s keywords, split into your tracked competitors, platform brands and everyone else by the kind of app they are.</p>
+    </div>
+    <div class="two">
+      <div class="panel" style="padding:16px 18px"><table id="cat-share"></table></div>
+      <div class="panel" style="padding:16px 18px"><h3 style="margin-bottom:8px">Developers holding the most slots</h3><table id="cat-devs"></table></div>
+    </div>
+  </section>
+
+  <section id="competitors">
+    <div class="sec-head">
+      <p class="kicker">Competitors · live listings · <span class="scope" data-scope></span></p>
+      <h2>The 16 video downloaders you compete with</h2>
+      <p class="sub">The 10 most visible downloaders in live US search, plus the 6 apps from your feature audit. Title phrases are board keywords that sit word for word in the app’s title. Sorted by top-10 placements in the chosen market.</p>
+    </div>
+    <div class="tscroll"><table id="comp-table"></table></div>
+  </section>
+
+  <section id="comp-keywords">
+    <div class="sec-head">
+      <p class="kicker">Verified rankings · every competitor · 8 markets</p>
+      <h2>Keywords by competitor</h2>
+      <p class="sub">Pick a competitor to see its complete listing metadata and every keyword it ranks for, with its verified position in each market. A dot means the app was not among the results Play returned; “n/m” means the keyword was not measured in that market.</p>
+    </div>
+    <div class="controls"><label for="cd-select" class="small muted">Competitor</label><select class="select" id="cd-select"></select></div>
+    <div class="cd-grid">
+      <div class="panel" style="padding:16px 18px" id="cd-meta"></div>
+      <div class="side" id="cd-side"></div>
+    </div>
+    <h3 style="margin:24px 0 10px" id="cd-kw-h"></h3>
+    <div class="tscroll"><table class="matrix" id="cd-kw"></table></div>
+    <button class="linkbtn" id="cd-more" type="button"></button>
+  </section>
+
+  <section id="events">
+    <div class="sec-head">
+      <p class="kicker">Promotional content · live on Google Play</p>
+      <h2>Events &amp; offers</h2>
+      <p class="sub">The “Events &amp; offers” cards on each listing, checked in the US, Brazil, Germany and India.</p>
+    </div>
+    <div id="events-body"></div>
+  </section>
+
+  <section id="matrix">
+    <div class="sec-head">
+      <p class="kicker">Rank tracker · <span class="scope" data-scope></span></p>
+      <h2>Where each competitor ranks, keyword by keyword</h2>
+      <p class="sub">Rows follow the keyword board’s priority order. A dot means the app wasn’t among the results Play returned for that search. The last six columns are the apps from your feature audit.</p>
+    </div>
+    <div class="controls">
+      <label class="toggle"><input type="checkbox" id="matrix-all"> Show every keyword</label>
+      <div class="legend" style="margin:0"><span><i class="sw" style="background:var(--rk1)"></i>#1–3</span><span><i class="sw" style="background:var(--rk2)"></i>#4–10</span><span><i class="sw" style="background:var(--rk3)"></i>#11–20</span><span><i class="sw" style="background:var(--rk4)"></i>#21–30</span><span><i class="sw none"></i>not in results</span></div>
+    </div>
+    <div class="tscroll"><table class="matrix" id="matrix-table"></table></div>
+  </section>
+
+  <section id="serps">
+    <div class="sec-head">
+      <p class="kicker">Result slots · <span class="scope" data-scope></span></p>
+      <h2>Every search, slot by slot</h2>
+      <p class="sub">Each strip is one Play search: slots 1–10 on the left, 11–30 after the gap. Color shows who holds the slot. Hover a slot for the app.</p>
+    </div>
+    <div class="legend" id="strip-legend"></div>
+    <div class="strips" id="strips"></div>
+    <button class="linkbtn" id="strips-more" type="button"></button>
+  </section>
+
+  <section id="keywords">
+    <div class="sec-head">
+      <p class="kicker">Keyword board · <span class="scope" data-scope></span></p>
+      <h2>Keyword opportunity board, relevance first</h2>
+      <p class="sub"><strong>Priority = relevance² × opportunity.</strong> Relevance blends intent tier (55%), how much of the top 10 is downloader apps (35%) and whether your competitors rank there (10%). Opportunity blends non-brand apps in the top 10, autocomplete demand, the median install proxy and the entry bar — the smallest non-brand app in the top 10. <span class="tm">™ platform name</span> marks keywords that name another company’s product.</p>
+    </div>
+    <div class="controls">
+      <div class="chipset" id="tier-chips" role="group" aria-label="Intent tier"></div>
+      <input class="search" id="kw-search" type="search" placeholder="Filter keywords" aria-label="Filter keywords">
+    </div>
+    <div class="tscroll"><table class="board" id="board"></table></div>
+    <p class="note">Demand comes from Play’s own autocomplete: the fewer letters before Play suggests the phrase, the higher the score. The volume proxy is the median installs of the top 10. YouTube keywords are left off the board entirely, as are autocomplete phrases with adult-site or piracy intent.</p>
+  </section>
+
+  <section id="markets">
+    <div class="sec-head">
+      <p class="kicker">Eight markets · the same 40 keywords</p>
+      <h2>How the category differs by market</h2>
+      <p class="sub">The first 40 keywords searched in each market’s Play catalog (English). The US board carries all keywords; the other seven share these 40 so the markets compare like for like.</p>
+    </div>
+    <div class="mkt-grid" id="mkt-cards"></div>
+    <h3 style="margin:26px 0 10px">Priority by market — highest per keyword outlined</h3>
+    <div class="tscroll"><table class="heat" id="mkt-heat"></table></div>
+    <h3 style="margin:26px 0 10px">Competitor top-10 placements by market</h3>
+    <div class="tscroll"><table class="heat" id="mkt-comp"></table></div>
+  </section>
+
+  <section id="ladder">
+    <div class="sec-head">
+      <p class="kicker">Roadmap · <span class="scope" data-scope></span></p>
+      <h2>Launch keyword ladder</h2>
+      <p class="sub">Built from the board for the chosen market, without platform-name keywords. Each rung lists the highest-priority keywords at that difficulty, with the evidence that puts them there.</p>
+    </div>
+    <div class="ladder" id="ladder-list"></div>
+  </section>
+
+  <section id="listing">
+    <div class="sec-head">
+      <p class="kicker">The listing · United States</p>
+      <h2>Proposed ASO package</h2>
+      <p class="sub">Title candidates (≤30 characters, no platform names, no “free”, no emoji or superlatives) scored against the US board and checked against every app title in the results. Every claim in the copy maps to a feature verified in the Product Dossier.</p>
+    </div>
+    <div class="titles" id="titles"></div>
+    <details class="archive" style="margin-top:14px"><summary>All title candidates, scored</summary><div class="tscroll" style="margin-top:10px"><table id="title-table"></table></div></details>
+    <div class="store">
+      <div class="listing" id="listing-card"></div>
+      <div class="side" id="listing-side"></div>
+    </div>
+  </section>
+
+  <section id="practice">
+    <div class="sec-head"><p class="kicker">Best practices · video downloaders</p><h2>What works in this category</h2></div>
+    <div class="cards">
+      <div class="card"><div class="tag">Title · 30 chars</div><p>Leaders lead with “Video Downloader” and add one differentiator: HD, private, player, story saver. A title identical to another app’s — as yours is today — splits clicks and invites confusion.</p></div>
+      <div class="card"><div class="tag">Short description · 80 chars</div><p>Name the job (save videos from a link) and the extras the title can’t hold. Your editor, MP3 extraction and vault are features almost no competitor lists.</p></div>
+      <div class="card"><div class="tag">Full description · 4,000 chars</div><p>Fully indexed. Keep “video downloader” near 2–3%, add a how-to section, and close with a copyright notice and a non-affiliation statement — both are standard in this category.</p></div>
+      <div class="card"><div class="tag">Screenshots</div><p>Your listing uses 4 of 8 phone slots. The editor and the vault are the strongest proof points and are not yet shown as framed store screenshots.</p></div>
+      <div class="card"><div class="tag">Events &amp; offers</div><p>None of the 16 competitors runs an event or offer card in the four markets checked. A dated card (a feature launch, a trial) is uncontested promotional space.</p></div>
+      <div class="card"><div class="tag">Policy</div><p>No platform logos, no “official”, no implied endorsement. Keep platform names out of the title and short description; name supported sites only factually in the full description.</p><div class="src"><a href="https://support.google.com/googleplay/android-developer/answer/9888072" target="_blank" rel="noopener">Intellectual Property policy</a> · <a href="https://support.google.com/googleplay/android-developer/answer/9898842" target="_blank" rel="noopener">Metadata policy</a></div></div>
+    </div>
+    <h3 style="margin:28px 0 10px">Watch-outs</h3>
+    <ul class="risks">
+      <li><strong>Platform names are high-volume and high-risk</strong>“instagram video downloader”, “reels downloader” and similar searches carry real demand, but naming a platform in the title or short description risks removal for impersonation or trademark misuse.</li>
+      <li><strong>YouTube</strong>YouTube’s terms forbid downloading, and Play removes apps that facilitate it. YouTube keywords are excluded from this board; keep “YouTube” out of every field.</li>
+      <li><strong>“No watermark” searches</strong>Promising to strip a creator’s watermark reads as removing attribution. The keyword is tracked for evidence but not targeted.</li>
+      <li><strong>“Without ads”</strong>“video downloader without ads” scores well, but your app contains ads. A claim the listing can’t back is a misleading-claims violation.</li>
+      <li><strong>Invisible audit competitors</strong>Sky Vision, Vidow, Vidpal and the other audit apps barely rank on these keywords in any market. Their installs come from elsewhere (paid acquisition, older ranking history), so they are feature references, not keyword references.</li>
+      <li><strong>English-only market data</strong>The seven non-US markets were searched in English. Local-language boards (Portuguese, German, Spanish, Italian, Arabic, Hindi) are needed before localizing.</li>
+    </ul>
+  </section>
+</main>
+
+<footer class="wrap foot" id="method" data-tab="playbook">
+  <p id="p-method"></p>
+  <p><strong>Scores:</strong> Relevance = 0.55·intent tier (core 1, adjacent or platform-name 0.7, peripheral 0.3, off-intent 0) + 0.35·niche share of the top 10 (video downloader 1, platform-specific downloader 0.8, story or status saver 0.7, browser 0.55, video player 0.35, video editor, audio or vault 0.3) + 0.10·min(1, competitors in the top 10 ÷ 3). Opportunity = 0.35·non-brand share of the top 10 + 0.30·demand + 0.15·volume proxy (log-scaled median installs) + 0.20·entry bar (log-scaled, smaller is easier). Priority = 100 · relevance² · opportunity.</p>
+  <p><strong>Brands</strong> are platform owners and established media brands identified by developer: Google, Meta (Instagram, Facebook, WhatsApp), TikTok, Snap, X, Pinterest, VideoLAN, MX Media, Opera, UCWeb, Brave, Mozilla, Microsoft, Samsung, Adobe, Vimeo, Dailymotion and LinkedIn. Competitor apps are never counted as brands.</p>
+</footer>
+
+<!-- ============ TAB 2 · PLAYSTORE METADATA ============ -->
+<main class="wrap doc" id="metadata" data-tab="metadata" hidden>
+  <header class="g-head" id="m-overview">
+    <div class="eyebrow"><span><b>PlayStore Metadata</b></span><span>Live Google Play listing</span><span>United States · English</span></div>
+    <div class="m-app" id="m-app"></div>
+    <div class="tiles" id="m-tiles"></div>
+  </header>
+
+  <section id="m-assets">
+    <div class="sec-head">
+      <p class="kicker">Store assets · as published</p>
+      <h2>Graphics on the listing</h2>
+      <p class="sub">The icon, feature graphic and screenshots currently published on Google Play, measured against Play’s asset requirements.</p>
+    </div>
+    <div class="assets-top" id="m-assets-top"></div>
+    <div class="shotrow" id="m-shots"></div>
+    <div class="tscroll" style="margin-top:18px"><table class="checks-table" id="m-asset-checks"></table></div>
+  </section>
+
+  <section id="m-current">
+    <div class="sec-head">
+      <p class="kicker">Metadata · United States</p>
+      <h2>Title, short description and full description</h2>
+      <p class="sub">The listing’s metadata as live on Google Play. Every keyword it targets from the playbook’s US board is marked.</p>
+    </div>
+    <div class="m-legend"><span><mark class="kwm">targeted keyword</mark></span></div>
+    <div class="store">
+      <div class="listing" id="m-listing"></div>
+      <div class="side" id="m-side"></div>
+    </div>
+  </section>
+
+  <section id="m-targets">
+    <div class="sec-head">
+      <p class="kicker">Targeted keywords · where each one came from</p>
+      <h2>Every keyword this metadata targets</h2>
+      <p class="sub">All board keywords carried by the title, short description and full description, grouped by field, with how many competitors hold a top-10 rank and which competitors carry the keyword in their own title.</p>
+    </div>
+    <div class="tscroll"><table class="board" id="m-targets-table"></table></div>
+    <p class="note" id="m-targets-note"></p>
+  </section>
+
+  <section id="m-platform">
+    <div class="sec-head">
+      <p class="kicker">Platform-name keywords · evidence, not targets</p>
+      <h2>Keywords that name another company’s product</h2>
+      <p class="sub">The demand and competitor ranks behind platform-name searches, and where your metadata mentions each one. These stay out of the title and short description.</p>
+    </div>
+    <div class="tscroll"><table class="board" id="m-platform-table"></table></div>
+  </section>
+
+  <section id="m-keywords">
+    <div class="sec-head">
+      <p class="kicker">Keyword analysis · United States · from “Keyword opportunity board, relevance first”</p>
+      <h2>Finalized keywords</h2>
+      <p class="sub">The 24 highest-priority US keywords with core or adjacent intent, relevance of 80 or above and no platform name, split by whether this metadata targets them.</p>
+    </div>
+    <h3 style="margin:0 0 10px" id="m-kw-now-h"></h3>
+    <div class="tscroll"><table class="board" id="m-kw-now"></table></div>
+    <h3 style="margin:28px 0 10px" id="m-kw-future-h"></h3>
+    <div class="tscroll"><table class="board" id="m-kw-future"></table></div>
+  </section>
+
+  <section id="m-ladder">
+    <div class="sec-head">
+      <p class="kicker">Roadmap · United States</p>
+      <h2>Launch keyword ladder of this metadata</h2>
+      <p class="sub">The US ladder with each keyword marked by how this metadata covers it: T = title, T+S = every word across title and short description, S = short description, L = full description, and a dash = not in this version.</p>
+    </div>
+    <div class="ladder" id="m-ladder-list"></div>
+  </section>
+
+  <section id="m-used">
+    <div class="sec-head">
+      <p class="kicker">Competitor rankings · United States · keywords in this metadata</p>
+      <h2>How your competitors rank on the keywords you use</h2>
+      <p class="sub">Every board keyword this metadata carries, with each competitor’s verified US rank. Keywords where at least one competitor ranks come first, then the rest; each group sorted by relevance, then priority.</p>
+    </div>
+    <div class="tscroll"><table class="matrix" id="m-used-table"></table></div>
+  </section>
+
+  <section id="m-policy">
+    <div class="sec-head"><p class="kicker">Policy &amp; listing record</p><h2>Metadata policy record</h2></div>
+    <div class="tscroll"><table class="checks-table" id="m-policy-table"></table></div>
+  </section>
+
+  <section id="m-method" style="padding-bottom:40px">
+    <div class="sec-head"><p class="kicker">Method</p><h2>How this tab was built</h2></div>
+    <div class="g-cols" id="m-method-text" style="margin-top:0"></div>
+  </section>
+</main>
+
+<!-- ============ TAB 3 · FEATURES COMPARISON ============ -->
+<main class="wrap doc" id="features" data-tab="features" hidden>
+  <header class="g-head" id="f-overview">
+    <div class="eyebrow"><span><b>Features Comparison</b></span><span>Feature audit · listing claims · IAP</span><span>Verified against the Product Dossier</span></div>
+    <h1>Features Comparison</h1>
+    <p class="lede" id="f-lede"></p>
+    <div class="tiles" id="f-tiles"></div>
+  </header>
+
+  <section id="f-lead">
+    <div class="sec-head"><p class="kicker">Where we lead</p><h2>What only this app does</h2></div>
+    <div class="cards" id="f-only"></div>
+  </section>
+
+  <section id="f-audit">
+    <div class="sec-head">
+      <p class="kicker">The audit · seven apps · static APK analysis</p>
+      <h2>Feature audit matrix</h2>
+      <p class="sub">Your team’s audit of six competitor builds against ours, grouped by job. The last column counts how many of the six ship each feature. Each competitor’s header shows how many US keywords it ranks in the top 10 for, from the ASO Playbook.</p>
+    </div>
+    <div class="legend" id="f-legend"></div>
+    <div class="tscroll"><table class="matrix fmx" id="f-audit-table"></table></div>
+    <p class="note" id="f-excluded"></p>
+  </section>
+
+  <section id="f-claims">
+    <div class="sec-head">
+      <p class="kicker">Listing claims · all 16 competitors · live Play descriptions</p>
+      <h2>What each listing tells users it can do</h2>
+      <p class="sub">Read from every competitor’s live title, short and full description. Our column shows what the app ships; a “not in listing” mark means the feature exists but your current listing never mentions it.</p>
+    </div>
+    <div class="tscroll"><table class="matrix fmx" id="f-claims-table"></table></div>
+    <p class="note" id="f-claims-note"></p>
+  </section>
+
+  <section id="f-inventory">
+    <div class="sec-head"><p class="kicker">Evidence · device-tested build</p><h2>What ships in the app</h2><p class="sub">From the Product Dossier and the app’s own screens.</p></div>
+    <div class="cards" id="f-inv"></div>
+  </section>
+
+  <section id="f-edges">
+    <div class="sec-head"><p class="kicker">Honest read</p><h2>Where competitors are strong</h2></div>
+    <div class="cards" id="f-edge-cards"></div>
+  </section>
+
+  <section id="f-iap">
+    <div class="sec-head">
+      <p class="kicker">IAP comparison · Google Play · United States</p>
+      <h2>In-app purchase ranges</h2>
+      <p class="sub">The price range each listing shows for in-app purchases in the US, alongside ads. The bar spans each app’s cheapest to most expensive item on a $0–$100 scale.</p>
+    </div>
+    <div class="tscroll"><table id="f-iap-table"></table></div>
+    <div class="panel" style="padding:16px 18px;margin-top:16px" id="f-plans"></div>
+  </section>
+
+  <section id="f-method" style="padding-bottom:40px">
+    <div class="sec-head"><p class="kicker">Method</p><h2>Where this comes from</h2></div>
+    <div class="g-cols" id="f-method-text" style="margin-top:0"></div>
+  </section>
+</main>
+
+<!-- ============ TAB 4 · PRODUCT DOSSIER ============ -->
+<!--__DOSSIER__-->
+
+<div id="tip" hidden></div>
+
+<script>
+const PAYLOAD = /*__PAYLOAD__*/null;
+(function () {
+  const D = PAYLOAD.data, L = PAYLOAD.listing, F = PAYLOAD.features, AS = PAYLOAD.assets;
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const A = D.apps.map(a => ({ id: a[0], t: a[1], dev: a[2], i: a[3], s: a[4], r: a[5], rel: a[6], upd: a[7], b: a[8], cat: a[9], ads: a[10], iap: a[11] }));
+  const COMP = D.compIdx;
+  const PROF = D.profiles.filter(p => !p.mine), MYP = D.profiles.find(p => p.mine);
+  const SHORT = ['InShot', 'Gamma Play', 'QR Code Scanner', 'Story Saver', 'InSaver', 'Hub (DOSA)', 'Fast Saver', 'AppTool', 'Saver & Player Studio', 'DevBay', 'Sky Vision', 'Attractive Apps', 'Markhoor', 'Mobile Notepad', 'Vidow', 'Vidpal'];
+  const MN = { US: 'United States', BR: 'Brazil', DE: 'Germany', ES: 'Spain', IT: 'Italy', AU: 'Australia', AE: 'UAE', IN: 'India' };
+  const TIER = { A: 'Core', B: 'Adjacent', C: 'Peripheral', D: 'Off-intent' };
+  const TIER_PILL = { A: 'p-good', B: 'p-acc', C: 'p-warn', D: 'p-risk' };
+  const SRC = { core: 'Core list', plat: 'Platform list', adj: 'Adjacent list', per: 'Peripheral list', ac: 'Play autocomplete' };
+  const CAT = { downloader: 'Video downloader', platform: 'Platform-specific downloader', saver: 'Story / status saver', browser: 'Browser', player: 'Video player', editor: 'Video editor', audio: 'Audio / MP3', vault: 'Vault', other: 'Other' };
+  const fmt = n => n == null ? '—' : n >= 1e9 ? +(n / 1e9).toFixed(1) + 'B' : n >= 1e6 ? +(n / 1e6).toFixed(n >= 1e7 ? 0 : 1) + 'M' : n >= 1e3 ? +(n / 1e3).toFixed(n >= 1e4 ? 0 : 1) + 'K' : String(n);
+  const band = r => r <= 3 ? 'b1' : r <= 10 ? 'b2' : r <= 20 ? 'b3' : 'b4';
+  const US = D.board.US;
+  const totalSerps = Object.values(D.board).reduce((s, rows) => s + rows.length, 0);
+  const tmPill = r => r.tm ? ' <span class="tm" title="Names another company’s product">™ platform</span>' : '';
+  let state = { gl: 'US', all: false, sort: 'P', dir: -1, tier: 'all', q: '', strips: 20, cd: 0, cdAll: false };
+  try { const s = localStorage.getItem('avd-gl'); if (s && D.board[s]) state.gl = s; } catch (e) {}
+  const rows = () => D.board[state.gl];
+  const slotClass = idx => { if (idx < 0) return 'none'; if (COMP.includes(idx)) return 'comp'; const a = A[idx]; if (a.b) return 'brand'; return a.cat === 'downloader' || a.cat === 'platform' ? 'niche' : ['saver', 'browser', 'player', 'editor', 'audio', 'vault'].includes(a.cat) ? 'adj' : 'off'; };
+  const compRanks = r => COMP.map((c, k) => ({ k, rank: c >= 0 ? r.ids.indexOf(c) + 1 : 0 })).filter(x => x.rank > 0).sort((a, b) => a.rank - b.rank);
+  const compTop10 = r => compRanks(r).filter(x => x.rank <= 10).length;
+  const compNames = r => { const cr = compRanks(r); return cr.length ? cr.slice(0, 5).map(x => `<span class="nowrap"><b>${esc(SHORT[x.k])}</b> #${x.rank}</span>`).join('<br>') + (cr.length > 5 ? `<br><span class="muted">+${cr.length - 5} more</span>` : '') : '<span class="muted">None in results</span>'; };
+  const entryCell = r => { const e = r.entryIdx != null ? A[r.entryIdx] : null; return r.entry == null ? '—' : `<b>${r.entry < 1000 ? 'under 1K' : fmt(r.entry)}</b><div class="small muted" style="max-width:190px">${esc(e ? e.t : '')} · #${r.entryRank}</div>`; };
+  const rkCell = (rank, idx, q) => rank ? `<span class="rk ${band(rank)}" data-a="${idx}" data-r="${rank}" data-q="${esc(q)}">${rank}</span>` : '<span class="rk b0" aria-label="not in results">·</span>';
+
+  // ---------- tooltip ----------
+  const tip = document.getElementById('tip');
+  document.addEventListener('mouseover', e => {
+    const el = e.target.closest && e.target.closest('[data-a]'); if (!el) { tip.hidden = true; return; }
+    const a = A[+el.dataset.a]; if (!a) return;
+    tip.innerHTML = `<b>${esc(a.t)}</b><br>${esc(a.dev)} · ${fmt(a.i)} installs${a.s ? ' · ★ ' + a.s.toFixed(1) : ''}<br><span class="tmono">${a.b ? 'Brand' : COMP.includes(+el.dataset.a) ? 'Tracked competitor' : CAT[a.cat]}${el.dataset.r ? ' · #' + el.dataset.r + ' for “' + esc(el.dataset.q) + '”' : ''}</span>`;
+    tip.hidden = false;
+  });
+  document.addEventListener('mousemove', e => { if (tip.hidden) return; tip.style.left = Math.min(e.clientX + 14, innerWidth - 300) + 'px'; tip.style.top = (e.clientY + 16) + 'px'; });
+
+  // ---------- header ----------
+  function renderHeader() {
+    const date = new Date(D.collectedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    document.getElementById('p-date').textContent = 'Collected ' + date;
+    document.getElementById('p-chips').innerHTML = [`${US.length} US keywords`, '8 markets', `${totalSerps} live result lists`, `${A.length} apps profiled`, '16 tracked competitors', '0 events & offers running', '0 fetch failures'].map(c => `<span class="chip">${c}</span>`).join('');
+    const top = US[0];
+    const leader = PROF.slice().sort((a, b) => b.perMarket.US.top10 - a.perMarket.US.top10)[0];
+    const audit = PROF.slice(10);
+    const auditTop10 = audit.reduce((s, p) => s + D.markets.reduce((x, gl) => x + p.perMarket[gl].top10, 0), 0);
+    const mk = D.marketSummary.slice().sort((a, b) => a.medianEntry - b.medianEntry);
+    const pvd = US.find(r => r.q === 'private video downloader');
+    document.getElementById('p-verdict').innerHTML = `There is no brand wall in this category — ${D.marketSummary.find(m => m.gl === 'US').avgNonBrand} of every top 10 are independent apps — but the bar is high: the median entry bar is ${fmt(D.marketSummary.find(m => m.gl === 'US').medianEntry)} installs. <strong>${esc(leader.title)}</strong> by ${esc(leader.developer)} holds ${leader.perMarket.US.top10} US top-10 placements. Your listing ranks for none of the ${US.length} US keywords and shares its exact title with Sky Vision’s app. The opening: <strong>“${esc(pvd ? pvd.q : top.q)}”</strong>${pvd ? `, where a ${fmt(pvd.entry)}-install app already sits at #${pvd.entryRank}` : ''}, carried by the editor, MP3 extraction and PIN vault that almost no competitor lists.`;
+    document.getElementById('p-findings').innerHTML = [
+      `<strong>Your listing is invisible in search.</strong> It does not appear in any of the ${totalSerps} result lists across eight markets.`,
+      `<strong>The audit apps don’t rank either.</strong> Sky Vision, Attractive Apps Valley, Markhoor, Mobile Notepad, Vidow and Vidpal hold ${auditTop10} top-10 placements between them across all eight markets — their installs come from outside keyword search.`,
+      `<strong>Generic phrasing leads the board.</strong> ${US.slice(0, 4).map(r => `“${esc(r.q)}”`).join(', ')} top the US priority list; platform-name searches score high too but carry trademark risk.`,
+      `<strong>No one runs Events &amp; offers.</strong> None of the 16 competitors shows a card in the US, Brazil, Germany or India.`,
+      `<strong>India is the easiest market.</strong> The median entry bar is ${fmt(mk[0].medianEntry)} installs in ${MN[mk[0].gl]} against ${fmt(D.marketSummary.find(m => m.gl === 'US').medianEntry)} in the US.`,
+    ].map(x => `<li>${x}</li>`).join('');
+    document.getElementById('p-tiles').innerHTML = [
+      [`P${top.P}`, `“${esc(top.q)}” · #1 US priority`],
+      [`${leader.perMarket.US.top10}`, `US top-10 placements · ${esc(leader.developer)}`],
+      [pvd ? fmt(pvd.entry) : '—', `entry bar on “private video downloader”`],
+      ['0', 'keywords your listing ranks for'],
+    ].map(([n, l]) => `<div class="tile"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+    document.getElementById('p-method').innerHTML = `<strong>Method, ${date}:</strong> Google Play web search (English) scraped live for ${US.length} keywords in the United States and the first 40 of those in Brazil, Germany, Spain, Italy, Australia, the UAE and India — ${totalSerps} result lists, 30 deep. Keywords came from a core downloader list, a platform-name list, an adjacent editing and vault list, a peripheral list and Play autocomplete; YouTube keywords and phrases with adult-site or piracy intent were removed. Full listing metadata was fetched for every app in any top 10 plus the 16 tracked competitors — ${A.length} apps. Events &amp; offers were read from each competitor’s listing page in four markets. Demand comes from Play autocomplete, typed out letter by letter.`;
+  }
+
+  function renderMarketSel() {
+    const sel = document.getElementById('market-sel');
+    sel.innerHTML = D.markets.map(m => `<option value="${m}"${m === state.gl ? ' selected' : ''}>${m} · ${MN[m]}</option>`).join('');
+    sel.addEventListener('change', () => { state.gl = sel.value; try { localStorage.setItem('avd-gl', state.gl); } catch (e) {} renderScoped(); });
+  }
+
+  function renderCategories() {
+    const counts = {}; let total = 0; const devs = {};
+    rows().forEach(r => r.ids.slice(0, 10).forEach(idx => {
+      if (idx < 0) return; total++;
+      const a = A[idx]; const k = COMP.includes(idx) ? 'Tracked competitors' : a.b ? 'Platform brands' : CAT[a.cat];
+      counts[k] = (counts[k] || 0) + 1; devs[a.dev] = (devs[a.dev] || 0) + 1;
+    }));
+    const list = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    document.getElementById('cat-share').innerHTML = `<thead><tr><th>Who holds the slot</th><th class="num">Slots</th><th>Share</th></tr></thead><tbody>` + list.map(([k, n]) => `<tr><td>${esc(k)}</td><td class="num">${n}</td><td style="min-width:150px"><div class="sharebar"><div class="track"><div class="fill" style="width:${(100 * n / total).toFixed(1)}%;${k === 'Tracked competitors' ? 'background:var(--s-comp)' : k === 'Platform brands' ? 'background:var(--s-brand)' : ''}"></div></div><span class="small num">${Math.round(100 * n / total)}%</span></div></td></tr>`).join('') + '</tbody>';
+    document.getElementById('cat-devs').innerHTML = `<thead><tr><th>Developer</th><th class="num">Top-10 slots</th></tr></thead><tbody>` + Object.entries(devs).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([d, n]) => `<tr><td>${esc(d)}</td><td class="num">${n}</td></tr>`).join('') + '</tbody>';
+  }
+
+  function renderCompetitors() {
+    const gl = state.gl;
+    const list = PROF.map((p, k) => ({ p, k })).sort((a, b) => b.p.perMarket[gl].top10 - a.p.perMarket[gl].top10 || b.p.perMarket[gl].any - a.p.perMarket[gl].any);
+    document.getElementById('comp-table').innerHTML = `<thead><tr><th>App</th><th class="num">Top-10 · in results</th><th class="num">Best rank</th><th class="num">Installs</th><th class="num">Rating</th><th>Updated</th><th>Monetisation</th><th>Title phrases</th><th>Source</th></tr></thead><tbody>` +
+      list.map(({ p, k }) => { const m = p.perMarket[gl]; return `<tr>
+        <td style="min-width:230px"><div class="comp-name">${esc(p.title)}</div><div class="small muted">${esc(p.developer)} · <a href="https://play.google.com/store/apps/details?id=${esc(p.id)}&hl=en&gl=US" target="_blank" rel="noopener">listing ↗</a></div></td>
+        <td class="num"><span class="bignum">${m.top10}</span> <span class="muted">· ${m.any}</span></td>
+        <td class="num">${m.best ? '#' + m.best : '—'}</td>
+        <td class="num">${esc(p.installsLabel || fmt(p.installs))}</td>
+        <td class="num">${p.score ? p.score.toFixed(1) : '—'}${p.ratings ? `<div class="small muted">${fmt(p.ratings)} ratings</div>` : ''}</td>
+        <td class="nowrap small">${esc(p.updated || '—')}</td>
+        <td class="small">${p.ads ? '<span class="pill p-warn">Ads</span> ' : '<span class="pill p-good">No ads</span> '}${p.iap ? `<div class="muted">${esc(p.iap)}</div>` : ''}</td>
+        <td style="min-width:170px"><b class="num">${p.titleKw.length}</b><div class="kwlist">${p.titleKw.map(q => `<span>${esc(q)}</span>`).join('')}</div></td>
+        <td class="small">${k >= 10 ? '<span class="pill p-acc">Feature audit</span>' : '<span class="pill p-mute">Live search</span>'}</td></tr>`; }).join('') + '</tbody>';
+  }
+
+  function renderCompDetailSelect() {
+    const sel = document.getElementById('cd-select');
+    sel.innerHTML = PROF.map((p, k) => `<option value="${k}">${esc(p.title)} — ${esc(p.developer)}</option>`).join('');
+    sel.addEventListener('change', () => { state.cd = +sel.value; state.cdAll = false; renderCompDetail(); });
+    document.getElementById('cd-more').addEventListener('click', () => { state.cdAll = !state.cdAll; renderCompDetail(); });
+  }
+  function renderCompDetail() {
+    const p = PROF[state.cd], k = state.cd, cid = COMP[k];
+    document.getElementById('cd-meta').innerHTML = `
+      <div class="meta-field"><div class="field-label"><span>Title</span><span>${p.titleLen} / 30</span></div><p><b>${esc(p.title)}</b></p></div>
+      <div class="meta-field"><div class="field-label"><span>Short description</span><span>${p.summaryLen} / 80</span></div><p>${esc(p.summary)}</p></div>
+      <div class="meta-field"><div class="field-label"><span>Full description</span><span>${p.descLen.toLocaleString('en-US')} / 4,000 · ${p.descWords} words</span></div>
+        <details class="desc"><summary>Show the full description</summary><pre>${esc(p.description)}</pre></details></div>`;
+    const dens = p.kwDens.slice().sort((a, b) => b.n - a.n);
+    const claims = D.claims.filter(([c]) => p.claims[c]).map(([, l]) => l);
+    document.getElementById('cd-side').innerHTML = `
+      <div class="panel" style="padding:16px 18px"><h3 style="margin-bottom:8px">Events &amp; offers</h3><p class="small muted">No events or offers on the listing in the US, Brazil, Germany or India.</p></div>
+      <div class="panel" style="padding:16px 18px"><h3 style="margin-bottom:8px">Listing facts</h3><table><tbody>
+        <tr><td>Installs</td><td class="num">${esc(p.installsLabel)}</td></tr><tr><td>Rating</td><td class="num">${p.score ? p.score.toFixed(2) + ' · ' + fmt(p.ratings) : '—'}</td></tr>
+        <tr><td>Released · updated</td><td class="num">${esc(p.released || '—')} · ${esc(p.updated || '—')}</td></tr><tr><td>Monetisation</td><td class="num">${p.ads ? 'Ads' : 'No ads'} · ${esc(p.iap || 'no IAP')}</td></tr>
+        <tr><td>Screenshots · video</td><td class="num">${p.shots} · ${p.video ? 'yes' : 'no'}</td></tr><tr><td>Category</td><td class="num">${esc(p.genre)}</td></tr>
+      </tbody></table></div>
+      <div class="panel" style="padding:16px 18px"><h3 style="margin-bottom:8px">Features its listing claims</h3><div class="kwlist">${claims.map(c => `<span>${esc(c)}</span>`).join('') || '<span>none detected</span>'}</div></div>
+      <div class="panel" style="padding:16px 18px"><h3 style="margin-bottom:8px">Top board phrases in its description</h3>${dens.length ? `<table><thead><tr><th>Phrase</th><th class="num">Uses</th><th class="num">Density</th></tr></thead><tbody>${dens.map(d => `<tr><td class="kw">${esc(d.q)}</td><td class="num">${d.n}</td><td class="num">${d.d}%</td></tr>`).join('')}</tbody></table>` : '<p class="small muted">None of the top 14 US keywords appears as a phrase.</p>'}</div>`;
+    const kws = new Map();
+    D.markets.forEach(gl => D.board[gl].forEach(r => { const rank = r.comps[k]; if (!rank) return; const e = kws.get(r.q) || { q: r.q, ranks: {} }; e.ranks[gl] = rank; kws.set(r.q, e); }));
+    const list = [...kws.values()].map(e => ({ ...e, us: US.find(r => r.q === e.q), best: Math.min(...Object.values(e.ranks)) })).sort((a, b) => (a.ranks.US || 99) - (b.ranks.US || 99) || a.best - b.best);
+    const t10 = list.filter(e => e.best <= 10).length;
+    document.getElementById('cd-kw-h').textContent = list.length ? `${p.title} ranks for ${list.length} keywords · ${t10} with a top-10 position somewhere` : `${p.title} does not rank for any tracked keyword in the eight markets`;
+    const shown = state.cdAll ? list : list.slice(0, 25);
+    document.getElementById('cd-more').textContent = list.length > 25 ? (state.cdAll ? 'Show the top 25 only' : `Show all ${list.length} keywords`) : '';
+    document.getElementById('cd-kw').innerHTML = list.length ? `<thead><tr><th>Keyword</th><th>Tier</th><th class="num">US priority</th>${D.markets.map(m => `<th class="ch">${m}</th>`).join('')}</tr></thead><tbody>` +
+      shown.map(e => `<tr><td class="kwc"><span class="kw">${esc(e.q)}</span>${e.us ? tmPill(e.us) : ''}</td><td>${e.us ? `<span class="pill ${TIER_PILL[e.us.tier]}">${TIER[e.us.tier]}</span>` : ''}</td><td class="num small">${e.us ? e.us.P : '—'}</td>${D.markets.map(gl => { const measured = D.board[gl].some(r => r.q === e.q); return `<td>${measured ? rkCell(e.ranks[gl], cid, e.q) : '<span class="small muted">n/m</span>'}</td>`; }).join('')}</tr>`).join('') + '</tbody>' : '';
+  }
+
+  function renderEvents() {
+    const checked = PROF.concat([MYP]);
+    const any = checked.filter(p => PAYLOAD.offersChecked[p.id]);
+    document.getElementById('events-body').innerHTML = `<div class="callout-open"><h3 style="margin-bottom:6px">${any.length ? any.length + ' listings run events or offers' : 'No competitor runs events or offers'}</h3>
+      <p class="sub">All ${checked.length} listings — the 16 competitors and yours — were checked in the United States, Brazil, Germany and India. ${any.length ? '' : 'Not one shows an “Events & offers” card, so any dated card you publish (a feature launch, a trial, a seasonal event) has the promotional space to itself.'}</p>
+      <div class="kwlist" style="margin-top:10px">${checked.map(p => `<span>${esc(p.mine ? 'Your app' : p.developer)} · ${PAYLOAD.offersChecked[p.id] ? 'running' : 'none'}</span>`).join('')}</div></div>`;
+  }
+
+  function renderMatrix() {
+    const list = state.all ? rows() : rows().slice(0, 30);
+    document.getElementById('matrix-table').innerHTML = `<thead><tr><th>Keyword</th><th class="num">Priority</th>${COMP.map((c, i) => `<th class="ch" title="${esc(c >= 0 ? A[c].t : '')}">${esc(SHORT[i])}</th>`).join('')}</tr></thead><tbody>` +
+      list.map(r => `<tr><td class="kwc"><span class="kw">${esc(r.q)}</span>${tmPill(r)}</td><td class="num small">${r.P}</td>${COMP.map((c, k) => `<td>${rkCell(r.comps[k], c, r.q)}</td>`).join('')}</tr>`).join('') +
+      `</tbody><tfoot><tr><td class="kwc">Top-10 placements</td><td></td>${COMP.map((c, k) => `<td>${list.filter(r => r.comps[k] && r.comps[k] <= 10).length}</td>`).join('')}</tr></tfoot>`;
+  }
+
+  function renderStrips() {
+    document.getElementById('strip-legend').innerHTML = [['comp', 'Tracked competitors'], ['brand', 'Brand'], ['niche', 'Video downloader'], ['adj', 'Saver, browser, player, editor'], ['off', 'Other'], ['none', 'Beyond Play’s results']].map(([c, l]) => `<span><i class="sw slot ${c}" style="height:14px"></i>${l}</span>`).join('');
+    const list = rows().slice(0, state.strips);
+    const ruler = `<div class="strip-ruler"><span>Keyword</span><div class="slots ruler-slots">${Array.from({ length: 30 }, (_, i) => (i === 10 ? '<span></span>' : '') + `<span>${i === 0 || i === 9 || i === 10 || i === 19 || i === 29 ? i + 1 : ''}</span>`).join('')}</div></div>`;
+    document.getElementById('strips').innerHTML = ruler + list.map(r => `<div class="strip-row"><div class="strip-head"><div class="strip-kw"><span class="kw">${esc(r.q)}</span><span class="meta">P${r.P} · ${r.depth} results · ${r.c10} competitors in top 10</span></div><div class="slots">${Array.from({ length: 30 }, (_, i) => { const idx = i < r.ids.length ? r.ids[i] : -1; return (i === 10 ? '<span class="slot gap"></span>' : '') + `<span class="slot ${i < r.ids.length ? slotClass(idx) : 'none'}"${idx >= 0 ? ` data-a="${idx}" data-r="${i + 1}" data-q="${esc(r.q)}"` : ''}></span>`; }).join('')}</div></div></div>`).join('');
+    document.getElementById('strips-more').textContent = state.strips >= rows().length ? '' : `Show ${Math.min(rows().length, state.strips + 20) - state.strips} more searches`;
+  }
+  document.getElementById('strips-more').addEventListener('click', () => { state.strips += 20; renderStrips(); });
+
+  function renderTierChips() {
+    const el = document.getElementById('tier-chips');
+    el.innerHTML = [['all', 'All tiers'], ['A', 'Core'], ['B', 'Adjacent'], ['C', 'Peripheral'], ['tm', '™ Platform names']].map(([k, l]) => `<button type="button" data-t="${k}" aria-pressed="${state.tier === k}">${l}</button>`).join('');
+    el.onclick = e => { const b = e.target.closest('button'); if (!b) return; state.tier = b.dataset.t; renderTierChips(); renderBoard(); };
+    document.getElementById('kw-search').oninput = e => { state.q = e.target.value.trim().toLowerCase(); renderBoard(); };
+  }
+  function renderBoard() {
+    const cols = [['q', 'Keyword'], ['P', 'Priority'], ['R', 'Relevance'], ['nb', 'Winnable'], ['demand', 'Demand'], ['vol', 'Volume proxy'], ['entry', 'Entry bar'], ['c10', 'Competitors top 10'], ['depth', 'Results']];
+    let list = rows().filter(r => (state.tier === 'all' || (state.tier === 'tm' ? r.tm : r.tier === state.tier)) && (!state.q || r.q.includes(state.q)));
+    list = list.slice().sort((a, b) => { const x = a[state.sort], y = b[state.sort]; if (state.sort === 'q') return state.dir * x.localeCompare(y); return state.dir * ((x == null ? -1 : x) - (y == null ? -1 : y)); });
+    const maxP = Math.max(...rows().map(r => r.P));
+    document.getElementById('board').innerHTML = `<thead><tr>${cols.map(([k, l]) => `<th${k !== 'q' ? ' class="num"' : ''} aria-sort="${state.sort === k ? (state.dir < 0 ? 'descending' : 'ascending') : 'none'}"><button type="button" data-k="${k}">${l}</button></th>`).join('')}</tr></thead><tbody>` +
+      list.map(r => `<tr><td style="min-width:220px"><span class="kw">${esc(r.q)}</span><div class="kwmeta"><span class="pill ${TIER_PILL[r.tier]}">${TIER[r.tier]}</span><span class="pill p-mute">${SRC[r.src]}</span>${tmPill(r)}</div></td>
+        <td><div class="pbar"><div class="track"><div class="fill" style="width:${(100 * r.P / maxP).toFixed(1)}%"></div></div><b>${r.P}</b></div></td>
+        <td class="num">${Math.round(r.R * 100)}</td><td class="num">${r.nb}<span class="muted">/10</span></td>
+        <td class="num">${r.demand}<div class="small muted">${r.demandAt ? `after “${esc(r.demandAt)}”` : 'not suggested'}</div></td>
+        <td class="num">${fmt(r.vol)}</td><td class="num">${entryCell(r)}</td><td class="num">${r.c10}<span class="muted">/16</span></td><td class="num">${r.depth}</td></tr>`).join('') + '</tbody>';
+    document.querySelectorAll('#board th button').forEach(b => b.onclick = () => { const k = b.dataset.k; if (state.sort === k) state.dir *= -1; else { state.sort = k; state.dir = k === 'q' ? 1 : -1; } renderBoard(); });
+  }
+
+  function renderMarkets() {
+    document.getElementById('mkt-cards').innerHTML = D.marketSummary.map(m => `<div class="mkt"><h3>${MN[m.gl]} <small>${m.gl}</small></h3><dl>
+      <dt>Non-brand apps in top 10</dt><dd>${m.avgNonBrand} / 10</dd><dt>Median entry bar</dt><dd>${fmt(m.medianEntry)}</dd><dt>Competitor top-10s</dt><dd>${m.compTop10}</dd><dt>Avg results per search</dt><dd>${m.avgDepth}</dd></dl>
+      <div class="small muted">Top keywords</div><div class="kwlist">${m.best.slice(0, 3).map(b => `<span>${esc(b.q)} · P${b.P}</span>`).join('')}</div></div>`).join('');
+    const kws = D.secondary;
+    const P = (gl, q) => D.board[gl].find(x => x.q === q) || null;
+    const maxP = Math.max(...D.markets.flatMap(gl => kws.map(q => (P(gl, q) || { P: 0 }).P)));
+    const sorted = kws.filter(q => P('US', q)).sort((a, b) => P('US', b).P - P('US', a).P);
+    document.getElementById('mkt-heat').innerHTML = `<thead><tr><th>Keyword</th>${D.markets.map(m => `<th class="ch">${m}</th>`).join('')}</tr></thead><tbody>` +
+      sorted.map(q => { const vals = D.markets.map(gl => (P(gl, q) || { P: 0 }).P); const best = Math.max(...vals); return `<tr><td class="kwc"><span class="kw">${esc(q)}</span>${tmPill(P('US', q))}</td>${vals.map(v => `<td class="h${v === best ? ' best' : ''}" style="background:color-mix(in srgb, var(--accent) ${Math.round(8 + 45 * v / maxP)}%, transparent)">${v}</td>`).join('')}</tr>`; }).join('') + '</tbody>';
+    const counts = PROF.map((p, k) => D.markets.map(gl => D.board[gl].filter(r => kws.includes(r.q) && r.comps[k] && r.comps[k] <= 10).length));
+    const maxC = Math.max(1, ...counts.flat());
+    document.getElementById('mkt-comp').innerHTML = `<thead><tr><th>Competitor</th>${D.markets.map(m => `<th class="ch">${m}</th>`).join('')}</tr></thead><tbody>` +
+      PROF.map((p, k) => `<tr><td class="kwc"><b>${esc(SHORT[k])}</b><div class="small muted">${esc(p.title)}</div></td>${counts[k].map(n => `<td class="h" style="background:color-mix(in srgb, var(--s-comp) ${Math.round(4 + 50 * n / maxC)}%, transparent)">${n}</td>`).join('')}</tr>`).join('') + '</tbody>';
+  }
+
+  function ladderPhases(list) {
+    const used = new Set();
+    const take = (pred, n) => { const out = list.filter(r => !r.tm && (r.tier === 'A' || r.tier === 'B') && !used.has(r.q) && !/without ads/.test(r.q) && pred(r)).slice(0, n); out.forEach(r => used.add(r.q)); return out; };
+    return [
+      ['Phase 0', 'launch → 10K · weeks 0–6', take(r => r.R >= 0.9 && r.entry != null && r.entry < 60000, 6), 'A non-brand app under 60K installs already holds a top-10 slot here.'],
+      ['Phase 1', '10K → 100K', take(r => r.R >= 0.85 && r.entry != null && r.entry < 200000, 6), 'The smallest app in the top 10 has under 200K installs.'],
+      ['Phase 2', '100K → 1M', take(r => r.R >= 0.85 && r.entry != null && r.entry < 800000, 6), 'Entry bars in the hundreds of thousands: a scaled app is needed.'],
+      ['Phase 3', '1M+', take(r => r.R >= 0.8, 6), 'Head terms held by 10M+ apps.'],
+    ];
+  }
+  function renderLadder() {
+    document.getElementById('ladder-list').innerHTML = ladderPhases(rows()).map(([ph, sub, list, why]) => `<div class="rung"><div class="ph">${ph}<small>${sub}</small></div><div><ul>${list.map(r => `<li>${esc(r.q)} <i>P${r.P} · ${r.c10} comp.</i></li>`).join('') || '<li>none at this bar</li>'}</ul><p class="proof">${why} ${list[0] && list[0].entry ? `Smallest non-brand app on “${esc(list[0].q)}”: ${esc((A[list[0].entryIdx] || {}).t || '')} with ${fmt(list[0].entry)} installs at #${list[0].entryRank}.` : ''}</p></div></div>`).join('');
+  }
+
+  // ---------- listing helpers ----------
+  const reEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const normT = s => ' ' + String(s || '').toLowerCase().replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, ' ').trim() + ' ';
+  const phraseN = (text, p) => { const t = normT(text), n = normT(p); let c = 0, i = t.indexOf(n); while (i >= 0) { c++; i = t.indexOf(n, i + n.length - 1); } return c; };
+  const wordSet = s => new Set(normT(s).trim().split(' ').filter(Boolean));
+  const allIn = (q, set) => normT(q).trim().split(' ').every(w => set.has(w));
+  const nWords = s => normT(s).trim().split(' ').filter(Boolean).length;
+  const plainLong = t => t.replace(/^## /gm, '').replace(/^• /gm, '');
+  const COV = { title: ['T', 'p-good'], titlew: ['T', 'p-good'], short: ['S', 'p-acc'], tsw: ['T+S', 'p-acc'], long: ['L', 'p-warn'], none: ['—', 'p-mute'] };
+  function coverageOf(q, f) {
+    const longN = phraseN(f.long, q);
+    if (phraseN(f.title, q)) return { key: 'title', label: 'Title · exact phrase', w: 1, longN };
+    if (allIn(q, wordSet(f.title))) return { key: 'titlew', label: 'Title · all words', w: 0.85, longN };
+    if (phraseN(f.short, q)) return { key: 'short', label: 'Short · exact phrase', w: 0.7, longN };
+    if (allIn(q, wordSet(f.title + ' ' + f.short))) return { key: 'tsw', label: 'Title + short · all words', w: 0.7, longN };
+    if (longN) return { key: 'long', label: `Full description ×${longN}`, w: 0.3, longN };
+    return { key: 'none', label: 'Not used', w: 0, longN };
+  }
+  const covPill = c => `<span class="pill ${COV[c.key][1]}">${c.label}${c.longN && c.key !== 'long' ? ` · full ×${c.longN}` : ''}</span>`;
+  const prioCoverage = f => { let got = 0, all = 0; US.forEach(r => { if (r.tier === 'D' || r.tm) return; all += r.P; got += r.P * coverageOf(r.q, f).w; }); return 100 * got / all; };
+  const REC = L.rec[0];
+  const PROP = { title: REC.t, short: L.shorts[0].s, long: plainLong(L.long.replace(/\{name\}/g, REC.t)) };
+  const CUR = { title: L.current.title, short: L.current.summary, long: L.current.description };
+  const FINAL = US.filter(r => (r.tier === 'A' || r.tier === 'B') && r.R >= 0.8 && !r.tm && !/without ads/.test(r.q)).slice(0, 24);
+  function highlight(text, kws) {
+    let html = esc(text); const marks = [];
+    const hold = h => { marks.push(h); return ` ${marks.length - 1} `; };
+    [...kws].sort((a, b) => b.length - a.length).forEach(k => { const pat = k.split(' ').map(reEsc).join('\\s+').replace(/\\s\+and\\s\+/g, '\\s+(?:and|&amp;)\\s+'); html = html.replace(new RegExp('\\b' + pat + '\\b', 'gi'), m => hold(`<mark class="kwm">${m}</mark>`)); });
+    return html.replace(/ (\d+) /g, (_, i) => marks[+i]);
+  }
+  function longHtml(text, kws) {
+    let html = '', inList = false;
+    for (const raw of text.split('\n')) {
+      const line = raw.replace(/\s+$/, '');
+      if (/^[●•]/.test(line)) { if (!inList) { html += '<ul>'; inList = true; } html += `<li>${highlight(line.replace(/^[●•]\s*/, ''), kws)}</li>`; continue; }
+      if (inList) { html += '</ul>'; inList = false; }
+      if (!line.trim()) continue;
+      if (/^## /.test(line)) html += `<h4>${highlight(line.slice(3), kws)}</h4>`;
+      else if (/^[A-Z0-9 &?:,'’\-!]+$/.test(line) && /[A-Z]{3}/.test(line)) html += `<h4>${highlight(line, kws)}</h4>`;
+      else html += `<p>${highlight(line, kws)}</p>`;
+    }
+    return html + (inList ? '</ul>' : '');
+  }
+  const meter = (n, max) => `<div class="meter"><div class="track"><div class="fill${n > max ? ' over' : ''}" style="width:${Math.min(100, 100 * n / max)}%"></div></div>${n}/${max}</div>`;
+
+  function renderListing() {
+    const cur = L.titles.find(t => t.current);
+    document.getElementById('titles').innerHTML = L.rec.map((t, i) => { const top = US.slice(0, 12).filter(r => (t.exact || []).includes(r.q)); return `<div class="topt${i === 0 ? ' rec' : ''}"><div class="tag">${i === 0 ? 'Recommended title' : 'Alternative ' + i}</div><div class="tt">${esc(t.t)}</div>${meter(t.len, 30)}<div class="why">Covers every word of ${t.hits.length} board keywords (score ${t.score}${cur ? `, against ${cur.score} for the current title` : ''}). ${top.length ? `Carries ${top.map(r => `“${esc(r.q)}” (#${US.indexOf(r) + 1})`).join(' and ')} as an exact phrase.` : ''}</div><div class="covered">${t.hits.slice(0, 8).map(h => `<span>${esc(h)}</span>`).join('')}</div></div>`; }).join('');
+    document.getElementById('title-table').innerHTML = `<thead><tr><th>Title</th><th class="num">Chars</th><th class="num">Score</th><th class="num">Keywords</th><th>Status</th></tr></thead><tbody>` + L.titles.map(t => `<tr${t.current ? ' style="background:var(--accent-soft)"' : ''}><td><b>${esc(t.t)}</b></td><td class="num">${t.len}</td><td class="num">${t.score}</td><td class="num">${t.hits.length}</td><td>${t.current ? '<span class="pill p-warn">current · same title as Sky Vision</span>' : t.taken ? '<span class="pill p-risk">in use by another app</span>' : '<span class="pill p-good">available</span>'}</td></tr>`).join('') + '</tbody>';
+    const fk = FINAL.map(r => r.q);
+    document.getElementById('listing-card').innerHTML = `
+      <div class="apphead"><img src="${AS.icon.file}" alt="" width="56" height="56" style="border-radius:14px;box-shadow:0 0 0 1px var(--line)"><div><div class="t">${esc(PROP.title)}</div><div class="d">${esc(L.current.developer)} · ${esc(L.current.genre)}</div></div></div>
+      <div class="field"><div class="field-label"><span>Title</span><span>${PROP.title.length} / 30</span></div><p>${highlight(PROP.title, fk)}</p></div>
+      <div class="field"><div class="field-label"><span>Short description</span><span>${PROP.short.length} / 80</span></div><p>${highlight(PROP.short, fk)}</p>${L.shorts[1] ? `<p class="small muted" style="margin-top:6px">Alternative (${L.shorts[1].len}/80): ${esc(L.shorts[1].s)}</p>` : ''}</div>
+      <div class="field longdesc"><div class="field-label"><span>Full description</span><span>${PROP.long.length.toLocaleString('en-US')} / 4,000</span></div>${longHtml(L.long.replace(/\{name\}/g, REC.t), fk)}</div>`;
+    const wc = nWords(PROP.long);
+    const phr = US.filter(r => r.tier !== 'D' && !r.tm && phraseN(PROP.long, r.q)).map(r => ({ r, n: phraseN(PROP.long, r.q), d: 100 * phraseN(PROP.long, r.q) * nWords(r.q) / wc })).sort((x, y) => y.n - x.n || y.r.P - x.r.P).slice(0, 14);
+    const strong = x => FINAL.filter(r => ['title', 'titlew', 'short', 'tsw'].includes(coverageOf(r.q, x).key)).length;
+    document.getElementById('listing-side').innerHTML = `
+      <div class="panel"><h3>Measured against the current listing</h3><table><thead><tr><th></th><th class="num">Current</th><th class="num">Proposed</th></tr></thead><tbody>
+        <tr><td>Priority coverage</td><td class="num">${prioCoverage(CUR).toFixed(0)}%</td><td class="num"><b>${prioCoverage(PROP).toFixed(0)}%</b></td></tr>
+        <tr><td>Finalized keywords used</td><td class="num">${FINAL.filter(r => coverageOf(r.q, CUR).key !== 'none').length} / 24</td><td class="num"><b>${FINAL.filter(r => coverageOf(r.q, PROP).key !== 'none').length} / 24</b></td></tr>
+        <tr><td>…in title or short</td><td class="num">${strong(CUR)}</td><td class="num"><b>${strong(PROP)}</b></td></tr>
+        <tr><td>Title shared with another app</td><td class="num">yes</td><td class="num"><b>no</b></td></tr>
+        <tr><td>Full description</td><td class="num">${CUR.long.length.toLocaleString('en-US')}</td><td class="num">${PROP.long.length.toLocaleString('en-US')}</td></tr>
+      </tbody></table></div>
+      <div class="panel"><h3>Board phrases in the proposed description</h3><p class="small muted" style="margin-bottom:6px">${wc} words · platform-name phrases excluded from this count</p><table><thead><tr><th>Phrase</th><th class="num">Uses</th><th class="num">Density</th></tr></thead><tbody>${phr.map(x => `<tr><td class="kw">${esc(x.r.q)}</td><td class="num">${x.n}</td><td class="num">${x.d.toFixed(1)}%</td></tr>`).join('')}</tbody></table></div>
+      <div class="panel"><h3>Every claim maps to the Product Dossier</h3><ul class="checks"><li>Paste or share a link · quality picker · parallel downloads with pause, resume, retry</li><li>Foreground service for large background downloads</li><li>9-tool video cutter, including extract audio and watermark</li><li>Vault with PIN, biometrics and a security question</li><li>Status saver · 9 languages with RTL</li><li>Platforms named are the seven downloaded end to end on a device</li></ul><p class="small muted" style="margin-top:8px">Left out on purpose: platform names in the title and short description, “free”, “without ads” (the app contains ads), YouTube, and “no watermark”.</p></div>`;
+  }
+
+  // ---------- TAB 2 · metadata ----------
+  const compTitlesWith = q => PROF.map((p, i) => ({ p, i })).filter(x => x.p.titleKw.includes(q));
+  function renderMetadata() {
+    const f = CUR, fk = US.filter(r => r.tier !== 'D').map(r => r.q), strongKeys = ['title', 'titlew', 'short', 'tsw'];
+    const used = US.filter(r => r.tier !== 'D' && coverageOf(r.q, f).key !== 'none');
+    const withC = used.filter(r => compRanks(r).length > 0);
+    document.getElementById('m-app').innerHTML = `<img src="${AS.icon.file}" alt="App icon" width="92" height="92">
+      <div style="flex:1 1 360px;min-width:0"><h1>${esc(f.title)}</h1>
+        <div class="m-facts">${[esc(L.current.developer), esc(L.current.genre), L.current.installs + ' installs', L.current.ads ? 'Contains ads' : 'No ads', L.current.iap ? 'In-app purchases ' + esc(L.current.iap) : 'No in-app purchases', `${AS.screenshots.length} screenshots`, 'Feature graphic 1024×500', 'No promo video', 'No events & offers'].map(c => `<span class="chip">${c}</span>`).join('')}</div>
+        <div class="m-links"><a href="${esc(L.current.url)}" target="_blank" rel="noopener">Google Play listing ↗</a>${L.current.privacy ? `<a href="${esc(L.current.privacy)}" target="_blank" rel="noopener">Privacy policy ↗</a>` : ''}${L.current.site ? `<a href="${esc(L.current.site)}" target="_blank" rel="noopener">Developer site ↗</a>` : ''}<span class="muted">${esc(L.current.id)}</span></div></div>`;
+    document.getElementById('m-tiles').innerHTML = [[`${f.title.length}<small>/30</small>`, 'title characters'], [`${f.short.length}<small>/80</small>`, 'short description characters'], [`${f.long.length.toLocaleString('en-US')}<small>/4,000</small>`, 'full description characters'], [`${used.length}<small>/${US.length}</small>`, 'board keywords targeted'], [`${FINAL.filter(r => coverageOf(r.q, f).key !== 'none').length}<small>/24</small>`, 'finalized keywords targeted'], [`${AS.screenshots.length}<small>/8</small>`, 'phone screenshot slots used']].map(([n, l]) => `<div class="tile"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+    document.getElementById('m-tiles').style.gridTemplateColumns = 'repeat(auto-fit,minmax(150px,1fr))';
+
+    document.getElementById('m-assets-top').innerHTML = `<figure class="fgfig"><img src="${AS.feature.file}" alt="Feature graphic" loading="lazy"><figcaption>Feature graphic · 1024 × 500 · <a href="${esc(AS.feature.src)}" target="_blank" rel="noopener">original ↗</a></figcaption></figure>
+      <figure class="fgfig" style="max-width:220px"><img src="${AS.icon.file}" alt="App icon" loading="lazy" style="border-radius:22%"><figcaption>App icon · 512 × 512 · <a href="${esc(AS.icon.src)}" target="_blank" rel="noopener">original ↗</a></figcaption></figure>`;
+    document.getElementById('m-shots').innerHTML = AS.screenshots.map((s, i) => `<figure><img src="${s.file}" alt="Store screenshot ${i + 1}" loading="lazy"><figcaption>Slot ${i + 1} · <a href="${esc(s.src)}" target="_blank" rel="noopener">original ↗</a></figcaption></figure>`).join('');
+    const ac = [['met', 'App icon', '512 × 512 PNG, as Play requires.'], ['met', 'Feature graphic', 'Exactly 1024 × 500, as Play requires.'], [AS.screenshots.length >= 8 ? 'met' : 'rec', 'Phone screenshots', `${AS.screenshots.length} of 8 slots used, all 9:16. The editor and the vault are not yet shown.`], ['rec', 'Device captures in the dossier', 'The dossier’s test captures are 720 × 1600 (1 : 2.22); Play allows at most 1 : 2, so they need framing before upload.'], ['rec', 'Promo video', 'None on the listing.']];
+    const pill = s => s === 'met' ? '<span class="pill p-good">✓ Met</span>' : s === 'not' ? '<span class="pill p-risk">✕ Not met</span>' : '<span class="pill p-mute">• Recorded</span>';
+    document.getElementById('m-asset-checks').innerHTML = `<thead><tr><th>Status</th><th>Asset</th><th>Detail</th></tr></thead><tbody>` + ac.map(([s, a, d]) => `<tr><td>${pill(s)}</td><td><b>${esc(a)}</b></td><td>${esc(d)}</td></tr>`).join('') + '</tbody>';
+
+    const phr = US.filter(r => r.tier !== 'D' && phraseN(f.long, r.q)).map(r => ({ r, n: phraseN(f.long, r.q), d: 100 * phraseN(f.long, r.q) * nWords(r.q) / nWords(f.long) })).sort((x, y) => y.n - x.n || y.r.P - x.r.P);
+    document.getElementById('m-listing').innerHTML = `
+      <div class="apphead"><img src="${AS.icon.file}" alt="" width="56" height="56" style="border-radius:14px;box-shadow:0 0 0 1px var(--line)"><div><div class="t">${esc(f.title)}</div><div class="d">${esc(L.current.developer)} · ${esc(L.current.genre)}</div></div></div>
+      <div class="field"><div class="field-label"><span>Title</span><span>${f.title.length} / 30</span></div><p>${highlight(f.title, fk)}</p></div>
+      <div class="field"><div class="field-label"><span>Short description</span><span>${f.short.length} / 80</span></div><p>${highlight(f.short, fk)}</p></div>
+      <div class="field longdesc"><div class="field-label"><span>Full description</span><span>${f.long.length.toLocaleString('en-US')} / 4,000</span></div>${longHtml(f.long, fk)}</div>`;
+    document.getElementById('m-side').innerHTML = `<div class="panel"><h3>Board keywords in the full description</h3><p class="small muted" style="margin-bottom:6px">${nWords(f.long)} words</p><table><thead><tr><th>Phrase</th><th class="num">Uses</th><th class="num">Density</th><th>Tier</th></tr></thead><tbody>${phr.map(x => `<tr><td class="kw">${esc(x.r.q)}</td><td class="num">${x.n}</td><td class="num">${x.d.toFixed(1)}%</td><td><span class="pill ${TIER_PILL[x.r.tier]}">${TIER[x.r.tier]}</span></td></tr>`).join('')}</tbody></table></div>
+      <div class="panel"><h3>Finalized keywords by field</h3><table><tbody>${[['In the title', ['title', 'titlew']], ['Title + short description', ['short', 'tsw']], ['Full description', ['long']], ['Not in this version', ['none']]].map(([lab, keys]) => { const list = FINAL.filter(r => keys.includes(coverageOf(r.q, f).key)); return `<tr><td class="nowrap">${lab}</td><td class="num"><b>${list.length}</b></td></tr><tr><td colspan="2" class="small muted" style="border-top:0;padding-top:0">${list.map(r => esc(r.q)).join(' · ') || '—'}</td></tr>`; }).join('')}</tbody></table></div>`;
+
+    const groups = [['In the title', ['title', 'titlew']], ['Title + short description', ['short', 'tsw']], ['Full description', ['long']]];
+    const trow = r => { const ct = compTitlesWith(r.q); return `<tr><td style="min-width:190px"><span class="kw">${esc(r.q)}</span><div class="kwmeta"><span class="pill ${TIER_PILL[r.tier]}">${TIER[r.tier]}</span>${tmPill(r)}</div></td><td><span class="pill p-mute">${SRC[r.src]}</span></td><td class="num">${r.P}</td><td class="num">${Math.round(r.R * 100)}</td><td class="num">${r.demand}</td><td class="num">${compTop10(r)}<span class="muted"> / 16</span></td><td class="small" style="min-width:170px">${ct.length ? `<b>${ct.length}</b> · ${ct.map(x => esc(SHORT[x.i])).join(', ')}` : '<span class="muted">none</span>'}</td><td class="small">${entryCell(r)}</td></tr>`; };
+    document.getElementById('m-targets-table').innerHTML = `<thead><tr><th>Keyword</th><th>Source</th><th class="num">Priority</th><th class="num">Relevance</th><th class="num">Demand</th><th class="num">Competitors in top 10</th><th>In competitors’ titles</th><th>Smallest app in top 10</th></tr></thead><tbody>` +
+      groups.map(([label, keys]) => { const list = used.filter(r => keys.includes(coverageOf(r.q, f).key)).sort((x, y) => y.P - x.P); return list.length ? `<tr class="grp"><td colspan="8">${label} · ${list.length}</td></tr>` + list.map(trow).join('') : ''; }).join('') + '</tbody>';
+    document.getElementById('m-targets-note').textContent = `This metadata targets ${used.length} of the ${US.length} US board keywords. Competitors hold top-10 ranks on ${used.filter(r => compTop10(r) > 0).length} of them, and ${used.filter(r => compTitlesWith(r.q).length).length} sit word for word in at least one competitor’s title.`;
+
+    const plat = US.filter(r => r.tm).sort((a, b) => b.P - a.P);
+    document.getElementById('m-platform-table').innerHTML = `<thead><tr><th>Keyword</th><th class="num">Priority</th><th class="num">Demand</th><th class="num">Entry bar</th><th>Competitors ranking (US)</th><th>In your metadata</th></tr></thead><tbody>` +
+      plat.map(r => `<tr><td style="min-width:200px"><span class="kw">${esc(r.q)}</span>${tmPill(r)}</td><td class="num">${r.P}</td><td class="num">${r.demand}<div class="small muted">${r.demandAt ? `after “${esc(r.demandAt)}”` : 'not suggested'}</div></td><td class="num">${entryCell(r)}</td><td class="small" style="min-width:170px">${compNames(r)}</td><td>${covPill(coverageOf(r.q, f))}</td></tr>`).join('') + '</tbody>';
+
+    const maxP = FINAL[0].P;
+    const kwRow = (r, w) => `<tr><td class="num muted">${FINAL.indexOf(r) + 1}</td><td style="min-width:200px"><span class="kw">${esc(r.q)}</span><div class="kwmeta"><span class="pill ${TIER_PILL[r.tier]}">${TIER[r.tier]}</span><span class="pill p-mute">${SRC[r.src]}</span></div></td><td><div class="pbar"><div class="track"><div class="fill" style="width:${(100 * r.P / maxP).toFixed(1)}%"></div></div><b>${r.P}</b></div></td><td class="num">${Math.round(r.R * 100)}</td><td class="num">${r.nb}<span class="muted">/10</span></td><td class="num">${r.demand}</td><td class="num">${entryCell(r)}</td><td class="small" style="min-width:170px">${compNames(r)}</td>${w ? `<td>${covPill(coverageOf(r.q, f))}</td>` : ''}</tr>`;
+    const head = w => `<thead><tr><th class="num">#</th><th>Keyword</th><th>Priority</th><th class="num">Relevance</th><th class="num">Winnable</th><th class="num">Demand</th><th class="num">Entry bar</th><th>Competitors ranking (US)</th>${w ? '<th>Targeted in</th>' : ''}</tr></thead>`;
+    const now = FINAL.filter(r => coverageOf(r.q, f).key !== 'none'), future = FINAL.filter(r => coverageOf(r.q, f).key === 'none');
+    document.getElementById('m-kw-now-h').textContent = `Targeted in this metadata · ${now.length} of 24`;
+    document.getElementById('m-kw-future-h').textContent = `Not in this version · ${future.length} of 24`;
+    document.getElementById('m-kw-now').innerHTML = head(true) + '<tbody>' + now.map(r => kwRow(r, true)).join('') + '</tbody>';
+    document.getElementById('m-kw-future').innerHTML = head(false) + '<tbody>' + future.map(r => kwRow(r, false)).join('') + '</tbody>';
+
+    document.getElementById('m-ladder-list').innerHTML = ladderPhases(US).map(([ph, sub, list]) => { const cov = list.map(r => coverageOf(r.q, f).key); return `<div class="rung"><div class="ph">${ph}<small>${sub}</small></div><div><ul>${list.map(r => { const c = coverageOf(r.q, f); return `<li>${esc(r.q)} <i>P${r.P}</i><span class="cov pill ${COV[c.key][1]}">${COV[c.key][0]}</span> <i>· ${compTop10(r)} comp. top-10</i></li>`; }).join('')}</ul><p class="proof">This metadata carries <b>${cov.filter(k => strongKeys.includes(k)).length}</b> in the title or short description and <b>${cov.filter(k => k === 'long').length}</b> in the full description; <b>${cov.filter(k => k === 'none').length}</b> not in this version.</p></div></div>`; }).join('');
+
+    const sorted = used.slice().sort((x, y) => (compRanks(y).length > 0) - (compRanks(x).length > 0) || y.R - x.R || y.P - x.P);
+    const noC = sorted.filter(r => !compRanks(r).length), cols = 3 + COMP.length + 1;
+    const urow = r => `<tr><td class="kwc"><span class="kw">${esc(r.q)}</span>${tmPill(r)}<div style="margin-top:3px">${covPill(coverageOf(r.q, f))}</div></td><td class="num small">${Math.round(r.R * 100)}</td><td class="num small">${r.P}</td>${COMP.map((c, k) => `<td>${rkCell(r.comps[k], c, r.q)}</td>`).join('')}<td class="num"><b>${compTop10(r)}</b><span class="muted"> / 16</span></td></tr>`;
+    document.getElementById('m-used-table').innerHTML = `<thead><tr><th>Keyword · where this metadata uses it</th><th class="num">Relevance</th><th class="num">Priority</th>${COMP.map((c, i) => `<th class="ch">${esc(SHORT[i])}</th>`).join('')}<th class="num">Top 10</th></tr></thead><tbody><tr class="grp"><td colspan="${cols}">Competitors rank on these · ${withC.length}</td></tr>${sorted.filter(r => compRanks(r).length).map(urow).join('')}${noC.length ? `<tr class="grp"><td colspan="${cols}">No competitor in the results · ${noC.length}</td></tr>${noC.map(urow).join('')}` : ''}</tbody>`;
+
+    const all = [f.title, f.short, f.long].join('\n'), rec = [], add = (s, rule, detail) => rec.push({ s, rule, detail });
+    add(f.title.length <= 30 ? 'met' : 'not', 'Title within 30 characters', `${f.title.length} / 30.`);
+    add(/(\bbest\b|#1|\bfree\b|\bsale\b)/i.test(f.title) ? 'not' : 'met', 'Title free of “best”, “#1”, “free” and sale wording', 'None present.');
+    add(PROF.some(p => p.title.toLowerCase() === f.title.toLowerCase()) ? 'not' : 'met', 'Title distinct from competitors’ titles', PROF.some(p => p.title.toLowerCase() === f.title.toLowerCase()) ? `Identical to “${PROF.find(p => p.title.toLowerCase() === f.title.toLowerCase()).title}” by ${PROF.find(p => p.title.toLowerCase() === f.title.toLowerCase()).developer}.` : 'Distinct.');
+    const platIn = [f.title, f.short].join(' ').match(/\b(instagram|facebook|tiktok|twitter|whatsapp|youtube|pinterest)\b/i);
+    add(platIn ? 'not' : 'met', 'No platform names in title or short description', platIn ? `“${platIn[0]}” present.` : 'None present.');
+    add(/youtube/i.test(all) ? 'not' : 'met', 'No YouTube references', /youtube/i.test(all) ? 'YouTube is mentioned.' : 'None present.');
+    add(/not affiliated/i.test(all) ? 'met' : 'not', 'Non-affiliation statement', /not affiliated/i.test(all) ? 'Present at the end of the full description.' : 'Missing.');
+    add(/copyright/i.test(all) ? 'met' : 'not', 'Copyright notice', /copyright/i.test(all) ? 'Present: download only content you own or may save.' : 'Missing.');
+    add(/\bno ads\b|without ads|ad-free/i.test(all) && L.current.ads ? 'not' : 'met', 'Ad wording matches the “Contains ads” label', 'No ad-free claim in the text.');
+    add(f.short.length <= 80 ? 'met' : 'not', 'Short description within 80 characters', `${f.short.length} / 80.`);
+    add(f.long.length <= 4000 ? 'met' : 'not', 'Full description within 4,000 characters', `${f.long.length.toLocaleString('en-US')} / 4,000 · ${(4000 - f.long.length).toLocaleString('en-US')} unused.`);
+    add('rec', 'Features the listing doesn’t mention', `${D.claims.filter(([c]) => F.ourClaims[c] && !MYP.claims[c]).map(([, l]) => l).join(', ')}.`);
+    add('met', 'Privacy policy link', `Linked and loading (HTTP ${L.current.privacyStatus}).`);
+    document.getElementById('m-policy-table').innerHTML = `<thead><tr><th>Status</th><th>Rule</th><th>Detail</th></tr></thead><tbody>` + rec.map(x => `<tr><td>${pill(x.s)}</td><td><b>${esc(x.rule)}</b></td><td>${esc(x.detail)}</td></tr>`).join('') + '</tbody>';
+
+    document.getElementById('m-method-text').innerHTML = [
+      `<b>The listing.</b> Title, short and full description, monetisation labels and store assets were fetched from Google Play for <span class="quote">${esc(L.current.id)}</span> (English, United States). The privacy policy link was requested live.`,
+      '<b>No own-app ranking.</b> Every rank on this tab belongs to one of the 16 competitors, from the same US results used across the playbook.',
+      '<b>Keyword coverage.</b> Text is lowercased and “&” is read as “and”. A keyword counts as in the title when its exact phrase or all its words appear there; as title + short when all its words appear across both; otherwise its exact-phrase uses in the full description are counted.',
+      '<b>Finalized keywords.</b> US board rows with core or adjacent intent, relevance of 80 or above and no platform name, ranked by priority. “Without ads” phrases are excluded because the app contains ads.',
+    ].map(p => `<p>${p}</p>`).join('');
+  }
+
+  // ---------- TAB 3 · features ----------
+  const FV = { F: ['✓', 'full', 'Yes'], P: ['◐', 'basic', 'Partial'], N: ['✕', 'none', 'No'], U: ['?', 'unk', 'Not determinable'] };
+  const fsc = v => v === 'F' ? 1 : v === 'P' ? 0.5 : 0;
+  function renderFeatures() {
+    const au = F.audit, apps = au.apps, rowsAll = au.groups.flatMap(g => g.rows), n = apps.length;
+    const score = i => rowsAll.reduce((s, r) => s + fsc(r.v[i]), 0);
+    const onlyUs = rowsAll.filter(r => r.v[0] === 'F' && ![...r.v.slice(1)].includes('F'));
+    const best = Math.max(...apps.slice(1).map((a, i) => score(i + 1)));
+    const claimKeys = D.claims.map(c => c[0]);
+    const claimCount = p => claimKeys.filter(k => p.claims[k]).length;
+    const bestClaims = PROF.slice().sort((a, b) => claimCount(b) - claimCount(a))[0];
+    document.getElementById('f-lede').textContent = `Our app against six audited competitor builds and all 16 tracked listings. It is the only app in the audit with MP3 extraction, batch downloads and a PIN-locked vault, and the only one anywhere in the set that pairs a downloader with a 9-tool video editor.`;
+    document.getElementById('f-tiles').innerHTML = [
+      [`${onlyUs.length}`, 'audited features only our app ships'],
+      [`${score(0)}<small>/${rowsAll.length}</small>`, `audit coverage · best competitor ${best}`],
+      [`${claimKeys.length}<small>/${claimKeys.length}</small>`, `user features shipped · best competitor listing claims ${claimCount(bestClaims)}`],
+      ['9', 'editing tools · no audited competitor has one'],
+    ].map(([v, l]) => `<div class="tile"><div class="n">${v}</div><div class="l">${l}</div></div>`).join('');
+    document.getElementById('f-only').innerHTML = F.oursOnly.map(a => `<div class="card"><div class="tag">Only in our app</div><h3 style="font-size:1rem;margin-bottom:6px">${esc(a.h)}</h3><p>${esc(a.p)}</p></div>`).join('');
+
+    document.getElementById('f-legend').innerHTML = [['F', 'Ships'], ['N', 'Not in the build']].map(([k, l]) => `<span><i class="fv ${FV[k][1]}" aria-hidden="true">${FV[k][0]}</i>${l}</span>`).join('');
+    const colHead = apps.map((a, i) => { const p = a.comp >= 0 ? PROF[a.comp] : null; const t10 = p ? D.markets.reduce((s, gl) => s + p.perMarket[gl].top10, 0) : null; return `<th class="ch${i === 0 ? ' ours-col' : ''}">${esc(a.dev)}<div class="small muted">${esc(a.installs)}</div>${p ? `<div class="liveb">${t10} top-10s · 8 mkts</div>` : ''}</th>`; }).join('');
+    document.getElementById('f-audit-table').innerHTML = `<thead><tr><th>Feature</th>${colHead}<th class="num">Competitors with it</th></tr></thead><tbody>` +
+      au.groups.map(g => `<tr class="grp"><td colspan="${n + 2}">${esc(g.g)}</td></tr>` + g.rows.map(r => `<tr><td class="kwc" style="min-width:220px">${esc(r.f)}</td>${[...r.v].map((v, i) => `<td${i === 0 ? ' class="ours-col"' : ''}><span class="fv ${FV[v][1]}" title="${FV[v][2]}">${FV[v][0]}</span></td>`).join('')}<td class="num"><b>${[...r.v.slice(1)].filter(v => v === 'F').length}</b><span class="muted"> / 6</span></td></tr>`).join('')).join('') +
+      `</tbody><tfoot><tr><td class="kwc">Coverage</td>${apps.map((a, i) => `<td${i === 0 ? ' class="ours-col"' : ''}>${score(i)}</td>`).join('')}<td class="num">of ${rowsAll.length}</td></tr></tfoot>`;
+    document.getElementById('f-excluded').textContent = au.excluded;
+
+    const cols = [{ ours: true }].concat(PROF.map((p, k) => ({ p, k })));
+    document.getElementById('f-claims-table').innerHTML = `<thead><tr><th>Feature</th><th class="ch ours-col">Our app<div class="small muted">product</div></th>${PROF.map((p, k) => `<th class="ch" title="${esc(p.title)}">${esc(SHORT[k])}<div class="small muted">${esc(p.installsLabel)}</div></th>`).join('')}<th class="num">Listings claiming it</th></tr></thead><tbody>` +
+      D.claims.map(([key, label]) => `<tr><td class="kwc" style="min-width:220px">${esc(label)}</td><td class="ours-col"><span class="fv full" title="Ships in the app">✓</span>${MYP.claims[key] ? '' : '<div><span class="fv gap" title="Your listing does not mention it">not in listing</span></div>'}</td>${PROF.map(p => `<td><span class="fv ${p.claims[key] ? 'full' : 'none'}" title="${p.claims[key] ? 'Claimed in listing' : 'Not claimed'}">${p.claims[key] ? '✓' : '✕'}</span></td>`).join('')}<td class="num"><b>${PROF.filter(p => p.claims[key]).length}</b><span class="muted"> / 16</span></td></tr>`).join('') +
+      `</tbody><tfoot><tr><td class="kwc">Claims</td><td class="ours-col">${claimKeys.length}</td>${PROF.map(p => `<td>${claimCount(p)}</td>`).join('')}<td></td></tr></tfoot>`;
+    const gaps = D.claims.filter(([k]) => !MYP.claims[k]).map(([, l]) => l);
+    document.getElementById('f-claims-note').textContent = `Competitor columns show what each listing claims, not a code audit — an app may ship a feature its listing never mentions. Your current listing mentions ${claimKeys.length - gaps.length} of the ${claimKeys.length} features your app ships; the ones it leaves out are ${gaps.join(', ').toLowerCase()}.`;
+
+    document.getElementById('f-inv').innerHTML = F.inventory.map(s => `<div class="card"><div class="tag">${esc(s.screen)}</div><ul class="checks" style="margin-top:4px">${s.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul></div>`).join('');
+    const inshot = PROF[0];
+    document.getElementById('f-edge-cards').innerHTML = F.edges.map(c => `<div class="card"><div class="tag">Competitor strength</div><h3 style="font-size:1rem;margin-bottom:6px">${esc(c.h)}</h3><p>${esc(c.p)}</p></div>`).join('') +
+      `<div class="card"><div class="tag">Search visibility</div><h3 style="font-size:1rem;margin-bottom:6px">${esc(inshot.developer)} owns the search results</h3><p>${inshot.perMarket.US.top10} US top-10 placements and ${inshot.score ? inshot.score.toFixed(2) : '—'} stars from ${fmt(inshot.ratings)} ratings. Features win the comparison; ratings volume and ranking history are where the leaders are hardest to catch.</p></div>`;
+
+    const iapRows = PROF.concat([MYP]).map(p => ({ p, r: p.iapRange })).sort((a, b) => (b.p.installs || 0) - (a.p.installs || 0));
+    document.getElementById('f-iap-table').innerHTML = `<thead><tr><th>App</th><th class="num">Installs</th><th class="num">Rating</th><th>Ads</th><th>In-app purchases (US)</th><th style="min-width:200px">Range · $0–$100</th></tr></thead><tbody>` +
+      iapRows.map(({ p, r }) => `<tr${p.mine ? ' style="background:var(--accent-soft)"' : ''}><td style="min-width:210px"><b>${esc(p.title)}</b><div class="small muted">${esc(p.mine ? 'Your app' : p.developer)}</div></td><td class="num">${esc(p.installsLabel)}</td><td class="num">${p.score ? p.score.toFixed(1) : '—'}</td><td>${p.ads ? '<span class="pill p-warn">Ads</span>' : '<span class="pill p-good">No ads</span>'}</td><td class="money">${esc(p.iap || 'None')}</td><td>${r ? `<div class="range${p.mine ? ' ours' : ''}" role="img" aria-label="$${r.min} to $${r.max}"><span style="left:${Math.min(100, r.min)}%;width:${Math.max(1, Math.min(100, r.max) - Math.min(100, r.min))}%"></span></div>` : '<span class="muted small">—</span>'}</td></tr>`).join('') + '</tbody>';
+    document.getElementById('f-plans').innerHTML = `<h3 style="margin-bottom:8px">Our plans</h3><div class="kwlist">${F.plans.items.map(x => `<span>${esc(x.p)} · ${esc(x.price)} · ${esc(x.sku)}</span>`).join('')}</div><p class="small muted" style="margin-top:8px">${esc(F.plans.note)} In the US, Play shows the app’s in-app items at ${esc(L.current.iap)}. Premium removes ads; it does not unlock faster or unlimited downloads.</p>`;
+
+    document.getElementById('f-method-text').innerHTML = [
+      '<b>Feature audit.</b> The matrix is your team’s static analysis of six competitor APKs against ours (Slide 7). One row, “Jetpack Compose modern UI”, is left out because the Product Dossier’s spec shows the app is built with Android Views.',
+      '<b>Listing claims.</b> Each competitor’s live Google Play title, short and full description (US, English) was searched for wording that describes each feature. A ✕ means the listing does not claim it, not that the app lacks it.',
+      '<b>Our column.</b> Features come from the Product Dossier: the build’s spec and the device-tested QA rounds. “Not in listing” marks features your current Play listing never mentions.',
+      '<b>IAP.</b> Price ranges are the “In-app purchases” line each listing shows in the United States. Our plan prices are the Pakistan prices recorded in the dossier.',
+    ].map(p => `<p>${p}</p>`).join('');
+  }
+
+  // ---------- TAB 4 · dossier ----------
+  function renderDossierNav() {
+    document.getElementById('jump-dossier').innerHTML = PAYLOAD.dossierSections.map(s => `<a href="#${esc(s.id)}">${esc(s.label)}</a>`).join('');
+    const lbx = document.getElementById('lightbox'), img = document.getElementById('lb-img'), cap = document.getElementById('lb-cap');
+    if (!lbx) return;
+    document.querySelectorAll('#dossier .phone').forEach(b => b.addEventListener('click', () => { img.src = b.dataset.full; img.alt = b.querySelector('img').alt; cap.textContent = b.dataset.cap || ''; if (typeof lbx.showModal === 'function') lbx.showModal(); }));
+    document.getElementById('lb-close').addEventListener('click', () => lbx.close());
+    lbx.addEventListener('click', e => { if (e.target === lbx) lbx.close(); });
+  }
+
+  // ---------- tabs ----------
+  const bar = document.getElementById('bar');
+  const syncBar = () => document.documentElement.style.setProperty('--barh', bar.offsetHeight + 'px');
+  addEventListener('resize', syncBar);
+  const TABS = ['playbook', 'metadata', 'features', 'dossier'];
+  function setTab(t, top) {
+    document.querySelectorAll('[data-tab]').forEach(el => { el.hidden = el.dataset.tab !== t; });
+    TABS.forEach(x => { document.getElementById('tab-' + x).setAttribute('aria-selected', String(x === t)); document.getElementById('jump-' + x).hidden = x !== t; });
+    document.getElementById('mk').hidden = t !== 'playbook';
+    tip.hidden = true; syncBar(); if (top) scrollTo(0, 0);
+  }
+  TABS.forEach(t => document.getElementById('tab-' + t).addEventListener('click', () => setTab(t, true)));
+  document.addEventListener('click', e => { const a = e.target.closest && e.target.closest('a[href^="#"]'); if (!a) return; const el = document.getElementById(a.getAttribute('href').slice(1)); if (!el) return; const host = el.closest('[data-tab]'); if (host && host.hidden) { e.preventDefault(); setTab(host.dataset.tab, false); el.scrollIntoView(); } });
+  document.getElementById('matrix-all').addEventListener('change', e => { state.all = e.target.checked; renderMatrix(); });
+
+  function renderScoped() {
+    document.querySelectorAll('[data-scope]').forEach(s => { s.textContent = MN[state.gl]; });
+    state.strips = 20;
+    renderCategories(); renderCompetitors(); renderMatrix(); renderStrips(); renderBoard(); renderLadder();
+  }
+  renderHeader(); renderMarketSel(); renderTierChips(); renderCompDetailSelect(); renderCompDetail(); renderEvents(); renderMarkets(); renderListing(); renderMetadata(); renderFeatures(); renderDossierNav(); renderScoped();
+  const h = decodeURIComponent(location.hash.slice(1)), el = h && document.getElementById(h), host = el && el.closest('[data-tab]');
+  if (host && host.dataset.tab !== 'playbook') { setTab(host.dataset.tab, false); el.scrollIntoView(); } else setTab('playbook', false);
+})();
+</script>

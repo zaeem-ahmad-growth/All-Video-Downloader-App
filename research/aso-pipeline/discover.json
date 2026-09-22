@@ -1,0 +1,5882 @@
+{
+ "me": {
+  "appId": "com.video.downloader.instagram.videosaver",
+  "gl": "US",
+  "fetchedAt": "2026-09-16T11:02:26.365Z",
+  "title": "All Video Downloader & Saver",
+  "summary": "Fast video downloader for HD videos, stories, clips and offline viewing",
+  "description": "Save the videos you love and enjoy them anytime with All Video Downloader & Saver, a simple, fast and convenient video downloader built for everyday use.\nCopy a supported video link, paste it into the app and save the video directly to your device. Whether you want to keep short videos, stories, status videos or useful clips, the built-in video saver makes downloading and managing media easy.\nKEY FEATURES\n• Fast Video Downloader\nSave supported online videos quickly with a smooth and straightforward download process.\n• HD Video Saver\nDownload available videos in clear, high-quality formats for a better offline viewing experience.\n• Simple Link-Based Downloading\nCopy a video link from a supported source, paste it into the app and start the download in just a few taps.\n• Story and Status Saver\nKeep supported stories, status videos and short clips on your device before they disappear.\n• Offline Video Access\nWatch downloaded videos whenever you want, even when an internet connection is unavailable.\n• Download Manager\nView download progress and keep your saved videos organised in one convenient place.\n• Easy Video Controls\nOpen, play, share or delete downloaded videos directly from the app.\n• Clean and User-Friendly Design\nA simple interface helps you save videos without complicated steps.\nHOW TO DOWNLOAD A VIDEO\nCopy the link of the video you have permission to save.\nOpen All Video Downloader & Saver.\nPaste the link into the download field.\nTap the download button.\nOpen the saved video and enjoy it offline.\nWHY USE ALL VIDEO DOWNLOADER & SAVER?\nAll Video Downloader & Saver combines a fast video downloader, HD video saver, story saver and offline media manager in one practical app.\nIt is designed for users who want a quick way to save supported social media videos and keep their favourite clips available on their device.\nUse the app for personal videos, educational clips, creative references, memorable stories and other content that you own or are authorised to download.\nIMPORTANT\nFeatures, supported websites and downloadable formats may vary depending on the source and content availability.\nPlease respect copyright and intellectual property rights. Download or share only content that you own, content in the public domain, or content for which you have permission from the owner.\nAll Video Downloader & Saver is an independent application and is not affiliated with, endorsed by or sponsored by any social media platform.",
+  "installsLabel": "5+",
+  "minInstalls": 5,
+  "realInstalls": 9,
+  "developer": "Cell Cave",
+  "developerSite": "https://cellcave.github.io/cell-cave-website/",
+  "privacyPolicy": "https://cellcave.github.io/cell-cave-website/apps/all-video-downloader-saver/privacy/",
+  "genre": "Productivity",
+  "updated": null,
+  "containsAds": true,
+  "iap": "$4.99 - $19.99 per item",
+  "contentRating": "Everyone",
+  "version": null,
+  "recentChanges": null,
+  "icon": "https://play-lh.googleusercontent.com/qLNXtLkR4z4KiAhmkwjlXx1TpuC4aaH6qsMoZgkWzjg1-ZaXUh-KMfdG1gXfayu_gkStOl6S1w4tCfe2WMPBbQ",
+  "featureGraphic": "https://play-lh.googleusercontent.com/q4weOoYNzbX0TD4RtvgBm1VsiywteBuYuZsb5Rr0JzQPEFYto2uU7Taj_ueFgCp65xXjCQ9zFHSZ9jwTq7lk8Q",
+  "video": null,
+  "screenshots": [
+   "https://play-lh.googleusercontent.com/j2_25nIZRvSsEN0BlWJSIIRtIx-N1I7ugFgLUo5rDuBOnNTugt1bnMxlZt9p-RnjyAXdCFKK5KMAYzsaqTK8VA",
+   "https://play-lh.googleusercontent.com/TDaaCxqjFa48ZfwV0k4SNIeBK-v0Cwt33ue3sNB5cqdlGlK4sYIZGuNKiKX2zGtm62hpnf9h3Zmc8ajaon7LXg",
+   "https://play-lh.googleusercontent.com/iWFuKpcYqHVHeGgYoYhIrSjIrlR9FcRwAaGP1dZaP3WYRiq5zov4dfdatnjVHXoBdObNVJClXxRpLiWW2OhOTw",
+   "https://play-lh.googleusercontent.com/3n20NxyQhoOWJOgRndJyj48dCylpmBu1lIGTP9GG5lS89ovMzjfum-Ps_cLIDr_54bKevER-jTLc-Um63vy_nw"
+  ],
+  "offers": [
+   "events:none;content:\"\"}",
+   "events:none}",
+   "events:auto}",
+   "events:none}@media screen and (forced-colors:active){",
+   "events:none;content:\"\"}:not(",
+   "events:none}:not("
+  ]
+ },
+ "head": [
+  {
+   "q": "video downloader",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:27.664Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "video.downloader.videodownloader",
+     "title": "Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.722918,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "videoplayer.videodownloader.downloader",
+     "title": "All Video Downloader & Player",
+     "developer": "QR Code Scanner.",
+     "installsLabel": "100,000,000+",
+     "score": 4.5262523,
+     "genre": "Tools"
+    },
+    {
+     "appId": "hub.browser.video.downloader.saver",
+     "title": "Hub Video Downloader",
+     "developer": "DOSA Apps",
+     "installsLabel": "10,000,000+",
+     "score": 4.3660564,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.sun.ai.app.tube.videodownloader",
+     "title": "Tube Video Downloader",
+     "developer": "Sun Mobile Studio",
+     "installsLabel": "5,000,000+",
+     "score": 4.508197,
+     "genre": "Tools"
+    },
+    {
+     "appId": "downloader.video.download.free",
+     "title": "Video Downloader & Video Saver",
+     "developer": "All Video Downloader, Saver & Player Studio",
+     "installsLabel": "50,000,000+",
+     "score": 4.4288754,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.gamma.videodownloader",
+     "title": "Video Downloader - without ads",
+     "developer": "Gamma Play",
+     "installsLabel": "100,000+",
+     "score": 4.6309524,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.video.downloader.ttypldre",
+     "title": "Tube Video Downloader &Mp3",
+     "developer": "Video Downloader inc.",
+     "installsLabel": "5,000,000+",
+     "score": 3.6068966,
+     "genre": "Tools"
+    },
+    {
+     "appId": "tweeter.gif.twittervideodownloader",
+     "title": "Download Twitter Videos - GIF",
+     "developer": "Photo and Video App",
+     "installsLabel": "10,000,000+",
+     "score": 4.6,
+     "genre": "Tools"
+    },
+    {
+     "appId": "all.video.downloader.allvideodownloader",
+     "title": "All Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.710804,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "free.files.downloader.save.video.manager",
+     "title": "Video Downloader - Save Videos",
+     "developer": "All Video Downloader, Saver & Player Studio",
+     "installsLabel": "10,000,000+",
+     "score": 4.5355506,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "downloader.vitmate.downloaderapp",
+     "title": "Downloader - Video Downloader",
+     "developer": "Leap Fitness Group",
+     "installsLabel": "100,000,000+",
+     "score": 4.656465,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "free.video.downloader.freevideodownloader",
+     "title": "Video Downloader - Downloader",
+     "developer": "Simple Design Ltd.",
+     "installsLabel": "100,000,000+",
+     "score": 4.6892695,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.savefrom.theappdoor",
+     "title": "Save From Net Video Downloader",
+     "developer": "Cards",
+     "installsLabel": "500,000+",
+     "score": 4.59,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.videodownload.browser.videodownloader",
+     "title": "All Video Downloader & Player",
+     "developer": "AppTool-Browser-Video",
+     "installsLabel": "10,000,000+",
+     "score": 4.366337,
+     "genre": "Tools"
+    },
+    {
+     "appId": "ru.spaple.pinterest.downloader",
+     "title": "Pinget – Video Downloader",
+     "developer": "Spaple",
+     "installsLabel": "1,000,000+",
+     "score": 4.8040543,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "idm.internet.download.manager",
+     "title": "1DM: Browser & Video Download",
+     "developer": "Vicky Bonick",
+     "installsLabel": "50,000,000+",
+     "score": 4.6229205,
+     "genre": "Tools"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig",
+     "title": "Video downloader - Story Saver",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "50,000,000+",
+     "score": 4.744634,
+     "genre": "Social"
+    },
+    {
+     "appId": "mobidev.apps.vd.pro",
+     "title": "Video Downloader Pro",
+     "developer": "MobiDevApps",
+     "installsLabel": "10,000+",
+     "score": 4.71,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.shicichaxun.video",
+     "title": "Video downloader, mp4, m3u8",
+     "developer": "Chen Guoming",
+     "installsLabel": "100,000+",
+     "score": 4.195402,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.umix.app.musicplayer",
+     "title": "Video Downloader",
+     "developer": "Video - Video Downloader",
+     "installsLabel": "5,000,000+",
+     "score": 4.214286,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.xbuddymobile.app",
+     "title": "9xbuddy: Video downloader"
+    },
+    {
+     "appId": "mobidev.apps.vd",
+     "title": "Video Downloader"
+    },
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload.snaptik",
+     "title": "SnapTok - TT Video Downloader"
+    },
+    {
+     "appId": "se.appthrive.linkedindownloader",
+     "title": "LinkedIn Video Downloader"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig.insaver",
+     "title": "InSaver: All Video Downloader"
+    },
+    {
+     "appId": "video.player.videoplayer",
+     "title": "Video Player All Format"
+    },
+    {
+     "appId": "video.downloader.saver.story",
+     "title": "Video downloader & video saver"
+    },
+    {
+     "appId": "pdownloader.social.media.saver.video.downloader",
+     "title": "PDownloader - Video Downloader"
+    },
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload",
+     "title": "Download video no watermark"
+    },
+    {
+     "appId": "com.uniquevpn.vpnglobal",
+     "title": "Tubematè Mp4 Video Downloader"
+    }
+   ]
+  },
+  {
+   "q": "all video downloader",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:27.792Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "video.downloader.videodownloader",
+     "title": "Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.722918,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "videoplayer.videodownloader.downloader",
+     "title": "All Video Downloader & Player",
+     "developer": "QR Code Scanner.",
+     "installsLabel": "100,000,000+",
+     "score": 4.5262523,
+     "genre": "Tools"
+    },
+    {
+     "appId": "downloader.video.download.free",
+     "title": "Video Downloader & Video Saver",
+     "developer": "All Video Downloader, Saver & Player Studio",
+     "installsLabel": "50,000,000+",
+     "score": 4.4288754,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "all.video.downloader.allvideodownloader",
+     "title": "All Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.710804,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "free.files.downloader.save.video.manager",
+     "title": "Video Downloader - Save Videos",
+     "developer": "All Video Downloader, Saver & Player Studio",
+     "installsLabel": "10,000,000+",
+     "score": 4.5355506,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.videodownload.browser.videodownloader",
+     "title": "All Video Downloader & Player",
+     "developer": "AppTool-Browser-Video",
+     "installsLabel": "10,000,000+",
+     "score": 4.366337,
+     "genre": "Tools"
+    },
+    {
+     "appId": "hub.browser.video.downloader.saver",
+     "title": "Hub Video Downloader",
+     "developer": "DOSA Apps",
+     "installsLabel": "10,000,000+",
+     "score": 4.3660564,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.vidmat.allvideodownloader",
+     "title": "All Video Downloader Master",
+     "developer": "Vidmark Inc.",
+     "installsLabel": "10,000,000+",
+     "score": 3.7769232,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.gamma.videodownloader",
+     "title": "Video Downloader - without ads",
+     "developer": "Gamma Play",
+     "installsLabel": "100,000+",
+     "score": 4.6309524,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "tweeter.gif.twittervideodownloader",
+     "title": "Download Twitter Videos - GIF",
+     "developer": "Photo and Video App",
+     "installsLabel": "10,000,000+",
+     "score": 4.6,
+     "genre": "Tools"
+    },
+    {
+     "appId": "idm.internet.download.manager",
+     "title": "1DM: Browser & Video Download",
+     "developer": "Vicky Bonick",
+     "installsLabel": "50,000,000+",
+     "score": 4.6229205,
+     "genre": "Tools"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig",
+     "title": "Video downloader - Story Saver",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "50,000,000+",
+     "score": 4.744634,
+     "genre": "Social"
+    },
+    {
+     "appId": "video.player.videoplayer",
+     "title": "Video Player All Format",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.792115,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "ru.spaple.pinterest.downloader",
+     "title": "Pinget – Video Downloader",
+     "developer": "Spaple",
+     "installsLabel": "1,000,000+",
+     "score": 4.8040543,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.xbuddymobile.app",
+     "title": "9xbuddy: Video downloader",
+     "developer": "123SUDO",
+     "installsLabel": "100,000+",
+     "score": 3.5609756,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.ytcorp.ytdownload",
+     "title": "All Video Download: YTDownload",
+     "developer": "YT Corp",
+     "installsLabel": "10,000+",
+     "score": 2.4545455,
+     "genre": "Tools"
+    },
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload.snaptik",
+     "title": "SnapTok - TT Video Downloader",
+     "developer": "Video Downloader & Video Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.6074767,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.linhiev.videodownloader",
+     "title": "Social Video Downloader",
+     "developer": "Linhiev technologies",
+     "installsLabel": "100,000+",
+     "score": 4.0941176,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.shicichaxun.video",
+     "title": "Video downloader, mp4, m3u8",
+     "developer": "Chen Guoming",
+     "installsLabel": "100,000+",
+     "score": 4.195402,
+     "genre": "Tools"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig.insaver",
+     "title": "InSaver: All Video Downloader",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.74722,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload",
+     "title": "Download video no watermark"
+    },
+    {
+     "appId": "com.uniquevpn.vpnglobal",
+     "title": "Tubematè Mp4 Video Downloader"
+    },
+    {
+     "appId": "video.downloader.saver.story",
+     "title": "Video downloader & video saver"
+    },
+    {
+     "appId": "com.rit.allsocialvideodownloader",
+     "title": "All Social Video Downloader"
+    },
+    {
+     "appId": "videodownloader.instagram.videosaver",
+     "title": "Video Downloader & Story Saver"
+    },
+    {
+     "appId": "elf.downloader",
+     "title": "All Video Downloader"
+    },
+    {
+     "appId": "downloader.vitmate.downloaderapp",
+     "title": "Downloader - Video Downloader"
+    },
+    {
+     "appId": "se.appthrive.linkedindownloader",
+     "title": "LinkedIn Video Downloader"
+    },
+    {
+     "appId": "com.video.downloader.ttypldre",
+     "title": "Tube Video Downloader &Mp3"
+    },
+    {
+     "appId": "com.videoplayer.allvideo.videodownloader.browser.hdsaver",
+     "title": "All Video Downloader, Launcher"
+    }
+   ]
+  },
+  {
+   "q": "video saver",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:27.800Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "video.downloader.videodownloader",
+     "title": "Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.722918,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig.insaver",
+     "title": "InSaver: All Video Downloader",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.74722,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "videodownloader.instagram.videosaver",
+     "title": "Video Downloader & Story Saver",
+     "developer": "Video Downloader & Fast Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.8078337,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig",
+     "title": "Video downloader - Story Saver",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "50,000,000+",
+     "score": 4.744634,
+     "genre": "Social"
+    },
+    {
+     "appId": "com.savefrom.theappdoor",
+     "title": "Save From Net Video Downloader",
+     "developer": "Cards",
+     "installsLabel": "500,000+",
+     "score": 4.59,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "hub.browser.video.downloader.saver",
+     "title": "Hub Video Downloader",
+     "developer": "DOSA Apps",
+     "installsLabel": "10,000,000+",
+     "score": 4.3660564,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload.snaptik",
+     "title": "SnapTok - TT Video Downloader",
+     "developer": "Video Downloader & Video Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.6074767,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.gamma.videodownloader",
+     "title": "Video Downloader - without ads",
+     "developer": "Gamma Play",
+     "installsLabel": "100,000+",
+     "score": 4.6309524,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "videoplayer.videodownloader.downloader",
+     "title": "All Video Downloader & Player",
+     "developer": "QR Code Scanner.",
+     "installsLabel": "100,000,000+",
+     "score": 4.5262523,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.videodownload.browser.videodownloader",
+     "title": "All Video Downloader & Player",
+     "developer": "AppTool-Browser-Video",
+     "installsLabel": "10,000,000+",
+     "score": 4.366337,
+     "genre": "Tools"
+    },
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload",
+     "title": "Download video no watermark",
+     "developer": "ETM Video Downloader",
+     "installsLabel": "50,000,000+",
+     "score": 4.611807,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "video.downloader.saver.story",
+     "title": "Video downloader & video saver",
+     "developer": "Yevbezapp",
+     "installsLabel": "1,000,000+",
+     "score": 3.7631578,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.linhiev.videodownloader",
+     "title": "Social Video Downloader",
+     "developer": "Linhiev technologies",
+     "installsLabel": "100,000+",
+     "score": 4.0941176,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "ru.codeluck.tiktok.downloader",
+     "title": "Tikget - Video Downloader",
+     "developer": "Spaple",
+     "installsLabel": "500,000+",
+     "score": 4.68,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "pin.pinterest.video.downloader.forpinterest.pinsaver",
+     "title": "Video Downloader for Pinterest",
+     "developer": "ETM Video Downloader",
+     "installsLabel": "5,000,000+",
+     "score": 4.7237353,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "nova.all.video.downloader",
+     "title": "Video Downloader & Video Saver",
+     "developer": "Video Downloader & Video Player & Photo Downloader",
+     "installsLabel": "10,000,000+",
+     "score": 4.3268766,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "facebook.video.downloader.savefrom.fb.saver.fast",
+     "title": "AhaFast Video Downloader",
+     "developer": "Video Downloader & Video Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.56859,
+     "genre": "Tools"
+    },
+    {
+     "appId": "ru.spaple.pinterest.downloader",
+     "title": "Pinget – Video Downloader",
+     "developer": "Spaple",
+     "installsLabel": "1,000,000+",
+     "score": 4.8040543,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.video.downloader.ttypldre",
+     "title": "Tube Video Downloader &Mp3",
+     "developer": "Video Downloader inc.",
+     "installsLabel": "5,000,000+",
+     "score": 3.6068966,
+     "genre": "Tools"
+    },
+    {
+     "appId": "statussaver.statusdownloader.downloadstatus.videoimagesaver",
+     "title": "Status Saver - Video Saver",
+     "developer": "Save Status, Video & Image Downloader",
+     "installsLabel": "100,000,000+",
+     "score": 4.5908375,
+     "genre": "Social"
+    },
+    {
+     "appId": "repost.share.tiktok.nowatermark.videosave.download.videodownloader.saver",
+     "title": "VideoSaver : Watermark Remover"
+    },
+    {
+     "appId": "instasaver.videodownloader.photodownloader.repost",
+     "title": "All Video Downloader & Browser"
+    },
+    {
+     "appId": "com.shicichaxun.video",
+     "title": "Video downloader, mp4, m3u8"
+    },
+    {
+     "appId": "moris.ins.download.free",
+     "title": "Ins Video & Photo Saver"
+    },
+    {
+     "appId": "tweeter.gif.twittervideodownloader",
+     "title": "Download Twitter Videos - GIF"
+    },
+    {
+     "appId": "tt.video.downloader.saver.withoutwatermark.tmate.snaptik",
+     "title": "Video Downloader No Watermark"
+    },
+    {
+     "appId": "statussaver.statusdownloader.downloadstatus.savestatus",
+     "title": "Status Saver: Video Downloader"
+    },
+    {
+     "appId": "downloader.video.download.free",
+     "title": "Video Downloader & Video Saver"
+    },
+    {
+     "appId": "com.story.repost.share.video",
+     "title": "Reshare - Video Downloader HD"
+    },
+    {
+     "appId": "com.ytcorp.ytdownload",
+     "title": "All Video Download: YTDownload"
+    }
+   ]
+  },
+  {
+   "q": "download video",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:27.893Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "video.downloader.videodownloader",
+     "title": "Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.722918,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "tweeter.gif.twittervideodownloader",
+     "title": "Download Twitter Videos - GIF",
+     "developer": "Photo and Video App",
+     "installsLabel": "10,000,000+",
+     "score": 4.6,
+     "genre": "Tools"
+    },
+    {
+     "appId": "hub.browser.video.downloader.saver",
+     "title": "Hub Video Downloader",
+     "developer": "DOSA Apps",
+     "installsLabel": "10,000,000+",
+     "score": 4.3660564,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "videoplayer.videodownloader.downloader",
+     "title": "All Video Downloader & Player",
+     "developer": "QR Code Scanner.",
+     "installsLabel": "100,000,000+",
+     "score": 4.5262523,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.sun.ai.app.tube.videodownloader",
+     "title": "Tube Video Downloader",
+     "developer": "Sun Mobile Studio",
+     "installsLabel": "5,000,000+",
+     "score": 4.508197,
+     "genre": "Tools"
+    },
+    {
+     "appId": "idm.internet.download.manager",
+     "title": "1DM: Browser & Video Download",
+     "developer": "Vicky Bonick",
+     "installsLabel": "50,000,000+",
+     "score": 4.6229205,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.gamma.videodownloader",
+     "title": "Video Downloader - without ads",
+     "developer": "Gamma Play",
+     "installsLabel": "100,000+",
+     "score": 4.6309524,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig",
+     "title": "Video downloader - Story Saver",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "50,000,000+",
+     "score": 4.744634,
+     "genre": "Social"
+    },
+    {
+     "appId": "com.downloadvideo.videodownloadfree.mp4videodownload",
+     "title": "Video Downloader & Player HD",
+     "developer": "Video Downloader- Apps Studio",
+     "installsLabel": "100,000+",
+     "score": 4.493976,
+     "genre": "Music & Audio"
+    },
+    {
+     "appId": "com.videodownload.browser.videodownloader",
+     "title": "All Video Downloader & Player",
+     "developer": "AppTool-Browser-Video",
+     "installsLabel": "10,000,000+",
+     "score": 4.366337,
+     "genre": "Tools"
+    },
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload.snaptik",
+     "title": "SnapTok - TT Video Downloader",
+     "developer": "Video Downloader & Video Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.6074767,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "ru.spaple.pinterest.downloader",
+     "title": "Pinget – Video Downloader",
+     "developer": "Spaple",
+     "installsLabel": "1,000,000+",
+     "score": 4.8040543,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.xbuddymobile.app",
+     "title": "9xbuddy: Video downloader",
+     "developer": "123SUDO",
+     "installsLabel": "100,000+",
+     "score": 3.5609756,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.savefrom.theappdoor",
+     "title": "Save From Net Video Downloader",
+     "developer": "Cards",
+     "installsLabel": "500,000+",
+     "score": 4.59,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "ru.codeluck.tiktok.downloader",
+     "title": "Tikget - Video Downloader",
+     "developer": "Spaple",
+     "installsLabel": "500,000+",
+     "score": 4.68,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.linhiev.videodownloader",
+     "title": "Social Video Downloader",
+     "developer": "Linhiev technologies",
+     "installsLabel": "100,000+",
+     "score": 4.0941176,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig.insaver",
+     "title": "InSaver: All Video Downloader",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.746845,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.video.downloader.ttypldre",
+     "title": "Tube Video Downloader &Mp3",
+     "developer": "Video Downloader inc.",
+     "installsLabel": "5,000,000+",
+     "score": 3.6068966,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.shicichaxun.video",
+     "title": "Video downloader, mp4, m3u8",
+     "developer": "Chen Guoming",
+     "installsLabel": "100,000+",
+     "score": 4.195402,
+     "genre": "Tools"
+    },
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload",
+     "title": "Download video no watermark",
+     "developer": "ETM Video Downloader",
+     "installsLabel": "50,000,000+",
+     "score": 4.611807,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.uniquevpn.vpnglobal",
+     "title": "Tubematè Mp4 Video Downloader"
+    },
+    {
+     "appId": "downloader.video.download.free",
+     "title": "Video Downloader & Video Saver"
+    },
+    {
+     "appId": "mobidev.apps.vd.pro",
+     "title": "Video Downloader Pro"
+    },
+    {
+     "appId": "videodownloader.instagram.videosaver",
+     "title": "Video Downloader & Story Saver"
+    },
+    {
+     "appId": "com.any.play",
+     "title": "AnyPlay - Video Downloader"
+    },
+    {
+     "appId": "se.appthrive.linkedindownloader",
+     "title": "LinkedIn Video Downloader"
+    },
+    {
+     "appId": "com.dv.adm",
+     "title": "Advanced Download Manager"
+    },
+    {
+     "appId": "downloader.vitmate.downloaderapp",
+     "title": "Downloader - Video Downloader"
+    },
+    {
+     "appId": "pin.pinterest.video.downloader.forpinterest.pinsaver",
+     "title": "Video Downloader for Pinterest"
+    },
+    {
+     "appId": "com.ace.video.downloader",
+     "title": "Ace Video Downloader: Videos X"
+    }
+   ]
+  },
+  {
+   "q": "hd video downloader",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:29.039Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "video.downloader.videodownloader",
+     "title": "Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.722918,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "download.movie.media.app.hd.video.social.browser",
+     "title": "HD Video Downloader",
+     "developer": "Sniper Legend",
+     "installsLabel": "10,000,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "videoplayer.videodownloader.downloader",
+     "title": "All Video Downloader & Player",
+     "developer": "QR Code Scanner.",
+     "installsLabel": "100,000,000+",
+     "score": 4.5262523,
+     "genre": "Tools"
+    },
+    {
+     "appId": "hub.browser.video.downloader.saver",
+     "title": "Hub Video Downloader",
+     "developer": "DOSA Apps",
+     "installsLabel": "10,000,000+",
+     "score": 4.3660564,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.gamma.videodownloader",
+     "title": "Video Downloader - without ads",
+     "developer": "Gamma Play",
+     "installsLabel": "100,000+",
+     "score": 4.6309524,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "hd.video.downloader.app.hdvideodownloaderapp",
+     "title": "HD Video Downloader App - 2022",
+     "developer": "Leap Fitness Group",
+     "installsLabel": "100,000,000+",
+     "score": 4.6406927,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.fastbit.hdvideodonloader",
+     "title": "HD Video Downloader HD Player",
+     "developer": "Duoei qrui",
+     "installsLabel": "100,000+",
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.videodownload.browser.videodownloader",
+     "title": "All Video Downloader & Player",
+     "developer": "AppTool-Browser-Video",
+     "installsLabel": "10,000,000+",
+     "score": 4.366337,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.xbuddymobile.app",
+     "title": "9xbuddy: Video downloader",
+     "developer": "123SUDO",
+     "installsLabel": "100,000+",
+     "score": 3.5609756,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.cent.hd.videodownloader.player",
+     "title": "All Video Downloader HD Saver",
+     "developer": "Cent Studio Global",
+     "installsLabel": "100,000+",
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.videos.pocket.video.save",
+     "title": "HD Video Downloader: Pocket",
+     "developer": "Hafiz Zeeshan Yousaf",
+     "installsLabel": "500,000+",
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig.insaver",
+     "title": "InSaver: All Video Downloader",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.74722,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.justshows.vidsaver",
+     "title": "XVX HD Video Downloader",
+     "developer": "Piter Kashi",
+     "installsLabel": "10,000+",
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.video.downloader.proxy.browser.player.app",
+     "title": "Video Downloader & Browser",
+     "developer": "Video Downloader & hubMate Apps",
+     "installsLabel": "1,000,000+",
+     "score": 3.9824562,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "video.player.videoplayer",
+     "title": "Video Player All Format",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.792115,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.downloadvideo.videodownloadfree.mp4videodownload",
+     "title": "Video Downloader & Player HD",
+     "developer": "Video Downloader- Apps Studio",
+     "installsLabel": "100,000+",
+     "score": 4.493976,
+     "genre": "Music & Audio"
+    },
+    {
+     "appId": "free.files.downloader.save.video.manager",
+     "title": "Video Downloader - Save Videos",
+     "developer": "All Video Downloader, Saver & Player Studio",
+     "installsLabel": "10,000,000+",
+     "score": 4.5355506,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "all.video.downloader.allvideodownloader",
+     "title": "All Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.710804,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig",
+     "title": "Video downloader - Story Saver",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "50,000,000+",
+     "score": 4.744634,
+     "genre": "Social"
+    },
+    {
+     "appId": "com.linhiev.videodownloader",
+     "title": "Social Video Downloader",
+     "developer": "Linhiev technologies",
+     "installsLabel": "100,000+",
+     "score": 4.0941176,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instasaver.videodownloader.photodownloader.repost",
+     "title": "All Video Downloader & Browser"
+    },
+    {
+     "appId": "in.bitmatic.videodownloader",
+     "title": "HDVid: Video Downloader Lite"
+    },
+    {
+     "appId": "com.hd.downloader.fastsave",
+     "title": "Video Downloader & HD Player"
+    },
+    {
+     "appId": "videodownloader.browser.video.saver.videoplayer",
+     "title": "HD Video Downloader & Launcher"
+    },
+    {
+     "appId": "facebook.video.downloader.savefrom.fb.saver.fast",
+     "title": "AhaFast Video Downloader"
+    },
+    {
+     "appId": "com.videoplayer.allvideo.videodownloader.browser.hdsaver",
+     "title": "All Video Downloader, Launcher"
+    },
+    {
+     "appId": "com.rocks.music.videoplayer",
+     "title": "HD Video Player All Formats"
+    },
+    {
+     "appId": "downloader.video.download.free",
+     "title": "Video Downloader & Video Saver"
+    },
+    {
+     "appId": "saveit.com.video.photo.downloader",
+     "title": "Video Downloader: All HD"
+    },
+    {
+     "appId": "com.droidsphere.video.player.media.downloader",
+     "title": "HD Video Player & Downloader"
+    }
+   ]
+  },
+  {
+   "q": "video downloader app",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:29.061Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "video.downloader.videodownloader",
+     "title": "Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.722918,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "videoplayer.videodownloader.downloader",
+     "title": "All Video Downloader & Player",
+     "developer": "QR Code Scanner.",
+     "installsLabel": "100,000,000+",
+     "score": 4.5262523,
+     "genre": "Tools"
+    },
+    {
+     "appId": "hub.browser.video.downloader.saver",
+     "title": "Hub Video Downloader",
+     "developer": "DOSA Apps",
+     "installsLabel": "10,000,000+",
+     "score": 4.3660564,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.gamma.videodownloader",
+     "title": "Video Downloader - without ads",
+     "developer": "Gamma Play",
+     "installsLabel": "100,000+",
+     "score": 4.6309524,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "tweeter.gif.twittervideodownloader",
+     "title": "Download Twitter Videos - GIF",
+     "developer": "Photo and Video App",
+     "installsLabel": "10,000,000+",
+     "score": 4.6,
+     "genre": "Tools"
+    },
+    {
+     "appId": "idm.internet.download.manager",
+     "title": "1DM: Browser & Video Download",
+     "developer": "Vicky Bonick",
+     "installsLabel": "50,000,000+",
+     "score": 4.6229205,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.utorrent.client",
+     "title": "µTorrent®- Torrent Downloader",
+     "developer": "bittorrent.com",
+     "installsLabel": "100,000,000+",
+     "score": 4.651682,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.videodownload.browser.videodownloader",
+     "title": "All Video Downloader & Player",
+     "developer": "AppTool-Browser-Video",
+     "installsLabel": "10,000,000+",
+     "score": 4.366337,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.sun.ai.app.tube.videodownloader",
+     "title": "Tube Video Downloader",
+     "developer": "Sun Mobile Studio",
+     "installsLabel": "5,000,000+",
+     "score": 4.508197,
+     "genre": "Tools"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig",
+     "title": "Video downloader - Story Saver",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "50,000,000+",
+     "score": 4.744634,
+     "genre": "Social"
+    },
+    {
+     "appId": "ru.spaple.pinterest.downloader",
+     "title": "Pinget – Video Downloader",
+     "developer": "Spaple",
+     "installsLabel": "1,000,000+",
+     "score": 4.8040543,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.xbuddymobile.app",
+     "title": "9xbuddy: Video downloader",
+     "developer": "123SUDO",
+     "installsLabel": "100,000+",
+     "score": 3.5609756,
+     "genre": "Tools"
+    },
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload.snaptik",
+     "title": "SnapTok - TT Video Downloader",
+     "developer": "Video Downloader & Video Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.6074767,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.video.downloader.ttypldre",
+     "title": "Tube Video Downloader &Mp3",
+     "developer": "Video Downloader inc.",
+     "installsLabel": "5,000,000+",
+     "score": 3.6068966,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.shicichaxun.video",
+     "title": "Video downloader, mp4, m3u8",
+     "developer": "Chen Guoming",
+     "installsLabel": "100,000+",
+     "score": 4.195402,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.tech.downloader",
+     "title": "Downloader",
+     "developer": "Supono Holdings LTD",
+     "installsLabel": "1,000,000+",
+     "score": 3.27,
+     "genre": "Productivity"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig.insaver",
+     "title": "InSaver: All Video Downloader",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.746845,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload",
+     "title": "Download video no watermark",
+     "developer": "ETM Video Downloader",
+     "installsLabel": "50,000,000+",
+     "score": 4.611807,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.uniquevpn.vpnglobal",
+     "title": "Tubematè Mp4 Video Downloader",
+     "developer": "Classic Infinity",
+     "installsLabel": "1,000,000+",
+     "score": 4.1,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.dv.adm",
+     "title": "Advanced Download Manager",
+     "developer": "admtorrent",
+     "installsLabel": "100,000,000+",
+     "score": 4.3939295,
+     "genre": "Tools"
+    },
+    {
+     "appId": "videodownloader.instagram.videosaver",
+     "title": "Video Downloader & Story Saver"
+    },
+    {
+     "appId": "com.ace.video.downloader",
+     "title": "Ace Video Downloader: Videos X"
+    },
+    {
+     "appId": "com.cent.hd.videodownloader.player",
+     "title": "All Video Downloader HD Saver"
+    },
+    {
+     "appId": "pin.pinterest.video.downloader.forpinterest.pinsaver",
+     "title": "Video Downloader for Pinterest"
+    },
+    {
+     "appId": "com.any.play",
+     "title": "AnyPlay - Video Downloader"
+    },
+    {
+     "appId": "video.downloader.saver.story",
+     "title": "Video downloader & video saver"
+    },
+    {
+     "appId": "com.downloadvideo.videodownloadfree.mp4videodownload",
+     "title": "Video Downloader & Player HD"
+    },
+    {
+     "appId": "com.hkinnovate.downloader_for_tv",
+     "title": "Downloader for TV"
+    },
+    {
+     "appId": "com.mp4mp3",
+     "title": "Video & Music Downloader"
+    },
+    {
+     "appId": "downloader.video.download.free",
+     "title": "Video Downloader & Video Saver"
+    }
+   ]
+  },
+  {
+   "q": "story saver",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:29.165Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "com.storysaver.saveig",
+     "title": "Story Saver",
+     "developer": "Smart Tech1",
+     "installsLabel": "5,000,000+",
+     "score": 4.3049855,
+     "genre": "Tools"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig",
+     "title": "Video downloader - Story Saver",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "50,000,000+",
+     "score": 4.744634,
+     "genre": "Social"
+    },
+    {
+     "appId": "story.saver.insta",
+     "title": "Story Saver - Video Downloader",
+     "developer": "Story Saver&Video Downloader",
+     "installsLabel": "5,000,000+",
+     "score": 4.6350365,
+     "genre": "Tools"
+    },
+    {
+     "appId": "storysaverforinstagram.storydownloaderforinstagram",
+     "title": "Story Saver",
+     "developer": "Sara Tech",
+     "installsLabel": "5,000,000+",
+     "score": 4.5742574,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.cosmicmedia.storysaverinstagram.stories.downloader.for.instagram.story.saver",
+     "title": "Story Saver for IG - HD Format",
+     "developer": "Cosmic Media Apps - Video, Image Downloaders",
+     "installsLabel": "100,000+",
+     "score": 2.9444444,
+     "genre": "Tools"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig.insaver",
+     "title": "InSaver: All Video Downloader",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.746845,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.sumino.issave.storysaver.photovideo.downloader",
+     "title": "InSaver: Video & Story Saver",
+     "developer": "Sumino Apps",
+     "installsLabel": "500,000+",
+     "score": 4.2222223,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "free.insaver.videodownloader",
+     "title": "Story Downloader - Story Saver",
+     "developer": "Daily Apps Mania",
+     "installsLabel": "10,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "videodownloader.instagram.videosaver",
+     "title": "Video Downloader & Story Saver",
+     "developer": "Video Downloader & Fast Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.8078337,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.shirokovapp.instasave",
+     "title": "Insget - Video & Story Saver",
+     "developer": "Spaple",
+     "installsLabel": "1,000,000+",
+     "score": 4.7786884,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.arkdev.fbstorysaver",
+     "title": "Stories Saver - Video Download",
+     "developer": "ARK Dev",
+     "installsLabel": "500,000+",
+     "score": 4.53,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.iyia.repost",
+     "title": "Reshare: Video & Story Saver",
+     "developer": "iyia",
+     "installsLabel": "500,000+",
+     "score": 4.58,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.mariaxcodexpert.whatsdownloadplus",
+     "title": "Story Saver for Whatsapp",
+     "developer": "mariaxcode",
+     "installsLabel": "5,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "in.k_nesar.vinsta",
+     "title": "InSave: Story Saver 2026",
+     "developer": "OxyLabz Studio",
+     "installsLabel": "50,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.brightstory.videodownload",
+     "title": "Story Saver",
+     "developer": "Bright Devlopers",
+     "installsLabel": "5,000,000+",
+     "score": 3.5,
+     "genre": "Social"
+    },
+    {
+     "appId": "com.azmobile.instagram.video.downloader",
+     "title": "Video Downloader - Story Saver",
+     "developer": "Maxlabs Video Downloader",
+     "installsLabel": "1,000,000+",
+     "score": 4.18,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.b1b.video.downloader.app.storysaver.free",
+     "title": "Video Downloader - Story Saver",
+     "developer": "Cybill Tech Mobile Apps",
+     "installsLabel": "10,000+",
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.ins.video.downloader.story.saver",
+     "title": "Story Saver - Video Downloader",
+     "developer": "PureStudio",
+     "installsLabel": "5,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.instadownloader.instasave.igsave.ins",
+     "title": "Video Downloader : Story Saver",
+     "developer": "Video Downloader & Photo Downloader & Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.43,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.arkdev.storysaverinstagram",
+     "title": "Story Saver - Save Stories",
+     "developer": "ARK Dev",
+     "installsLabel": "10,000+",
+     "score": 4.9,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "blindstory.saver.forinstagram",
+     "title": "Blindstory: Story Saver & View"
+    },
+    {
+     "appId": "instasaver.videodownloader.photodownloader.repost",
+     "title": "All Video Downloader & Browser"
+    },
+    {
+     "appId": "storysaver.instasave.instagram.downloader.igsaver",
+     "title": "InSave: Video & Story Saver"
+    },
+    {
+     "appId": "savefrom.ig.story.downloader",
+     "title": "Video Downloader, Story Saver"
+    },
+    {
+     "appId": "com.falnesc.saveall",
+     "title": "Status Saver - Story Saver"
+    },
+    {
+     "appId": "com.storysaver.forfacebooksaver",
+     "title": "Story Saver - Stories Download"
+    },
+    {
+     "appId": "instagram.downloader.saver.repost.reels.story",
+     "title": "Video Downloader & Story Saver"
+    },
+    {
+     "appId": "insaver.instagram.video.downloader.free.videodownloader",
+     "title": "InSaver: Video & Story Saver"
+    },
+    {
+     "appId": "com.whasappstatus.status",
+     "title": "Status, Story Downloader Saver"
+    },
+    {
+     "appId": "com.downloader.insaver.storysaver",
+     "title": "InSaver: Video & Story Saver"
+    }
+   ]
+  },
+  {
+   "q": "status saver",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:29.187Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "statussaver.statusdownloader.downloadstatus.videoimagesaver",
+     "title": "Status Saver - Video Saver",
+     "developer": "Save Status, Video & Image Downloader",
+     "installsLabel": "100,000,000+",
+     "score": 4.5908375,
+     "genre": "Social"
+    },
+    {
+     "appId": "com.falnesc.statussaver",
+     "title": "Status Saver・Status Downloader",
+     "developer": "Battery Stats Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.795,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.downlood.sav.whmedia",
+     "title": "Status Download - Video Saver",
+     "developer": "Shree Ganesha Labs",
+     "installsLabel": "100,000,000+",
+     "score": 4.599099,
+     "genre": "Productivity"
+    },
+    {
+     "appId": "com.lazygeniouz.saveit",
+     "title": "Status, Sticker Saver",
+     "developer": "Lazy Geniouz Pvt. Ltd.",
+     "installsLabel": "100,000,000+",
+     "score": 4.2610965,
+     "genre": "Tools"
+    },
+    {
+     "appId": "savestatus.videodownloader.storysaver.statuskeeper",
+     "title": "Status Saver・Status Downloader",
+     "developer": "Save Status, Video & Image Downloader",
+     "installsLabel": "10,000,000+",
+     "score": 4.823718,
+     "genre": "Tools"
+    },
+    {
+     "appId": "statussaver.statusdownloader.videodownloader",
+     "title": "Status Saver - Save Status",
+     "developer": "Lite Media",
+     "installsLabel": "50,000,000+",
+     "score": 4.7519684,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.studio.zm.statussaver",
+     "title": "Status Saver・Status Downloader",
+     "developer": "Status Saver Sol",
+     "installsLabel": "5,000,000+",
+     "score": 4.57,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.sinosystems.status",
+     "title": "Status Saver: Video Downloader",
+     "developer": "SinoSystems, Inc",
+     "installsLabel": "100,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.statussaver.statusdownloader.lite",
+     "title": "Status Saver",
+     "developer": "Fun and Hi Tool",
+     "installsLabel": "10,000,000+",
+     "score": 4.304348,
+     "genre": "Tools"
+    },
+    {
+     "appId": "statussaver.statusdownloader.downloadstatus.savestatus",
+     "title": "Status Saver: Video Downloader",
+     "developer": "BlueLine. Tech",
+     "installsLabel": "50,000,000+",
+     "score": 4.7657895,
+     "genre": "Social"
+    },
+    {
+     "appId": "com.downloadwhatsappstatus.statussaver.videodownloader",
+     "title": "Status Saver - Download Status",
+     "developer": "Office Tools.",
+     "installsLabel": "10,000,000+",
+     "score": 4.2972975,
+     "genre": "Productivity"
+    },
+    {
+     "appId": "com.heethjain.apps.statussaver",
+     "title": "Status Saver - Video Download",
+     "developer": "Heeth Jain",
+     "installsLabel": "500,000+",
+     "score": 4.413793,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.ammarishfaq.status_saver",
+     "title": "Status Saver",
+     "developer": "MU_AMR",
+     "installsLabel": "1,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.itcraftsolution.statussaverforwhatsappdownload",
+     "title": "Status Saver Downloader",
+     "developer": "IT Craft Solution",
+     "installsLabel": "1,000+",
+     "genre": "Productivity"
+    },
+    {
+     "appId": "com.jam.status_saver",
+     "title": "Status Saver: Save & Share",
+     "developer": "Jawad108",
+     "installsLabel": "10,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.playfake.utility.instadownloader",
+     "title": "Status Vault Video Download",
+     "developer": "Playfake",
+     "installsLabel": "100,000+",
+     "score": 4.214286,
+     "genre": "Productivity"
+    },
+    {
+     "appId": "com.telex.statusSaver",
+     "title": "Status Saver: Story Downloader",
+     "developer": "Appnest Technologies",
+     "installsLabel": "10,000+",
+     "genre": "Social"
+    },
+    {
+     "appId": "com.webholicinfotech.allstatussaver",
+     "title": "All Social Media Status Saver",
+     "developer": "Webholic Infotech",
+     "installsLabel": "5,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.droidcity.statussaver",
+     "title": "Status Saver",
+     "developer": "Droid City",
+     "installsLabel": "5,000+",
+     "genre": "Productivity"
+    },
+    {
+     "appId": "com.w3park.wastatussaver",
+     "title": "Status Saver - Download Status",
+     "developer": "W3park Technologies",
+     "installsLabel": "500+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "watstatussaver.watdownloader.downloadstatus.saver",
+     "title": "Hot Status Saver - Downloader"
+    },
+    {
+     "appId": "com.smartstatussaver.whatsapp",
+     "title": "Smart Reels & status saver"
+    },
+    {
+     "appId": "com.mahmood.statussaver",
+     "title": "Status Saver - Status Reminder"
+    },
+    {
+     "appId": "app.statusdownloader.statussaver",
+     "title": "Status Saver - Save to Gallery"
+    },
+    {
+     "appId": "com.statussaver.status.downloader.videodownloader",
+     "title": "Status Saver - Download Video"
+    },
+    {
+     "appId": "com.luckydog.wastatusgrab",
+     "title": "Save Status - Video Downloader"
+    },
+    {
+     "appId": "com.status.statusdownload",
+     "title": "Status Saver - Video Download"
+    },
+    {
+     "appId": "com.statussaver.statusdownloader.savestatus.videoimagesaver",
+     "title": "Status Saver - Video Download"
+    },
+    {
+     "appId": "com.wa.status.app.downloader.photo.video.status",
+     "title": "Status Saver-Status Downloader"
+    },
+    {
+     "appId": "org.crazydevelopers.statusdownloader",
+     "title": "Status Downloader"
+    }
+   ]
+  },
+  {
+   "q": "reels downloader",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:30.296Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "instagram.video.downloader.story.saver.ig.insaver",
+     "title": "InSaver: All Video Downloader",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.746845,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig",
+     "title": "Video downloader - Story Saver",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "50,000,000+",
+     "score": 4.744634,
+     "genre": "Social"
+    },
+    {
+     "appId": "com.sensei.social",
+     "title": "Reels Downloader",
+     "developer": "MobileByteSensei",
+     "installsLabel": "50,000+",
+     "score": 4.2105265,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "video.downloader.videodownloader",
+     "title": "Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.722918,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.quickostudio.reelsave",
+     "title": "ReelSave - Reels Downloader",
+     "developer": "Quicko Studio",
+     "installsLabel": "1,000+",
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "online.savereels.app",
+     "title": "SaveReels - Reels Downloader",
+     "developer": "Khalil Asif",
+     "installsLabel": "1,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "videodownloader.instagram.videosaver",
+     "title": "Video Downloader & Story Saver",
+     "developer": "Video Downloader & Fast Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.8078337,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.haariug.video.downloader.story.saver.reel.saver",
+     "title": "Reel Saver - Video Downloader",
+     "developer": "Haari UG",
+     "installsLabel": "5,000+",
+     "genre": "Productivity"
+    },
+    {
+     "appId": "com.ireelsave.app",
+     "title": "iReels Save – Reels Downloader",
+     "developer": "iReels Save",
+     "installsLabel": "100+",
+     "genre": "Social"
+    },
+    {
+     "appId": "com.gamma.videodownloader",
+     "title": "Video Downloader - without ads",
+     "developer": "Gamma Play",
+     "installsLabel": "100,000+",
+     "score": 4.6309524,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.ambarstudios.videodownloader",
+     "title": "Video Downloader Reels Stories",
+     "developer": "AmbarStudios",
+     "installsLabel": "1,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "instasaver.videodownloader.photodownloader.repost",
+     "title": "All Video Downloader & Browser",
+     "developer": "Fast Video Downloader & Story Saver - DevBay",
+     "installsLabel": "50,000,000+",
+     "score": 3.8952587,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.linhiev.videodownloader",
+     "title": "Social Video Downloader",
+     "developer": "Linhiev technologies",
+     "installsLabel": "100,000+",
+     "score": 4.0941176,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.downloader.saver.repost.reels.story",
+     "title": "Video Downloader & Story Saver",
+     "developer": "SavePro - Video Downloader",
+     "installsLabel": "100,000+",
+     "score": 4.8431373,
+     "genre": "Tools"
+    },
+    {
+     "appId": "insta.face.photo.video.story.saver.reels.downloader",
+     "title": "Reels Downloader: InstaSaver",
+     "developer": "All Reels Downloader, Video Saver And Downloader",
+     "installsLabel": "5,000+",
+     "score": 4.714286,
+     "genre": "Entertainment"
+    },
+    {
+     "appId": "videoplayer.videodownloader.downloader",
+     "title": "All Video Downloader & Player",
+     "developer": "QR Code Scanner.",
+     "installsLabel": "100,000,000+",
+     "score": 4.5262523,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.appsyoulike.reel.video.downloader",
+     "title": "Instaa Reel Video Downloader",
+     "developer": "MagicToons",
+     "installsLabel": "1+",
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.free.video.downloader.videodownloader",
+     "title": "InSaver : Video Downloader",
+     "developer": "Magic Makers",
+     "installsLabel": "10,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.videodownload.browser.videodownloader",
+     "title": "All Video Downloader & Player",
+     "developer": "AppTool-Browser-Video",
+     "installsLabel": "10,000,000+",
+     "score": 4.366337,
+     "genre": "Tools"
+    },
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload",
+     "title": "Download video no watermark",
+     "developer": "ETM Video Downloader",
+     "installsLabel": "50,000,000+",
+     "score": 4.611807,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.markfree.videodownloader.hd.video.saver",
+     "title": "Video Downloader & Reel Saver"
+    },
+    {
+     "appId": "com.story.repost.share.video",
+     "title": "Reshare - Video Downloader HD"
+    },
+    {
+     "appId": "com.insaver",
+     "title": "InSaver: Video Downloader"
+    },
+    {
+     "appId": "com.allvideo.downloader.reels",
+     "title": "All Video Downloader & Reels"
+    },
+    {
+     "appId": "com.downreels.app",
+     "title": "DownReels - Reels Downloader"
+    },
+    {
+     "appId": "bitron.reels_downloader.story_saver",
+     "title": "Reels Downloader & Story Saver"
+    },
+    {
+     "appId": "com.infast.video",
+     "title": "Copy Caption Reels Downloader"
+    },
+    {
+     "appId": "com.instasaver.codemultiverse",
+     "title": "Reels Downloader | Insta Saver"
+    },
+    {
+     "appId": "video.downloader.saver.story",
+     "title": "Video downloader & video saver"
+    },
+    {
+     "appId": "story.saver.insta",
+     "title": "Story Saver - Video Downloader"
+    }
+   ]
+  },
+  {
+   "q": "video downloader for instagram",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:30.246Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "reels.stories.video.downloader",
+     "title": "Video Downloader for Instagram",
+     "developer": "Bytecode.one",
+     "installsLabel": "10,000+",
+     "score": 4.92,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig",
+     "title": "Video downloader - Story Saver",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "50,000,000+",
+     "score": 4.744634,
+     "genre": "Social"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig.insaver",
+     "title": "InSaver: All Video Downloader",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.74722,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "videodownloader.instagram.videosaver",
+     "title": "Video Downloader & Story Saver",
+     "developer": "Video Downloader & Fast Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.8078337,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "video.downloader.videodownloader",
+     "title": "Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.722918,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.linhiev.videodownloader",
+     "title": "Social Video Downloader",
+     "developer": "Linhiev technologies",
+     "installsLabel": "100,000+",
+     "score": 4.0941176,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.insaver",
+     "title": "InSaver: Video Downloader",
+     "developer": "Ninetysix Info",
+     "installsLabel": "10,000+",
+     "score": 4.4545455,
+     "genre": "Entertainment"
+    },
+    {
+     "appId": "instagram.free.video.downloader.videodownloader",
+     "title": "InSaver : Video Downloader",
+     "developer": "Magic Makers",
+     "installsLabel": "10,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "instasaver.videodownloader.photodownloader.repost",
+     "title": "All Video Downloader & Browser",
+     "developer": "Fast Video Downloader & Story Saver - DevBay",
+     "installsLabel": "50,000,000+",
+     "score": 3.8952587,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.downloader.saver.repost.reels.story",
+     "title": "Video Downloader & Story Saver",
+     "developer": "SavePro - Video Downloader",
+     "installsLabel": "100,000+",
+     "score": 4.8431373,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.shirokovapp.instasave",
+     "title": "Insget - Video & Story Saver",
+     "developer": "Spaple",
+     "installsLabel": "1,000,000+",
+     "score": 4.7786884,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.ferdigokdemir.instabox",
+     "title": "Instagram Video Downloader",
+     "developer": "Nazar Tech",
+     "installsLabel": "10,000+",
+     "score": 4.2,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.story.repost.share.video",
+     "title": "Reshare - Video Downloader HD",
+     "developer": "Video Downloader - Story Saver",
+     "installsLabel": "100,000+",
+     "score": 4.2834644,
+     "genre": "Social"
+    },
+    {
+     "appId": "video.downloader.saver.story",
+     "title": "Video downloader & video saver",
+     "developer": "Yevbezapp",
+     "installsLabel": "1,000,000+",
+     "score": 3.7631578,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.hope.videosaver",
+     "title": "Video Downloader for Instagram",
+     "developer": "Hanif Abuvani",
+     "installsLabel": "1,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "tool2easy.totalvideos.itubevideodownloader",
+     "title": "Total Video Downloader",
+     "developer": "Video Player and Social Platform Downloader",
+     "installsLabel": "500,000+",
+     "score": 4.4444447,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.downloader.story.saver",
+     "title": "Video downloader",
+     "developer": "tablet group",
+     "installsLabel": "10,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "video.downloader.allvideodownloader.videosaver",
+     "title": "Video Downloader: Video Saver",
+     "developer": "Fifty Shades of Apps",
+     "installsLabel": "5,000,000+",
+     "score": 4.392562,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.instadownloader.instasave.igsave.ins",
+     "title": "Video Downloader : Story Saver",
+     "developer": "Video Downloader & Photo Downloader & Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.43,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "videoplayer.videodownloader.downloader",
+     "title": "All Video Downloader & Player",
+     "developer": "QR Code Scanner.",
+     "installsLabel": "100,000,000+",
+     "score": 4.5262523,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.download.snapfb.insave.videoplayer",
+     "title": "SnapAll - Video Downloader"
+    },
+    {
+     "appId": "hub.browser.video.downloader.saver",
+     "title": "Hub Video Downloader"
+    },
+    {
+     "appId": "com.mp4mp3",
+     "title": "Video & Music Downloader"
+    },
+    {
+     "appId": "super.video.downloader.wsnbppl",
+     "title": "Video Downloader, Player, Save"
+    },
+    {
+     "appId": "com.video.downloader.proxy.browser.player.app",
+     "title": "Video Downloader & Browser"
+    },
+    {
+     "appId": "com.videodownload.browser.videodownloader",
+     "title": "All Video Downloader & Player"
+    },
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload",
+     "title": "Download video no watermark"
+    },
+    {
+     "appId": "com.haariug.video.downloader.story.saver.reel.saver",
+     "title": "Reel Saver - Video Downloader"
+    },
+    {
+     "appId": "aculix.video.downloader.for.reels",
+     "title": "All Social Video Downloader"
+    },
+    {
+     "appId": "com.aisolvix.com",
+     "title": "Video downloader - Story Saver"
+    }
+   ]
+  },
+  {
+   "q": "instagram video downloader",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:30.373Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "instagram.video.downloader.story.saver.ig.insaver",
+     "title": "InSaver: All Video Downloader",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.746845,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig",
+     "title": "Video downloader - Story Saver",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "50,000,000+",
+     "score": 4.744634,
+     "genre": "Social"
+    },
+    {
+     "appId": "videodownloader.instagram.videosaver",
+     "title": "Video Downloader & Story Saver",
+     "developer": "Video Downloader & Fast Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.8078337,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.ferdigokdemir.instabox",
+     "title": "Instagram Video Downloader",
+     "developer": "Nazar Tech",
+     "installsLabel": "10,000+",
+     "score": 4.2,
+     "genre": "Tools"
+    },
+    {
+     "appId": "video.downloader.videodownloader",
+     "title": "Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.722918,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "reels.stories.video.downloader",
+     "title": "Video Downloader for Instagram",
+     "developer": "Bytecode.one",
+     "installsLabel": "10,000+",
+     "score": 4.92,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.linhiev.videodownloader",
+     "title": "Social Video Downloader",
+     "developer": "Linhiev technologies",
+     "installsLabel": "100,000+",
+     "score": 4.0941176,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "app.xapps.ig",
+     "title": "Instagram Video Downloader",
+     "developer": "李长华",
+     "installsLabel": "100+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.insaver",
+     "title": "InSaver: Video Downloader",
+     "developer": "Ninetysix Info",
+     "installsLabel": "10,000+",
+     "score": 4.4545455,
+     "genre": "Entertainment"
+    },
+    {
+     "appId": "instagram.free.video.downloader.videodownloader",
+     "title": "InSaver : Video Downloader",
+     "developer": "Magic Makers",
+     "installsLabel": "10,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "instasaver.videodownloader.photodownloader.repost",
+     "title": "All Video Downloader & Browser",
+     "developer": "Fast Video Downloader & Story Saver - DevBay",
+     "installsLabel": "50,000,000+",
+     "score": 3.8952587,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.instadownloader.instasave.igsave.ins",
+     "title": "Video Downloader : Story Saver",
+     "developer": "Video Downloader & Photo Downloader & Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.43,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.instagram.android",
+     "title": "Instagram",
+     "developer": "Instagram",
+     "installsLabel": "5,000,000,000+",
+     "score": 3.9933467,
+     "genre": "Social"
+    },
+    {
+     "appId": "com.mp4mp3",
+     "title": "Video & Music Downloader",
+     "developer": "Media Studio Ltd",
+     "installsLabel": "10,000,000+",
+     "score": 4.608451,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.shirokovapp.instasave",
+     "title": "Insget - Video & Story Saver",
+     "developer": "Spaple",
+     "installsLabel": "1,000,000+",
+     "score": 4.7786884,
+     "genre": "Tools"
+    },
+    {
+     "appId": "instagram.downloader.saver.repost.reels.story",
+     "title": "Video Downloader & Story Saver",
+     "developer": "SavePro - Video Downloader",
+     "installsLabel": "100,000+",
+     "score": 4.8431373,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.savefrom.theappdoor",
+     "title": "Save From Net Video Downloader",
+     "developer": "Cards",
+     "installsLabel": "500,000+",
+     "score": 4.59,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "video.downloader.saver.story",
+     "title": "Video downloader & video saver",
+     "developer": "Yevbezapp",
+     "installsLabel": "1,000,000+",
+     "score": 3.7631578,
+     "genre": "Tools"
+    },
+    {
+     "appId": "videoplayer.videodownloader.downloader",
+     "title": "All Video Downloader & Player",
+     "developer": "QR Code Scanner.",
+     "installsLabel": "100,000,000+",
+     "score": 4.5262523,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.story.repost.share.video",
+     "title": "Reshare - Video Downloader HD",
+     "developer": "Video Downloader - Story Saver",
+     "installsLabel": "100,000+",
+     "score": 4.2834644,
+     "genre": "Social"
+    },
+    {
+     "appId": "instagram.downloader.story.saver",
+     "title": "Video downloader"
+    },
+    {
+     "appId": "tool2easy.totalvideos.itubevideodownloader",
+     "title": "Total Video Downloader"
+    },
+    {
+     "appId": "statussaver.videodownloader.downloadstatus.savestatus.storysaver",
+     "title": "Video Downloader, HD Download"
+    },
+    {
+     "appId": "com.videodownload.browser.videodownloader",
+     "title": "All Video Downloader & Player"
+    },
+    {
+     "appId": "video.downloader.allvideodownloader.videosaver",
+     "title": "Video Downloader: Video Saver"
+    },
+    {
+     "appId": "hub.browser.video.downloader.saver",
+     "title": "Hub Video Downloader"
+    },
+    {
+     "appId": "com.gamma.videodownloader",
+     "title": "Video Downloader - without ads"
+    },
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload.snaptik",
+     "title": "SnapTok - TT Video Downloader"
+    },
+    {
+     "appId": "com.aisolvix.com",
+     "title": "Video downloader - Story Saver"
+    },
+    {
+     "appId": "com.video.downloader.proxy.browser.player.app",
+     "title": "Video Downloader & Browser"
+    }
+   ]
+  },
+  {
+   "q": "facebook video downloader",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:30.429Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "face.downloader",
+     "title": "Video Downloader for Facebook",
+     "developer": "irmme LLC",
+     "installsLabel": "1,000,000+",
+     "score": 4.360656,
+     "genre": "Tools"
+    },
+    {
+     "appId": "facebook.video.downloader.savefrom.fb.saver.fast",
+     "title": "AhaFast Video Downloader",
+     "developer": "Video Downloader & Video Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.56859,
+     "genre": "Tools"
+    },
+    {
+     "appId": "video.downloader.videodownloader",
+     "title": "Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.722918,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "me.vidura.vloader",
+     "title": "Quik Facebook Video downloader",
+     "developer": "Vidura Prasangana Wijerathna",
+     "installsLabel": "10,000+",
+     "score": 4.909091,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.linhiev.videodownloader",
+     "title": "Social Video Downloader",
+     "developer": "Linhiev technologies",
+     "installsLabel": "100,000+",
+     "score": 4.0941176,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.all.social.video.downloader",
+     "title": "Video Downloader - Video Saver",
+     "developer": "GetItDone",
+     "installsLabel": "10,000,000+",
+     "score": 4.074627,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "videoplayer.videodownloader.downloader",
+     "title": "All Video Downloader & Player",
+     "developer": "QR Code Scanner.",
+     "installsLabel": "100,000,000+",
+     "score": 4.5262523,
+     "genre": "Tools"
+    },
+    {
+     "appId": "aculix.video.downloader.for.reels",
+     "title": "All Social Video Downloader",
+     "developer": "Aculix Technologies LLP",
+     "installsLabel": "1,000,000+",
+     "score": 4.4521737,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig.insaver",
+     "title": "InSaver: All Video Downloader",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.746845,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.livevideos.videostreamer",
+     "title": "Video Stream & Reel Downloader",
+     "developer": "Zag Technology",
+     "installsLabel": "1,000,000+",
+     "score": 4.019802,
+     "genre": "Social"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig",
+     "title": "Video downloader - Story Saver",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "50,000,000+",
+     "score": 4.744634,
+     "genre": "Social"
+    },
+    {
+     "appId": "kas.socialdownloader",
+     "title": "Video Downloader - Reels Saver",
+     "developer": "Kas group",
+     "installsLabel": "5,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "video.downloader.save.video.social.media",
+     "title": "Video Downloader - Story Saver",
+     "developer": "GiggleGenius",
+     "installsLabel": "10,000,000+",
+     "score": 4.25,
+     "genre": "Tools"
+    },
+    {
+     "appId": "instasaver.videodownloader.photodownloader.repost",
+     "title": "All Video Downloader & Browser",
+     "developer": "Fast Video Downloader & Story Saver - DevBay",
+     "installsLabel": "50,000,000+",
+     "score": 3.8952587,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.psapps.videos.downloader.forfb",
+     "title": "Faster Video Downloader",
+     "developer": "PlaySmartApps",
+     "installsLabel": "500,000+",
+     "score": 3.75,
+     "genre": "Tools"
+    },
+    {
+     "appId": "all.video.downloader.allvideodownloader",
+     "title": "All Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.710804,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "super.video.downloader.wsnbppl",
+     "title": "Video Downloader, Player, Save",
+     "developer": "Fantastic Light",
+     "installsLabel": "500,000+",
+     "score": 4.4444447,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.smarttool.downloader",
+     "title": "Video Downloader",
+     "developer": "SmartTool Inc",
+     "installsLabel": "50,000+",
+     "score": 3.4,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.gamma.videodownloader",
+     "title": "Video Downloader - without ads",
+     "developer": "Gamma Play",
+     "installsLabel": "100,000+",
+     "score": 4.6309524,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.allviddown.downloader",
+     "title": "Video Downloader & Video Saver",
+     "developer": "House Nerezza LLC",
+     "installsLabel": "100+",
+     "genre": "Productivity"
+    },
+    {
+     "appId": "com.vidmat.allvideodownloader",
+     "title": "All Video Downloader Master"
+    },
+    {
+     "appId": "video.downloader.saver.story",
+     "title": "Video downloader & video saver"
+    },
+    {
+     "appId": "com.fvd",
+     "title": "All File & Video Downloader"
+    },
+    {
+     "appId": "statussaver.videodownloader.downloadstatus.savestatus.storysaver",
+     "title": "Video Downloader, HD Download"
+    },
+    {
+     "appId": "free.files.downloader.save.video.manager",
+     "title": "Video Downloader - Save Videos"
+    },
+    {
+     "appId": "tool2easy.totalvideos.itubevideodownloader",
+     "title": "Total Video Downloader"
+    },
+    {
+     "appId": "com.xbuddymobile.app",
+     "title": "9xbuddy: Video downloader"
+    },
+    {
+     "appId": "hub.browser.video.downloader.saver",
+     "title": "Hub Video Downloader"
+    },
+    {
+     "appId": "videodownloader.instagram.videosaver",
+     "title": "Video Downloader & Story Saver"
+    },
+    {
+     "appId": "free.video.downloader.converter.music",
+     "title": "Video Downloader, Download All"
+    }
+   ]
+  },
+  {
+   "q": "tiktok video downloader",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:31.487Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload",
+     "title": "Download video no watermark",
+     "developer": "ETM Video Downloader",
+     "installsLabel": "50,000,000+",
+     "score": 4.611807,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload.snaptik",
+     "title": "SnapTok - TT Video Downloader",
+     "developer": "Video Downloader & Video Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.6074767,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "ru.codeluck.tiktok.downloader",
+     "title": "Tikget - Video Downloader",
+     "developer": "Spaple",
+     "installsLabel": "500,000+",
+     "score": 4.68,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.downloaderfor.tiktok",
+     "title": "Downloader for TikTok",
+     "developer": "application.development.studio",
+     "installsLabel": "10,000,000+",
+     "score": 4.373602,
+     "genre": "Tools"
+    },
+    {
+     "appId": "video.downloader.videodownloader",
+     "title": "Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.722918,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "tt.video.downloader.saver.withoutwatermark.tmate.snaptik",
+     "title": "Video Downloader No Watermark",
+     "developer": "JedyApps",
+     "installsLabel": "10,000,000+",
+     "score": 4.313222,
+     "genre": "Tools"
+    },
+    {
+     "appId": "repost.share.tiktok.nowatermark.videosave.download.videodownloader.saver",
+     "title": "VideoSaver : Watermark Remover",
+     "developer": "Video Downloader & Story Downloader & Saver",
+     "installsLabel": "5,000,000+",
+     "score": 4.467422,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.zhiliaoapp.musically",
+     "title": "TikTok - Videos, Shop & LIVE",
+     "developer": "TikTok Pte. Ltd.",
+     "installsLabel": "1,000,000,000+",
+     "score": 3.9747567,
+     "genre": "Social"
+    },
+    {
+     "appId": "com.desicoder.tikdown",
+     "title": "TikVid - TikTok Downloader",
+     "developer": "MobilesWorld",
+     "installsLabel": "100,000+",
+     "score": 4.5405407,
+     "genre": "Tools"
+    },
+    {
+     "appId": "tiktak.downloader.no.watermark.video.downloader",
+     "title": "Video Downloader For Tiktok",
+     "developer": "IFM Project",
+     "installsLabel": "10,000+",
+     "score": 4.529412,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.linhiev.videodownloader",
+     "title": "Social Video Downloader",
+     "developer": "Linhiev technologies",
+     "installsLabel": "100,000+",
+     "score": 4.0941176,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.tiktokiocom.myapp",
+     "title": "Tiktokio:TT Video Downloader",
+     "developer": "All video downloader studio",
+     "installsLabel": "1,000,000+",
+     "score": 4.05,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.universal.video.downloader",
+     "title": "Any Video Downloader App | SSS",
+     "developer": "Any_Video_Downloader",
+     "installsLabel": "1,000,000+",
+     "score": 4.67,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.dba.tiktokvideosaver.nowatermark",
+     "title": "Video Downloader TSaver",
+     "developer": "Dark Blue Apps",
+     "installsLabel": "5,000,000+",
+     "score": 4.238532,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.tiktok.videodownload.videodownloaderfortiktok",
+     "title": "Video Downloader for TT",
+     "developer": "Video Downloader Studio.",
+     "installsLabel": "100,000+",
+     "score": 3.9166667,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.cavevideo.tiksave",
+     "title": "TT Video Downloader",
+     "developer": "CaveStudio",
+     "installsLabel": "1,000,000+",
+     "score": 4.188119,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.tiktok.lite.go",
+     "title": "TikTok Lite - Faster TikTok",
+     "developer": "TikTok Pte. Ltd.",
+     "installsLabel": "10,000,000+",
+     "score": 4.2676463,
+     "genre": "Social"
+    },
+    {
+     "appId": "download.video.tiktok.nowatermark.tiktokdownloader",
+     "title": "No Watermark Video Downloader",
+     "developer": "Hatici Video Downloader Apps",
+     "installsLabel": "1,000,000+",
+     "score": 4.359649,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.video.videodownloader_appdl_lite",
+     "title": "SSSTIK Video Downloader Lite",
+     "developer": "appdlPro",
+     "installsLabel": "1,000,000+",
+     "score": 4.92,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.tiktok.video.downloader.no.watermark.tk",
+     "title": "Video downloader for HD Video",
+     "developer": "Likeme Tech Studio",
+     "installsLabel": "5,000,000+",
+     "score": 4.4526315,
+     "genre": "Tools"
+    },
+    {
+     "appId": "instasaver.videodownloader.photodownloader.repost",
+     "title": "All Video Downloader & Browser"
+    },
+    {
+     "appId": "com.videodownloadertikk.app",
+     "title": "VDT - Video Downloader Tik"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig",
+     "title": "Video downloader - Story Saver"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig.insaver",
+     "title": "InSaver: All Video Downloader"
+    },
+    {
+     "appId": "tiktok.downloader.nowatermark.save.video",
+     "title": "Video Downloader No Watermark"
+    },
+    {
+     "appId": "com.downloaderfor.tiktok.nowatermark.tiktokdownload.video.downloader.for.tiktok",
+     "title": "Video Downloader for TikTok"
+    },
+    {
+     "appId": "videoplayer.videodownloader.downloader",
+     "title": "All Video Downloader & Player"
+    },
+    {
+     "appId": "com.gamma.videodownloader",
+     "title": "Video Downloader - without ads"
+    },
+    {
+     "appId": "com.video.videodownloader_appdl",
+     "title": "SSS: TT Video Downloader HD"
+    },
+    {
+     "appId": "tiktok.all.video.downloader.nowatermark",
+     "title": "SnapTik: TT Video Downloader"
+    }
+   ]
+  },
+  {
+   "q": "twitter video downloader",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:31.522Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "tweeter.gif.twittervideodownloader",
+     "title": "Download Twitter Videos - GIF",
+     "developer": "Photo and Video App",
+     "installsLabel": "10,000,000+",
+     "score": 4.6,
+     "genre": "Tools"
+    },
+    {
+     "appId": "downloadtwittervideo.twitterdownloader.twittervideodownloader.twittersaver",
+     "title": "Video Downloader for Twitter",
+     "developer": "Video Downloader & Fast Saver",
+     "installsLabel": "1,000,000+",
+     "score": 4.7792,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "twittervideosaver.twittervideodownloader.twimate.savetwittergif",
+     "title": "Video Downloader & GIF Saver",
+     "developer": "Alpha App Team",
+     "installsLabel": "5,000,000+",
+     "score": 4.787845,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "twittervideodownloader.twitter.videoindir.savegif.twdown",
+     "title": "X Saver:Download Twitter Video",
+     "developer": "Shotcut Video Workshop",
+     "installsLabel": "5,000,000+",
+     "score": 4.65953,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "tweeter.savetwitter.twittervideodownloader.downloadtwittervideos",
+     "title": "Video Downloader for Twitter",
+     "developer": "Hatici Video Downloader Apps",
+     "installsLabel": "1,000,000+",
+     "score": 4.609137,
+     "genre": "Tools"
+    },
+    {
+     "appId": "tweeload.twitter.video.downloader",
+     "title": "Video Downloader for Twitter X",
+     "developer": "Aculix Technologies LLP",
+     "installsLabel": "1,000,000+",
+     "score": 4.599034,
+     "genre": "Tools"
+    },
+    {
+     "appId": "video.downloader.videodownloader",
+     "title": "Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.722918,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.videodownloader.videoxdownloader",
+     "title": "Video Downloader for Twitter X",
+     "developer": "Fluffy Tools Apps",
+     "installsLabel": "1,000+",
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.tweetdownloader",
+     "title": "Tweet Video Downloader",
+     "developer": "Adrián Parodi",
+     "installsLabel": "50,000+",
+     "score": 4.24,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.Xsaver.xvideodownload",
+     "title": "XSaver Twitter Video Download",
+     "developer": "Toolverse Studio",
+     "installsLabel": "50,000+",
+     "score": 4.54902,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.linhiev.videodownloader",
+     "title": "Social Video Downloader",
+     "developer": "Linhiev technologies",
+     "installsLabel": "100,000+",
+     "score": 4.0941176,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "x.twitter.video.downloader.saver",
+     "title": "Twitter Video Download",
+     "developer": "Vidmark Inc.",
+     "installsLabel": "500,000+",
+     "score": 4.69,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "twittervideodownloader.twitter.videoindir.x.savegif.twdown.downloaders",
+     "title": "X Saver•Download Twitter Video",
+     "developer": "EzyApps",
+     "installsLabel": "1,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "twitter.twittervideodownloader.savetwitter",
+     "title": "Video Downloader For Twitter",
+     "developer": "AppberrySoft",
+     "installsLabel": "5,000+",
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.ferdigokdemir.twibox",
+     "title": "Twitter Video Downloader - GIF",
+     "developer": "Nazar Tech",
+     "installsLabel": "100+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.video.tweet.fast.hd.saver.x.twitter.downloader",
+     "title": "X Video Downloader - Saver",
+     "developer": "ViaTech Lab",
+     "installsLabel": "1,000+",
+     "score": 4.857143,
+     "genre": "Tools"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig.insaver",
+     "title": "InSaver: All Video Downloader",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.746845,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.panshen.twitterdownloader",
+     "title": "X Downloader - video&gif",
+     "developer": "Innov App",
+     "installsLabel": "5,000+",
+     "score": 4.5,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.tweetdown.twittervideodownloader",
+     "title": "Tweet Video Downloader App",
+     "developer": "ApptureX",
+     "installsLabel": "50,000+",
+     "score": 4.75,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "hub.browser.video.downloader.saver",
+     "title": "Hub Video Downloader",
+     "developer": "DOSA Apps",
+     "installsLabel": "10,000,000+",
+     "score": 4.3660564,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "net.videodownloader.twittervideoindir",
+     "title": "Twitter video downloading app"
+    },
+    {
+     "appId": "uk.co.wartechwick.twittervideodownloader",
+     "title": "Video Downloader for Twitter"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig",
+     "title": "Video downloader - Story Saver"
+    },
+    {
+     "appId": "twimate.tweetdownloader.savetwittergif.twittervideodownloader",
+     "title": "Download Twitter Videos - GIF"
+    },
+    {
+     "appId": "com.twittervideodownloader.twittxvideodownloader.videodownloader",
+     "title": "Twitter Video Downloader"
+    },
+    {
+     "appId": "com.twitterdownloader.twittervideodownloader.twittersaver.downloadtwittervideo.twitter",
+     "title": "Video Downloader For Twitter"
+    },
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload.snaptik",
+     "title": "SnapTok - TT Video Downloader"
+    },
+    {
+     "appId": "ru.codeluck.tiktok.downloader",
+     "title": "Tikget - Video Downloader"
+    },
+    {
+     "appId": "videodownloader.instagram.videosaver",
+     "title": "Video Downloader & Story Saver"
+    },
+    {
+     "appId": "com.oneapp.freeapp.twitter.videodownloaderfortwitter",
+     "title": "Download Twitter Videos - GIF"
+    }
+   ]
+  },
+  {
+   "q": "video downloader and saver",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:31.597Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "downloader.video.download.free",
+     "title": "Video Downloader & Video Saver",
+     "developer": "All Video Downloader, Saver & Player Studio",
+     "installsLabel": "50,000,000+",
+     "score": 4.4288754,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "video.downloader.videodownloader",
+     "title": "Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.722918,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig",
+     "title": "Video downloader - Story Saver",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "50,000,000+",
+     "score": 4.744634,
+     "genre": "Social"
+    },
+    {
+     "appId": "hub.browser.video.downloader.saver",
+     "title": "Hub Video Downloader",
+     "developer": "DOSA Apps",
+     "installsLabel": "10,000,000+",
+     "score": 4.3660564,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "videoplayer.videodownloader.downloader",
+     "title": "All Video Downloader & Player",
+     "developer": "QR Code Scanner.",
+     "installsLabel": "100,000,000+",
+     "score": 4.5262523,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.savefrom.theappdoor",
+     "title": "Save From Net Video Downloader",
+     "developer": "Cards",
+     "installsLabel": "500,000+",
+     "score": 4.59,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig.insaver",
+     "title": "InSaver: All Video Downloader",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.74722,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.videodownload.browser.videodownloader",
+     "title": "All Video Downloader & Player",
+     "developer": "AppTool-Browser-Video",
+     "installsLabel": "10,000,000+",
+     "score": 4.366337,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.gamma.videodownloader",
+     "title": "Video Downloader - without ads",
+     "developer": "Gamma Play",
+     "installsLabel": "100,000+",
+     "score": 4.6309524,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "videodownloader.instagram.videosaver",
+     "title": "Video Downloader & Story Saver",
+     "developer": "Video Downloader & Fast Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.8078337,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.xbuddymobile.app",
+     "title": "9xbuddy: Video downloader",
+     "developer": "123SUDO",
+     "installsLabel": "100,000+",
+     "score": 3.5609756,
+     "genre": "Tools"
+    },
+    {
+     "appId": "free.files.downloader.save.video.manager",
+     "title": "Video Downloader - Save Videos",
+     "developer": "All Video Downloader, Saver & Player Studio",
+     "installsLabel": "10,000,000+",
+     "score": 4.5355506,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "video.downloader.saver.story",
+     "title": "Video downloader & video saver",
+     "developer": "Yevbezapp",
+     "installsLabel": "1,000,000+",
+     "score": 3.7631578,
+     "genre": "Tools"
+    },
+    {
+     "appId": "facebook.video.downloader.savefrom.fb.saver.fast",
+     "title": "AhaFast Video Downloader",
+     "developer": "Video Downloader & Video Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.56859,
+     "genre": "Tools"
+    },
+    {
+     "appId": "instasaver.videodownloader.photodownloader.repost",
+     "title": "All Video Downloader & Browser",
+     "developer": "Fast Video Downloader & Story Saver - DevBay",
+     "installsLabel": "50,000,000+",
+     "score": 3.8952587,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload.snaptik",
+     "title": "SnapTok - TT Video Downloader",
+     "developer": "Video Downloader & Video Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.6074767,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.linhiev.videodownloader",
+     "title": "Social Video Downloader",
+     "developer": "Linhiev technologies",
+     "installsLabel": "100,000+",
+     "score": 4.0941176,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "pin.pinterest.video.downloader.forpinterest.pinsaver",
+     "title": "Video Downloader for Pinterest",
+     "developer": "ETM Video Downloader",
+     "installsLabel": "5,000,000+",
+     "score": 4.7237353,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "video.downloader.videodownloader.tube",
+     "title": "Video downloader, download app",
+     "developer": "Video Downloader & Video Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.5847178,
+     "genre": "Tools"
+    },
+    {
+     "appId": "ru.spaple.pinterest.downloader",
+     "title": "Pinget – Video Downloader",
+     "developer": "Spaple",
+     "installsLabel": "1,000,000+",
+     "score": 4.8040543,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.shicichaxun.video",
+     "title": "Video downloader, mp4, m3u8"
+    },
+    {
+     "appId": "com.sun.ai.app.tube.videodownloader",
+     "title": "Tube Video Downloader"
+    },
+    {
+     "appId": "com.mp4mp3",
+     "title": "Video & Music Downloader"
+    },
+    {
+     "appId": "free.video.downloader.converter.music",
+     "title": "Video Downloader, Download All"
+    },
+    {
+     "appId": "statussaver.statusdownloader.downloadstatus.savestatus",
+     "title": "Status Saver: Video Downloader"
+    },
+    {
+     "appId": "nova.all.video.downloader",
+     "title": "Video Downloader & Video Saver"
+    },
+    {
+     "appId": "download.video.free.videodownlaoder.savevideo",
+     "title": "All Video Downloader & Saver"
+    },
+    {
+     "appId": "super.video.downloader.wsnbppl",
+     "title": "Video Downloader, Player, Save"
+    },
+    {
+     "appId": "tweeter.gif.twittervideodownloader",
+     "title": "Download Twitter Videos - GIF"
+    },
+    {
+     "appId": "com.vidmat.allvideodownloader",
+     "title": "All Video Downloader Master"
+    }
+   ]
+  },
+  {
+   "q": "fast video downloader",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:31.743Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "video.downloader.videodownloader",
+     "title": "Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.722918,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "downloader.video.download.free",
+     "title": "Video Downloader & Video Saver",
+     "developer": "All Video Downloader, Saver & Player Studio",
+     "installsLabel": "50,000,000+",
+     "score": 4.4288754,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.all.video.fast.downloader",
+     "title": "Fast Downloader - Video Player",
+     "developer": "Dhvankit",
+     "installsLabel": "1,000,000+",
+     "score": 4.1929827,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "mobidev.apps.vd",
+     "title": "Video Downloader",
+     "developer": "MobiDevApps",
+     "installsLabel": "10,000,000+",
+     "score": 4.2894115,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "videoplayer.videodownloader.downloader",
+     "title": "All Video Downloader & Player",
+     "developer": "QR Code Scanner.",
+     "installsLabel": "100,000,000+",
+     "score": 4.5262523,
+     "genre": "Tools"
+    },
+    {
+     "appId": "free.files.downloader.save.video.manager",
+     "title": "Video Downloader - Save Videos",
+     "developer": "All Video Downloader, Saver & Player Studio",
+     "installsLabel": "10,000,000+",
+     "score": 4.5355506,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "hub.browser.video.downloader.saver",
+     "title": "Hub Video Downloader",
+     "developer": "DOSA Apps",
+     "installsLabel": "10,000,000+",
+     "score": 4.3660564,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.gamma.videodownloader",
+     "title": "Video Downloader - without ads",
+     "developer": "Gamma Play",
+     "installsLabel": "100,000+",
+     "score": 4.6309524,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "downloader.vitmate.downloaderapp",
+     "title": "Downloader - Video Downloader",
+     "developer": "Leap Fitness Group",
+     "installsLabel": "100,000,000+",
+     "score": 4.656465,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.savefrom.theappdoor",
+     "title": "Save From Net Video Downloader",
+     "developer": "Cards",
+     "installsLabel": "500,000+",
+     "score": 4.59,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "facebook.video.downloader.savefrom.fb.saver.fast",
+     "title": "AhaFast Video Downloader",
+     "developer": "Video Downloader & Video Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.56859,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.videodownload.browser.videodownloader",
+     "title": "All Video Downloader & Player",
+     "developer": "AppTool-Browser-Video",
+     "installsLabel": "10,000,000+",
+     "score": 4.366337,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.xbuddymobile.app",
+     "title": "9xbuddy: Video downloader",
+     "developer": "123SUDO",
+     "installsLabel": "100,000+",
+     "score": 3.5609756,
+     "genre": "Tools"
+    },
+    {
+     "appId": "idm.internet.download.manager",
+     "title": "1DM: Browser & Video Download",
+     "developer": "Vicky Bonick",
+     "installsLabel": "50,000,000+",
+     "score": 4.6229205,
+     "genre": "Tools"
+    },
+    {
+     "appId": "pdownloader.social.media.saver.video.downloader",
+     "title": "PDownloader - Video Downloader",
+     "developer": "Dovi Tools",
+     "installsLabel": "1,000,000+",
+     "score": 4.4049296,
+     "genre": "Tools"
+    },
+    {
+     "appId": "all.video.downloader.allvideodownloader",
+     "title": "All Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.710804,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig.insaver",
+     "title": "InSaver: All Video Downloader",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.746845,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.video.downloader.proxy.browser.player.app",
+     "title": "Video Downloader & Browser",
+     "developer": "Video Downloader & hubMate Apps",
+     "installsLabel": "1,000,000+",
+     "score": 3.9824562,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.linhiev.videodownloader",
+     "title": "Social Video Downloader",
+     "developer": "Linhiev technologies",
+     "installsLabel": "100,000+",
+     "score": 4.0941176,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig",
+     "title": "Video downloader - Story Saver",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "50,000,000+",
+     "score": 4.744634,
+     "genre": "Social"
+    },
+    {
+     "appId": "instasaver.videodownloader.photodownloader.repost",
+     "title": "All Video Downloader & Browser"
+    },
+    {
+     "appId": "com.video.downloader.ttypldre",
+     "title": "Tube Video Downloader &Mp3"
+    },
+    {
+     "appId": "com.shicichaxun.video",
+     "title": "Video downloader, mp4, m3u8"
+    },
+    {
+     "appId": "video.downloader.saver.story",
+     "title": "Video downloader & video saver"
+    },
+    {
+     "appId": "download.movie.media.app.hd.video.social.browser",
+     "title": "HD Video Downloader"
+    },
+    {
+     "appId": "com.xa.video.downloader",
+     "title": "XA Downloader - Video Saver"
+    },
+    {
+     "appId": "tool2easy.totalvideos.itubevideodownloader",
+     "title": "Total Video Downloader"
+    },
+    {
+     "appId": "super.video.downloader.wsnbppl",
+     "title": "Video Downloader, Player, Save"
+    },
+    {
+     "appId": "nova.all.video.downloader",
+     "title": "Video Downloader & Video Saver"
+    },
+    {
+     "appId": "videodownloader.instagram.videosaver",
+     "title": "Video Downloader & Story Saver"
+    }
+   ]
+  },
+  {
+   "q": "social video downloader",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:32.724Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "com.linhiev.videodownloader",
+     "title": "Social Video Downloader",
+     "developer": "Linhiev technologies",
+     "installsLabel": "100,000+",
+     "score": 4.0941176,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "video.downloader.videodownloader",
+     "title": "Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.722918,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.xbuddymobile.app",
+     "title": "9xbuddy: Video downloader",
+     "developer": "123SUDO",
+     "installsLabel": "100,000+",
+     "score": 3.5609756,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.gamma.videodownloader",
+     "title": "Video Downloader - without ads",
+     "developer": "Gamma Play",
+     "installsLabel": "100,000+",
+     "score": 4.6309524,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.savefrom.theappdoor",
+     "title": "Save From Net Video Downloader",
+     "developer": "Cards",
+     "installsLabel": "500,000+",
+     "score": 4.59,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.ytcorp.ytdownload",
+     "title": "All Video Download: YTDownload",
+     "developer": "YT Corp",
+     "installsLabel": "10,000+",
+     "score": 2.4545455,
+     "genre": "Tools"
+    },
+    {
+     "appId": "ru.spaple.pinterest.downloader",
+     "title": "Pinget – Video Downloader",
+     "developer": "Spaple",
+     "installsLabel": "1,000,000+",
+     "score": 4.8040543,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "ru.codeluck.tiktok.downloader",
+     "title": "Tikget - Video Downloader",
+     "developer": "Spaple",
+     "installsLabel": "500,000+",
+     "score": 4.68,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "tweeter.gif.twittervideodownloader",
+     "title": "Download Twitter Videos - GIF",
+     "developer": "Photo and Video App",
+     "installsLabel": "10,000,000+",
+     "score": 4.6,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.rit.allsocialvideodownloader",
+     "title": "All Social Video Downloader",
+     "developer": "Zivo Labs",
+     "installsLabel": "5,000+",
+     "score": 2.8333333,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.pinterest.x.video.downloader.facebook",
+     "title": "Social Video Downloader",
+     "developer": "MobiEdge",
+     "installsLabel": "100+",
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.linhiev.vdownloader",
+     "title": "Social Video Saver & Download",
+     "developer": "Linhiev technologies",
+     "installsLabel": "1,000+",
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig",
+     "title": "Video downloader - Story Saver",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "50,000,000+",
+     "score": 4.744634,
+     "genre": "Social"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig.insaver",
+     "title": "InSaver: All Video Downloader",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.74722,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "today.khmerpress.videodownloader",
+     "title": "Social Video Downloader",
+     "developer": "ByteSolution",
+     "installsLabel": "10,000+",
+     "genre": "Productivity"
+    },
+    {
+     "appId": "com.bycomsolutions.snapsaver",
+     "title": "SnapSaver : Media Downloader",
+     "developer": "SmartLayer Solutions",
+     "installsLabel": "10,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.story.repost.share.video",
+     "title": "Reshare - Video Downloader HD",
+     "developer": "Video Downloader - Story Saver",
+     "installsLabel": "100,000+",
+     "score": 4.2834644,
+     "genre": "Social"
+    },
+    {
+     "appId": "videodownloader.instagram.videosaver",
+     "title": "Video Downloader & Story Saver",
+     "developer": "Video Downloader & Fast Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.8078337,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "se.appthrive.linkedindownloader",
+     "title": "LinkedIn Video Downloader",
+     "developer": "SE AppThrive",
+     "installsLabel": "100,000+",
+     "score": 4.7272725,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.shicichaxun.video",
+     "title": "Video downloader, mp4, m3u8",
+     "developer": "Chen Guoming",
+     "installsLabel": "100,000+",
+     "score": 4.195402,
+     "genre": "Tools"
+    },
+    {
+     "appId": "video.downloader.saver.story",
+     "title": "Video downloader & video saver"
+    },
+    {
+     "appId": "kas.socialdownloader",
+     "title": "Video Downloader - Reels Saver"
+    },
+    {
+     "appId": "hub.browser.video.downloader.saver",
+     "title": "Hub Video Downloader"
+    },
+    {
+     "appId": "com.videodownload.browser.videodownloader",
+     "title": "All Video Downloader & Player"
+    },
+    {
+     "appId": "aculix.video.downloader.for.reels",
+     "title": "All Social Video Downloader"
+    },
+    {
+     "appId": "com.downloadvideo.streamviddownloadmaster",
+     "title": "Master Social Video Saver"
+    },
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload.snaptik",
+     "title": "SnapTok - TT Video Downloader"
+    },
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload",
+     "title": "Download video no watermark"
+    },
+    {
+     "appId": "com.download.snapfb.insave.videoplayer",
+     "title": "SnapAll - Video Downloader"
+    },
+    {
+     "appId": "tool2easy.totalvideos.itubevideodownloader",
+     "title": "Total Video Downloader"
+    }
+   ]
+  },
+  {
+   "q": "video downloader browser",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:32.768Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "video.downloader.videodownloader",
+     "title": "Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.722918,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.gamma.videodownloader",
+     "title": "Video Downloader - without ads",
+     "developer": "Gamma Play",
+     "installsLabel": "100,000+",
+     "score": 4.6309524,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "idm.internet.download.manager",
+     "title": "1DM: Browser & Video Download",
+     "developer": "Vicky Bonick",
+     "installsLabel": "50,000,000+",
+     "score": 4.6229205,
+     "genre": "Tools"
+    },
+    {
+     "appId": "hub.browser.video.downloader.saver",
+     "title": "Hub Video Downloader",
+     "developer": "DOSA Apps",
+     "installsLabel": "10,000,000+",
+     "score": 4.3660564,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.UCMobile.intl",
+     "title": "UC Browser-Safe, Fast, Private",
+     "developer": "UCWeb Singapore Pte. Ltd.",
+     "installsLabel": "1,000,000,000+",
+     "score": 4.3700304,
+     "genre": "Communication"
+    },
+    {
+     "appId": "com.videodownload.browser.videodownloader",
+     "title": "All Video Downloader & Player",
+     "developer": "AppTool-Browser-Video",
+     "installsLabel": "10,000,000+",
+     "score": 4.366337,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.savefrom.theappdoor",
+     "title": "Save From Net Video Downloader",
+     "developer": "Cards",
+     "installsLabel": "500,000+",
+     "score": 4.59,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.xbuddymobile.app",
+     "title": "9xbuddy: Video downloader",
+     "developer": "123SUDO",
+     "installsLabel": "100,000+",
+     "score": 3.5609756,
+     "genre": "Tools"
+    },
+    {
+     "appId": "videoplayer.videodownloader.downloader",
+     "title": "All Video Downloader & Player",
+     "developer": "QR Code Scanner.",
+     "installsLabel": "100,000,000+",
+     "score": 4.5262523,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.shicichaxun.video",
+     "title": "Video downloader, mp4, m3u8",
+     "developer": "Chen Guoming",
+     "installsLabel": "100,000+",
+     "score": 4.195402,
+     "genre": "Tools"
+    },
+    {
+     "appId": "video.save.downloader.saver.hd.download.any",
+     "title": "Video Downloader Browser",
+     "developer": "Fillog Studio",
+     "installsLabel": "5,000,000+",
+     "score": 3.8118813,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.linhiev.videodownloader",
+     "title": "Social Video Downloader",
+     "developer": "Linhiev technologies",
+     "installsLabel": "100,000+",
+     "score": 4.0941176,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "one.browser.video.downloader.web.navigation",
+     "title": "One Browser - Video Downloader",
+     "developer": "Dovi Tools",
+     "installsLabel": "500,000+",
+     "score": 4.32,
+     "genre": "Tools"
+    },
+    {
+     "appId": "pdownloader.social.media.saver.video.downloader",
+     "title": "PDownloader - Video Downloader",
+     "developer": "Dovi Tools",
+     "installsLabel": "1,000,000+",
+     "score": 4.4049296,
+     "genre": "Tools"
+    },
+    {
+     "appId": "idm.internet.download.manager.plus",
+     "title": "1DM+: Browser & Video Download",
+     "developer": "Vicky Bonick",
+     "installsLabel": "100,000+",
+     "score": 4.6873064,
+     "genre": "Tools"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig.insaver",
+     "title": "InSaver: All Video Downloader",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.74722,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.video.downloader.proxy.browser.player.app",
+     "title": "Video Downloader & Browser",
+     "developer": "Video Downloader & hubMate Apps",
+     "installsLabel": "1,000,000+",
+     "score": 3.9824562,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "ru.spaple.pinterest.downloader",
+     "title": "Pinget – Video Downloader",
+     "developer": "Spaple",
+     "installsLabel": "1,000,000+",
+     "score": 4.8040543,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.video_downloader.universalVideoDownloader",
+     "title": "Universal Video Downloader",
+     "developer": "shashikant_kumar",
+     "installsLabel": "5,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "downloader.video.download.free",
+     "title": "Video Downloader & Video Saver",
+     "developer": "All Video Downloader, Saver & Player Studio",
+     "installsLabel": "50,000,000+",
+     "score": 4.4288754,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "super.video.downloader.wsnbppl",
+     "title": "Video Downloader, Player, Save"
+    },
+    {
+     "appId": "instasaver.videodownloader.photodownloader.repost",
+     "title": "All Video Downloader & Browser"
+    },
+    {
+     "appId": "com.ace.video.downloader",
+     "title": "Ace Video Downloader: Videos X"
+    },
+    {
+     "appId": "mobidev.apps.vd.pro",
+     "title": "Video Downloader Pro"
+    },
+    {
+     "appId": "se.appthrive.linkedindownloader",
+     "title": "LinkedIn Video Downloader"
+    },
+    {
+     "appId": "facebook.video.downloader.savefrom.fb.saver.fast",
+     "title": "AhaFast Video Downloader"
+    },
+    {
+     "appId": "com.fvd",
+     "title": "All File & Video Downloader"
+    },
+    {
+     "appId": "videodownloader.instagram.videosaver",
+     "title": "Video Downloader & Story Saver"
+    },
+    {
+     "appId": "com.sun.ai.app.tube.videodownloader",
+     "title": "Tube Video Downloader"
+    },
+    {
+     "appId": "tool2easy.totalvideos.itubevideodownloader",
+     "title": "Total Video Downloader"
+    }
+   ]
+  },
+  {
+   "q": "downloader",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:32.710Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "com.esaba.downloader",
+     "title": "Downloader by AFTVnews",
+     "developer": "AFTVnews.com",
+     "installsLabel": "50,000,000+",
+     "score": 4.063745,
+     "genre": "Tools"
+    },
+    {
+     "appId": "video.downloader.videodownloader",
+     "title": "Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.722918,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.google.android.apps.nbu.files",
+     "title": "Files by Google",
+     "developer": "Google LLC",
+     "installsLabel": "5,000,000,000+",
+     "score": 4.503248,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.audiomack",
+     "title": "Audiomack: Music Downloader",
+     "developer": "Audiomack Music Apps",
+     "installsLabel": "100,000,000+",
+     "score": 4.7981505,
+     "genre": "Music & Audio"
+    },
+    {
+     "appId": "com.lenovo.anyshare.gps",
+     "title": "SHAREit: Transfer, Share Files",
+     "developer": "Smart Media4U Technology Pte.Ltd.",
+     "installsLabel": "1,000,000,000+",
+     "score": 4.291621,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.sec.android.easyMover",
+     "title": "Samsung Smart Switch Mobile",
+     "developer": "Samsung Electronics Co.,  Ltd.",
+     "installsLabel": "1,000,000,000+",
+     "score": 3.9128733,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.tech.downloader",
+     "title": "Downloader",
+     "developer": "Supono Holdings LTD",
+     "installsLabel": "1,000,000+",
+     "score": 3.27,
+     "genre": "Productivity"
+    },
+    {
+     "appId": "org.freedownloadmanager.fdm",
+     "title": "Free Download Manager - FDM",
+     "developer": "SoftDeluxe, Inc.",
+     "installsLabel": "1,000,000+",
+     "score": 4.707547,
+     "genre": "Tools"
+    },
+    {
+     "appId": "tweeter.gif.twittervideodownloader",
+     "title": "Download Twitter Videos - GIF",
+     "developer": "Photo and Video App",
+     "installsLabel": "10,000,000+",
+     "score": 4.6,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.downloader.tv.installer.xapk",
+     "title": "Downloader TV: APK Installer",
+     "developer": "Smartago",
+     "installsLabel": "100,000+",
+     "score": 4.2444444,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.utorrent.client",
+     "title": "µTorrent®- Torrent Downloader",
+     "developer": "bittorrent.com",
+     "installsLabel": "100,000,000+",
+     "score": 4.651682,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "hub.browser.video.downloader.saver",
+     "title": "Hub Video Downloader",
+     "developer": "DOSA Apps",
+     "installsLabel": "10,000,000+",
+     "score": 4.3660564,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "cn.xender",
+     "title": "Xender - Quick Share, Transfer",
+     "developer": "Xender File Sharing Team",
+     "installsLabel": "500,000,000+",
+     "score": 4.5691924,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.xiaomi.midrop",
+     "title": "ShareMe: File sharing",
+     "developer": "Xiaomi Inc.",
+     "installsLabel": "1,000,000,000+",
+     "score": 4.6267476,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.vivo.easyshare",
+     "title": "EasyShare",
+     "developer": "PT vivo mobile Indonesia",
+     "installsLabel": "1,000,000,000+",
+     "score": 3.6705883,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.apple.movetoios",
+     "title": "Move to iOS",
+     "developer": "Apple",
+     "installsLabel": "100,000,000+",
+     "score": 3.6255646,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.dv.adm",
+     "title": "Advanced Download Manager",
+     "developer": "admtorrent",
+     "installsLabel": "100,000,000+",
+     "score": 4.3939295,
+     "genre": "Tools"
+    },
+    {
+     "appId": "idm.internet.download.manager",
+     "title": "1DM: Browser & Video Download",
+     "developer": "Vicky Bonick",
+     "installsLabel": "50,000,000+",
+     "score": 4.6229205,
+     "genre": "Tools"
+    },
+    {
+     "appId": "shareit.lite",
+     "title": "SHAREit Lite - Fast File Share",
+     "developer": "Smart Media4U Technology Pte.Ltd.",
+     "installsLabel": "100,000,000+",
+     "score": 4.3458443,
+     "genre": "Productivity"
+    },
+    {
+     "appId": "org.localsend.localsend_app",
+     "title": "LocalSend: Transfer Files",
+     "developer": "Tien Do Nam",
+     "installsLabel": "10,000,000+",
+     "score": 4.6015625,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.kevinforeman.nzb360",
+     "title": "nzb360 - Media Server Manager"
+    },
+    {
+     "appId": "sharefiles.sharemusic.shareapps.filetransfer",
+     "title": "File Sharing - InShare"
+    },
+    {
+     "appId": "com.bittorrent.client.pro",
+     "title": "BitTorrent Pro - Torrent App"
+    },
+    {
+     "appId": "com.gamma.videodownloader",
+     "title": "Video Downloader - without ads"
+    },
+    {
+     "appId": "com.hkinnovate.downloader_for_tv",
+     "title": "Downloader for TV"
+    },
+    {
+     "appId": "com.wetransfer.transfer",
+     "title": "WeTransfer : File Transfer"
+    },
+    {
+     "appId": "com.linhiev.videodownloader",
+     "title": "Social Video Downloader"
+    },
+    {
+     "appId": "downloader.video.download.free",
+     "title": "Video Downloader & Video Saver"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig",
+     "title": "Video downloader - Story Saver"
+    },
+    {
+     "appId": "videoplayer.videodownloader.downloader",
+     "title": "All Video Downloader & Player"
+    }
+   ]
+  },
+  {
+   "q": "save video",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:32.183Z",
+   "featured": "com.saveinsta.app.savevideo.saveclip",
+   "results": [
+    {
+     "appId": "com.saveinsta.app.savevideo.saveclip",
+     "featured": true
+    },
+    {
+     "appId": "video.downloader.videodownloader",
+     "title": "Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.722918,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "tweeter.gif.twittervideodownloader",
+     "title": "Download Twitter Videos - GIF",
+     "developer": "Photo and Video App",
+     "installsLabel": "10,000,000+",
+     "score": 4.6,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.linhiev.videodownloader",
+     "title": "Social Video Downloader",
+     "developer": "Linhiev technologies",
+     "installsLabel": "100,000+",
+     "score": 4.0941176,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.ethar.videodownloader",
+     "title": "SaveVideo HD",
+     "developer": "Ethar Shrouf",
+     "installsLabel": "500+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.gamma.videodownloader",
+     "title": "Video Downloader - without ads",
+     "developer": "Gamma Play",
+     "installsLabel": "100,000+",
+     "score": 4.6309524,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "ru.spaple.pinterest.downloader",
+     "title": "Pinget – Video Downloader",
+     "developer": "Spaple",
+     "installsLabel": "1,000,000+",
+     "score": 4.8040543,
+     "genre": "Video Players & Editors"
+    }
+   ]
+  },
+  {
+   "q": "reel saver",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:33.464Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "instagram.video.downloader.story.saver.ig.insaver",
+     "title": "InSaver: All Video Downloader",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.74722,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig",
+     "title": "Video downloader - Story Saver",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "50,000,000+",
+     "score": 4.744634,
+     "genre": "Social"
+    },
+    {
+     "appId": "com.haariug.video.downloader.story.saver.reel.saver",
+     "title": "Reel Saver - Video Downloader",
+     "developer": "Haari UG",
+     "installsLabel": "5,000+",
+     "genre": "Productivity"
+    },
+    {
+     "appId": "com.quickostudio.reelsave",
+     "title": "ReelSave - Reels Downloader",
+     "developer": "Quicko Studio",
+     "installsLabel": "1,000+",
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.sensei.social",
+     "title": "Reels Downloader",
+     "developer": "MobileByteSensei",
+     "installsLabel": "50,000+",
+     "score": 4.2105265,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "online.savereels.app",
+     "title": "SaveReels - Reels Downloader",
+     "developer": "Khalil Asif",
+     "installsLabel": "1,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.ireelsave.app",
+     "title": "iReels Save – Reels Downloader",
+     "developer": "iReels Save",
+     "installsLabel": "100+",
+     "genre": "Social"
+    },
+    {
+     "appId": "videodownloader.instagram.videosaver",
+     "title": "Video Downloader & Story Saver",
+     "developer": "Video Downloader & Fast Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.8078337,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.markfree.videodownloader.hd.video.saver",
+     "title": "Video Downloader & Reel Saver",
+     "developer": "NextSol",
+     "installsLabel": "100+",
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "insta.face.photo.video.story.saver.reels.downloader",
+     "title": "Reels Downloader: InstaSaver",
+     "developer": "All Reels Downloader, Video Saver And Downloader",
+     "installsLabel": "5,000+",
+     "score": 4.714286,
+     "genre": "Entertainment"
+    },
+    {
+     "appId": "com.jam.instasaver",
+     "title": "Insta Saver: Reel Downloader",
+     "developer": "Jawad108",
+     "installsLabel": "0+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "repost.share.tiktok.nowatermark.videosave.download.videodownloader.saver",
+     "title": "VideoSaver : Watermark Remover",
+     "developer": "Video Downloader & Story Downloader & Saver",
+     "installsLabel": "5,000,000+",
+     "score": 4.467422,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.fulgorlabs.savereel",
+     "title": "Save Reel",
+     "developer": "Fulgor Labs",
+     "installsLabel": "100+",
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.ambarstudios.videodownloader",
+     "title": "Video Downloader Reels Stories",
+     "developer": "AmbarStudios",
+     "installsLabel": "1,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "instasaver.videodownloader.photodownloader.repost",
+     "title": "All Video Downloader & Browser",
+     "developer": "Fast Video Downloader & Story Saver - DevBay",
+     "installsLabel": "50,000,000+",
+     "score": 3.8952587,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.shirokovapp.instasave",
+     "title": "Insget - Video & Story Saver",
+     "developer": "Spaple",
+     "installsLabel": "1,000,000+",
+     "score": 4.7786884,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.lan.instasave",
+     "title": "Insta Reel Download & Organize",
+     "developer": "Lan Apps",
+     "installsLabel": "100+",
+     "genre": "Productivity"
+    },
+    {
+     "appId": "com.insaver",
+     "title": "InSaver: Video Downloader",
+     "developer": "Ninetysix Info",
+     "installsLabel": "10,000+",
+     "score": 4.4545455,
+     "genre": "Entertainment"
+    },
+    {
+     "appId": "instagram.downloader.saver.repost.reels.story",
+     "title": "Video Downloader & Story Saver",
+     "developer": "SavePro - Video Downloader",
+     "installsLabel": "100,000+",
+     "score": 4.8431373,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.reels.downloader.bunty",
+     "title": "Reels Saver - Photo And Videos",
+     "developer": "code x zone",
+     "installsLabel": "10,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.iyia.repost",
+     "title": "Reshare: Video & Story Saver"
+    },
+    {
+     "appId": "com.instasaver.codemultiverse",
+     "title": "Reels Downloader | Insta Saver"
+    },
+    {
+     "appId": "story.saver.insta",
+     "title": "Story Saver - Video Downloader"
+    },
+    {
+     "appId": "com.allvideo.downloader.reels",
+     "title": "All Video Downloader & Reels"
+    },
+    {
+     "appId": "com.instadownloader.instasave.igsave.ins",
+     "title": "Video Downloader : Story Saver"
+    },
+    {
+     "appId": "com.linhiev.videodownloader",
+     "title": "Social Video Downloader"
+    },
+    {
+     "appId": "com.freereels.app",
+     "title": "FreeReels - Dramas & Reels"
+    },
+    {
+     "appId": "moris.ins.download.free",
+     "title": "Ins Video & Photo Saver"
+    },
+    {
+     "appId": "instagram.free.video.downloader.videodownloader",
+     "title": "InSaver : Video Downloader"
+    },
+    {
+     "appId": "bitron.reels_downloader.story_saver",
+     "title": "Reels Downloader & Story Saver"
+    }
+   ]
+  },
+  {
+   "q": "insta downloader",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:33.902Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "instagram.video.downloader.story.saver.ig",
+     "title": "Video downloader - Story Saver",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "50,000,000+",
+     "score": 4.7444468,
+     "genre": "Social"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig.insaver",
+     "title": "InSaver: All Video Downloader",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.74722,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.instadownloader.instasave.igsave.ins",
+     "title": "Video Downloader : Story Saver",
+     "developer": "Video Downloader & Photo Downloader & Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.43,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "videodownloader.instagram.videosaver",
+     "title": "Video Downloader & Story Saver",
+     "developer": "Video Downloader & Fast Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.8078337,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.shirokovapp.instasave",
+     "title": "Insget - Video & Story Saver",
+     "developer": "Spaple",
+     "installsLabel": "1,000,000+",
+     "score": 4.7786884,
+     "genre": "Tools"
+    },
+    {
+     "appId": "video.downloader.videodownloader",
+     "title": "Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.722918,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "reels.stories.video.downloader",
+     "title": "Video Downloader for Instagram",
+     "developer": "Bytecode.one",
+     "installsLabel": "10,000+",
+     "score": 4.92,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.instagram.android",
+     "title": "Instagram",
+     "developer": "Instagram",
+     "installsLabel": "5,000,000,000+",
+     "score": 3.9933467,
+     "genre": "Social"
+    },
+    {
+     "appId": "com.insaver",
+     "title": "InSaver: Video Downloader",
+     "developer": "Ninetysix Info",
+     "installsLabel": "10,000+",
+     "score": 4.4545455,
+     "genre": "Entertainment"
+    },
+    {
+     "appId": "instagram.free.video.downloader.videodownloader",
+     "title": "InSaver : Video Downloader",
+     "developer": "Magic Makers",
+     "installsLabel": "10,000+",
+     "genre": "Tools"
+    },
+    {
+     "appId": "instagram.downloader.saver.repost.reels.story",
+     "title": "Video Downloader & Story Saver",
+     "developer": "SavePro - Video Downloader",
+     "installsLabel": "100,000+",
+     "score": 4.8431373,
+     "genre": "Tools"
+    },
+    {
+     "appId": "instasaver.videodownloader.photodownloader.repost",
+     "title": "All Video Downloader & Browser",
+     "developer": "Fast Video Downloader & Story Saver - DevBay",
+     "installsLabel": "50,000,000+",
+     "score": 3.8952587,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.linhiev.videodownloader",
+     "title": "Social Video Downloader",
+     "developer": "Linhiev technologies",
+     "installsLabel": "100,000+",
+     "score": 4.0941176,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.ferdigokdemir.instabox",
+     "title": "Instagram Video Downloader",
+     "developer": "Nazar Tech",
+     "installsLabel": "10,000+",
+     "score": 4.2,
+     "genre": "Tools"
+    },
+    {
+     "appId": "moris.ins.download.free",
+     "title": "Ins Video & Photo Saver",
+     "developer": "XiX Tech",
+     "installsLabel": "100,000+",
+     "score": 4.9583335,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "video.downloader.saver.story",
+     "title": "Video downloader & video saver",
+     "developer": "Yevbezapp",
+     "installsLabel": "1,000,000+",
+     "score": 3.7631578,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.story.repost.share.video",
+     "title": "Reshare - Video Downloader HD",
+     "developer": "Video Downloader - Story Saver",
+     "installsLabel": "100,000+",
+     "score": 4.2834644,
+     "genre": "Social"
+    },
+    {
+     "appId": "com.aisolvix.com",
+     "title": "Video downloader - Story Saver",
+     "developer": "InsVideo Downloader Photo Saver",
+     "installsLabel": "100,000+",
+     "score": 4,
+     "genre": "Tools"
+    },
+    {
+     "appId": "hub.browser.video.downloader.saver",
+     "title": "Hub Video Downloader",
+     "developer": "DOSA Apps",
+     "installsLabel": "10,000,000+",
+     "score": 4.3660564,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.savefrom.theappdoor",
+     "title": "Save From Net Video Downloader",
+     "developer": "Cards",
+     "installsLabel": "500,000+",
+     "score": 4.59,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.lan.instasave",
+     "title": "Insta Reel Download & Organize"
+    },
+    {
+     "appId": "statussaver.videodownloader.downloadstatus.savestatus.storysaver",
+     "title": "Video Downloader, HD Download"
+    },
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload.snaptik",
+     "title": "SnapTok - TT Video Downloader"
+    },
+    {
+     "appId": "com.gamma.videodownloader",
+     "title": "Video Downloader - without ads"
+    },
+    {
+     "appId": "savefrom.ig.story.downloader",
+     "title": "Video Downloader, Story Saver"
+    },
+    {
+     "appId": "video.downloader.allvideodownloader.videosaver",
+     "title": "Video Downloader: Video Saver"
+    },
+    {
+     "appId": "story.saver.insta",
+     "title": "Story Saver - Video Downloader"
+    },
+    {
+     "appId": "com.download.snapfb.insave.videoplayer",
+     "title": "SnapAll - Video Downloader"
+    },
+    {
+     "appId": "com.xbuddymobile.app",
+     "title": "9xbuddy: Video downloader"
+    },
+    {
+     "appId": "videoplayer.videodownloader.downloader",
+     "title": "All Video Downloader & Player"
+    }
+   ]
+  },
+  {
+   "q": "video downloader with editor",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:34.038Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "mp3videoconverter.videotomp3.videotomp3converter",
+     "title": "Video to MP3 - Video to Audio",
+     "developer": "InShot Inc.",
+     "installsLabel": "50,000,000+",
+     "score": 4.750764,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.video.downloader.ttypldre",
+     "title": "Tube Video Downloader &Mp3",
+     "developer": "Video Downloader inc.",
+     "installsLabel": "5,000,000+",
+     "score": 3.6068966,
+     "genre": "Tools"
+    },
+    {
+     "appId": "video.downloader.videodownloader",
+     "title": "Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.722918,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig.insaver",
+     "title": "InSaver: All Video Downloader",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.74722,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.sun.ai.app.tube.videodownloader",
+     "title": "Tube Video Downloader",
+     "developer": "Sun Mobile Studio",
+     "installsLabel": "5,000,000+",
+     "score": 4.508197,
+     "genre": "Tools"
+    },
+    {
+     "appId": "instasaver.videodownloader.photodownloader.repost",
+     "title": "All Video Downloader & Browser",
+     "developer": "Fast Video Downloader & Story Saver - DevBay",
+     "installsLabel": "50,000,000+",
+     "score": 3.8952587,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "videoplayer.videodownloader.downloader",
+     "title": "All Video Downloader & Player",
+     "developer": "QR Code Scanner.",
+     "installsLabel": "100,000,000+",
+     "score": 4.5262523,
+     "genre": "Tools"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig",
+     "title": "Video downloader - Story Saver",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "50,000,000+",
+     "score": 4.7444468,
+     "genre": "Social"
+    },
+    {
+     "appId": "blueeasyapp.videosget.tubemasterdownloader",
+     "title": "Tube Video Downloader",
+     "developer": "ZHANG BIN llc",
+     "installsLabel": "100,000+",
+     "score": 4.63,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "freemusic.mp4music.mp3music.musicdownloader.videodownloader",
+     "title": "Tube Video Downloader/ For All",
+     "developer": "Role Model Clothing",
+     "installsLabel": "1,000,000+",
+     "score": 4.19,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "pin.pinterest.video.downloader.forpinterest.pinsaver",
+     "title": "Video Downloader for Pinterest",
+     "developer": "ETM Video Downloader",
+     "installsLabel": "5,000,000+",
+     "score": 4.7237353,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "videodownloader.instagram.videosaver",
+     "title": "Video Downloader & Story Saver",
+     "developer": "Video Downloader & Fast Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.8078337,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "tool2easy.totalvideos.itubevideodownloader",
+     "title": "Total Video Downloader",
+     "developer": "Video Player and Social Platform Downloader",
+     "installsLabel": "500,000+",
+     "score": 4.4444447,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.y2matetel.y2matecom.y2mateninja",
+     "title": "Music video downloader",
+     "developer": "Toebidy Y2mate Ytmp3 Ltd.",
+     "installsLabel": "100,000+",
+     "score": 3.4473684,
+     "genre": "Entertainment"
+    },
+    {
+     "appId": "com.dba.tiktokvideosaver.nowatermark",
+     "title": "Video Downloader TSaver",
+     "developer": "Dark Blue Apps",
+     "installsLabel": "5,000,000+",
+     "score": 4.238532,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "vidfo.video.player.videoplayer",
+     "title": "4K Video Player & Downloader",
+     "developer": "Media Studio Inc - All Video Downloader Apps",
+     "installsLabel": "5,000,000+",
+     "score": 4.3431373,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.video.downloader.eopiu",
+     "title": "Tube Video Downloader & Video ",
+     "developer": "video download.",
+     "installsLabel": "10,000,000+",
+     "score": 3.4885788,
+     "genre": "Tools"
+    },
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload",
+     "title": "Download video no watermark",
+     "developer": "ETM Video Downloader",
+     "installsLabel": "50,000,000+",
+     "score": 4.611807,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "all.video.downloader.allvideodownloader",
+     "title": "All Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.710804,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "tiktok.video.downloader.nowatermark.tiktokdownload.snaptik",
+     "title": "SnapTok - TT Video Downloader",
+     "developer": "Video Downloader & Video Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.6074767,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "free.files.downloader.save.video.manager",
+     "title": "Video Downloader - Save Videos"
+    },
+    {
+     "appId": "com.umix.app.musicplayer",
+     "title": "Video Downloader"
+    },
+    {
+     "appId": "free.video.downloader.converter.music",
+     "title": "Video Downloader, Download All"
+    },
+    {
+     "appId": "free.video.downloader.freevideodownloader",
+     "title": "Video Downloader - Downloader"
+    },
+    {
+     "appId": "downloader.video.download.free",
+     "title": "Video Downloader & Video Saver"
+    },
+    {
+     "appId": "com.uniquevpn.vpnglobal",
+     "title": "Tubematè Mp4 Video Downloader"
+    },
+    {
+     "appId": "com.vidmat.allvideodownloader",
+     "title": "All Video Downloader Master"
+    },
+    {
+     "appId": "videodownloader.downloader.videoplayer",
+     "title": "Video Downloader - HD & Easy"
+    },
+    {
+     "appId": "download.video.tiktok.nowatermark.tiktokdownloader",
+     "title": "No Watermark Video Downloader"
+    },
+    {
+     "appId": "video.downloader.saver.story",
+     "title": "Video downloader & video saver"
+    }
+   ]
+  },
+  {
+   "q": "private video downloader",
+   "gl": "US",
+   "fetchedAt": "2026-09-16T11:02:34.022Z",
+   "featured": null,
+   "results": [
+    {
+     "appId": "io.browser.xbrowsers",
+     "title": "Private Video Downloader",
+     "developer": "Battery Stats Saver",
+     "installsLabel": "1,000,000+",
+     "score": 4.4840765,
+     "genre": "Tools"
+    },
+    {
+     "appId": "video.downloader.videodownloader",
+     "title": "Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.722918,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "downloader.video.download.free",
+     "title": "Video Downloader & Video Saver",
+     "developer": "All Video Downloader, Saver & Player Studio",
+     "installsLabel": "50,000,000+",
+     "score": 4.4288754,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "hub.browser.video.downloader.saver",
+     "title": "Hub Video Downloader",
+     "developer": "DOSA Apps",
+     "installsLabel": "10,000,000+",
+     "score": 4.3660564,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.download.video.fast.good",
+     "title": "Video Private Downloader",
+     "developer": "O.A.DIAZ PROPERTIES  LLC",
+     "installsLabel": "100,000+",
+     "score": 4.277228,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "free.files.downloader.save.video.manager",
+     "title": "Video Downloader - Save Videos",
+     "developer": "All Video Downloader, Saver & Player Studio",
+     "installsLabel": "10,000,000+",
+     "score": 4.5355506,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "videoplayer.videodownloader.downloader",
+     "title": "All Video Downloader & Player",
+     "developer": "QR Code Scanner.",
+     "installsLabel": "100,000,000+",
+     "score": 4.5262523,
+     "genre": "Tools"
+    },
+    {
+     "appId": "free.allvideo.videodownloader",
+     "title": "Private Video Vault Downloader",
+     "developer": "Daily Apps Mania",
+     "installsLabel": "10,000+",
+     "score": 5,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.videodownload.browser.videodownloader",
+     "title": "All Video Downloader & Player",
+     "developer": "AppTool-Browser-Video",
+     "installsLabel": "10,000,000+",
+     "score": 4.366337,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.gamma.videodownloader",
+     "title": "Video Downloader - without ads",
+     "developer": "Gamma Play",
+     "installsLabel": "100,000+",
+     "score": 4.6309524,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig.insaver",
+     "title": "InSaver: All Video Downloader",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "10,000,000+",
+     "score": 4.74722,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.video.downloader.proxy.browser.player.app",
+     "title": "Video Downloader & Browser",
+     "developer": "Video Downloader & hubMate Apps",
+     "installsLabel": "1,000,000+",
+     "score": 3.9824562,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.xbuddymobile.app",
+     "title": "9xbuddy: Video downloader",
+     "developer": "123SUDO",
+     "installsLabel": "100,000+",
+     "score": 3.5609756,
+     "genre": "Tools"
+    },
+    {
+     "appId": "com.ace.video.downloader",
+     "title": "Ace Video Downloader: Videos X",
+     "developer": "Ace Mobile",
+     "installsLabel": "100,000+",
+     "score": 4.3448277,
+     "genre": "Tools"
+    },
+    {
+     "appId": "instagram.video.downloader.story.saver.ig",
+     "title": "Video downloader - Story Saver",
+     "developer": "Video Downloader Story Saver",
+     "installsLabel": "50,000,000+",
+     "score": 4.7444468,
+     "genre": "Social"
+    },
+    {
+     "appId": "super.video.downloader.wsnbppl",
+     "title": "Video Downloader, Player, Save",
+     "developer": "Fantastic Light",
+     "installsLabel": "500,000+",
+     "score": 4.4444447,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "all.video.downloader.allvideodownloader",
+     "title": "All Video Downloader",
+     "developer": "InShot Inc.",
+     "installsLabel": "100,000,000+",
+     "score": 4.710804,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "free.xnxx.hot.video.downloader",
+     "title": "X Sexy Video Downloader",
+     "developer": "Video Studio Browser Apps",
+     "installsLabel": "50,000,000+",
+     "score": 4.440576,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "mobidev.apps.vd.pro",
+     "title": "Video Downloader Pro",
+     "developer": "MobiDevApps",
+     "installsLabel": "10,000+",
+     "score": 4.71,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "com.xa.video.downloader",
+     "title": "XA Downloader - Video Saver",
+     "developer": "RedFoxUnitedInc",
+     "installsLabel": "10,000,000+",
+     "score": 4.422941,
+     "genre": "Video Players & Editors"
+    },
+    {
+     "appId": "pdownloader.social.media.saver.video.downloader",
+     "title": "PDownloader - Video Downloader"
+    },
+    {
+     "appId": "nova.all.video.downloader",
+     "title": "Video Downloader & Video Saver"
+    },
+    {
+     "appId": "com.vidmat.allvideodownloader",
+     "title": "All Video Downloader Master"
+    },
+    {
+     "appId": "instasaver.videodownloader.photodownloader.repost",
+     "title": "All Video Downloader & Browser"
+    },
+    {
+     "appId": "video.downloader.saver.story",
+     "title": "Video downloader & video saver"
+    },
+    {
+     "appId": "com.videodownload.videobrowser.xvideodownloader",
+     "title": "Video Downloader - XDownloader"
+    },
+    {
+     "appId": "com.video.downloader.pro.private",
+     "title": "Video Downloader Pro: Private"
+    },
+    {
+     "appId": "ru.codeluck.tiktok.downloader",
+     "title": "Tikget - Video Downloader"
+    },
+    {
+     "appId": "ru.spaple.pinterest.downloader",
+     "title": "Pinget – Video Downloader"
+    },
+    {
+     "appId": "com.savefrom.theappdoor",
+     "title": "Save From Net Video Downloader"
+    }
+   ]
+  }
+ ],
+ "visible": [
+  [
+   "video.downloader.videodownloader",
+   {
+    "title": "Video Downloader",
+    "dev": "InShot Inc.",
+    "inst": "100,000,000+",
+    "n": 21,
+    "best": 1
+   }
+  ],
+  [
+   "com.gamma.videodownloader",
+   {
+    "title": "Video Downloader - without ads",
+    "dev": "Gamma Play",
+    "inst": "100,000+",
+    "n": 13,
+    "best": 2
+   }
+  ],
+  [
+   "videoplayer.videodownloader.downloader",
+   {
+    "title": "All Video Downloader & Player",
+    "dev": "QR Code Scanner.",
+    "inst": "100,000,000+",
+    "n": 12,
+    "best": 2
+   }
+  ],
+  [
+   "instagram.video.downloader.story.saver.ig",
+   {
+    "title": "Video downloader - Story Saver",
+    "dev": "Video Downloader Story Saver",
+    "inst": "50,000,000+",
+    "n": 11,
+    "best": 1
+   }
+  ],
+  [
+   "instagram.video.downloader.story.saver.ig.insaver",
+   {
+    "title": "InSaver: All Video Downloader",
+    "dev": "Video Downloader Story Saver",
+    "inst": "10,000,000+",
+    "n": 10,
+    "best": 1
+   }
+  ],
+  [
+   "hub.browser.video.downloader.saver",
+   {
+    "title": "Hub Video Downloader",
+    "dev": "DOSA Apps",
+    "inst": "10,000,000+",
+    "n": 10,
+    "best": 3
+   }
+  ],
+  [
+   "tweeter.gif.twittervideodownloader",
+   {
+    "title": "Download Twitter Videos - GIF",
+    "dev": "Photo and Video App",
+    "inst": "10,000,000+",
+    "n": 8,
+    "best": 1
+   }
+  ],
+  [
+   "videodownloader.instagram.videosaver",
+   {
+    "title": "Video Downloader & Story Saver",
+    "dev": "Video Downloader & Fast Saver",
+    "inst": "10,000,000+",
+    "n": 8,
+    "best": 3
+   }
+  ],
+  [
+   "com.videodownload.browser.videodownloader",
+   {
+    "title": "All Video Downloader & Player",
+    "dev": "AppTool-Browser-Video",
+    "inst": "10,000,000+",
+    "n": 8,
+    "best": 6
+   }
+  ],
+  [
+   "downloader.video.download.free",
+   {
+    "title": "Video Downloader & Video Saver",
+    "dev": "All Video Downloader, Saver & Player Studio",
+    "inst": "50,000,000+",
+    "n": 5,
+    "best": 1
+   }
+  ],
+  [
+   "com.linhiev.videodownloader",
+   {
+    "title": "Social Video Downloader",
+    "dev": "Linhiev technologies",
+    "inst": "100,000+",
+    "n": 5,
+    "best": 1
+   }
+  ],
+  [
+   "com.savefrom.theappdoor",
+   {
+    "title": "Save From Net Video Downloader",
+    "dev": "Cards",
+    "inst": "500,000+",
+    "n": 5,
+    "best": 5
+   }
+  ],
+  [
+   "com.sun.ai.app.tube.videodownloader",
+   {
+    "title": "Tube Video Downloader",
+    "dev": "Sun Mobile Studio",
+    "inst": "5,000,000+",
+    "n": 4,
+    "best": 4
+   }
+  ],
+  [
+   "free.files.downloader.save.video.manager",
+   {
+    "title": "Video Downloader - Save Videos",
+    "dev": "All Video Downloader, Saver & Player Studio",
+    "inst": "10,000,000+",
+    "n": 4,
+    "best": 5
+   }
+  ],
+  [
+   "reels.stories.video.downloader",
+   {
+    "title": "Video Downloader for Instagram",
+    "dev": "Bytecode.one",
+    "inst": "10,000+",
+    "n": 3,
+    "best": 1
+   }
+  ],
+  [
+   "idm.internet.download.manager",
+   {
+    "title": "1DM: Browser & Video Download",
+    "dev": "Vicky Bonick",
+    "inst": "50,000,000+",
+    "n": 3,
+    "best": 3
+   }
+  ],
+  [
+   "com.xbuddymobile.app",
+   {
+    "title": "9xbuddy: Video downloader",
+    "dev": "123SUDO",
+    "inst": "100,000+",
+    "n": 3,
+    "best": 3
+   }
+  ],
+  [
+   "com.insaver",
+   {
+    "title": "InSaver: Video Downloader",
+    "dev": "Ninetysix Info",
+    "inst": "10,000+",
+    "n": 3,
+    "best": 7
+   }
+  ],
+  [
+   "instagram.free.video.downloader.videodownloader",
+   {
+    "title": "InSaver : Video Downloader",
+    "dev": "Magic Makers",
+    "inst": "10,000+",
+    "n": 3,
+    "best": 8
+   }
+  ],
+  [
+   "com.video.downloader.ttypldre",
+   {
+    "title": "Tube Video Downloader &Mp3",
+    "dev": "Video Downloader inc.",
+    "inst": "5,000,000+",
+    "n": 2,
+    "best": 2
+   }
+  ],
+  [
+   "tiktok.video.downloader.nowatermark.tiktokdownload.snaptik",
+   {
+    "title": "SnapTok - TT Video Downloader",
+    "dev": "Video Downloader & Video Saver",
+    "inst": "10,000,000+",
+    "n": 2,
+    "best": 2
+   }
+  ],
+  [
+   "com.sensei.social",
+   {
+    "title": "Reels Downloader",
+    "dev": "MobileByteSensei",
+    "inst": "50,000+",
+    "n": 2,
+    "best": 3
+   }
+  ],
+  [
+   "com.haariug.video.downloader.story.saver.reel.saver",
+   {
+    "title": "Reel Saver - Video Downloader",
+    "dev": "Haari UG",
+    "inst": "5,000+",
+    "n": 2,
+    "best": 3
+   }
+  ],
+  [
+   "ru.codeluck.tiktok.downloader",
+   {
+    "title": "Tikget - Video Downloader",
+    "dev": "Spaple",
+    "inst": "500,000+",
+    "n": 2,
+    "best": 3
+   }
+  ],
+  [
+   "all.video.downloader.allvideodownloader",
+   {
+    "title": "All Video Downloader",
+    "dev": "InShot Inc.",
+    "inst": "100,000,000+",
+    "n": 2,
+    "best": 4
+   }
+  ],
+  [
+   "com.quickostudio.reelsave",
+   {
+    "title": "ReelSave - Reels Downloader",
+    "dev": "Quicko Studio",
+    "inst": "1,000+",
+    "n": 2,
+    "best": 4
+   }
+  ],
+  [
+   "com.shirokovapp.instasave",
+   {
+    "title": "Insget - Video & Story Saver",
+    "dev": "Spaple",
+    "inst": "1,000,000+",
+    "n": 2,
+    "best": 5
+   }
+  ],
+  [
+   "online.savereels.app",
+   {
+    "title": "SaveReels - Reels Downloader",
+    "dev": "Khalil Asif",
+    "inst": "1,000+",
+    "n": 2,
+    "best": 6
+   }
+  ],
+  [
+   "instasaver.videodownloader.photodownloader.repost",
+   {
+    "title": "All Video Downloader & Browser",
+    "dev": "Fast Video Downloader & Story Saver - DevBay",
+    "inst": "50,000,000+",
+    "n": 2,
+    "best": 6
+   }
+  ],
+  [
+   "com.ireelsave.app",
+   {
+    "title": "iReels Save – Reels Downloader",
+    "dev": "iReels Save",
+    "inst": "100+",
+    "n": 2,
+    "best": 7
+   }
+  ],
+  [
+   "ru.spaple.pinterest.downloader",
+   {
+    "title": "Pinget – Video Downloader",
+    "dev": "Spaple",
+    "inst": "1,000,000+",
+    "n": 2,
+    "best": 7
+   }
+  ],
+  [
+   "com.storysaver.saveig",
+   {
+    "title": "Story Saver",
+    "dev": "Smart Tech1",
+    "inst": "5,000,000+",
+    "n": 1,
+    "best": 1
+   }
+  ],
+  [
+   "statussaver.statusdownloader.downloadstatus.videoimagesaver",
+   {
+    "title": "Status Saver - Video Saver",
+    "dev": "Save Status, Video & Image Downloader",
+    "inst": "100,000,000+",
+    "n": 1,
+    "best": 1
+   }
+  ],
+  [
+   "face.downloader",
+   {
+    "title": "Video Downloader for Facebook",
+    "dev": "irmme LLC",
+    "inst": "1,000,000+",
+    "n": 1,
+    "best": 1
+   }
+  ],
+  [
+   "tiktok.video.downloader.nowatermark.tiktokdownload",
+   {
+    "title": "Download video no watermark",
+    "dev": "ETM Video Downloader",
+    "inst": "50,000,000+",
+    "n": 1,
+    "best": 1
+   }
+  ],
+  [
+   "com.esaba.downloader",
+   {
+    "title": "Downloader by AFTVnews",
+    "dev": "AFTVnews.com",
+    "inst": "50,000,000+",
+    "n": 1,
+    "best": 1
+   }
+  ],
+  [
+   "com.saveinsta.app.savevideo.saveclip",
+   {
+    "n": 1,
+    "best": 1
+   }
+  ],
+  [
+   "mp3videoconverter.videotomp3.videotomp3converter",
+   {
+    "title": "Video to MP3 - Video to Audio",
+    "dev": "InShot Inc.",
+    "inst": "50,000,000+",
+    "n": 1,
+    "best": 1
+   }
+  ],
+  [
+   "io.browser.xbrowsers",
+   {
+    "title": "Private Video Downloader",
+    "dev": "Battery Stats Saver",
+    "inst": "1,000,000+",
+    "n": 1,
+    "best": 1
+   }
+  ],
+  [
+   "download.movie.media.app.hd.video.social.browser",
+   {
+    "title": "HD Video Downloader",
+    "dev": "Sniper Legend",
+    "inst": "10,000,000+",
+    "n": 1,
+    "best": 2
+   }
+  ],
+  [
+   "com.falnesc.statussaver",
+   {
+    "title": "Status Saver・Status Downloader",
+    "dev": "Battery Stats Saver",
+    "inst": "10,000,000+",
+    "n": 1,
+    "best": 2
+   }
+  ],
+  [
+   "facebook.video.downloader.savefrom.fb.saver.fast",
+   {
+    "title": "AhaFast Video Downloader",
+    "dev": "Video Downloader & Video Saver",
+    "inst": "10,000,000+",
+    "n": 1,
+    "best": 2
+   }
+  ],
+  [
+   "downloadtwittervideo.twitterdownloader.twittervideodownloader.twittersaver",
+   {
+    "title": "Video Downloader for Twitter",
+    "dev": "Video Downloader & Fast Saver",
+    "inst": "1,000,000+",
+    "n": 1,
+    "best": 2
+   }
+  ],
+  [
+   "story.saver.insta",
+   {
+    "title": "Story Saver - Video Downloader",
+    "dev": "Story Saver&Video Downloader",
+    "inst": "5,000,000+",
+    "n": 1,
+    "best": 3
+   }
+  ],
+  [
+   "com.downlood.sav.whmedia",
+   {
+    "title": "Status Download - Video Saver",
+    "dev": "Shree Ganesha Labs",
+    "inst": "100,000,000+",
+    "n": 1,
+    "best": 3
+   }
+  ],
+  [
+   "twittervideosaver.twittervideodownloader.twimate.savetwittergif",
+   {
+    "title": "Video Downloader & GIF Saver",
+    "dev": "Alpha App Team",
+    "inst": "5,000,000+",
+    "n": 1,
+    "best": 3
+   }
+  ],
+  [
+   "com.all.video.fast.downloader",
+   {
+    "title": "Fast Downloader - Video Player",
+    "dev": "Dhvankit",
+    "inst": "1,000,000+",
+    "n": 1,
+    "best": 3
+   }
+  ],
+  [
+   "com.google.android.apps.nbu.files",
+   {
+    "title": "Files by Google",
+    "dev": "Google LLC",
+    "inst": "5,000,000,000+",
+    "n": 1,
+    "best": 3
+   }
+  ],
+  [
+   "com.instadownloader.instasave.igsave.ins",
+   {
+    "title": "Video Downloader : Story Saver",
+    "dev": "Video Downloader & Photo Downloader & Saver",
+    "inst": "10,000,000+",
+    "n": 1,
+    "best": 3
+   }
+  ],
+  [
+   "storysaverforinstagram.storydownloaderforinstagram",
+   {
+    "title": "Story Saver",
+    "dev": "Sara Tech",
+    "inst": "5,000,000+",
+    "n": 1,
+    "best": 4
+   }
+  ],
+  [
+   "com.lazygeniouz.saveit",
+   {
+    "title": "Status, Sticker Saver",
+    "dev": "Lazy Geniouz Pvt. Ltd.",
+    "inst": "100,000,000+",
+    "n": 1,
+    "best": 4
+   }
+  ],
+  [
+   "com.ferdigokdemir.instabox",
+   {
+    "title": "Instagram Video Downloader",
+    "dev": "Nazar Tech",
+    "inst": "10,000+",
+    "n": 1,
+    "best": 4
+   }
+  ],
+  [
+   "me.vidura.vloader",
+   {
+    "title": "Quik Facebook Video downloader",
+    "dev": "Vidura Prasangana Wijerathna",
+    "inst": "10,000+",
+    "n": 1,
+    "best": 4
+   }
+  ],
+  [
+   "com.downloaderfor.tiktok",
+   {
+    "title": "Downloader for TikTok",
+    "dev": "application.development.studio",
+    "inst": "10,000,000+",
+    "n": 1,
+    "best": 4
+   }
+  ],
+  [
+   "twittervideodownloader.twitter.videoindir.savegif.twdown",
+   {
+    "title": "X Saver:Download Twitter Video",
+    "dev": "Shotcut Video Workshop",
+    "inst": "5,000,000+",
+    "n": 1,
+    "best": 4
+   }
+  ],
+  [
+   "mobidev.apps.vd",
+   {
+    "title": "Video Downloader",
+    "dev": "MobiDevApps",
+    "inst": "10,000,000+",
+    "n": 1,
+    "best": 4
+   }
+  ],
+  [
+   "com.audiomack",
+   {
+    "title": "Audiomack: Music Downloader",
+    "dev": "Audiomack Music Apps",
+    "inst": "100,000,000+",
+    "n": 1,
+    "best": 4
+   }
+  ],
+  [
+   "com.cosmicmedia.storysaverinstagram.stories.downloader.for.instagram.story.saver",
+   {
+    "title": "Story Saver for IG - HD Format",
+    "dev": "Cosmic Media Apps - Video, Image Downloaders",
+    "inst": "100,000+",
+    "n": 1,
+    "best": 5
+   }
+  ],
+  [
+   "savestatus.videodownloader.storysaver.statuskeeper",
+   {
+    "title": "Status Saver・Status Downloader",
+    "dev": "Save Status, Video & Image Downloader",
+    "inst": "10,000,000+",
+    "n": 1,
+    "best": 5
+   }
+  ],
+  [
+   "tweeter.savetwitter.twittervideodownloader.downloadtwittervideos",
+   {
+    "title": "Video Downloader for Twitter",
+    "dev": "Hatici Video Downloader Apps",
+    "inst": "1,000,000+",
+    "n": 1,
+    "best": 5
+   }
+  ],
+  [
+   "com.UCMobile.intl",
+   {
+    "title": "UC Browser-Safe, Fast, Private",
+    "dev": "UCWeb Singapore Pte. Ltd.",
+    "inst": "1,000,000,000+",
+    "n": 1,
+    "best": 5
+   }
+  ],
+  [
+   "com.lenovo.anyshare.gps",
+   {
+    "title": "SHAREit: Transfer, Share Files",
+    "dev": "Smart Media4U Technology Pte.Ltd.",
+    "inst": "1,000,000,000+",
+    "n": 1,
+    "best": 5
+   }
+  ],
+  [
+   "com.ethar.videodownloader",
+   {
+    "title": "SaveVideo HD",
+    "dev": "Ethar Shrouf",
+    "inst": "500+",
+    "n": 1,
+    "best": 5
+   }
+  ],
+  [
+   "com.download.video.fast.good",
+   {
+    "title": "Video Private Downloader",
+    "dev": "O.A.DIAZ PROPERTIES  LLC",
+    "inst": "100,000+",
+    "n": 1,
+    "best": 5
+   }
+  ],
+  [
+   "hd.video.downloader.app.hdvideodownloaderapp",
+   {
+    "title": "HD Video Downloader App - 2022",
+    "dev": "Leap Fitness Group",
+    "inst": "100,000,000+",
+    "n": 1,
+    "best": 6
+   }
+  ],
+  [
+   "statussaver.statusdownloader.videodownloader",
+   {
+    "title": "Status Saver - Save Status",
+    "dev": "Lite Media",
+    "inst": "50,000,000+",
+    "n": 1,
+    "best": 6
+   }
+  ],
+  [
+   "com.all.social.video.downloader",
+   {
+    "title": "Video Downloader - Video Saver",
+    "dev": "GetItDone",
+    "inst": "10,000,000+",
+    "n": 1,
+    "best": 6
+   }
+  ],
+  [
+   "tt.video.downloader.saver.withoutwatermark.tmate.snaptik",
+   {
+    "title": "Video Downloader No Watermark",
+    "dev": "JedyApps",
+    "inst": "10,000,000+",
+    "n": 1,
+    "best": 6
+   }
+  ],
+  [
+   "tweeload.twitter.video.downloader",
+   {
+    "title": "Video Downloader for Twitter X",
+    "dev": "Aculix Technologies LLP",
+    "inst": "1,000,000+",
+    "n": 1,
+    "best": 6
+   }
+  ],
+  [
+   "com.ytcorp.ytdownload",
+   {
+    "title": "All Video Download: YTDownload",
+    "dev": "YT Corp",
+    "inst": "10,000+",
+    "n": 1,
+    "best": 6
+   }
+  ],
+  [
+   "com.sec.android.easyMover",
+   {
+    "title": "Samsung Smart Switch Mobile",
+    "dev": "Samsung Electronics Co.,  Ltd.",
+    "inst": "1,000,000,000+",
+    "n": 1,
+    "best": 6
+   }
+  ],
+  [
+   "com.fastbit.hdvideodonloader",
+   {
+    "title": "HD Video Downloader HD Player",
+    "dev": "Duoei qrui",
+    "inst": "100,000+",
+    "n": 1,
+    "best": 7
+   }
+  ],
+  [
+   "com.utorrent.client",
+   {
+    "title": "µTorrent®- Torrent Downloader",
+    "dev": "bittorrent.com",
+    "inst": "100,000,000+",
+    "n": 1,
+    "best": 7
+   }
+  ],
+  [
+   "com.sumino.issave.storysaver.photovideo.downloader",
+   {
+    "title": "InSaver: Video & Story Saver",
+    "dev": "Sumino Apps",
+    "inst": "500,000+",
+    "n": 1,
+    "best": 7
+   }
+  ],
+  [
+   "com.studio.zm.statussaver",
+   {
+    "title": "Status Saver・Status Downloader",
+    "dev": "Status Saver Sol",
+    "inst": "5,000,000+",
+    "n": 1,
+    "best": 7
+   }
+  ],
+  [
+   "repost.share.tiktok.nowatermark.videosave.download.videodownloader.saver",
+   {
+    "title": "VideoSaver : Watermark Remover",
+    "dev": "Video Downloader & Story Downloader & Saver",
+    "inst": "5,000,000+",
+    "n": 1,
+    "best": 7
+   }
+  ],
+  [
+   "com.tech.downloader",
+   {
+    "title": "Downloader",
+    "dev": "Supono Holdings LTD",
+    "inst": "1,000,000+",
+    "n": 1,
+    "best": 7
+   }
+  ],
+  [
+   "com.vidmat.allvideodownloader",
+   {
+    "title": "All Video Downloader Master",
+    "dev": "Vidmark Inc.",
+    "inst": "10,000,000+",
+    "n": 1,
+    "best": 8
+   }
+  ],
+  [
+   "free.insaver.videodownloader",
+   {
+    "title": "Story Downloader - Story Saver",
+    "dev": "Daily Apps Mania",
+    "inst": "10,000+",
+    "n": 1,
+    "best": 8
+   }
+  ],
+  [
+   "com.sinosystems.status",
+   {
+    "title": "Status Saver: Video Downloader",
+    "dev": "SinoSystems, Inc",
+    "inst": "100,000+",
+    "n": 1,
+    "best": 8
+   }
+  ],
+  [
+   "app.xapps.ig",
+   {
+    "title": "Instagram Video Downloader",
+    "dev": "李长华",
+    "inst": "100+",
+    "n": 1,
+    "best": 8
+   }
+  ],
+  [
+   "aculix.video.downloader.for.reels",
+   {
+    "title": "All Social Video Downloader",
+    "dev": "Aculix Technologies LLP",
+    "inst": "1,000,000+",
+    "n": 1,
+    "best": 8
+   }
+  ],
+  [
+   "com.zhiliaoapp.musically",
+   {
+    "title": "TikTok - Videos, Shop & LIVE",
+    "dev": "TikTok Pte. Ltd.",
+    "inst": "1,000,000,000+",
+    "n": 1,
+    "best": 8
+   }
+  ],
+  [
+   "com.videodownloader.videoxdownloader",
+   {
+    "title": "Video Downloader for Twitter X",
+    "dev": "Fluffy Tools Apps",
+    "inst": "1,000+",
+    "n": 1,
+    "best": 8
+   }
+  ],
+  [
+   "org.freedownloadmanager.fdm",
+   {
+    "title": "Free Download Manager - FDM",
+    "dev": "SoftDeluxe, Inc.",
+    "inst": "1,000,000+",
+    "n": 1,
+    "best": 8
+   }
+  ],
+  [
+   "com.instagram.android",
+   {
+    "title": "Instagram",
+    "dev": "Instagram",
+    "inst": "5,000,000,000+",
+    "n": 1,
+    "best": 8
+   }
+  ],
+  [
+   "free.allvideo.videodownloader",
+   {
+    "title": "Private Video Vault Downloader",
+    "dev": "Daily Apps Mania",
+    "inst": "10,000+",
+    "n": 1,
+    "best": 8
+   }
+  ],
+  [
+   "com.downloadvideo.videodownloadfree.mp4videodownload",
+   {
+    "title": "Video Downloader & Player HD",
+    "dev": "Video Downloader- Apps Studio",
+    "inst": "100,000+",
+    "n": 1,
+    "best": 9
+   }
+  ],
+  [
+   "com.statussaver.statusdownloader.lite",
+   {
+    "title": "Status Saver",
+    "dev": "Fun and Hi Tool",
+    "inst": "10,000,000+",
+    "n": 1,
+    "best": 9
+   }
+  ],
+  [
+   "com.desicoder.tikdown",
+   {
+    "title": "TikVid - TikTok Downloader",
+    "dev": "MobilesWorld",
+    "inst": "100,000+",
+    "n": 1,
+    "best": 9
+   }
+  ],
+  [
+   "com.tweetdownloader",
+   {
+    "title": "Tweet Video Downloader",
+    "dev": "Adrián Parodi",
+    "inst": "50,000+",
+    "n": 1,
+    "best": 9
+   }
+  ],
+  [
+   "downloader.vitmate.downloaderapp",
+   {
+    "title": "Downloader - Video Downloader",
+    "dev": "Leap Fitness Group",
+    "inst": "100,000,000+",
+    "n": 1,
+    "best": 9
+   }
+  ],
+  [
+   "com.markfree.videodownloader.hd.video.saver",
+   {
+    "title": "Video Downloader & Reel Saver",
+    "dev": "NextSol",
+    "inst": "100+",
+    "n": 1,
+    "best": 9
+   }
+  ],
+  [
+   "blueeasyapp.videosget.tubemasterdownloader",
+   {
+    "title": "Tube Video Downloader",
+    "dev": "ZHANG BIN llc",
+    "inst": "100,000+",
+    "n": 1,
+    "best": 9
+   }
+  ],
+  [
+   "com.cent.hd.videodownloader.player",
+   {
+    "title": "All Video Downloader HD Saver",
+    "dev": "Cent Studio Global",
+    "inst": "100,000+",
+    "n": 1,
+    "best": 10
+   }
+  ],
+  [
+   "statussaver.statusdownloader.downloadstatus.savestatus",
+   {
+    "title": "Status Saver: Video Downloader",
+    "dev": "BlueLine. Tech",
+    "inst": "50,000,000+",
+    "n": 1,
+    "best": 10
+   }
+  ],
+  [
+   "instagram.downloader.saver.repost.reels.story",
+   {
+    "title": "Video Downloader & Story Saver",
+    "dev": "SavePro - Video Downloader",
+    "inst": "100,000+",
+    "n": 1,
+    "best": 10
+   }
+  ],
+  [
+   "com.livevideos.videostreamer",
+   {
+    "title": "Video Stream & Reel Downloader",
+    "dev": "Zag Technology",
+    "inst": "1,000,000+",
+    "n": 1,
+    "best": 10
+   }
+  ],
+  [
+   "tiktak.downloader.no.watermark.video.downloader",
+   {
+    "title": "Video Downloader For Tiktok",
+    "dev": "IFM Project",
+    "inst": "10,000+",
+    "n": 1,
+    "best": 10
+   }
+  ],
+  [
+   "com.Xsaver.xvideodownload",
+   {
+    "title": "XSaver Twitter Video Download",
+    "dev": "Toolverse Studio",
+    "inst": "50,000+",
+    "n": 1,
+    "best": 10
+   }
+  ],
+  [
+   "com.rit.allsocialvideodownloader",
+   {
+    "title": "All Social Video Downloader",
+    "dev": "Zivo Labs",
+    "inst": "5,000+",
+    "n": 1,
+    "best": 10
+   }
+  ],
+  [
+   "com.shicichaxun.video",
+   {
+    "title": "Video downloader, mp4, m3u8",
+    "dev": "Chen Guoming",
+    "inst": "100,000+",
+    "n": 1,
+    "best": 10
+   }
+  ],
+  [
+   "com.downloader.tv.installer.xapk",
+   {
+    "title": "Downloader TV: APK Installer",
+    "dev": "Smartago",
+    "inst": "100,000+",
+    "n": 1,
+    "best": 10
+   }
+  ],
+  [
+   "insta.face.photo.video.story.saver.reels.downloader",
+   {
+    "title": "Reels Downloader: InstaSaver",
+    "dev": "All Reels Downloader, Video Saver And Downloader",
+    "inst": "5,000+",
+    "n": 1,
+    "best": 10
+   }
+  ],
+  [
+   "freemusic.mp4music.mp3music.musicdownloader.videodownloader",
+   {
+    "title": "Tube Video Downloader/ For All",
+    "dev": "Role Model Clothing",
+    "inst": "1,000,000+",
+    "n": 1,
+    "best": 10
+   }
+  ]
+ ]
+}

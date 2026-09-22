@@ -1,0 +1,55 @@
+{
+ "audit": {
+  "apps": [
+   { "n": "All Video Downloader", "dev": "Our app", "installs": "5+", "ours": true, "comp": -1 },
+   { "n": "All Video Downloader & Saver", "dev": "Sky Vision", "installs": "10M+", "comp": 10 },
+   { "n": "All video downloader and saver", "dev": "Attractive Apps Valley", "installs": "10M+", "comp": 11 },
+   { "n": "Video Downloader & Save Video", "dev": "Markhoor Studio", "installs": "5M+", "comp": 12 },
+   { "n": "Video Downloader · Player", "dev": "Mobile Notepad", "installs": "5M+", "comp": 13 },
+   { "n": "Video Downloader HD", "dev": "Vidow (VIDOXE)", "installs": "100M+", "comp": 14 },
+   { "n": "4K Downloader", "dev": "Vidpal", "installs": "50M+", "comp": 15 }
+  ],
+  "groups": [
+   { "g": "Downloading", "rows": [
+    { "f": "WebView browser + link sniffer", "v": "FFFFFFF" },
+    { "f": "HLS / DASH stream download", "v": "FFFFFNF" },
+    { "f": "Clipboard paste-to-download", "v": "FFNFFNF" },
+    { "f": "Offline library + background downloads", "v": "FFFFFFF" },
+    { "f": "Batch downloads", "v": "FNNNNNN" }
+   ]},
+   { "g": "Saving & audio", "rows": [
+    { "f": "WhatsApp status saver (+ WA Business)", "v": "FNNFFNF" },
+    { "f": "MP3 / audio extraction", "v": "FNNNNNN" }
+   ]},
+   { "g": "Privacy", "rows": [
+    { "f": "Private vault + biometric / PIN lock", "v": "FNNNNNN" }
+   ]},
+   { "g": "Playback & experience", "rows": [
+    { "f": "Media3 / ExoPlayer player", "v": "FFFFFFF" },
+    { "f": "Onboarding + dark mode", "v": "FFFFFFF" }
+   ]}
+  ],
+  "excluded": "The slide also lists “Jetpack Compose modern UI” with our app marked ✓. The Product Dossier’s spec, read from app/build.gradle, shows Android Views + ViewBinding, so the row is left out rather than shown with a claim the build does not support."
+ },
+ "oursOnly": [
+  { "h": "A 9-tool video editor", "p": "Trim, split, crop, merge, aspect ratio, add audio, extract audio, filters & effects and watermark — built on Media3 Transformer and checked frame by frame on a device." },
+  { "h": "A private vault with PIN and biometrics", "p": "Hide videos, pictures and audio behind a 4-digit PIN with fingerprint unlock and a security question to reset. None of the six audited competitors ships a locked vault." },
+  { "h": "MP3 and audio extraction", "p": "Pick a range and save the audio. The only app in the audit that extracts audio." },
+  { "h": "Batch downloads that survive the background", "p": "Parallel downloads with pause, resume and retry, kept alive by a foreground service. The only app in the audit with batch downloading." },
+  { "h": "Nine languages, including right-to-left", "p": "English, Urdu, Arabic, Hindi, Turkish, German, French, Brazilian Portuguese and Chinese, with mirrored layouts for Urdu and Arabic." }
+ ],
+ "ourClaims": { "paste": 1, "browser": 1, "quality": 1, "background": 1, "multi": 1, "story": 1, "status": 1, "mp3": 1, "private": 1, "editor": 1, "player": 1, "languages": 1 },
+ "inventory": [
+  { "screen": "Download", "items": ["Paste a link, share into the app, or pick from Quick Platforms", "Quick Platforms: Facebook, Instagram, TikTok, LinkedIn, X, Dailymotion, Likee, Snapchat, WhatsApp and WhatsApp Business", "Quality picker (for example 720p, 360p, 240p)", "Parallel downloads with pause, resume and retry", "Foreground service keeps large downloads alive"] },
+  { "screen": "Video cutter · 9 tools", "items": ["Cut & compress, crop, split and merge", "Aspect ratio with colour or blur fill", "Add audio and extract MP3", "Filters & effects", "Add watermark with image or styled text", "Trim start, trim middle, trim end, volume and speed"] },
+  { "screen": "Vault", "items": ["Hidden videos, pictures and audio", "4-digit PIN with biometric unlock", "Security question to reset the PIN", "Change PIN"] },
+  { "screen": "Manage & settings", "items": ["Rename, share, delete and favourite", "WhatsApp and WhatsApp Business status saver", "Download location and subscription settings", "Nine languages with right-to-left layouts"] },
+  { "screen": "Verified on a real phone", "items": ["TikTok, Facebook, Instagram (reels, videos, carousels), LinkedIn, X, Dailymotion and Vimeo downloaded end to end", "0 crashes and 0 ANRs across the device rounds", "QA score 95 / 100"] }
+ ],
+ "edges": [
+  { "h": "InShot · Video Downloader", "p": "The category leader: 100M+ installs, a 4.7 rating from about 2.7M ratings, a browser with auto-detect and a password-protected folder." },
+  { "h": "Vidow · Video Downloader HD", "p": "100M+ installs with a resolution picker and casting to a TV." },
+  { "h": "Vidpal · 4K Downloader", "p": "50M+ installs, paste-link downloading and a 4K player." }
+ ],
+ "plans": { "note": "Premium removes all ads. Prices as Google Play shows them in Pakistan.", "items": [ { "p": "Weekly", "price": "Rs 1,400", "sku": "weekly_plan" }, { "p": "Monthly", "price": "Rs 5,600", "sku": "monthly_plan" } ] }
+}
