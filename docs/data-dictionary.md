@@ -1,0 +1,254 @@
+# Data dictionary
+
+> **Generated file: do not edit by hand.** Produced by `node tools/export-docs.js` on 2026-09-22 from [assets/data.js](../assets/data.js), which holds every number and text the data-driven tabs show.
+> Paths are written from the top-level constant (`PAYLOAD`); `[]` marks an array, `{}` an object whose keys are values such as market codes. Array records that the site reads by position are labelled with the names [assets/app.js](../assets/app.js) gives them. To find which function reads a field, search app.js for its last path segment or see the [code map](code-map.md).
+
+## Top level
+
+| Constant · key | Type | Size |
+| --- | --- | --- |
+| `PAYLOAD.data` | object | 12 keys |
+| `PAYLOAD.assets` | object | 3 keys |
+| `PAYLOAD.features` | object | 6 keys |
+| `PAYLOAD.offersChecked` | object | 17 keys |
+| `PAYLOAD.listing` | object | 5 keys |
+| `PAYLOAD.dossierSections` | array | 8 items |
+| `PAYLOAD.tiksta` | object | 6 keys |
+
+## PAYLOAD
+
+- `data` · object with 12 keys:
+  - `collectedAt` · string · e.g. `"2026-09-16T11:05:37.590Z"`
+  - `markets[]` · array of 8 string · e.g. `["US","BR","DE","ES"]`
+  - `mineIdx` · number · e.g. `0`
+  - `compIdx[]` · array of 16 number · e.g. `[1,2,3,4]`
+  - `competitors[]` · array of 16 string · e.g. `["video.downloader.videodownloader","com.gamma.videodownloader","videoplayer.videodownloader.downloader","instagram.video.downloader.story.saver.ig"]`
+  - `apps[]` · array of 392 records, each an array of 12 values:
+    - `[0]` (`id`) · string · e.g. `"com.video.downloader.instagram.videosaver"`
+    - `[1]` (`t`) · string · e.g. `"All Video Downloader & Saver"`
+    - `[2]` (`dev`) · string · e.g. `"Cell Cave"`
+    - `[3]` (`i`) · number · e.g. `9`
+    - `[4]` (`s`) · null or number · e.g. `4.722918`
+    - `[5]` (`r`) · null or number · e.g. `2719684`
+    - `[6]` (`rel`) · null or string · e.g. `"Mar 16, 2018"`
+    - `[7]` (`upd`) · null or string · e.g. `"2026-08-24"`
+    - `[8]` (`b`) · number · e.g. `1`
+    - `[9]` (`cat`) · string · e.g. `"downloader"`
+    - `[10]` (`ads`) · number · e.g. `1`
+    - `[11]` (`iap`) · string or null · e.g. `"$4.99 - $19.99 per item"`
+  - `board{}` · object keyed by 8 keys (US, BR, DE, ES, IT, AU, AE, IN); each value:
+    - `<key>[]` · array of 100 objects:
+      - `q` · string · e.g. `"video downloader"`
+      - `tier` · string · e.g. `"A"`
+      - `src` · string · e.g. `"core"`
+      - `tm` · number · e.g. `0`
+      - `depth` · number · e.g. `30`
+      - `ids[]` · array of 30 number · e.g. `[1,3,6,17]`
+      - `nb` · number · e.g. `10`
+      - `niche` · number · e.g. `0.98`
+      - `vol` · number · e.g. `23937324`
+      - `entry` · number · e.g. `266150`
+      - `entryRank` · number · e.g. `6`
+      - `demand` · number · e.g. `100`
+      - `demandAt` · string · e.g. `"vid"`
+      - `comps[]` · array of 16 number/null · e.g. `[1,6,2,17]`
+      - `c10` · number · e.g. `5`
+      - `c30` · number · e.g. `8`
+      - `R` · number · e.g. `0.993`
+      - `O` · number · e.g. `0.837`
+      - `P` · number · e.g. `83`
+      - `entryIdx` · number · e.g. `2`
+  - `profiles[]` · array of 17 objects:
+    - `id` · string · e.g. `"video.downloader.videodownloader"`
+    - `idx` · number · e.g. `1`
+    - `title` · string · e.g. `"Video Downloader"`
+    - `titleLen` · number · e.g. `16`
+    - `summary` · string · e.g. `"A Simple app to download Video & Music from the Internet."`
+    - `summaryLen` · number · e.g. `57`
+    - `description` · string · e.g. `"Easily download videos and music directly from the Internet onto your …"`
+    - `descLen` · number · e.g. `2283`
+    - `descWords` · number · e.g. `353`
+    - `developer` · string · e.g. `"InShot Inc."`
+    - `installs` · number · e.g. `236276464`
+    - `installsLabel` · string · e.g. `"100,000,000+"`
+    - `score` · number · e.g. `4.722918`
+    - `ratings` · number · e.g. `2719684`
+    - `released` · string · e.g. `"Mar 16, 2018"`
+    - `updated` · string · e.g. `"2026-08-24"`
+    - `genre` · string · e.g. `"Video Players & Editors"`
+    - `ads` · number · e.g. `1`
+    - `iap` · string · e.g. `"$2.99 - $6.99 per item"`
+    - `video` · number · e.g. `0`
+    - `shots` · number · e.g. `17`
+    - `titleKw[]` · array of 2 string · e.g. `["video downloader","downloader"]`
+    - `kwDens[]` · array of 4 objects:
+      - `q` · string · e.g. `"video downloader"`
+      - `n` · number · e.g. `11`
+      - `d` · number · e.g. `6.2`
+    - `perMarket{}` · object keyed by 8 keys (US, BR, DE, ES, IT, AU, AE, IN); each value:
+      - `<key>` · object with 4 keys:
+        - `top3` · number · e.g. `39`
+        - `top10` · number · e.g. `51`
+        - `any` · number · e.g. `57`
+        - `best` · number · e.g. `1`
+    - `claims` · object with 12 keys:
+      - `paste` · number · e.g. `0`
+      - `browser` · number · e.g. `1`
+      - `quality` · number · e.g. `1`
+      - `background` · number · e.g. `1`
+      - `multi` · number · e.g. `1`
+      - `story` · number · e.g. `0`
+      - `status` · number · e.g. `0`
+      - `mp3` · number · e.g. `1`
+      - `private` · number · e.g. `1`
+      - `editor` · number · e.g. `0`
+      - `player` · number · e.g. `1`
+      - `languages` · number · e.g. `0`
+    - `mine` · boolean · e.g. `false`
+    - `iapRange` · object with 2 keys:
+      - `min` · number · e.g. `2.99`
+      - `max` · number · e.g. `6.99`
+  - `marketSummary[]` · array of 8 objects:
+    - `gl` · string · e.g. `"US"`
+    - `keywords` · number · e.g. `40`
+    - `avgNonBrand` · number · e.g. `9.6`
+    - `medianEntry` · number · e.g. `157368`
+    - `compTop10` · number · e.g. `155`
+    - `avgDepth` · number · e.g. `28.8`
+    - `best[]` · array of 6 objects:
+      - `q` · string · e.g. `"video downloader"`
+      - `P` · number · e.g. `83`
+      - `nb` · number · e.g. `10`
+      - `entry` · number · e.g. `266150`
+      - `c10` · number · e.g. `5`
+      - `tm` · number · e.g. `0`
+  - `secondary[]` · array of 40 string · e.g. `["video downloader","all video downloader","video saver","download video"]`
+  - `claims[][]` · array of 12 arrays · e.g. `["paste","Paste link to download"]`
+  - `missing[]` · array of 5 string · e.g. `["downloader.video.insta.free.videodownload","com.merryblue.facebookvideodownloader","com.newagedevs.facebook_video_downloader","com.fbvideodownloader.downloadfbvideos"]`
+- `assets` · object with 3 keys:
+  - `icon` · object with 3 keys:
+    - `file` · string · e.g. `"../../assets/listing/icon.png"`
+    - `src` · string · e.g. `"https://play-lh.googleusercontent.com/qLNXtLkR4z4KiAhmkwjlXx1TpuC4aaH6…"`
+    - `bytes` · number · e.g. `369966`
+  - `feature` · object with 3 keys:
+    - `file` · string · e.g. `"../../assets/listing/feature-graphic.png"`
+    - `src` · string · e.g. `"https://play-lh.googleusercontent.com/q4weOoYNzbX0TD4RtvgBm1VsiywteBuY…"`
+    - `bytes` · number · e.g. `315561`
+  - `screenshots[]` · array of 4 objects:
+    - `file` · string · e.g. `"../../assets/listing/screenshot-01.png"`
+    - `src` · string · e.g. `"https://play-lh.googleusercontent.com/j2_25nIZRvSsEN0BlWJSIIRtIx-N1I7u…"`
+    - `bytes` · number · e.g. `626837`
+- `features` · object with 6 keys:
+  - `audit` · object with 3 keys:
+    - `apps[]` · array of 7 objects:
+      - `n` · string · e.g. `"All Video Downloader"`
+      - `dev` · string · e.g. `"Our app"`
+      - `installs` · string · e.g. `"5+"`
+      - `ours` · boolean · e.g. `true`
+      - `comp` · number · e.g. `-1`
+    - `groups[]` · array of 4 objects:
+      - `g` · string · e.g. `"Downloading"`
+      - `rows[]` · array of 5 objects:
+        - `f` · string · e.g. `"WebView browser + link sniffer"`
+        - `v` · string · e.g. `"FFFFFFF"`
+    - `excluded` · string · e.g. `"The slide also lists “Jetpack Compose modern UI” with our app marked ✓…"`
+  - `oursOnly[]` · array of 5 objects:
+    - `h` · string · e.g. `"A 9-tool video editor"`
+    - `p` · string · e.g. `"Trim, split, crop, merge, aspect ratio, add audio, extract audio, filt…"`
+  - `ourClaims` · object with 12 keys:
+    - `paste` · number · e.g. `1`
+    - `browser` · number · e.g. `1`
+    - `quality` · number · e.g. `1`
+    - `background` · number · e.g. `1`
+    - `multi` · number · e.g. `1`
+    - `story` · number · e.g. `1`
+    - `status` · number · e.g. `1`
+    - `mp3` · number · e.g. `1`
+    - `private` · number · e.g. `1`
+    - `editor` · number · e.g. `1`
+    - `player` · number · e.g. `1`
+    - `languages` · number · e.g. `1`
+  - `inventory[]` · array of 5 objects:
+    - `screen` · string · e.g. `"Download"`
+    - `items[]` · array of 5 string · e.g. `["Paste a link, share into the app, or pick from Quick Platforms","Quick Platforms: Facebook, Instagram, TikTok, LinkedIn, X, Dailymotion, Likee, Snapchat, WhatsApp and WhatsApp Business","Quality picker (for example 720p, 360p, 240p)","Parallel downloads with pause, resume and retry"]`
+  - `edges[]` · array of 3 objects:
+    - `h` · string · e.g. `"InShot · Video Downloader"`
+    - `p` · string · e.g. `"The category leader: 100M+ installs, a 4.7 rating from about 2.7M rati…"`
+  - `plans` · object with 2 keys:
+    - `note` · string · e.g. `"Premium removes all ads. Prices as Google Play shows them in Pakistan."`
+    - `items[]` · array of 2 objects:
+      - `p` · string · e.g. `"Weekly"`
+      - `price` · string · e.g. `"Rs 1,400"`
+      - `sku` · string · e.g. `"weekly_plan"`
+- `offersChecked{}` · object keyed by 17 keys (video.downloader.videodownloader, com.gamma.videodownloader, videoplayer.videodownloader.downloader, instagram.video.downloader.story.saver.ig, instagram.video.downloader.story.saver.ig.insaver, hub.browser.video.downloader.saver, videodownloader.instagram.videosaver, com.videodownload.browser.videodownloader, downloader.video.download.free, instasaver.videodownloader.photodownloader.repost, com.allvideodownloader.hdvideodownloader.savevideos, allinone.videodownloader.savevideos, …); each value:
+  - `<key>` · boolean · e.g. `false`
+- `listing` · object with 5 keys:
+  - `current` · object with 13 keys:
+    - `title` · string · e.g. `"All Video Downloader & Saver"`
+    - `summary` · string · e.g. `"Fast video downloader for HD videos, stories, clips and offline viewin…"`
+    - `description` · string · e.g. `"Save the videos you love and enjoy them anytime with All Video Downloa…"`
+    - `iap` · string · e.g. `"$4.99 - $19.99 per item"`
+    - `ads` · boolean · e.g. `true`
+    - `privacy` · string · e.g. `"https://cellcave.github.io/cell-cave-website/apps/all-video-downloader…"`
+    - `site` · string · e.g. `"https://cellcave.github.io/cell-cave-website/"`
+    - `developer` · string · e.g. `"Cell Cave"`
+    - `installs` · string · e.g. `"5+"`
+    - `url` · string · e.g. `"https://play.google.com/store/apps/details?id=com.video.downloader.ins…"`
+    - `id` · string · e.g. `"com.video.downloader.instagram.videosaver"`
+    - `genre` · string · e.g. `"Productivity"`
+    - `privacyStatus` · number · e.g. `200`
+  - `titles[]` · array of 14 objects:
+    - `t` · string · e.g. `"All Video Downloader & Saver"`
+    - `len` · number · e.g. `28`
+    - `taken` · boolean · e.g. `true`
+    - `current` · boolean · e.g. `true`
+    - `score` · number · e.g. `729`
+    - `hits[]` · array of 8 string · e.g. `["video downloader","all video downloader","video saver - video downloader","video saver"]`
+    - `exact[]` · array of 5 string · e.g. `["video downloader","all video downloader","video downloader and saver","all video downloader and saver"]`
+  - `rec[]` · array of 3 objects:
+    - `t` · string · e.g. `"HD Video Downloader & Saver"`
+    - `len` · number · e.g. `27`
+    - `taken` · boolean · e.g. `false`
+    - `current` · boolean · e.g. `false`
+    - `score` · number · e.g. `634`
+    - `hits[]` · array of 7 string · e.g. `["video downloader","hd video downloader","video saver - video downloader","video saver"]`
+    - `exact[]` · array of 4 string · e.g. `["video downloader","hd video downloader","video downloader and saver","downloader"]`
+  - `shorts[]` · array of 2 objects:
+    - `s` · string · e.g. `"Download videos from links in HD. Video cutter, MP3 extractor and priv…"`
+    - `len` · number · e.g. `80`
+    - `score` · number · e.g. `911`
+    - `hits[]` · array of 12 string · e.g. `["video downloader","hd video downloader","private video downloader","video saver - video downloader"]`
+    - `exact[]` · array of 6 string · e.g. `["video downloader","hd video downloader","video downloader and saver","download videos"]`
+  - `long` · string · e.g. `"{name} saves videos from a link in the quality you choose, with a buil…"`
+- `dossierSections[]` · array of 8 objects:
+  - `id` · string · e.g. `"overview"`
+  - `label` · string · e.g. `"Overview"`
+- `tiksta` · object with 6 keys:
+  - `title` · string · e.g. `"Tiksta: Reels Video Downloader"`
+  - `titles[]` · array of 3 string · e.g. `["Tiksta: Reels Video Downloader","Tiksta Social Video Downloader","Tiksta: Reels Downloader App"]`
+  - `short` · string · e.g. `"Save & download reels & social videos in HD from a link. Private story…"`
+  - `shortAlt` · string · e.g. `"Save & download reels and social videos in HD from a link. Fast story …"`
+  - `long` · string · e.g. `"Tiksta is a reels downloader and social video downloader in one fast a…"`
+  - `pc` · object with 7 keys:
+    - `collectedAt` · string · e.g. `"2026-09-16T11:41:23.7794628Z"`
+    - `queries[]` · array of 16 string · e.g. `["reels downloader","reels video downloader","reels saver","video downloader for reels"]`
+    - `apps` · number · e.g. `143`
+    - `terms[]` · array of 6 objects:
+      - `key` · string · e.g. `"reels"`
+      - `label` · string · e.g. `"Reels / Reel"`
+      - `n` · number · e.g. `22`
+      - `m1` · number · e.g. `1`
+      - `y2` · number · e.g. `6`
+      - `both` · number · e.g. `1`
+      - `ex[]` · array of 4 objects:
+        - `t` · string · e.g. `"Story Saver & Reels Downloader"`
+        - `b` · string · e.g. `"1M+"`
+        - `d` · string · e.g. `"PinKaal"`
+        - `f` · string · e.g. `"2024-03-16"`
+    - `serp[]` · array of 10 objects:
+      - `t` · string · e.g. `"InSaver: All Video Downloader"`
+      - `b` · string · e.g. `"10M+"`
+      - `f` · string · e.g. `"2024-05-29"`
+      - `has` · boolean · e.g. `false`
+    - `tikstaSerp[]` · array of 10 string · e.g. `["TikTok - Videos, Shop & LIVE","TkStar - Followers Likes Views","TikTok Lite - Faster TikTok","TikBoost - Followers & Likes"]`
+    - `tikstaNamed` · number · e.g. `0`

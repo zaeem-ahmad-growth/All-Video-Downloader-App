@@ -4,6 +4,8 @@ This repository is the shared, public research site for the Android app **All Vi
 
 The site started as the Claude artifact https://claude.ai/artifact/6tfDkSQ8xYfu2TEWBr9gxj. Only the account that owns an artifact can update it, so this repository is now the master copy. Edit here, not the artifact.
 
+**Start with [docs/README.md](docs/README.md).** It says where everything is and how to answer a request. [docs/tabs/](docs/tabs/) holds the full visible text of every tab, [docs/code-map.md](docs/code-map.md) maps every section to its markup line, the function that fills it and the data it reads, and [docs/data-dictionary.md](docs/data-dictionary.md) describes every field in `assets/data.js`. [docs/parity.md](docs/parity.md) records that the site matches the original artifact with no gaps.
+
 ## Layout
 
 ```
@@ -19,6 +21,8 @@ tabs/
   02-aso-playbook/             data-driven (data-page="playbook")
   03-playstore-metadata/       data-driven (data-page="metadata")
   04-features-comparison/      data-driven (data-page="features")
+docs/                          start with docs/README.md; tabs/, code-map.md and data-dictionary.md are generated
+tools/                         export-docs.js regenerates docs/; dom-to-md.js converts a rendered page to Markdown
 research/                      backend data and scripts behind the pages
 ```
 
@@ -27,6 +31,7 @@ research/                      backend data and scripts behind the pages
 - Tab 01 is plain HTML: edit `tabs/01-video-downloader/index.html` directly. Keep its section menu (the `.jump` links in the bar) in step with the section `id`s.
 - Tabs 02-04 are mostly drawn by `assets/app.js` from `assets/data.js`. Numbers and tables come from `PAYLOAD`; most sentences are written in the render function for that tab (`renderHeader`, `renderListing`, `renderMetadata`, `renderFeatures` and so on). Static headings and section intros are in the tab's `index.html`.
 - `app.js` and `data.js` are shared by three tabs. After changing them, open all three tabs and check that nothing broke (see "Checking your work").
+- `assets/data.js` is laid out one field per line. The value after each `= ` is plain JSON, so keep it valid JSON: double quotes, no trailing commas, no comments inside.
 
 ## Adding a tab
 
@@ -46,9 +51,10 @@ Every page works when opened straight from disk: open `tabs/<NN>-<slug>/index.ht
 ## Saving and publishing
 
 1. `git pull --rebase`
-2. `git add` only the files you changed, then `git commit -m "<Tab label>: <what changed>"`.
-3. `git push`. If it is rejected because someone pushed first, run `git pull --rebase` and push again. Never force-push.
-4. Tell the user the change is live about a minute after the push, at `https://zaeem-ahmad-growth.github.io/All-Video-Downloader-App/tabs/<NN>-<slug>/`.
+2. If you changed a tab, `assets/app.js` or `assets/data.js`, run `node tools/export-docs.js` (Node 18+, with Edge or Chrome installed). It regenerates `docs/tabs/`, `docs/code-map.md` and `docs/data-dictionary.md`; commit them with your change. If it cannot run on your machine, say so to the user rather than editing the generated files by hand.
+3. `git add` only the files you changed, then `git commit -m "<Tab label>: <what changed>"`.
+4. `git push`. If it is rejected because someone pushed first, run `git pull --rebase` and push again. Never force-push.
+5. Tell the user the change is live about a minute after the push, at `https://zaeem-ahmad-growth.github.io/All-Video-Downloader-App/tabs/<NN>-<slug>/`.
 
 ## Other people's work
 
