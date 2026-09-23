@@ -13,6 +13,7 @@
 | `PAYLOAD.offersChecked` | object | 17 keys |
 | `PAYLOAD.listing` | object | 5 keys |
 | `PAYLOAD.dossierSections` | array | 8 items |
+| `PAYLOAD.graphics` | object | 10 keys |
 | `PAYLOAD.tiksta` | object | 6 keys |
 
 ## PAYLOAD
@@ -223,6 +224,54 @@
 - `dossierSections[]` · array of 8 objects:
   - `id` · string · e.g. `"overview"`
   - `label` · string · e.g. `"Overview"`
+- `graphics` · object with 10 keys:
+  - `ours` · string · e.g. `"00-our-app"`
+  - `overview[]` · array of 4 string · e.g. `["Our own store listing set against 16 competitors, asset for asset: 17 icons, 17 feature graphics and 130 screenshots, 164 files in all. Our app leads every section — the icon lineup, the feature graphics and the app-by-app library — so the comparison reads in one direction.","The 16 are the deduplicated union of three tabs: the competitors annotated on the ASO Playbook, the sixteen-listing audit behind Features Comparison, and the apps named in the Video Downloader dossier. Every asset is stored in the repository, so the set stays stable even when a listing changes.","The category has no brand wall and almost no visual identity. Seven of the seventeen icons are a red “V”, five are a download arrow on a flat square (ours among them) and three are a ring-and-arrow on a gradient — fifteen of seventeen in three families. Four feature graphics are the same dark grid of media tiles.","Where we already differ: our rainbow-gradient icon is the most distinctive mark in the library, and our screenshot headings state outcomes rather than repeating the title. Where we do not: we publish four screenshots against a category median of seven, and our best-evidenced features — the vault, the editor, MP3 extraction — are barely shown."]`
+  - `captureNote` · string · e.g. `"Asset URLs come from the 16 September 2026 Google Play scrape behind t…"`
+  - `table[]` · array of 17 objects:
+    - `id` · string · e.g. `"00-our-app"`
+    - `name` · string · e.g. `"Our app"`
+    - `publisher` · string · e.g. `"Cell Cave"`
+    - `downloads` · string · e.g. `"5+"`
+    - `rating` · string · e.g. `"too few ratings"`
+    - `portrait` · number · e.g. `4`
+    - `landscape` · number · e.g. `0`
+    - `ours` · boolean · e.g. `true`
+  - `scope[]` · array of 5 string · e.g. `["Seventeen listings: our own, plus the sixteen competitors that appear across the Video Downloader dossier, the ASO Playbook and the Features Comparison audit. The three source lists overlap heavily — the ASO Playbook alone repeats several links — and the deduplicated set of sixteen matches the one recorded in research/competitor-visual-memory on 21 September 2026.","Duplicate assets were removed in two passes. First by URL: Google Play serves the same screenshot across several device slots, which collapsed 288 raw references to 156. Then by inspection, which removed 26 more — DOSA publishes the same five creatives twice at identical size, Saver & Player Studio publishes seven creatives at four different pixel sizes, and Vidpal publishes its seven as both portrait and 1080 × 1080 squares.","Two listings genuinely run two sets rather than duplicates, and both are kept: Markhoor mixes two different visual systems in one carousel, and Mobile Notepad runs the same device art under two different sets of headings. InShot's unlabelled device captures are also kept, because they are a different composition rather than a resize.","Our own entry is the four phone screenshots, icon and feature graphic that Google Play serves today — the same assets shown under PlayStore Metadata. The listing uses four of the eight phone slots Play allows."]`
+  - `apps[]` · array of 17 objects:
+    - `id` · string · e.g. `"00-our-app"`
+    - `num` · string · e.g. `"00"`
+    - `name` · string · e.g. `"Our app"`
+    - `title` · string · e.g. `"All Video Downloader & Saver"`
+    - `publisher` · string · e.g. `"Cell Cave"`
+    - `downloads` · string · e.g. `"5+"`
+    - `playUrl` · string · e.g. `"https://play.google.com/store/apps/details?id=com.video.downloader.ins…"`
+    - `notes` · object with 4 keys:
+      - `Icon` · string · e.g. `"A rainbow gradient square — magenta through orange, yellow and green t…"`
+      - `Feature graphic` · string · e.g. `"Black banner with “VIDEO DOWNLOADER” split white/red, “DOWNLOAD YOUR A…"`
+      - `Screenshot system` · string · e.g. `"Four frames, one template: a white band carrying a bold dark all-caps …"`
+      - `Design assessment` · string · e.g. `"The template is sound and the copy is benefit-led — but we ship **four…"`
+    - `tags[]` · array of 6 string · e.g. `["ours","rainbow gradient icon","benefit-led headings","4 of 8 slots used"]`
+    - `noLandscape` · boolean · e.g. `true`
+    - `assets[]` · array of 6 objects:
+      - `kind` · string · e.g. `"icon"`
+      - `orient` · string · e.g. `"square"`
+      - `file` · string · e.g. `"00-our-app/icon-01.png"`
+      - `alt` · string · e.g. `"A rainbow gradient square — magenta through orange, yellow and green t…"`
+      - `label` · string · e.g. `"Icon 01"`
+      - `w` · number · e.g. `512`
+      - `h` · number · e.g. `512`
+      - `caption` · string · e.g. `"Listing icon, original file"`
+      - `src` · string · e.g. `"https://play-lh.googleusercontent.com/qLNXtLkR4z4KiAhmkwjlXx1TpuC4aaH6…"`
+    - `ours` · boolean · e.g. `true`
+  - `patterns[]` · array of 7 objects:
+    - `h` · string · e.g. `"Fifteen of seventeen icons sit in three families"`
+    - `html` · string · e.g. `"Seven are a red “V” (Sky Vision, Attractive Apps, Markhoor, Mobile Not…"`
+  - `guidance[]` · array of 7 objects:
+    - `h` · string · e.g. `"Fill the empty slots before redrawing anything"`
+    - `html` · string · e.g. `"We use four of eight phone slots; the category median is seven and the…"`
+  - `requirements[]` · array of 4 string · e.g. `["<b>Icon</b> — 512 × 512 px, 32-bit PNG with alpha, under 1,024 KB. Google Play applies its own rounding and shadow; promotional text, price or “new” badges are not allowed on the icon.","<b>Feature graphic</b> — 1024 × 500 px, JPEG or 24-bit PNG with no alpha, under 15 MB. Required for the listing to be eligible for several Play surfaces.","<b>Phone screenshots</b> — between 2 and 8 per device type, JPEG or 24-bit PNG with no alpha, each side between 320 px and 3,840 px, and the long side no more than twice the short side. Our listing currently fills 4 of the 8 phone slots; the dossier's 720 × 1600 device captures are ratio 1:2.22 and must be reframed to 1:2 or tighter before they can be uploaded.","<b>Every asset in this library was captured from a live listing</b>, so the dimensions recorded on each figure are what that app actually publishes, not what Play recommends."]`
+  - `sources[]` · array of 5 string · e.g. `["<a href=\"https://play.google.com/store/apps/details?id=com.video.downloader.instagram.videosaver&hl=en&gl=US\" target=\"_blank\" rel=\"noopener\">Our own Google Play listing</a> — the assets also shown under PlayStore Metadata.","Google Play listings for all sixteen competitors, English / United States locale — every figure links to its original file.","<a href=\"../01-video-downloader/\">Video Downloader</a> · <a href=\"../02-aso-playbook/\">ASO Playbook</a> · <a href=\"../04-features-comparison/\">Features Comparison</a> — the three tabs the competitor list is drawn from.","<code>research/competitor-visual-memory/</code> — the 21 September 2026 reference pass that first deduplicated these sixteen listings."]`
 - `tiksta` · object with 6 keys:
   - `title` · string · e.g. `"Tiksta: Reels Video Downloader"`
   - `titles[]` · array of 3 string · e.g. `["Tiksta: Reels Video Downloader","Tiksta Social Video Downloader","Tiksta: Reels Downloader App"]`

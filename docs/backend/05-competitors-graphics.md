@@ -1,13 +1,13 @@
-# ASO Playbook: code and data
+# Competitor’s Graphics: code and data
 
 > **Generated file: do not edit by hand.** Produced by `node tools/export-docs.js` (GitHub runs it after every push).
-> Everything behind the [ASO Playbook](../../tabs/02-aso-playbook/index.html) tab in one place: how the page is put together, the full source of the code that draws it, and the full data it reads. **Load it when a question or change concerns how this tab works** (its calculations, data, filters or behaviour); wording-only edits do not need it. The visible text is in [docs/tabs/02-aso-playbook.md](../tabs/02-aso-playbook.md); where the data came from is in [research.md](research.md).
+> Everything behind the [Competitor’s Graphics](../../tabs/05-competitors-graphics/index.html) tab in one place: how the page is put together, the full source of the code that draws it, and the full data it reads. **Load it when a question or change concerns how this tab works** (its calculations, data, filters or behaviour); wording-only edits do not need it. The visible text is in [docs/tabs/05-competitors-graphics.md](../tabs/05-competitors-graphics.md); where the data came from is in [research.md](research.md).
 
 ## How the page is put together
 
-- Markup: [tabs/02-aso-playbook/index.html](../../tabs/02-aso-playbook/index.html) (201 lines), `<body data-page="playbook">`
+- Markup: [tabs/05-competitors-graphics/index.html](../../tabs/05-competitors-graphics/index.html) (131 lines), `<body data-page="graphics">`
 - Drawn by [assets/app.js](../../assets/app.js) from [assets/data.js](../../assets/data.js); styles in [assets/site.css](../../assets/site.css); tab bar from [assets/nav.js](../../assets/nav.js)
-- Sections and the functions that fill them: see the [code map](../code-map.md#02-aso-playbook)
+- Sections and the functions that fill them: see the [code map](../code-map.md#05-competitors-graphics)
 
 ## Code
 
@@ -56,555 +56,6 @@
   document.addEventListener('mousemove', e => { if (tip.hidden) return; tip.style.left = Math.min(e.clientX + 14, innerWidth - 300) + 'px'; tip.style.top = (e.clientY + 16) + 'px'; });
 
   // ---------- header ----------
-```
-
-### `renderHeader()` (assets/app.js L43-69)
-
-```js
-  function renderHeader() {
-    const date = new Date(D.collectedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-    document.getElementById('p-date').textContent = 'Collected ' + date;
-    document.getElementById('p-chips').innerHTML = [`${US.length} US keywords`, '8 markets', `${totalSerps} live result lists`, `${A.length} apps profiled`, '16 tracked competitors', '0 events & offers running', '0 fetch failures'].map(c => `<span class="chip">${c}</span>`).join('');
-    const top = US[0];
-    const leader = PROF.slice().sort((a, b) => b.perMarket.US.top10 - a.perMarket.US.top10)[0];
-    const audit = PROF.slice(10);
-    const auditTop10 = audit.reduce((s, p) => s + D.markets.reduce((x, gl) => x + p.perMarket[gl].top10, 0), 0);
-    const mk = D.marketSummary.slice().sort((a, b) => a.medianEntry - b.medianEntry);
-    const pvd = US.find(r => r.q === 'private video downloader');
-    document.getElementById('p-verdict').innerHTML = `There is no brand wall in this category — ${D.marketSummary.find(m => m.gl === 'US').avgNonBrand} of every top 10 are independent apps — but the bar is high: the median entry bar is ${fmt(D.marketSummary.find(m => m.gl === 'US').medianEntry)} installs. <strong>${esc(leader.title)}</strong> by ${esc(leader.developer)} holds ${leader.perMarket.US.top10} US top-10 placements. Your listing ranks for none of the ${US.length} US keywords and shares its exact title with Sky Vision’s app. The opening: <strong>“${esc(pvd ? pvd.q : top.q)}”</strong>${pvd ? `, where a ${fmt(pvd.entry)}-install app already sits at #${pvd.entryRank}` : ''}, carried by the editor, MP3 extraction and PIN vault that almost no competitor lists.`;
-    document.getElementById('p-findings').innerHTML = [
-      `<strong>Your listing is invisible in search.</strong> It does not appear in any of the ${totalSerps} result lists across eight markets.`,
-      `<strong>The audit apps don’t rank either.</strong> Sky Vision, Attractive Apps Valley, Markhoor, Mobile Notepad, Vidow and Vidpal hold ${auditTop10} top-10 placements between them across all eight markets — their installs come from outside keyword search.`,
-      `<strong>Generic phrasing leads the board.</strong> ${US.slice(0, 4).map(r => `“${esc(r.q)}”`).join(', ')} top the US priority list; platform-name searches score high too but carry trademark risk.`,
-      `<strong>No one runs Events &amp; offers.</strong> None of the 16 competitors shows a card in the US, Brazil, Germany or India.`,
-      `<strong>India is the easiest market.</strong> The median entry bar is ${fmt(mk[0].medianEntry)} installs in ${MN[mk[0].gl]} against ${fmt(D.marketSummary.find(m => m.gl === 'US').medianEntry)} in the US.`,
-    ].map(x => `<li>${x}</li>`).join('');
-    document.getElementById('p-tiles').innerHTML = [
-      [`P${top.P}`, `“${esc(top.q)}” · #1 US priority`],
-      [`${leader.perMarket.US.top10}`, `US top-10 placements · ${esc(leader.developer)}`],
-      [pvd ? fmt(pvd.entry) : '—', `entry bar on “private video downloader”`],
-      ['0', 'keywords your listing ranks for'],
-    ].map(([n, l]) => `<div class="tile"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
-    document.getElementById('p-method').innerHTML = `<strong>Method, ${date}:</strong> Google Play web search (English) scraped live for ${US.length} keywords in the United States and the first 40 of those in Brazil, Germany, Spain, Italy, Australia, the UAE and India — ${totalSerps} result lists, 30 deep. Keywords came from a core downloader list, a platform-name list, an adjacent editing and vault list, a peripheral list and Play autocomplete; YouTube keywords and phrases with adult-site or piracy intent were removed. Full listing metadata was fetched for every app in any top 10 plus the 16 tracked competitors — ${A.length} apps. Events &amp; offers were read from each competitor’s listing page in four markets. Demand comes from Play autocomplete, typed out letter by letter.`;
-  }
-```
-
-### `renderMarketSel()` (assets/app.js L70-75)
-
-```js
-  function renderMarketSel() {
-    const sel = document.getElementById('market-sel');
-    sel.innerHTML = D.markets.map(m => `<option value="${m}"${m === state.gl ? ' selected' : ''}>${m} · ${MN[m]}</option>`).join('');
-    sel.addEventListener('change', () => { state.gl = sel.value; try { localStorage.setItem('avd-gl', state.gl); } catch (e) {} renderScoped(); });
-  }
-```
-
-### `renderCategories()` (assets/app.js L76-87)
-
-```js
-  function renderCategories() {
-    const counts = {}; let total = 0; const devs = {};
-    rows().forEach(r => r.ids.slice(0, 10).forEach(idx => {
-      if (idx < 0) return; total++;
-      const a = A[idx]; const k = COMP.includes(idx) ? 'Tracked competitors' : a.b ? 'Platform brands' : CAT[a.cat];
-      counts[k] = (counts[k] || 0) + 1; devs[a.dev] = (devs[a.dev] || 0) + 1;
-    }));
-    const list = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-    document.getElementById('cat-share').innerHTML = `<thead><tr><th>Who holds the slot</th><th class="num">Slots</th><th>Share</th></tr></thead><tbody>` + list.map(([k, n]) => `<tr><td>${esc(k)}</td><td class="num">${n}</td><td style="min-width:150px"><div class="sharebar"><div class="track"><div class="fill" style="width:${(100 * n / total).toFixed(1)}%;${k === 'Tracked competitors' ? 'background:var(--s-comp)' : k === 'Platform brands' ? 'background:var(--s-brand)' : ''}"></div></div><span class="small num">${Math.round(100 * n / total)}%</span></div></td></tr>`).join('') + '</tbody>';
-    document.getElementById('cat-devs').innerHTML = `<thead><tr><th>Developer</th><th class="num">Top-10 slots</th></tr></thead><tbody>` + Object.entries(devs).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([d, n]) => `<tr><td>${esc(d)}</td><td class="num">${n}</td></tr>`).join('') + '</tbody>';
-  }
-```
-
-### `renderCompetitors()` (assets/app.js L88-103)
-
-```js
-  function renderCompetitors() {
-    const gl = state.gl;
-    const list = PROF.map((p, k) => ({ p, k })).sort((a, b) => b.p.perMarket[gl].top10 - a.p.perMarket[gl].top10 || b.p.perMarket[gl].any - a.p.perMarket[gl].any);
-    document.getElementById('comp-table').innerHTML = `<thead><tr><th>App</th><th class="num">Top-10 · in results</th><th class="num">Best rank</th><th class="num">Installs</th><th class="num">Rating</th><th>Updated</th><th>Monetisation</th><th>Title phrases</th><th>Source</th></tr></thead><tbody>` +
-      list.map(({ p, k }) => { const m = p.perMarket[gl]; return `<tr>
-        <td style="min-width:230px"><div class="comp-name">${esc(p.title)}</div><div class="small muted">${esc(p.developer)} · <a href="https://play.google.com/store/apps/details?id=${esc(p.id)}&hl=en&gl=US" target="_blank" rel="noopener">listing ↗</a></div></td>
-        <td class="num"><span class="bignum">${m.top10}</span> <span class="muted">· ${m.any}</span></td>
-        <td class="num">${m.best ? '#' + m.best : '—'}</td>
-        <td class="num">${esc(p.installsLabel || fmt(p.installs))}</td>
-        <td class="num">${p.score ? p.score.toFixed(1) : '—'}${p.ratings ? `<div class="small muted">${fmt(p.ratings)} ratings</div>` : ''}</td>
-        <td class="nowrap small">${esc(p.updated || '—')}</td>
-        <td class="small">${p.ads ? '<span class="pill p-warn">Ads</span> ' : '<span class="pill p-good">No ads</span> '}${p.iap ? `<div class="muted">${esc(p.iap)}</div>` : ''}</td>
-        <td style="min-width:170px"><b class="num">${p.titleKw.length}</b><div class="kwlist">${p.titleKw.map(q => `<span>${esc(q)}</span>`).join('')}</div></td>
-        <td class="small">${k >= 10 ? '<span class="pill p-acc">Feature audit</span>' : '<span class="pill p-mute">Live search</span>'}</td></tr>`; }).join('') + '</tbody>';
-  }
-```
-
-### `renderCompDetailSelect()` (assets/app.js L104-109)
-
-```js
-  function renderCompDetailSelect() {
-    const sel = document.getElementById('cd-select');
-    sel.innerHTML = PROF.map((p, k) => `<option value="${k}">${esc(p.title)} — ${esc(p.developer)}</option>`).join('');
-    sel.addEventListener('change', () => { state.cd = +sel.value; state.cdAll = false; renderCompDetail(); });
-    document.getElementById('cd-more').addEventListener('click', () => { state.cdAll = !state.cdAll; renderCompDetail(); });
-  }
-```
-
-### `renderCompDetail()` (assets/app.js L110-138)
-
-```js
-  function renderCompDetail() {
-    const p = PROF[state.cd], k = state.cd, cid = COMP[k];
-    document.getElementById('cd-meta').innerHTML = `
-      <div class="meta-field"><div class="field-label"><span>Title</span><span>${p.titleLen} / 30</span></div><p><b>${esc(p.title)}</b></p></div>
-      <div class="meta-field"><div class="field-label"><span>Short description</span><span>${p.summaryLen} / 80</span></div><p>${esc(p.summary)}</p></div>
-      <div class="meta-field"><div class="field-label"><span>Full description</span><span>${p.descLen.toLocaleString('en-US')} / 4,000 · ${p.descWords} words</span></div>
-        <details class="desc"><summary>Show the full description</summary><pre>${esc(p.description)}</pre></details></div>`;
-    const dens = p.kwDens.slice().sort((a, b) => b.n - a.n);
-    const claims = D.claims.filter(([c]) => p.claims[c]).map(([, l]) => l);
-    document.getElementById('cd-side').innerHTML = `
-      <div class="panel" style="padding:16px 18px"><h3 style="margin-bottom:8px">Events &amp; offers</h3><p class="small muted">No events or offers on the listing in the US, Brazil, Germany or India.</p></div>
-      <div class="panel" style="padding:16px 18px"><h3 style="margin-bottom:8px">Listing facts</h3><table><tbody>
-        <tr><td>Installs</td><td class="num">${esc(p.installsLabel)}</td></tr><tr><td>Rating</td><td class="num">${p.score ? p.score.toFixed(2) + ' · ' + fmt(p.ratings) : '—'}</td></tr>
-        <tr><td>Released · updated</td><td class="num">${esc(p.released || '—')} · ${esc(p.updated || '—')}</td></tr><tr><td>Monetisation</td><td class="num">${p.ads ? 'Ads' : 'No ads'} · ${esc(p.iap || 'no IAP')}</td></tr>
-        <tr><td>Screenshots · video</td><td class="num">${p.shots} · ${p.video ? 'yes' : 'no'}</td></tr><tr><td>Category</td><td class="num">${esc(p.genre)}</td></tr>
-      </tbody></table></div>
-      <div class="panel" style="padding:16px 18px"><h3 style="margin-bottom:8px">Features its listing claims</h3><div class="kwlist">${claims.map(c => `<span>${esc(c)}</span>`).join('') || '<span>none detected</span>'}</div></div>
-      <div class="panel" style="padding:16px 18px"><h3 style="margin-bottom:8px">Top board phrases in its description</h3>${dens.length ? `<table><thead><tr><th>Phrase</th><th class="num">Uses</th><th class="num">Density</th></tr></thead><tbody>${dens.map(d => `<tr><td class="kw">${esc(d.q)}</td><td class="num">${d.n}</td><td class="num">${d.d}%</td></tr>`).join('')}</tbody></table>` : '<p class="small muted">None of the top 14 US keywords appears as a phrase.</p>'}</div>`;
-    const kws = new Map();
-    D.markets.forEach(gl => D.board[gl].forEach(r => { const rank = r.comps[k]; if (!rank) return; const e = kws.get(r.q) || { q: r.q, ranks: {} }; e.ranks[gl] = rank; kws.set(r.q, e); }));
-    const list = [...kws.values()].map(e => ({ ...e, us: US.find(r => r.q === e.q), best: Math.min(...Object.values(e.ranks)) })).sort((a, b) => (a.ranks.US || 99) - (b.ranks.US || 99) || a.best - b.best);
-    const t10 = list.filter(e => e.best <= 10).length;
-    document.getElementById('cd-kw-h').textContent = list.length ? `${p.title} ranks for ${list.length} keywords · ${t10} with a top-10 position somewhere` : `${p.title} does not rank for any tracked keyword in the eight markets`;
-    const shown = state.cdAll ? list : list.slice(0, 25);
-    document.getElementById('cd-more').textContent = list.length > 25 ? (state.cdAll ? 'Show the top 25 only' : `Show all ${list.length} keywords`) : '';
-    document.getElementById('cd-kw').innerHTML = list.length ? `<thead><tr><th>Keyword</th><th>Tier</th><th class="num">US priority</th>${D.markets.map(m => `<th class="ch">${m}</th>`).join('')}</tr></thead><tbody>` +
-      shown.map(e => `<tr><td class="kwc"><span class="kw">${esc(e.q)}</span>${e.us ? tmPill(e.us) : ''}</td><td>${e.us ? `<span class="pill ${TIER_PILL[e.us.tier]}">${TIER[e.us.tier]}</span>` : ''}</td><td class="num small">${e.us ? e.us.P : '—'}</td>${D.markets.map(gl => { const measured = D.board[gl].some(r => r.q === e.q); return `<td>${measured ? rkCell(e.ranks[gl], cid, e.q) : '<span class="small muted">n/m</span>'}</td>`; }).join('')}</tr>`).join('') + '</tbody>' : '';
-  }
-```
-
-### `renderEvents()` (assets/app.js L139-146)
-
-```js
-  function renderEvents() {
-    const checked = PROF.concat([MYP]);
-    const any = checked.filter(p => PAYLOAD.offersChecked[p.id]);
-    document.getElementById('events-body').innerHTML = `<div class="callout-open"><h3 style="margin-bottom:6px">${any.length ? any.length + ' listings run events or offers' : 'No competitor runs events or offers'}</h3>
-      <p class="sub">All ${checked.length} listings — the 16 competitors and yours — were checked in the United States, Brazil, Germany and India. ${any.length ? '' : 'Not one shows an “Events & offers” card, so any dated card you publish (a feature launch, a trial, a seasonal event) has the promotional space to itself.'}</p>
-      <div class="kwlist" style="margin-top:10px">${checked.map(p => `<span>${esc(p.mine ? 'Your app' : p.developer)} · ${PAYLOAD.offersChecked[p.id] ? 'running' : 'none'}</span>`).join('')}</div></div>`;
-  }
-```
-
-### `renderMatrix()` (assets/app.js L147-153)
-
-```js
-  function renderMatrix() {
-    const list = state.all ? rows() : rows().slice(0, 30);
-    document.getElementById('matrix-table').innerHTML = `<thead><tr><th>Keyword</th><th class="num">Priority</th>${COMP.map((c, i) => `<th class="ch" title="${esc(c >= 0 ? A[c].t : '')}">${esc(SHORT[i])}</th>`).join('')}</tr></thead><tbody>` +
-      list.map(r => `<tr><td class="kwc"><span class="kw">${esc(r.q)}</span>${tmPill(r)}</td><td class="num small">${r.P}</td>${COMP.map((c, k) => `<td>${rkCell(r.comps[k], c, r.q)}</td>`).join('')}</tr>`).join('') +
-      `</tbody><tfoot><tr><td class="kwc">Top-10 placements</td><td></td>${COMP.map((c, k) => `<td>${list.filter(r => r.comps[k] && r.comps[k] <= 10).length}</td>`).join('')}</tr></tfoot>`;
-  }
-```
-
-### `renderStrips()` (assets/app.js L154-161)
-
-```js
-  function renderStrips() {
-    document.getElementById('strip-legend').innerHTML = [['comp', 'Tracked competitors'], ['brand', 'Brand'], ['niche', 'Video downloader'], ['adj', 'Saver, browser, player, editor'], ['off', 'Other'], ['none', 'Beyond Play’s results']].map(([c, l]) => `<span><i class="sw slot ${c}" style="height:14px"></i>${l}</span>`).join('');
-    const list = rows().slice(0, state.strips);
-    const ruler = `<div class="strip-ruler"><span>Keyword</span><div class="slots ruler-slots">${Array.from({ length: 30 }, (_, i) => (i === 10 ? '<span></span>' : '') + `<span>${i === 0 || i === 9 || i === 10 || i === 19 || i === 29 ? i + 1 : ''}</span>`).join('')}</div></div>`;
-    document.getElementById('strips').innerHTML = ruler + list.map(r => `<div class="strip-row"><div class="strip-head"><div class="strip-kw"><span class="kw">${esc(r.q)}</span><span class="meta">P${r.P} · ${r.depth} results · ${r.c10} competitors in top 10</span></div><div class="slots">${Array.from({ length: 30 }, (_, i) => { const idx = i < r.ids.length ? r.ids[i] : -1; return (i === 10 ? '<span class="slot gap"></span>' : '') + `<span class="slot ${i < r.ids.length ? slotClass(idx) : 'none'}"${idx >= 0 ? ` data-a="${idx}" data-r="${i + 1}" data-q="${esc(r.q)}"` : ''}></span>`; }).join('')}</div></div></div>`).join('');
-    document.getElementById('strips-more').textContent = state.strips >= rows().length ? '' : `Show ${Math.min(rows().length, state.strips + 20) - state.strips} more searches`;
-  }
-```
-
-### `renderTierChips()` (assets/app.js L162-167)
-
-```js
-  function renderTierChips() {
-    const el = document.getElementById('tier-chips');
-    el.innerHTML = [['all', 'All tiers'], ['A', 'Core'], ['B', 'Adjacent'], ['C', 'Peripheral'], ['tm', '™ Platform names']].map(([k, l]) => `<button type="button" data-t="${k}" aria-pressed="${state.tier === k}">${l}</button>`).join('');
-    el.onclick = e => { const b = e.target.closest('button'); if (!b) return; state.tier = b.dataset.t; renderTierChips(); renderBoard(); };
-    document.getElementById('kw-search').oninput = e => { state.q = e.target.value.trim().toLowerCase(); renderBoard(); };
-  }
-```
-
-### `renderBoard()` (assets/app.js L168-181)
-
-```js
-  function renderBoard() {
-    const cols = [['q', 'Keyword'], ['P', 'Priority'], ['R', 'Relevance'], ['nb', 'Winnable'], ['demand', 'Demand'], ['vol', 'Volume proxy'], ['entry', 'Entry bar'], ['c10', 'Competitors top 10'], ['depth', 'Results']];
-    let list = rows().filter(r => (state.tier === 'all' || (state.tier === 'tm' ? r.tm : r.tier === state.tier)) && (!state.q || r.q.includes(state.q)));
-    list = list.slice().sort((a, b) => { const x = a[state.sort], y = b[state.sort]; if (state.sort === 'q') return state.dir * x.localeCompare(y); return state.dir * ((x == null ? -1 : x) - (y == null ? -1 : y)); });
-    const maxP = Math.max(...rows().map(r => r.P));
-    document.getElementById('board').innerHTML = `<thead><tr>${cols.map(([k, l]) => `<th${k !== 'q' ? ' class="num"' : ''} aria-sort="${state.sort === k ? (state.dir < 0 ? 'descending' : 'ascending') : 'none'}"><button type="button" data-k="${k}">${l}</button></th>`).join('')}</tr></thead><tbody>` +
-      list.map(r => `<tr><td style="min-width:220px"><span class="kw">${esc(r.q)}</span><div class="kwmeta"><span class="pill ${TIER_PILL[r.tier]}">${TIER[r.tier]}</span><span class="pill p-mute">${SRC[r.src]}</span>${tmPill(r)}</div></td>
-        <td><div class="pbar"><div class="track"><div class="fill" style="width:${(100 * r.P / maxP).toFixed(1)}%"></div></div><b>${r.P}</b></div></td>
-        <td class="num">${Math.round(r.R * 100)}</td><td class="num">${r.nb}<span class="muted">/10</span></td>
-        <td class="num">${r.demand}<div class="small muted">${r.demandAt ? `after “${esc(r.demandAt)}”` : 'not suggested'}</div></td>
-        <td class="num">${fmt(r.vol)}</td><td class="num">${entryCell(r)}</td><td class="num">${r.c10}<span class="muted">/16</span></td><td class="num">${r.depth}</td></tr>`).join('') + '</tbody>';
-    document.querySelectorAll('#board th button').forEach(b => b.onclick = () => { const k = b.dataset.k; if (state.sort === k) state.dir *= -1; else { state.sort = k; state.dir = k === 'q' ? 1 : -1; } renderBoard(); });
-  }
-```
-
-### `renderMarkets()` (assets/app.js L182-197)
-
-```js
-  function renderMarkets() {
-    document.getElementById('mkt-cards').innerHTML = D.marketSummary.map(m => `<div class="mkt"><h3>${MN[m.gl]} <small>${m.gl}</small></h3><dl>
-      <dt>Non-brand apps in top 10</dt><dd>${m.avgNonBrand} / 10</dd><dt>Median entry bar</dt><dd>${fmt(m.medianEntry)}</dd><dt>Competitor top-10s</dt><dd>${m.compTop10}</dd><dt>Avg results per search</dt><dd>${m.avgDepth}</dd></dl>
-      <div class="small muted">Top keywords</div><div class="kwlist">${m.best.slice(0, 3).map(b => `<span>${esc(b.q)} · P${b.P}</span>`).join('')}</div></div>`).join('');
-    const kws = D.secondary;
-    const P = (gl, q) => D.board[gl].find(x => x.q === q) || null;
-    const maxP = Math.max(...D.markets.flatMap(gl => kws.map(q => (P(gl, q) || { P: 0 }).P)));
-    const sorted = kws.filter(q => P('US', q)).sort((a, b) => P('US', b).P - P('US', a).P);
-    document.getElementById('mkt-heat').innerHTML = `<thead><tr><th>Keyword</th>${D.markets.map(m => `<th class="ch">${m}</th>`).join('')}</tr></thead><tbody>` +
-      sorted.map(q => { const vals = D.markets.map(gl => (P(gl, q) || { P: 0 }).P); const best = Math.max(...vals); return `<tr><td class="kwc"><span class="kw">${esc(q)}</span>${tmPill(P('US', q))}</td>${vals.map(v => `<td class="h${v === best ? ' best' : ''}" style="background:color-mix(in srgb, var(--accent) ${Math.round(8 + 45 * v / maxP)}%, transparent)">${v}</td>`).join('')}</tr>`; }).join('') + '</tbody>';
-    const counts = PROF.map((p, k) => D.markets.map(gl => D.board[gl].filter(r => kws.includes(r.q) && r.comps[k] && r.comps[k] <= 10).length));
-    const maxC = Math.max(1, ...counts.flat());
-    document.getElementById('mkt-comp').innerHTML = `<thead><tr><th>Competitor</th>${D.markets.map(m => `<th class="ch">${m}</th>`).join('')}</tr></thead><tbody>` +
-      PROF.map((p, k) => `<tr><td class="kwc"><b>${esc(SHORT[k])}</b><div class="small muted">${esc(p.title)}</div></td>${counts[k].map(n => `<td class="h" style="background:color-mix(in srgb, var(--s-comp) ${Math.round(4 + 50 * n / maxC)}%, transparent)">${n}</td>`).join('')}</tr>`).join('') + '</tbody>';
-  }
-```
-
-### `ladderPhases()` (assets/app.js L198-207)
-
-```js
-  function ladderPhases(list, ex = /without ads/) {
-    const used = new Set();
-    const take = (pred, n) => { const out = list.filter(r => !r.tm && (r.tier === 'A' || r.tier === 'B') && !used.has(r.q) && !ex.test(r.q) && pred(r)).slice(0, n); out.forEach(r => used.add(r.q)); return out; };
-    return [
-      ['Phase 0', 'launch → 10K · weeks 0–6', take(r => r.R >= 0.9 && r.entry != null && r.entry < 60000, 6), 'A non-brand app under 60K installs already holds a top-10 slot here.'],
-      ['Phase 1', '10K → 100K', take(r => r.R >= 0.85 && r.entry != null && r.entry < 200000, 6), 'The smallest app in the top 10 has under 200K installs.'],
-      ['Phase 2', '100K → 1M', take(r => r.R >= 0.85 && r.entry != null && r.entry < 800000, 6), 'Entry bars in the hundreds of thousands: a scaled app is needed.'],
-      ['Phase 3', '1M+', take(r => r.R >= 0.8, 6), 'Head terms held by 10M+ apps.'],
-    ];
-  }
-```
-
-### `renderLadder()` (assets/app.js L208-212)
-
-```js
-  function renderLadder() {
-    document.getElementById('ladder-list').innerHTML = ladderPhases(rows()).map(([ph, sub, list, why]) => `<div class="rung"><div class="ph">${ph}<small>${sub}</small></div><div><ul>${list.map(r => `<li>${esc(r.q)} <i>P${r.P} · ${r.c10} comp.</i></li>`).join('') || '<li>none at this bar</li>'}</ul><p class="proof">${why} ${list[0] && list[0].entry ? `Smallest non-brand app on “${esc(list[0].q)}”: ${esc((A[list[0].entryIdx] || {}).t || '')} with ${fmt(list[0].entry)} installs at #${list[0].entryRank}.` : ''}</p></div></div>`).join('');
-  }
-
-  // ---------- listing helpers ----------
-```
-
-### `coverageOf()` (assets/app.js L221-229)
-
-```js
-  function coverageOf(q, f) {
-    const longN = phraseN(f.long, q);
-    if (phraseN(f.title, q)) return { key: 'title', label: 'Title · exact phrase', w: 1, longN };
-    if (allIn(q, wordSet(f.title))) return { key: 'titlew', label: 'Title · all words', w: 0.85, longN };
-    if (phraseN(f.short, q)) return { key: 'short', label: 'Short · exact phrase', w: 0.7, longN };
-    if (allIn(q, wordSet(f.title + ' ' + f.short))) return { key: 'tsw', label: 'Title + short · all words', w: 0.7, longN };
-    if (longN) return { key: 'long', label: `Full description ×${longN}`, w: 0.3, longN };
-    return { key: 'none', label: 'Not used', w: 0, longN };
-  }
-```
-
-### `highlight()` (assets/app.js L236-241)
-
-```js
-  function highlight(text, kws) {
-    let html = esc(text); const marks = [];
-    const hold = h => { marks.push(h); return ` ${marks.length - 1} `; };
-    [...kws].sort((a, b) => b.length - a.length).forEach(k => { const pat = k.split(' ').map(reEsc).join('\\s+').replace(/\\s\+and\\s\+/g, '\\s+(?:and|&amp;)\\s+'); html = html.replace(new RegExp('\\b' + pat + '\\b', 'gi'), m => hold(`<mark class="kwm">${m}</mark>`)); });
-    return html.replace(/ (\d+) /g, (_, i) => marks[+i]);
-  }
-```
-
-### `longHtml()` (assets/app.js L242-254)
-
-```js
-  function longHtml(text, kws) {
-    let html = '', inList = false;
-    for (const raw of text.split('\n')) {
-      const line = raw.replace(/\s+$/, '');
-      if (/^[●•]/.test(line)) { if (!inList) { html += '<ul>'; inList = true; } html += `<li>${highlight(line.replace(/^[●•]\s*/, ''), kws)}</li>`; continue; }
-      if (inList) { html += '</ul>'; inList = false; }
-      if (!line.trim()) continue;
-      if (/^## /.test(line)) html += `<h4>${highlight(line.slice(3), kws)}</h4>`;
-      else if (/^[A-Z0-9 &?:,'’\-!]+$/.test(line) && /[A-Z]{3}/.test(line)) html += `<h4>${highlight(line, kws)}</h4>`;
-      else html += `<p>${highlight(line, kws)}</p>`;
-    }
-    return html + (inList ? '</ul>' : '');
-  }
-```
-
-### `renderListing()` (assets/app.js L257-282)
-
-```js
-  function renderListing() {
-    const cur = L.titles.find(t => t.current);
-    document.getElementById('titles').innerHTML = L.rec.map((t, i) => { const top = US.slice(0, 12).filter(r => (t.exact || []).includes(r.q)); return `<div class="topt${i === 0 ? ' rec' : ''}"><div class="tag">${i === 0 ? 'Recommended title' : 'Alternative ' + i}</div><div class="tt">${esc(t.t)}</div>${meter(t.len, 30)}<div class="why">Covers every word of ${t.hits.length} board keywords (score ${t.score}${cur ? `, against ${cur.score} for the current title` : ''}). ${top.length ? `Carries ${top.map(r => `“${esc(r.q)}” (#${US.indexOf(r) + 1})`).join(' and ')} as an exact phrase.` : ''}</div><div class="covered">${t.hits.slice(0, 8).map(h => `<span>${esc(h)}</span>`).join('')}</div></div>`; }).join('');
-    document.getElementById('title-table').innerHTML = `<thead><tr><th>Title</th><th class="num">Chars</th><th class="num">Score</th><th class="num">Keywords</th><th>Status</th></tr></thead><tbody>` + L.titles.map(t => `<tr${t.current ? ' style="background:var(--accent-soft)"' : ''}><td><b>${esc(t.t)}</b></td><td class="num">${t.len}</td><td class="num">${t.score}</td><td class="num">${t.hits.length}</td><td>${t.current ? '<span class="pill p-warn">current · same title as Sky Vision</span>' : t.taken ? '<span class="pill p-risk">in use by another app</span>' : '<span class="pill p-good">available</span>'}</td></tr>`).join('') + '</tbody>';
-    const fk = FINAL.map(r => r.q);
-    document.getElementById('listing-card').innerHTML = `
-      <div class="apphead"><img src="${AS.icon.file}" alt="" width="56" height="56" style="border-radius:14px;box-shadow:0 0 0 1px var(--line)"><div><div class="t">${esc(PROP.title)}</div><div class="d">${esc(L.current.developer)} · ${esc(L.current.genre)}</div></div></div>
-      <div class="field"><div class="field-label"><span>Title</span><span>${PROP.title.length} / 30</span></div><p>${highlight(PROP.title, fk)}</p></div>
-      <div class="field"><div class="field-label"><span>Short description</span><span>${PROP.short.length} / 80</span></div><p>${highlight(PROP.short, fk)}</p>${L.shorts[1] ? `<p class="small muted" style="margin-top:6px">Alternative (${L.shorts[1].len}/80): ${esc(L.shorts[1].s)}</p>` : ''}</div>
-      <div class="field longdesc"><div class="field-label"><span>Full description</span><span>${PROP.long.length.toLocaleString('en-US')} / 4,000</span></div>${longHtml(L.long.replace(/\{name\}/g, REC.t), fk)}</div>`;
-    const wc = nWords(PROP.long);
-    const phr = US.filter(r => r.tier !== 'D' && !r.tm && phraseN(PROP.long, r.q)).map(r => ({ r, n: phraseN(PROP.long, r.q), d: 100 * phraseN(PROP.long, r.q) * nWords(r.q) / wc })).sort((x, y) => y.n - x.n || y.r.P - x.r.P).slice(0, 14);
-    const strong = x => FINAL.filter(r => ['title', 'titlew', 'short', 'tsw'].includes(coverageOf(r.q, x).key)).length;
-    document.getElementById('listing-side').innerHTML = `
-      <div class="panel"><h3>Measured against the current listing</h3><table><thead><tr><th></th><th class="num">Current</th><th class="num">Proposed</th></tr></thead><tbody>
-        <tr><td>Priority coverage</td><td class="num">${prioCoverage(CUR).toFixed(0)}%</td><td class="num"><b>${prioCoverage(PROP).toFixed(0)}%</b></td></tr>
-        <tr><td>Finalized keywords used</td><td class="num">${FINAL.filter(r => coverageOf(r.q, CUR).key !== 'none').length} / 24</td><td class="num"><b>${FINAL.filter(r => coverageOf(r.q, PROP).key !== 'none').length} / 24</b></td></tr>
-        <tr><td>…in title or short</td><td class="num">${strong(CUR)}</td><td class="num"><b>${strong(PROP)}</b></td></tr>
-        <tr><td>Title shared with another app</td><td class="num">yes</td><td class="num"><b>no</b></td></tr>
-        <tr><td>Full description</td><td class="num">${CUR.long.length.toLocaleString('en-US')}</td><td class="num">${PROP.long.length.toLocaleString('en-US')}</td></tr>
-      </tbody></table></div>
-      <div class="panel"><h3>Board phrases in the proposed description</h3><p class="small muted" style="margin-bottom:6px">${wc} words · platform-name phrases excluded from this count</p><table><thead><tr><th>Phrase</th><th class="num">Uses</th><th class="num">Density</th></tr></thead><tbody>${phr.map(x => `<tr><td class="kw">${esc(x.r.q)}</td><td class="num">${x.n}</td><td class="num">${x.d.toFixed(1)}%</td></tr>`).join('')}</tbody></table></div>
-      <div class="panel"><h3>Every claim maps to the Product Dossier</h3><ul class="checks"><li>Paste or share a link · quality picker · parallel downloads with pause, resume, retry</li><li>Foreground service for large background downloads</li><li>9-tool video cutter, including extract audio and watermark</li><li>Vault with PIN, biometrics and a security question</li><li>Status saver · 9 languages with RTL</li><li>Platforms named are the seven downloaded end to end on a device</li></ul><p class="small muted" style="margin-top:8px">Left out on purpose: platform names in the title and short description, “free”, “without ads” (the app contains ads), YouTube, and “no watermark”.</p></div>`;
-  }
-
-  // ---------- TAB 2 · metadata ----------
-```
-
-### `renderMetadata()` (assets/app.js L297-478)
-
-```js
-  function renderMetadata(vk) {
-    const V = VER[vk], f = V.f, B = V.B, FIN = V.FIN, nF = FIN.length, isT = vk === 'tiksta';
-    const fk = B.filter(r => r.tier !== 'D').map(r => r.q), strongKeys = ['title', 'titlew', 'short', 'tsw'];
-    const used = B.filter(r => r.tier !== 'D' && coverageOf(r.q, f).key !== 'none');
-    const withC = used.filter(r => compRanks(r).length > 0);
-    const all = [f.title, f.short, f.long].join('\n'), brands = brandsIn(all);
-    const pill = s => s === 'met' ? '<span class="pill p-good">✓ Met</span>' : s === 'not' ? '<span class="pill p-risk">✕ Not met</span>' : '<span class="pill p-mute">• Recorded</span>';
-    const pWas = r => r.cleared ? `<div class="small muted">was ${r.P0}</div>` : '';
-    const strong = x => FIN.filter(r => strongKeys.includes(coverageOf(r.q, x).key)).length;
-
-    document.getElementById('m-src').textContent = isT ? 'Proposed metadata · Tiksta' : 'Live Google Play listing';
-    const facts = isT
-      ? ['Proposed · not yet live', `Replaces “${esc(CUR.title)}”`, esc(L.current.developer), esc(L.current.genre), L.current.ads ? 'Contains ads' : 'No ads', L.current.iap ? 'In-app purchases ' + esc(L.current.iap) : 'No in-app purchases', `${brands.length} brand names in the text`]
-      : [esc(L.current.developer), esc(L.current.genre), L.current.installs + ' installs', L.current.ads ? 'Contains ads' : 'No ads', L.current.iap ? 'In-app purchases ' + esc(L.current.iap) : 'No in-app purchases', `${AS.screenshots.length} screenshots`, 'Feature graphic 1024×500', 'No promo video', 'No events & offers'];
-    document.getElementById('m-app').innerHTML = `<img src="${AS.icon.file}" alt="App icon" width="92" height="92">
-      <div style="flex:1 1 360px;min-width:0"><h1>${esc(f.title)}</h1>
-        <div class="m-facts">${facts.map(c => `<span class="chip">${c}</span>`).join('')}</div>
-        <div class="m-links"><a href="${esc(L.current.url)}" target="_blank" rel="noopener">${isT ? 'Live listing it replaces ↗' : 'Google Play listing ↗'}</a>${L.current.privacy ? `<a href="${esc(L.current.privacy)}" target="_blank" rel="noopener">Privacy policy ↗</a>` : ''}${L.current.site ? `<a href="${esc(L.current.site)}" target="_blank" rel="noopener">Developer site ↗</a>` : ''}<span class="muted">${esc(L.current.id)}</span></div></div>`;
-    const tiles = [[`${f.title.length}<small>/30</small>`, 'title characters'], [`${f.short.length}<small>/80</small>`, 'short description characters'], [`${f.long.length.toLocaleString('en-US')}<small>/4,000</small>`, 'full description characters'], [`${used.length}<small>/${B.length}</small>`, 'board keywords targeted'], [`${FIN.filter(r => coverageOf(r.q, f).key !== 'none').length}<small>/${nF}</small>`, 'finalized keywords targeted']]
-      .concat([isT ? [`${strong(f)}<small>/${nF}</small>`, 'finalized keywords in the title or short description'] : [`${AS.screenshots.length}<small>/8</small>`, 'phone screenshot slots used']]);
-    document.getElementById('m-tiles').innerHTML = tiles.map(([n, l]) => `<div class="tile"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
-    document.getElementById('m-tiles').style.gridTemplateColumns = 'repeat(auto-fit,minmax(150px,1fr))';
-
-    document.getElementById('m-assets-top').innerHTML = `<figure class="fgfig"><img src="${AS.feature.file}" alt="Feature graphic" loading="lazy"><figcaption>Feature graphic · 1024 × 500 · <a href="${esc(AS.feature.src)}" target="_blank" rel="noopener">original ↗</a></figcaption></figure>
-      <figure class="fgfig" style="max-width:220px"><img src="${AS.icon.file}" alt="App icon" loading="lazy" style="border-radius:22%"><figcaption>App icon · 512 × 512 · <a href="${esc(AS.icon.src)}" target="_blank" rel="noopener">original ↗</a></figcaption></figure>`;
-    document.getElementById('m-shots').innerHTML = AS.screenshots.map((s, i) => `<figure><img src="${s.file}" alt="Store screenshot ${i + 1}" loading="lazy"><figcaption>Slot ${i + 1} · <a href="${esc(s.src)}" target="_blank" rel="noopener">original ↗</a></figcaption></figure>`).join('');
-    const ac = [['met', 'App icon', '512 × 512 PNG, as Play requires.'], ['met', 'Feature graphic', 'Exactly 1024 × 500, as Play requires.'], [AS.screenshots.length >= 8 ? 'met' : 'rec', 'Phone screenshots', `${AS.screenshots.length} of 8 slots used, all 9:16. The editor and the vault are not yet shown.`], ['rec', 'Device captures in the dossier', 'The dossier’s test captures are 720 × 1600 (1 : 2.22); Play allows at most 1 : 2, so they need framing before upload.'], ['rec', 'Promo video', 'None on the listing.']];
-    document.getElementById('m-asset-checks').innerHTML = `<thead><tr><th>Status</th><th>Asset</th><th>Detail</th></tr></thead><tbody>` + ac.map(([s, a, d]) => `<tr><td>${pill(s)}</td><td><b>${esc(a)}</b></td><td>${esc(d)}</td></tr>`).join('') + '</tbody>';
-
-    // ---- title, short and full description
-    document.getElementById('m-cur-kicker').textContent = isT ? 'Metadata · United States · proposed for Tiksta' : 'Metadata · United States';
-    document.getElementById('m-cur-sub').textContent = isT
-      ? 'A new version positioned as a reels downloader. The title joins the brand, the category’s top keyword and a low-competition term. The strongest rankable keywords sit in the first two paragraphs, and the features follow as short sections with bullets. No brand names appear anywhere.'
-      : 'The listing’s metadata as live on Google Play. Every keyword it targets from the playbook’s US board is marked.';
-    const opt = document.getElementById('m-options');
-    opt.hidden = !isT;
-    if (isT) {
-      const row = q => B.find(r => r.q === q) || {};
-      const vd = row('video downloader'), rda = row('reels downloader app'), svd = row('social video downloader');
-      const why = [
-        `“Video Downloader” is the category’s top keyword (priority ${vd.P}). “Reels” adds the positioning and a low bar: the smallest app in the top 10 for “reels downloader app” has ${fmt(rda.entry)} installs.`,
-        `Keeps “social video downloader” as an exact phrase: ${svd.c10} competitors in its top 10, smallest app ${fmt(svd.entry)} installs. Drops the reels positioning.`,
-        `Carries every word of “reels downloader app” (priority ${rda.P}) but gives up the exact phrase “video downloader”.`,
-      ];
-      const exactIn = t => B.filter(r => r.tier !== 'D' && !r.tm && (phraseN(t, r.q) || allIn(r.q, wordSet(t)))).sort((a, b) => b.P - a.P).map(r => r.q);
-      opt.innerHTML = `<div class="titles">${TK.titles.map((t, i) => { const fx = { title: t, short: TK.short, long: TK.long }, hits = exactIn(t); return `<div class="topt${i === 0 ? ' rec' : ''}"><div class="tag">${i === 0 ? 'Recommended title' : 'Alternative ' + i}</div><div class="tt">${esc(t)}</div>${meter(t.length, 30)}<div class="why">${esc(why[i])} With the short and full description below, it reaches ${prioCoverage(fx, B).toFixed(0)}% priority coverage.</div><div class="covered">${hits.slice(0, 8).map(h => `<span>${esc(h)}</span>`).join('')}</div></div>`; }).join('')}</div>`;
-    }
-    const phr = B.filter(r => r.tier !== 'D' && phraseN(f.long, r.q)).map(r => ({ r, n: phraseN(f.long, r.q), d: 100 * phraseN(f.long, r.q) * nWords(r.q) / nWords(f.long) })).sort((x, y) => y.n - x.n || y.r.P - x.r.P);
-    document.getElementById('m-listing').innerHTML = `
-      <div class="apphead"><img src="${AS.icon.file}" alt="" width="56" height="56" style="border-radius:14px;box-shadow:0 0 0 1px var(--line)"><div><div class="t">${esc(f.title)}</div><div class="d">${esc(L.current.developer)} · ${esc(L.current.genre)}</div></div></div>
-      <div class="field"><div class="field-label"><span>Title</span><span>${f.title.length} / 30</span></div><p>${highlight(f.title, fk)}</p></div>
-      <div class="field"><div class="field-label"><span>Short description</span><span>${f.short.length} / 80</span></div><p>${highlight(f.short, fk)}</p>${isT && TK.shortAlt ? `<p class="small muted" style="margin-top:6px">Alternative (${TK.shortAlt.length}/80): ${esc(TK.shortAlt)}</p>` : ''}</div>
-      <div class="field longdesc"><div class="field-label"><span>Full description</span><span>${f.long.length.toLocaleString('en-US')} / 4,000</span></div>${longHtml(f.long, fk)}</div>`;
-    const side = [`<div class="panel"><h3>Board keywords in the full description</h3><p class="small muted" style="margin-bottom:6px">${nWords(f.long)} words</p><table><thead><tr><th>Phrase</th><th class="num">Uses</th><th class="num">Density</th><th>Tier</th></tr></thead><tbody>${phr.map(x => `<tr><td class="kw">${esc(x.r.q)}</td><td class="num">${x.n}</td><td class="num">${x.d.toFixed(1)}%</td><td><span class="pill ${TIER_PILL[x.r.tier]}">${TIER[x.r.tier]}</span></td></tr>`).join('')}</tbody></table></div>`,
-      `<div class="panel"><h3>Finalized keywords by field</h3><table><tbody>${[['In the title', ['title', 'titlew']], ['Title + short description', ['short', 'tsw']], ['Full description', ['long']], ['Not in this version', ['none']]].map(([lab, keys]) => { const list = FIN.filter(r => keys.includes(coverageOf(r.q, f).key)); return `<tr><td class="nowrap">${lab}</td><td class="num"><b>${list.length}</b></td></tr><tr><td colspan="2" class="small muted" style="border-top:0;padding-top:0">${list.map(r => esc(r.q)).join(' · ') || '—'}</td></tr>`; }).join('')}</tbody></table></div>`];
-    if (isT) side.push(`<div class="panel"><h3>Measured against the live listing</h3><p class="small muted" style="margin-bottom:6px">Both scored on the re-scored US board</p><table><thead><tr><th></th><th class="num">Live</th><th class="num">Tiksta</th></tr></thead><tbody>
-        <tr><td>Priority coverage</td><td class="num">${prioCoverage(CUR, B).toFixed(0)}%</td><td class="num"><b>${prioCoverage(f, B).toFixed(0)}%</b></td></tr>
-        <tr><td>Finalized keywords used</td><td class="num">${FIN.filter(r => coverageOf(r.q, CUR).key !== 'none').length} / ${nF}</td><td class="num"><b>${FIN.filter(r => coverageOf(r.q, f).key !== 'none').length} / ${nF}</b></td></tr>
-        <tr><td>…in title or short</td><td class="num">${strong(CUR)}</td><td class="num"><b>${strong(f)}</b></td></tr>
-        <tr><td>Reels keywords used</td><td class="num">${B.filter(r => r.cleared && coverageOf(r.q, CUR).key !== 'none').length}</td><td class="num"><b>${B.filter(r => r.cleared && coverageOf(r.q, f).key !== 'none').length}</b></td></tr>
-        <tr><td>Brand names in the text</td><td class="num">${brandsIn([CUR.title, CUR.short, CUR.long].join('\n')).length}</td><td class="num"><b>${brands.length}</b></td></tr>
-        <tr><td>Full description</td><td class="num">${CUR.long.length.toLocaleString('en-US')}</td><td class="num">${f.long.length.toLocaleString('en-US')}</td></tr>
-      </tbody></table></div>`);
-    document.getElementById('m-side').innerHTML = side.join('');
-    const copy = document.getElementById('m-copy');
-    copy.hidden = !isT;
-    if (isT) copy.innerHTML = `<details class="desc"><summary>Plain text to paste into Play Console</summary><div class="copyf">${[['Title', f.title, 1], ['Short description', f.short, 2], ['Full description', f.long, 24]].map(([l, v, rowsN]) => `<label><span class="field-label"><span>${l}</span><span>${v.length.toLocaleString('en-US')} characters</span></span><textarea readonly rows="${rowsN}" spellcheck="false">${esc(v)}</textarea></label>`).join('')}</div></details>`;
-
-    // ---- every keyword this metadata targets
-    const groups = [['In the title', ['title', 'titlew']], ['Title + short description', ['short', 'tsw']], ['Full description', ['long']]];
-    const trow = r => { const ct = compTitlesWith(r.q); return `<tr><td style="min-width:190px"><span class="kw">${esc(r.q)}</span><div class="kwmeta"><span class="pill ${TIER_PILL[r.tier]}">${TIER[r.tier]}</span>${tmPill(r)}</div></td><td><span class="pill p-mute">${SRC[r.src]}</span></td><td class="num">${r.P}${pWas(r)}</td><td class="num">${Math.round(r.R * 100)}</td><td class="num">${r.demand}</td><td class="num">${compTop10(r)}<span class="muted"> / 16</span></td><td class="small" style="min-width:170px">${ct.length ? `<b>${ct.length}</b> · ${ct.map(x => esc(SHORT[x.i])).join(', ')}` : '<span class="muted">none</span>'}</td><td class="small">${entryCell(r)}</td></tr>`; };
-    document.getElementById('m-targets-sub').textContent = 'All board keywords carried by the title, short description and full description, grouped by field, with how many competitors hold a top-10 rank and which competitors carry the keyword in their own title.' + (isT ? ' Reels keywords show their re-scored priority.' : '');
-    document.getElementById('m-targets-table').innerHTML = `<thead><tr><th>Keyword</th><th>Source</th><th class="num">Priority</th><th class="num">Relevance</th><th class="num">Demand</th><th class="num">Competitors in top 10</th><th>In competitors’ titles</th><th>Smallest app in top 10</th></tr></thead><tbody>` +
-      groups.map(([label, keys]) => { const list = used.filter(r => keys.includes(coverageOf(r.q, f).key)).sort((x, y) => y.P - x.P); return list.length ? `<tr class="grp"><td colspan="8">${label} · ${list.length}</td></tr>` + list.map(trow).join('') : ''; }).join('') + '</tbody>';
-    document.getElementById('m-targets-note').textContent = `This metadata targets ${used.length} of the ${B.length} US board keywords. Competitors hold top-10 ranks on ${used.filter(r => compTop10(r) > 0).length} of them, and ${used.filter(r => compTitlesWith(r.q).length).length} sit word for word in at least one competitor’s title.`;
-
-    // ---- keywords that name another company's product: shown only when the text names one
-    const plat = B.filter(r => r.tm).sort((a, b) => b.P - a.P);
-    const showPlat = brands.length > 0 || plat.some(r => coverageOf(r.q, f).key !== 'none');
-    document.getElementById('m-platform').hidden = !showPlat;
-    document.getElementById('jl-platform').hidden = !showPlat;
-    document.getElementById('m-platform-table').innerHTML = !showPlat ? '' : `<thead><tr><th>Keyword</th><th class="num">Priority</th><th class="num">Demand</th><th class="num">Entry bar</th><th>Competitors ranking (US)</th><th>In your metadata</th></tr></thead><tbody>` +
-      plat.map(r => `<tr><td style="min-width:200px"><span class="kw">${esc(r.q)}</span>${tmPill(r)}</td><td class="num">${r.P}</td><td class="num">${r.demand}<div class="small muted">${r.demandAt ? `after “${esc(r.demandAt)}”` : 'not suggested'}</div></td><td class="num">${entryCell(r)}</td><td class="small" style="min-width:170px">${compNames(r)}</td><td>${covPill(coverageOf(r.q, f))}</td></tr>`).join('') + '</tbody>';
-
-    // ---- finalized keywords
-    document.getElementById('m-kw-sub').textContent = isT
-      ? `The ${nF} US keywords with core or adjacent intent, relevance of 80 or above and no brand name, on the board re-scored for reels. “Free”, “without ads” and “4K” keywords are left out because this listing makes none of those claims. Split by whether this metadata targets them.`
-      : 'The 24 highest-priority US keywords with core or adjacent intent, relevance of 80 or above and no platform name, split by whether this metadata targets them.';
-    const maxP = FIN[0].P;
-    const kwRow = (r, w) => `<tr><td class="num muted">${FIN.indexOf(r) + 1}</td><td style="min-width:200px"><span class="kw">${esc(r.q)}</span><div class="kwmeta"><span class="pill ${TIER_PILL[r.tier]}">${TIER[r.tier]}</span><span class="pill p-mute">${SRC[r.src]}</span>${tmPill(r)}</div></td><td><div class="pbar"><div class="track"><div class="fill" style="width:${(100 * r.P / maxP).toFixed(1)}%"></div></div><b>${r.P}</b></div>${pWas(r)}</td><td class="num">${Math.round(r.R * 100)}</td><td class="num">${r.nb}<span class="muted">/10</span></td><td class="num">${r.demand}</td><td class="num">${entryCell(r)}</td><td class="small" style="min-width:170px">${compNames(r)}</td>${w ? `<td>${covPill(coverageOf(r.q, f))}</td>` : ''}</tr>`;
-    const head = w => `<thead><tr><th class="num">#</th><th>Keyword</th><th>Priority</th><th class="num">Relevance</th><th class="num">Winnable</th><th class="num">Demand</th><th class="num">Entry bar</th><th>Competitors ranking (US)</th>${w ? '<th>Targeted in</th>' : ''}</tr></thead>`;
-    const now = FIN.filter(r => coverageOf(r.q, f).key !== 'none'), future = FIN.filter(r => coverageOf(r.q, f).key === 'none');
-    document.getElementById('m-kw-now-h').textContent = `Targeted in this metadata · ${now.length} of ${nF}`;
-    document.getElementById('m-kw-future-h').textContent = `Not in this version · ${future.length} of ${nF}`;
-    document.getElementById('m-kw-now').innerHTML = head(true) + '<tbody>' + now.map(r => kwRow(r, true)).join('') + '</tbody>';
-    document.getElementById('m-kw-future').innerHTML = future.length ? head(false) + '<tbody>' + future.map(r => kwRow(r, false)).join('') + '</tbody>' : '<tbody><tr><td class="muted">Every finalized keyword is targeted.</td></tr></tbody>';
-
-    // ---- ladder
-    document.getElementById('m-ladder-sub').textContent = (isT ? 'The US ladder rebuilt on the re-scored board, so reels keywords take the phase their entry bars earn. ' : 'The US ladder with each keyword marked by how this metadata covers it. ') + 'T = title, T+S = every word across title and short description, S = short description, L = full description, and a dash = not in this version.';
-    document.getElementById('m-ladder-list').innerHTML = ladderPhases(B, V.ex).map(([ph, sub, list]) => { const cov = list.map(r => coverageOf(r.q, f).key); return `<div class="rung"><div class="ph">${ph}<small>${sub}</small></div><div><ul>${list.map(r => { const c = coverageOf(r.q, f); return `<li>${esc(r.q)} <i>P${r.P}</i><span class="cov pill ${COV[c.key][1]}">${COV[c.key][0]}</span> <i>· ${compTop10(r)} comp. top-10 · smallest app ${r.entry == null ? '—' : r.entry < 1000 ? 'under 1K' : fmt(r.entry)}</i></li>`; }).join('') || '<li>none at this bar</li>'}</ul><p class="proof">This metadata carries <b>${cov.filter(k => strongKeys.includes(k)).length}</b> in the title or short description and <b>${cov.filter(k => k === 'long').length}</b> in the full description; <b>${cov.filter(k => k === 'none').length}</b> not in this version.</p></div></div>`; }).join('');
-
-    // ---- competitor ranks on the keywords used
-    const sorted = used.slice().sort((x, y) => (compRanks(y).length > 0) - (compRanks(x).length > 0) || y.R - x.R || y.P - x.P);
-    const noC = sorted.filter(r => !compRanks(r).length), cols = 3 + COMP.length + 1;
-    const urow = r => `<tr><td class="kwc"><span class="kw">${esc(r.q)}</span>${tmPill(r)}<div style="margin-top:3px">${covPill(coverageOf(r.q, f))}</div></td><td class="num small">${Math.round(r.R * 100)}</td><td class="num small">${r.P}</td>${COMP.map((c, k) => `<td>${rkCell(r.comps[k], c, r.q)}</td>`).join('')}<td class="num"><b>${compTop10(r)}</b><span class="muted"> / 16</span></td></tr>`;
-    document.getElementById('m-used-table').innerHTML = `<thead><tr><th>Keyword · where this metadata uses it</th><th class="num">Relevance</th><th class="num">Priority</th>${COMP.map((c, i) => `<th class="ch">${esc(SHORT[i])}</th>`).join('')}<th class="num">Top 10</th></tr></thead><tbody><tr class="grp"><td colspan="${cols}">Competitors rank on these · ${withC.length}</td></tr>${sorted.filter(r => compRanks(r).length).map(urow).join('')}${noC.length ? `<tr class="grp"><td colspan="${cols}">No competitor in the results · ${noC.length}</td></tr>${noC.map(urow).join('')}` : ''}</tbody>`;
-
-    // ---- policy record
-    const rec = [], add = (s, rule, detail) => rec.push({ s, rule, detail });
-    const sameT = PROF.find(p => p.title.toLowerCase() === f.title.toLowerCase());
-    add(f.title.length <= 30 ? 'met' : 'not', 'Title within 30 characters', `${f.title.length} / 30.`);
-    add(/(\bbest\b|#1|\bfree\b|\bsale\b)/i.test(f.title) ? 'not' : 'met', 'Title free of “best”, “#1”, “free” and sale wording', 'None present.');
-    if (isT) {
-      const clash = A.find(a => normT(a.t).includes(' tiksta '));
-      add(clash || PC.tikstaNamed ? 'not' : 'met', 'Title distinct from other apps’ titles', clash ? `“${clash.t}” uses the name.` : `No app among the ${A.length} in the playbook or the ${PC.apps} checked on 16 Sep 2026 is named Tiksta.`);
-      add(brands.length ? 'not' : 'met', 'No brand names in the title, short or full description', brands.length ? `Present: ${brands.join(', ')}.` : 'None of Instagram, Insta, Facebook, TikTok, WhatsApp, YouTube, Pinterest, X / Twitter, LinkedIn, Vimeo, Dailymotion, Snapchat or Likee appear.');
-      const tr = PC.terms.find(t => t.key === 'reels'), tt = PC.terms.find(t => t.key === 'tik');
-      add('rec', '“Reels” used as a generic term', `Checked on Google Play: ${tr.n} live app titles carry it, ${tr.y2} of them listed for 2+ years, ${tr.m1} with 1M+ installs. Meta’s Instagram brand rules name “Insta” and “gram”, not “Reels”. Tolerated, but the proof at scale is thin; see the check below.`);
-      add('rec', 'Brand name “Tiksta”', `No app on Google Play uses the name, and it contains neither “Insta” nor “gram”. ${tt.n} live titles use a “Tik” name, ${tt.y2} of them listed for 2+ years (for example ${[tt.ex[2], tt.ex[3]].filter(Boolean).map(e => `${e.t}, ${e.b}`).join('; ')}). This is a store check, not a trademark clearance.`);
-      add('rec', 'App name inside the APK', 'The build’s app name is “All Video Downloader” (dossier spec). Rename the launcher label and in-app name to Tiksta in the same release as this title, so the installed app matches the listing.');
-      add('rec', 'Package name', `${L.current.id} contains “instagram”. A published app’s package name cannot change; it shows in the listing URL, not in the metadata text.`);
-    } else {
-      add(sameT ? 'not' : 'met', 'Title distinct from competitors’ titles', sameT ? `Identical to “${sameT.title}” by ${sameT.developer}.` : 'Distinct.');
-      const platIn = [f.title, f.short].join(' ').match(/\b(instagram|facebook|tiktok|twitter|whatsapp|youtube|pinterest)\b/i);
-      add(platIn ? 'not' : 'met', 'No platform names in title or short description', platIn ? `“${platIn[0]}” present.` : 'None present.');
-    }
-    add(/youtube/i.test(all) ? 'not' : 'met', 'No YouTube references', /youtube/i.test(all) ? 'YouTube is mentioned.' : 'None present.');
-    if (isT) add(/no watermark|watermark remover|remove (the )?watermark/i.test(all) ? 'not' : 'met', 'No “no watermark” promise', 'The only watermark mention is the editor adding your own.');
-    add(/not affiliated/i.test(all) ? 'met' : 'not', 'Non-affiliation statement', /not affiliated/i.test(all) ? 'Present at the end of the full description.' : 'Missing.');
-    add(/copyright/i.test(all) ? 'met' : 'not', 'Copyright notice', /copyright/i.test(all) ? 'Present: download only content you own or may save.' : 'Missing.');
-    add(/\bno ads\b|without ads|ad-free/i.test(all) && L.current.ads ? 'not' : 'met', 'Ad wording matches the “Contains ads” label', isT ? 'Premium is described as removing ads; there is no ad-free claim for the app itself.' : 'No ad-free claim in the text.');
-    if (isT) add(/premium removes all ads/i.test(all) && !/unlimited|faster downloads|1080p/i.test(all) ? 'met' : 'not', 'Premium described as it works', 'Premium removes all ads, including the one before a download. No speed, quality or unlimited-download promise.');
-    add(f.short.length <= 80 ? 'met' : 'not', 'Short description within 80 characters', `${f.short.length} / 80.`);
-    add(f.long.length <= 4000 ? 'met' : 'not', 'Full description within 4,000 characters', `${f.long.length.toLocaleString('en-US')} / 4,000 · ${(4000 - f.long.length).toLocaleString('en-US')} unused.`);
-    if (isT) {
-      const top = phr.filter(x => nWords(x.r.q) > 1)[0];
-      add('rec', 'Keyword repetition', top ? `Most repeated board phrase: “${top.r.q}” ×${top.n}, ${top.d.toFixed(1)}% of ${nWords(f.long)} words. Headings and bullets carry the keywords; no phrase is stacked in a list.` : 'No repeated board phrase.');
-      add('met', 'Every feature claim is in the Product Dossier', 'Paste or share a link · built-in browser · quality picker · photos and multi-item posts · parallel downloads with pause, resume, retry · background downloads · status saver · 9-tool editor · vault with PIN, fingerprint and security question · 9 languages with RTL · dark mode.');
-    } else add('rec', 'Features the listing doesn’t mention', `${D.claims.filter(([c]) => F.ourClaims[c] && !MYP.claims[c]).map(([, l]) => l).join(', ')}.`);
-    add('met', 'Privacy policy link', `Linked and loading (HTTP ${L.current.privacyStatus}).`);
-    document.getElementById('m-policy-table').innerHTML = `<thead><tr><th>Status</th><th>Rule</th><th>Detail</th></tr></thead><tbody>` + rec.map(x => `<tr><td>${pill(x.s)}</td><td><b>${esc(x.rule)}</b></td><td>${esc(x.detail)}</td></tr>`).join('') + '</tbody>';
-
-    // ---- borderline terms, checked on Google Play (Tiksta only)
-    const tw = document.getElementById('m-terms');
-    tw.hidden = !isT;
-    if (isT) {
-      const DEC = {
-        reels: ['p-good', 'Used', 'Not named in Meta’s Instagram brand rules', 'title, short, full'],
-        story: ['p-good', 'Used', 'Everyday word; the baseline for “proven”', 'short, full'],
-        tik: ['p-acc', 'Name only', 'No store evidence against it; get a trademark check', 'the Tiksta brand'],
-        insta: ['p-risk', 'Not used', 'Meta: “Don’t combine ‘Insta’ or ‘gram’ with your own brand”', 'fails the check'],
-        tiktok: ['p-mute', 'Not used', 'Brand name, kept out by your decision', 'brand name'],
-        instagram: ['p-mute', 'Not used', 'Meta allows only a descriptive “for Instagram”; kept out by your decision', 'brand name'],
-      };
-      const tr = PC.terms.find(t => t.key === 'reels'), st = PC.terms.find(t => t.key === 'story'), it = PC.terms.find(t => t.key === 'insta');
-      const serpHas = PC.serp.map((s, i) => ({ ...s, rank: i + 1 })).filter(s => s.has);
-      const newest = serpHas.slice().sort((a, b) => (b.f || '').localeCompare(a.f || ''))[0], smallest = serpHas[serpHas.length - 1];
-      tw.innerHTML = `<h3 style="margin:30px 0 6px">Borderline terms, checked on Google Play</h3>
-        <p class="sub" style="margin-bottom:14px">${PC.queries.length} US English searches on ${new Date(PC.collectedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}, ${PC.apps} distinct apps, each app page read for its title, installs and first listing date. Apps published by the brand owner are not counted.</p>
-        <div class="tscroll"><table class="checks-table"><thead><tr><th>Term</th><th class="num">Live titles</th><th class="num">1M+ installs</th><th class="num">Listed 2+ years</th><th>Largest examples</th><th>Brand owner’s rules</th><th>Decision</th></tr></thead><tbody>${PC.terms.map(t => { const d = DEC[t.key]; return `<tr><td class="nowrap"><b>${esc(t.label)}</b></td><td class="num">${t.n}</td><td class="num">${t.m1}</td><td class="num">${t.y2}</td><td class="small" style="min-width:260px">${t.ex.map(e => `${esc(e.t)} <span class="muted">· ${esc(e.b)} · since ${pDate(e.f)}</span>`).join('<br>') || '—'}</td><td class="small" style="min-width:180px">${esc(d[2])}</td><td><span class="pill ${d[0]}">${esc(d[1])}</span><div class="small muted" style="margin-top:4px">${esc(d[3])}</div></td></tr>`; }).join('')}</tbody></table></div>
-        <div class="g-cols" style="margin-top:16px">
-          <p><b>Does a crowded title prove a term is safe?</b> Only partly. Google Play acts on complaints from the brand owner, so apps removed after a complaint no longer appear in a count like this. Many small, new apps show a term is tolerated today; titles that have stayed live for two years with a million installs are the stronger proof. By that test “Story” is proven (${st.m1} titles with 1M+ installs, ${st.y2} listed 2+ years), “Reels” is tolerated but thin at scale (${tr.n} titles, ${tr.y2} listed 2+ years, ${tr.m1} with 1M+), and “Insta” fails (${it.n} titles, none past 1K+ installs or a year old, and Meta bans it by name).</p>
-          <p><b>Why “Reels” is still worth the title.</b> On “reels downloader”, ${serpHas.length} of the top 10 apps carry reels in their title${newest ? `, including ${esc(newest.t)} (${esc(newest.b)} installs, listed ${pDate(newest.f)}) at #${newest.rank}` : ''}${smallest && smallest !== newest ? ` and ${esc(smallest.t)} (${esc(smallest.b)}) at #${smallest.rank}` : ''}. The 10M+ leaders rank there without the word, so a new app wins those slots by naming it. A search for “tiksta” returns ${esc(PC.tikstaSerp.slice(0, 3).join(', '))} and other apps; none uses the name. Source for Meta’s rule: <a href="https://www.meta.com/brand/resources/instagram/instagram-brand/" target="_blank" rel="noopener">Instagram brand guidelines ↗</a>.</p>
-        </div>`;
-    }
-
-    // ---- method
-    document.getElementById('m-method-text').innerHTML = (isT ? [
-      `<b>The copy.</b> Title, short and full description written for Tiksta on 16 Sep 2026 from the playbook’s US board. Every feature claim maps to the device-tested build in the Product Dossier; the header facts, links and assets are the live listing’s.`,
-      '<b>Reels re-score.</b> Board rows flagged only for “reels” are scored as core intent after the Google Play check: relevance rises by 0.55 × (1 − 0.7) = 0.165 and priority = 100 · relevance² · opportunity. Rows that also name a brand, such as “instagram reels downloader”, keep their flag.',
-      `<b>Finalized keywords.</b> The ${nF} rows with core or adjacent intent, relevance of 80 or above and no brand name. “Free”, “without ads” (the app contains ads) and “4K” (not a verified quality) are left out.`,
-      '<b>Keyword coverage.</b> Text is lowercased and “&” is read as “and”. A keyword counts as in the title when its exact phrase or all its words appear there; as title + short when all its words appear across both; otherwise its exact-phrase uses in the full description are counted. Ranks belong to the 16 competitors, from the playbook’s US results.',
-    ] : [
-      `<b>The listing.</b> Title, short and full description, monetisation labels and store assets were fetched from Google Play for <span class="quote">${esc(L.current.id)}</span> (English, United States). The privacy policy link was requested live.`,
-      '<b>No own-app ranking.</b> Every rank on this tab belongs to one of the 16 competitors, from the same US results used across the playbook.',
-      '<b>Keyword coverage.</b> Text is lowercased and “&” is read as “and”. A keyword counts as in the title when its exact phrase or all its words appear there; as title + short when all its words appear across both; otherwise its exact-phrase uses in the full description are counted.',
-      '<b>Finalized keywords.</b> US board rows with core or adjacent intent, relevance of 80 or above and no platform name, ranked by priority. “Without ads” phrases are excluded because the app contains ads.',
-    ]).map(p => `<p>${p}</p>`).join('');
-  }
-
-  // ---------- TAB 3 · features ----------
-  const FV = { F: ['✓', 'full', 'Yes'], P: ['◐', 'basic', 'Partial'], N: ['✕', 'none', 'No'], U: ['?', 'unk', 'Not determinable'] };
-```
-
-### `renderFeatures()` (assets/app.js L480-532)
-
-```js
-  function renderFeatures() {
-    const au = F.audit, apps = au.apps, rowsAll = au.groups.flatMap(g => g.rows), n = apps.length;
-    const score = i => rowsAll.reduce((s, r) => s + fsc(r.v[i]), 0);
-    const onlyUs = rowsAll.filter(r => r.v[0] === 'F' && ![...r.v.slice(1)].includes('F'));
-    const best = Math.max(...apps.slice(1).map((a, i) => score(i + 1)));
-    const claimKeys = D.claims.map(c => c[0]);
-    const claimCount = p => claimKeys.filter(k => p.claims[k]).length;
-    const bestClaims = PROF.slice().sort((a, b) => claimCount(b) - claimCount(a))[0];
-    document.getElementById('f-lede').textContent = `Our app against six audited competitor builds and all 16 tracked listings. It is the only app in the audit with MP3 extraction, batch downloads and a PIN-locked vault, and the only one anywhere in the set that pairs a downloader with a 9-tool video editor.`;
-    document.getElementById('f-tiles').innerHTML = [
-      [`${onlyUs.length}`, 'audited features only our app ships'],
-      [`${score(0)}<small>/${rowsAll.length}</small>`, `audit coverage · best competitor ${best}`],
-      [`${claimKeys.length}<small>/${claimKeys.length}</small>`, `user features shipped · best competitor listing claims ${claimCount(bestClaims)}`],
-      ['9', 'editing tools · no audited competitor has one'],
-    ].map(([v, l]) => `<div class="tile"><div class="n">${v}</div><div class="l">${l}</div></div>`).join('');
-    document.getElementById('f-only').innerHTML = F.oursOnly.map(a => `<div class="card"><div class="tag">Only in our app</div><h3 style="font-size:1rem;margin-bottom:6px">${esc(a.h)}</h3><p>${esc(a.p)}</p></div>`).join('');
-
-    document.getElementById('f-legend').innerHTML = [['F', 'Ships'], ['N', 'Not in the build']].map(([k, l]) => `<span><i class="fv ${FV[k][1]}" aria-hidden="true">${FV[k][0]}</i>${l}</span>`).join('');
-    const colHead = apps.map((a, i) => { const p = a.comp >= 0 ? PROF[a.comp] : null; const t10 = p ? D.markets.reduce((s, gl) => s + p.perMarket[gl].top10, 0) : null; return `<th class="ch${i === 0 ? ' ours-col' : ''}">${esc(a.dev)}<div class="small muted">${esc(a.installs)}</div>${p ? `<div class="liveb">${t10} top-10s · 8 mkts</div>` : ''}</th>`; }).join('');
-    document.getElementById('f-audit-table').innerHTML = `<thead><tr><th>Feature</th>${colHead}<th class="num">Competitors with it</th></tr></thead><tbody>` +
-      au.groups.map(g => `<tr class="grp"><td colspan="${n + 2}">${esc(g.g)}</td></tr>` + g.rows.map(r => `<tr><td class="kwc" style="min-width:220px">${esc(r.f)}</td>${[...r.v].map((v, i) => `<td${i === 0 ? ' class="ours-col"' : ''}><span class="fv ${FV[v][1]}" title="${FV[v][2]}">${FV[v][0]}</span></td>`).join('')}<td class="num"><b>${[...r.v.slice(1)].filter(v => v === 'F').length}</b><span class="muted"> / 6</span></td></tr>`).join('')).join('') +
-      `</tbody><tfoot><tr><td class="kwc">Coverage</td>${apps.map((a, i) => `<td${i === 0 ? ' class="ours-col"' : ''}>${score(i)}</td>`).join('')}<td class="num">of ${rowsAll.length}</td></tr></tfoot>`;
-    document.getElementById('f-excluded').textContent = au.excluded;
-
-    const cols = [{ ours: true }].concat(PROF.map((p, k) => ({ p, k })));
-    document.getElementById('f-claims-table').innerHTML = `<thead><tr><th>Feature</th><th class="ch ours-col">Our app<div class="small muted">product</div></th>${PROF.map((p, k) => `<th class="ch" title="${esc(p.title)}">${esc(SHORT[k])}<div class="small muted">${esc(p.installsLabel)}</div></th>`).join('')}<th class="num">Listings claiming it</th></tr></thead><tbody>` +
-      D.claims.map(([key, label]) => `<tr><td class="kwc" style="min-width:220px">${esc(label)}</td><td class="ours-col"><span class="fv full" title="Ships in the app">✓</span>${MYP.claims[key] ? '' : '<div><span class="fv gap" title="Your listing does not mention it">not in listing</span></div>'}</td>${PROF.map(p => `<td><span class="fv ${p.claims[key] ? 'full' : 'none'}" title="${p.claims[key] ? 'Claimed in listing' : 'Not claimed'}">${p.claims[key] ? '✓' : '✕'}</span></td>`).join('')}<td class="num"><b>${PROF.filter(p => p.claims[key]).length}</b><span class="muted"> / 16</span></td></tr>`).join('') +
-      `</tbody><tfoot><tr><td class="kwc">Claims</td><td class="ours-col">${claimKeys.length}</td>${PROF.map(p => `<td>${claimCount(p)}</td>`).join('')}<td></td></tr></tfoot>`;
-    const gaps = D.claims.filter(([k]) => !MYP.claims[k]).map(([, l]) => l);
-    document.getElementById('f-claims-note').textContent = `Competitor columns show what each listing claims, not a code audit — an app may ship a feature its listing never mentions. Your current listing mentions ${claimKeys.length - gaps.length} of the ${claimKeys.length} features your app ships; the ones it leaves out are ${gaps.join(', ').toLowerCase()}.`;
-
-    document.getElementById('f-inv').innerHTML = F.inventory.map(s => `<div class="card"><div class="tag">${esc(s.screen)}</div><ul class="checks" style="margin-top:4px">${s.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul></div>`).join('');
-    const inshot = PROF[0];
-    document.getElementById('f-edge-cards').innerHTML = F.edges.map(c => `<div class="card"><div class="tag">Competitor strength</div><h3 style="font-size:1rem;margin-bottom:6px">${esc(c.h)}</h3><p>${esc(c.p)}</p></div>`).join('') +
-      `<div class="card"><div class="tag">Search visibility</div><h3 style="font-size:1rem;margin-bottom:6px">${esc(inshot.developer)} owns the search results</h3><p>${inshot.perMarket.US.top10} US top-10 placements and ${inshot.score ? inshot.score.toFixed(2) : '—'} stars from ${fmt(inshot.ratings)} ratings. Features win the comparison; ratings volume and ranking history are where the leaders are hardest to catch.</p></div>`;
-
-    const iapRows = PROF.concat([MYP]).map(p => ({ p, r: p.iapRange })).sort((a, b) => (b.p.installs || 0) - (a.p.installs || 0));
-    document.getElementById('f-iap-table').innerHTML = `<thead><tr><th>App</th><th class="num">Installs</th><th class="num">Rating</th><th>Ads</th><th>In-app purchases (US)</th><th style="min-width:200px">Range · $0–$100</th></tr></thead><tbody>` +
-      iapRows.map(({ p, r }) => `<tr${p.mine ? ' style="background:var(--accent-soft)"' : ''}><td style="min-width:210px"><b>${esc(p.title)}</b><div class="small muted">${esc(p.mine ? 'Your app' : p.developer)}</div></td><td class="num">${esc(p.installsLabel)}</td><td class="num">${p.score ? p.score.toFixed(1) : '—'}</td><td>${p.ads ? '<span class="pill p-warn">Ads</span>' : '<span class="pill p-good">No ads</span>'}</td><td class="money">${esc(p.iap || 'None')}</td><td>${r ? `<div class="range${p.mine ? ' ours' : ''}" role="img" aria-label="$${r.min} to $${r.max}"><span style="left:${Math.min(100, r.min)}%;width:${Math.max(1, Math.min(100, r.max) - Math.min(100, r.min))}%"></span></div>` : '<span class="muted small">—</span>'}</td></tr>`).join('') + '</tbody>';
-    document.getElementById('f-plans').innerHTML = `<h3 style="margin-bottom:8px">Our plans</h3><div class="kwlist">${F.plans.items.map(x => `<span>${esc(x.p)} · ${esc(x.price)} · ${esc(x.sku)}</span>`).join('')}</div><p class="small muted" style="margin-top:8px">${esc(F.plans.note)} In the US, Play shows the app’s in-app items at ${esc(L.current.iap)}. Premium removes ads; it does not unlock faster or unlimited downloads.</p>`;
-
-    document.getElementById('f-method-text').innerHTML = [
-      '<b>Feature audit.</b> The matrix is your team’s static analysis of six competitor APKs against ours (Slide 7). One row, “Jetpack Compose modern UI”, is left out because the Product Dossier’s spec shows the app is built with Android Views.',
-      '<b>Listing claims.</b> Each competitor’s live Google Play title, short and full description (US, English) was searched for wording that describes each feature. A ✕ means the listing does not claim it, not that the app lacks it.',
-      '<b>Our column.</b> Features come from the Product Dossier: the build’s spec and the device-tested QA rounds. “Not in listing” marks features your current Play listing never mentions.',
-      '<b>IAP.</b> Price ranges are the “In-app purchases” line each listing shows in the United States. Our plan prices are the Pakistan prices recorded in the dossier.',
-    ].map(p => `<p>${p}</p>`).join('');
-  }
-
-  // ---------- TAB 5 · competitor's graphics ----------
-  // Self-contained: this block brings its own listener helper and image viewer, so the other
-  // pages are untouched. Elements referenced here exist only on the graphics page.
-  const G = PAYLOAD.graphics;
 ```
 
 ### `gFigure()` (assets/app.js L540-547)
@@ -709,38 +160,42 @@
   let lbList = [], lbPos = 0;
 ```
 
-### `renderScoped()` (assets/app.js L652-678)
+### `lbShow()` (assets/app.js L624-628)
 
 ```js
-  function renderScoped() {
-    document.querySelectorAll('[data-scope]').forEach(s => { s.textContent = MN[state.gl]; });
-    state.strips = 20;
-    renderCategories(); renderCompetitors(); renderMatrix(); renderStrips(); renderBoard(); renderLadder();
+  function lbShow() {
+    const a = GA[lbList[lbPos]];
+    lbImg.src = a.url; lbImg.alt = a.alt;
+    lbCap.innerHTML = `<b>${esc(a.app.num)} · ${esc(a.app.name)}</b> · ${esc(a.label)} · ${a.w} × ${a.h} ${a.orient} · ${esc(a.caption)}<br><a href="${esc(a.src)}" target="_blank" rel="noopener">Original image on Google Play ↗</a> · ${lbPos + 1} of ${lbList.length}`;
   }
-
-  if (PAGE === 'playbook') {
-    document.getElementById('strips-more').addEventListener('click', () => { state.strips += 20; renderStrips(); });
-    document.getElementById('matrix-all').addEventListener('change', e => { state.all = e.target.checked; renderMatrix(); });
-    renderHeader(); renderMarketSel(); renderTierChips(); renderCompDetailSelect(); renderCompDetail(); renderEvents(); renderMarkets(); renderListing(); renderScoped();
-  } else if (PAGE === 'metadata') {
-    renderMetadata('tiksta');
-    document.querySelectorAll('#mv [data-ver]').forEach(b => b.addEventListener('click', () => {
-      document.querySelectorAll('#mv [data-ver]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
-      renderMetadata(b.dataset.ver);
-    }));
-  } else if (PAGE === 'graphics') {
-    renderGraphics();
-  } else if (PAGE === 'features') {
-    renderFeatures();
-  }
-
-  // Sections are drawn by this script, so jump to a #section link only after rendering.
-  const h = decodeURIComponent(location.hash.slice(1)), el = h && document.getElementById(h);
-  if (el) el.scrollIntoView();
-})();
 ```
 
-### Page start-up (assets/app.js L647-678); the `PAGE === 'playbook'` branch runs for this tab
+### `lbStep()` (assets/app.js L629-648)
+
+```js
+  function lbStep(d) { if (!lbList.length) return; lbPos = (lbPos + d + lbList.length) % lbList.length; lbShow(); }
+  gOn('graphics', 'click', e => {
+    const b = e.target.closest('[data-open]'); if (!b) return;
+    const scope = b.closest('#g-fg, #g-applist');
+    lbList = [...scope.querySelectorAll('figure.shot:not([hidden])')].map(f => +f.dataset.i);
+    lbPos = Math.max(0, lbList.indexOf(+b.dataset.open));
+    lbShow();
+    if (typeof lb.showModal === 'function') lb.showModal(); else lb.setAttribute('open', '');
+  });
+  gOn('lb-close', 'click', () => lb.close());
+  gOn('lb-prev', 'click', () => lbStep(-1));
+  gOn('lb-next', 'click', () => lbStep(1));
+  if (lb) {
+    lb.addEventListener('click', e => { if (e.target === lb || e.target.id === 'lb-in') lb.close(); });
+    lb.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') lbStep(-1); if (e.key === 'ArrowRight') lbStep(1); });
+    lb.addEventListener('close', () => { lbImg.removeAttribute('src'); });
+  }
+
+  // ---------- page ----------
+  const bar = document.getElementById('bar');
+```
+
+### Page start-up (assets/app.js L647-678); the `PAGE === 'graphics'` branch runs for this tab
 
 ```js
   // ---------- page ----------
@@ -778,66 +233,21 @@
 
 ## Data this tab reads
 
-- [`assets`](#assets)
 - [`data.apps`](#dataapps)
 - [`data.board`](#databoard)
-- [`data.claims`](#dataclaims)
-- [`data.collectedAt`](#datacollectedat)
 - [`data.compIdx`](#datacompidx)
-- [`data.marketSummary`](#datamarketsummary)
-- [`data.markets`](#datamarkets)
 - [`data.profiles`](#dataprofiles)
-- [`data.secondary`](#datasecondary)
-- [`features`](#features)
-- [`graphics`](#graphics)
-- [`listing`](#listing)
-- [`offersChecked`](#offerschecked)
-- [`tiksta.long`](#tikstalong)
-- [`tiksta.pc`](#tikstapc)
-- [`tiksta.short`](#tikstashort)
-- [`tiksta.shortAlt`](#tikstashortalt)
-- [`tiksta.titles`](#tikstatitles)
+- [`graphics.apps`](#graphicsapps)
+- [`graphics.captureNote`](#graphicscapturenote)
+- [`graphics.guidance`](#graphicsguidance)
+- [`graphics.overview`](#graphicsoverview)
+- [`graphics.patterns`](#graphicspatterns)
+- [`graphics.requirements`](#graphicsrequirements)
+- [`graphics.scope`](#graphicsscope)
+- [`graphics.sources`](#graphicssources)
+- [`graphics.table`](#graphicstable)
 
 These are exact copies of the values in [assets/data.js](../../assets/data.js); edit them there. Field meanings are in the [data dictionary](../data-dictionary.md).
-
-### assets
-
-```json
-{
-  "icon": {
-    "file": "../../assets/listing/icon.png",
-    "src": "https://play-lh.googleusercontent.com/qLNXtLkR4z4KiAhmkwjlXx1TpuC4aaH6qsMoZgkWzjg1-ZaXUh-KMfdG1gXfayu_gkStOl6S1w4tCfe2WMPBbQ",
-    "bytes": 369966
-  },
-  "feature": {
-    "file": "../../assets/listing/feature-graphic.png",
-    "src": "https://play-lh.googleusercontent.com/q4weOoYNzbX0TD4RtvgBm1VsiywteBuYuZsb5Rr0JzQPEFYto2uU7Taj_ueFgCp65xXjCQ9zFHSZ9jwTq7lk8Q",
-    "bytes": 315561
-  },
-  "screenshots": [
-    {
-      "file": "../../assets/listing/screenshot-01.png",
-      "src": "https://play-lh.googleusercontent.com/j2_25nIZRvSsEN0BlWJSIIRtIx-N1I7ugFgLUo5rDuBOnNTugt1bnMxlZt9p-RnjyAXdCFKK5KMAYzsaqTK8VA",
-      "bytes": 626837
-    },
-    {
-      "file": "../../assets/listing/screenshot-02.png",
-      "src": "https://play-lh.googleusercontent.com/TDaaCxqjFa48ZfwV0k4SNIeBK-v0Cwt33ue3sNB5cqdlGlK4sYIZGuNKiKX2zGtm62hpnf9h3Zmc8ajaon7LXg",
-      "bytes": 668815
-    },
-    {
-      "file": "../../assets/listing/screenshot-03.png",
-      "src": "https://play-lh.googleusercontent.com/iWFuKpcYqHVHeGgYoYhIrSjIrlR9FcRwAaGP1dZaP3WYRiq5zov4dfdatnjVHXoBdObNVJClXxRpLiWW2OhOTw",
-      "bytes": 798268
-    },
-    {
-      "file": "../../assets/listing/screenshot-04.png",
-      "src": "https://play-lh.googleusercontent.com/3n20NxyQhoOWJOgRndJyj48dCylpmBu1lIGTP9GG5lS89ovMzjfum-Ps_cLIDr_54bKevER-jTLc-Um63vy_nw",
-      "bytes": 560921
-    }
-  ]
-}
-```
 
 ### data.apps
 
@@ -10489,176 +9899,10 @@ These are exact copies of the values in [assets/data.js](../../assets/data.js); 
 }
 ```
 
-### data.claims
-
-```json
-[
-  ["paste","Paste link to download"],
-  ["browser","Built-in browser with auto-detect"],
-  ["quality","Choose video quality / HD"],
-  ["background","Background downloads · pause & resume"],
-  ["multi","Multiple / batch downloads"],
-  ["story","Story & reels saver"],
-  ["status","WhatsApp status saver"],
-  ["mp3","MP3 / audio extraction"],
-  ["private","Private folder / vault / lock"],
-  ["editor","Built-in video editor (cut, crop, merge)"],
-  ["player","Video player"],
-  ["languages","Multi-language interface"]
-]
-```
-
-### data.collectedAt
-
-```json
-"2026-09-16T11:05:37.590Z"
-```
-
 ### data.compIdx
 
 ```json
 [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
-```
-
-### data.marketSummary
-
-```json
-[
-  {
-    "gl": "US",
-    "keywords": 40,
-    "avgNonBrand": 9.6,
-    "medianEntry": 157368,
-    "compTop10": 155,
-    "avgDepth": 28.8,
-    "best": [
-      {"q":"video downloader","P":83,"nb":10,"entry":266150,"c10":5,"tm":0},
-      {"q":"hd video downloader","P":80,"nb":10,"entry":157368,"c10":5,"tm":0},
-      {"q":"all video downloader","P":79,"nb":10,"entry":266150,"c10":6,"tm":0},
-      {"q":"private video downloader","P":77,"nb":10,"entry":27368,"c10":6,"tm":0},
-      {"q":"fast video downloader","P":75,"nb":10,"entry":266150,"c10":5,"tm":0},
-      {"q":"online video downloader","P":75,"nb":10,"entry":249023,"c10":6,"tm":0}
-    ]
-  },
-  {
-    "gl": "BR",
-    "keywords": 40,
-    "avgNonBrand": 9.3,
-    "medianEntry": 249023,
-    "compTop10": 143,
-    "avgDepth": 27.8,
-    "best": [
-      {"q":"all video downloader","P":80,"nb":9,"entry":266150,"c10":5,"tm":0},
-      {"q":"video downloader","P":77,"nb":10,"entry":5071274,"c10":5,"tm":0},
-      {"q":"social video downloader","P":72,"nb":10,"entry":282,"c10":2,"tm":0},
-      {"q":"fast video downloader","P":71,"nb":9,"entry":249023,"c10":6,"tm":0},
-      {"q":"video saver","P":66,"nb":10,"entry":266150,"c10":7,"tm":0},
-      {"q":"all video downloader and saver","P":65,"nb":10,"entry":157368,"c10":8,"tm":0}
-    ]
-  },
-  {
-    "gl": "DE",
-    "keywords": 40,
-    "avgNonBrand": 9.5,
-    "medianEntry": 249023,
-    "compTop10": 155,
-    "avgDepth": 28.5,
-    "best": [
-      {"q":"all video downloader","P":85,"nb":10,"entry":266150,"c10":6,"tm":0},
-      {"q":"video downloader","P":81,"nb":10,"entry":266150,"c10":6,"tm":0},
-      {"q":"fast video downloader","P":75,"nb":10,"entry":249023,"c10":5,"tm":0},
-      {"q":"social video downloader","P":72,"nb":10,"entry":282,"c10":2,"tm":0},
-      {"q":"download video","P":68,"nb":10,"entry":249023,"c10":3,"tm":0},
-      {"q":"video downloader app","P":65,"nb":10,"entry":266150,"c10":6,"tm":0}
-    ]
-  },
-  {
-    "gl": "ES",
-    "keywords": 40,
-    "avgNonBrand": 9.5,
-    "medianEntry": 157368,
-    "compTop10": 145,
-    "avgDepth": 28.9,
-    "best": [
-      {"q":"all video downloader","P":83,"nb":10,"entry":266150,"c10":5,"tm":0},
-      {"q":"video downloader","P":82,"nb":10,"entry":201888,"c10":5,"tm":0},
-      {"q":"fast video downloader","P":75,"nb":10,"entry":249023,"c10":5,"tm":0},
-      {"q":"social video downloader","P":72,"nb":10,"entry":282,"c10":2,"tm":0},
-      {"q":"save video","P":67,"nb":10,"entry":747,"c10":2,"tm":0},
-      {"q":"video downloader app","P":65,"nb":10,"entry":249023,"c10":5,"tm":0}
-    ]
-  },
-  {
-    "gl": "IT",
-    "keywords": 40,
-    "avgNonBrand": 9.5,
-    "medianEntry": 249023,
-    "compTop10": 153,
-    "avgDepth": 28.6,
-    "best": [
-      {"q":"all video downloader","P":83,"nb":10,"entry":266150,"c10":6,"tm":0},
-      {"q":"video downloader","P":82,"nb":10,"entry":266150,"c10":3,"tm":0},
-      {"q":"social video downloader","P":72,"nb":10,"entry":282,"c10":2,"tm":0},
-      {"q":"fast video downloader","P":71,"nb":9,"entry":266150,"c10":5,"tm":0},
-      {"q":"download video","P":70,"nb":10,"entry":249023,"c10":3,"tm":0},
-      {"q":"video downloader app","P":65,"nb":10,"entry":266150,"c10":5,"tm":0}
-    ]
-  },
-  {
-    "gl": "AU",
-    "keywords": 40,
-    "avgNonBrand": 9.4,
-    "medianEntry": 133921,
-    "compTop10": 146,
-    "avgDepth": 28.5,
-    "best": [
-      {"q":"video downloader","P":80,"nb":10,"entry":5071274,"c10":4,"tm":0},
-      {"q":"all video downloader","P":80,"nb":10,"entry":266150,"c10":6,"tm":0},
-      {"q":"fast video downloader","P":75,"nb":10,"entry":266150,"c10":4,"tm":0},
-      {"q":"social video downloader","P":72,"nb":10,"entry":282,"c10":2,"tm":0},
-      {"q":"download video","P":69,"nb":10,"entry":249023,"c10":4,"tm":0},
-      {"q":"video downloader browser","P":67,"nb":9,"entry":249023,"c10":4,"tm":0}
-    ]
-  },
-  {
-    "gl": "AE",
-    "keywords": 40,
-    "avgNonBrand": 9.1,
-    "medianEntry": 202665,
-    "compTop10": 147,
-    "avgDepth": 28.5,
-    "best": [
-      {"q":"video downloader","P":82,"nb":10,"entry":266150,"c10":5,"tm":0},
-      {"q":"social video downloader","P":78,"nb":10,"entry":282,"c10":3,"tm":0},
-      {"q":"all video downloader","P":77,"nb":9,"entry":13970550,"c10":4,"tm":0},
-      {"q":"hd video downloader","P":73,"nb":10,"entry":157368,"c10":4,"tm":0},
-      {"q":"fast video downloader","P":71,"nb":9,"entry":266150,"c10":5,"tm":0},
-      {"q":"download video","P":67,"nb":9,"entry":484585,"c10":3,"tm":0}
-    ]
-  },
-  {
-    "gl": "IN",
-    "keywords": 40,
-    "avgNonBrand": 9.3,
-    "medianEntry": 98777,
-    "compTop10": 143,
-    "avgDepth": 28.2,
-    "best": [
-      {"q":"all video downloader","P":85,"nb":10,"entry":266150,"c10":5,"tm":0},
-      {"q":"video downloader","P":80,"nb":10,"entry":266150,"c10":5,"tm":0},
-      {"q":"social video downloader","P":78,"nb":10,"entry":282,"c10":3,"tm":0},
-      {"q":"fast video downloader","P":76,"nb":10,"entry":98777,"c10":5,"tm":0},
-      {"q":"download video","P":72,"nb":10,"entry":266150,"c10":5,"tm":0},
-      {"q":"video saver","P":66,"nb":10,"entry":266150,"c10":7,"tm":0}
-    ]
-  }
-]
-```
-
-### data.markets
-
-```json
-["US","BR","DE","ES","IT","AU","AE","IN"]
 ```
 
 ### data.profiles
@@ -11395,2836 +10639,2340 @@ These are exact copies of the values in [assets/data.js](../../assets/data.js); 
 ]
 ```
 
-### data.secondary
+### graphics.apps
 
 ```json
 [
-  "video downloader", "all video downloader", "video saver", "download video", "hd video downloader", "video downloader app",
-  "video downloader and saver", "all video downloader and saver", "fast video downloader", "social video downloader", "video downloader browser",
-  "save video", "downloader", "video downloader and player", "video downloader free", "video saver downloader", "private video downloader",
-  "free video downloader", "4k video downloader", "video download app", "online video downloader", "video downloader for android", "download videos",
-  "video downloader without ads", "instagram video downloader", "video downloader for instagram", "reels downloader", "story saver", "status saver",
-  "facebook video downloader", "tiktok video downloader", "twitter video downloader", "insta downloader", "reel saver", "fb video downloader app",
-  "story saver for instagram", "status saver for whatsapp", "whatsapp status saver", "tiktok downloader no watermark", "x video downloader"
+  {
+    "id": "00-our-app",
+    "num": "00",
+    "name": "Our app",
+    "title": "All Video Downloader & Saver",
+    "publisher": "Cell Cave",
+    "downloads": "5+",
+    "playUrl": "https://play.google.com/store/apps/details?id=com.video.downloader.instagram.videosaver&hl=en&gl=US",
+    "notes": {
+      "Icon": "A rainbow gradient square — magenta through orange, yellow and green to blue — carrying a heavy black download arrow over a tray. In a category where seven icons are a red “V” and five more are an arrow on a flat square, the gradient is the most distinctive thing we own. The arrow itself is the category default; the colour is not.",
+      "Feature graphic": "Black banner with “VIDEO DOWNLOADER” split white/red, “DOWNLOAD YOUR ALL FAVOURITE VIDEOS” beneath it, a phone mock on the right and a small rocket. Three chips read Fast · Simple · Secure. It sits in the same dark-banner family as four competitors, and the headline is a category label rather than a reason to install.",
+      "Screenshot system": "Four frames, one template: a white band carrying a bold dark all-caps heading and a grey sub-line, an orange gradient panel holding the device, and a black pill strip at the foot listing three feature words. The run is download, manage, quality, private vault. It is clean, consistent and legible at thumbnail size.",
+      "Design assessment": "The template is sound and the copy is benefit-led — but we ship **four** screenshots where the category median is seven and the leaders ship twelve to sixteen, so four of eight phone slots sit empty. The vault, the editor and MP3 extraction — the three things the feature audit says no audited competitor has — are represented by one frame between them. Screenshot 1 also shows a row of platform brand marks, which is the one thing on this page our own rules tell us not to do."
+    },
+    "tags": ["ours","rainbow gradient icon","benefit-led headings","4 of 8 slots used","platform icons in frame 1","no editor frame"],
+    "noLandscape": true,
+    "assets": [
+      {
+        "kind": "icon",
+        "orient": "square",
+        "file": "00-our-app/icon-01.png",
+        "alt": "A rainbow gradient square — magenta through orange, yellow and green to blue — carrying a heavy black download arrow over a tray. In a category where seven icons are a red “V” and five more are an arrow on a flat square, the gradient is the most distinctive thing we own. The arrow itself is the category default; the colour is not.",
+        "label": "Icon 01",
+        "w": 512,
+        "h": 512,
+        "caption": "Listing icon, original file",
+        "src": "https://play-lh.googleusercontent.com/qLNXtLkR4z4KiAhmkwjlXx1TpuC4aaH6qsMoZgkWzjg1-ZaXUh-KMfdG1gXfayu_gkStOl6S1w4tCfe2WMPBbQ"
+      },
+      {
+        "kind": "feature-graphic",
+        "orient": "landscape",
+        "file": "00-our-app/feature-graphic-01.jpg",
+        "alt": "Black banner with “VIDEO DOWNLOADER” split white/red, “DOWNLOAD YOUR ALL FAVOURITE VIDEOS” beneath it, a phone mock on the right and a small rocket. Three chips read Fast · Simple · Secure. It sits in the same dark-banner family as four competitors, and the headline is a category label rather than a reason to install.",
+        "label": "Feature Graphic 01",
+        "w": 1024,
+        "h": 500,
+        "caption": "Feature graphic, original file",
+        "src": "https://play-lh.googleusercontent.com/q4weOoYNzbX0TD4RtvgBm1VsiywteBuYuZsb5Rr0JzQPEFYto2uU7Taj_ueFgCp65xXjCQ9zFHSZ9jwTq7lk8Q"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "00-our-app/screenshot-01.jpg",
+        "alt": "Our app screenshot 1: Download videos in seconds",
+        "label": "Screenshot 01",
+        "w": 788,
+        "h": 1400,
+        "caption": "Download videos in seconds",
+        "src": "https://play-lh.googleusercontent.com/j2_25nIZRvSsEN0BlWJSIIRtIx-N1I7ugFgLUo5rDuBOnNTugt1bnMxlZt9p-RnjyAXdCFKK5KMAYzsaqTK8VA"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "00-our-app/screenshot-02.jpg",
+        "alt": "Our app screenshot 2: Manage downloads easily",
+        "label": "Screenshot 02",
+        "w": 788,
+        "h": 1400,
+        "caption": "Manage downloads easily",
+        "src": "https://play-lh.googleusercontent.com/TDaaCxqjFa48ZfwV0k4SNIeBK-v0Cwt33ue3sNB5cqdlGlK4sYIZGuNKiKX2zGtm62hpnf9h3Zmc8ajaon7LXg"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "00-our-app/screenshot-03.jpg",
+        "alt": "Our app screenshot 3: Download in HD quality",
+        "label": "Screenshot 03",
+        "w": 788,
+        "h": 1400,
+        "caption": "Download in HD quality",
+        "src": "https://play-lh.googleusercontent.com/iWFuKpcYqHVHeGgYoYhIrSjIrlR9FcRwAaGP1dZaP3WYRiq5zov4dfdatnjVHXoBdObNVJClXxRpLiWW2OhOTw"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "00-our-app/screenshot-04.jpg",
+        "alt": "Our app screenshot 4: Keep files private & secure",
+        "label": "Screenshot 04",
+        "w": 788,
+        "h": 1400,
+        "caption": "Keep files private & secure",
+        "src": "https://play-lh.googleusercontent.com/3n20NxyQhoOWJOgRndJyj48dCylpmBu1lIGTP9GG5lS89ovMzjfum-Ps_cLIDr_54bKevER-jTLc-Um63vy_nw"
+      }
+    ],
+    "ours": true
+  },
+  {
+    "id": "01-inshot",
+    "num": "01",
+    "name": "InShot",
+    "title": "Video Downloader",
+    "publisher": "InShot Inc.",
+    "downloads": "100M+",
+    "playUrl": "https://play.google.com/store/apps/details?id=video.downloader.videodownloader&hl=en&gl=US",
+    "notes": {
+      "Icon": "A black rounded square with a white download arrow resting on a yellow bar. Nothing but the mark — no wordmark, no gradient, no device. It is the most reduced icon in the library and it holds at 32 px better than anything else here.",
+      "Feature graphic": "A dark grid of faint media-type tiles with “Simple & Fast Downloader” set in yellow and white at the centre. Three competitors use almost exactly this tile-grid construction.",
+      "Screenshot system": "Two systems in one carousel. Frames 2-7 are marketing panels: white ground, a two-tone heading, a device below (One-click Download, Social Media Downloader, Download Management, SD Card Supported, Keep Video Safe, Powerful Downloader). Frames 8-12 are bare device captures with no heading at all, and frame 1 is a landscape composite.",
+      "Design assessment": "The category leader by search visibility — 51 US top-10 placements, 4.72★ from 2.7M ratings — and its listing is not especially polished: half the carousel is unlabelled screen grabs. Evidence that in this category ranking is won on keywords and install base, not on store art. The icon, though, is the one asset here worth studying."
+    },
+    "tags": ["black arrow icon","tile-grid banner","mixed labelled/unlabelled frames","landscape frame","category leader"],
+    "noLandscape": false,
+    "assets": [
+      {
+        "kind": "icon",
+        "orient": "square",
+        "file": "01-inshot/icon-01.png",
+        "alt": "A black rounded square with a white download arrow resting on a yellow bar. Nothing but the mark — no wordmark, no gradient, no device. It is the most reduced icon in the library and it holds at 32 px better than anything else here.",
+        "label": "Icon 01",
+        "w": 512,
+        "h": 512,
+        "caption": "Listing icon, original file",
+        "src": "https://play-lh.googleusercontent.com/oju7a2AuqaQSc_l5O-2yRw8F_M0rUlHnBHjp_MqHNSAT3CXq7xbSqRVL7VSPNhMRjzaM2ft-LBoA05-q9hqmhg"
+      },
+      {
+        "kind": "feature-graphic",
+        "orient": "landscape",
+        "file": "01-inshot/feature-graphic-01.jpg",
+        "alt": "A dark grid of faint media-type tiles with “Simple & Fast Downloader” set in yellow and white at the centre. Three competitors use almost exactly this tile-grid construction.",
+        "label": "Feature Graphic 01",
+        "w": 1024,
+        "h": 500,
+        "caption": "Feature graphic, original file",
+        "src": "https://play-lh.googleusercontent.com/QrAO-trY2kMBozJxNbFVwlmHb6y4SyYaTsLlAOVW2na_Th8ED1XOKFJecVhVpj9hXeIaezkfd2Xmep1DQB2DSno"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "landscape",
+        "file": "01-inshot/screenshot-01.jpg",
+        "alt": "InShot screenshot 1: Video Downloader promo (landscape)",
+        "label": "Screenshot 01",
+        "w": 1400,
+        "h": 788,
+        "caption": "Video Downloader promo (landscape)",
+        "src": "https://play-lh.googleusercontent.com/NSGdsgwWRfwmx4fvTHQxemryYBrNUhWqMU2V8kQsrPQ9s3Z7d_X4x1SSyYZQ4f11L2-lD-3N-X8bKzW009-G"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "01-inshot/screenshot-02.jpg",
+        "alt": "InShot screenshot 2: One-click Download",
+        "label": "Screenshot 02",
+        "w": 788,
+        "h": 1400,
+        "caption": "One-click Download",
+        "src": "https://play-lh.googleusercontent.com/gxUnDNwvtp0vd7HJX01UVlWG3OdKYfLHeSLUBcsRp3fe_ncRvXBTxjYs7-i19VEYvrXiqbzDDOaaXCHPoYtjxSA"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "01-inshot/screenshot-03.jpg",
+        "alt": "InShot screenshot 3: Social Media Downloader",
+        "label": "Screenshot 03",
+        "w": 788,
+        "h": 1400,
+        "caption": "Social Media Downloader",
+        "src": "https://play-lh.googleusercontent.com/WFcH-IvsVpbLiJQx1pQC0Tr147jjjJNgmwvXbfeqC8MJRDPtgb68Yr6IFA-oOlY_Psa_U_8H4_bDW-ECltzt2g"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "01-inshot/screenshot-04.jpg",
+        "alt": "InShot screenshot 4: Download Management",
+        "label": "Screenshot 04",
+        "w": 788,
+        "h": 1400,
+        "caption": "Download Management",
+        "src": "https://play-lh.googleusercontent.com/bUQFlAGdBI4UIMq2062v2WsBvk11Qb-v0JpULDAOmEonf54RZ9tapaeny4QYk0bS3shGIivg__F2bl3JbId7"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "01-inshot/screenshot-05.jpg",
+        "alt": "InShot screenshot 5: SD Card Supported",
+        "label": "Screenshot 05",
+        "w": 788,
+        "h": 1400,
+        "caption": "SD Card Supported",
+        "src": "https://play-lh.googleusercontent.com/Uy3NFS-H0YcvUyv2n48dyX76CpLJbhOH8GfhhiXIWtpL1lHitb_gl99KtWrnH4Nk7qkngPekNJaUpY59Gp7yKg"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "01-inshot/screenshot-06.jpg",
+        "alt": "InShot screenshot 6: Keep Video Safe",
+        "label": "Screenshot 06",
+        "w": 788,
+        "h": 1400,
+        "caption": "Keep Video Safe",
+        "src": "https://play-lh.googleusercontent.com/DLcnkImZEA7COuU2OJa2EAYTPWZnHVWWLDsY8fzqeOQvZRcIpoe_4L1_KWxgpPKcWlpY8quDIccYF7LFMHdkwg"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "01-inshot/screenshot-07.jpg",
+        "alt": "InShot screenshot 7: Powerful Downloader",
+        "label": "Screenshot 07",
+        "w": 788,
+        "h": 1400,
+        "caption": "Powerful Downloader",
+        "src": "https://play-lh.googleusercontent.com/S3DOf7z5V0srj0YNUghtWNSJ9czeUIPsHKJrNDKbbb_4i7W1yfdC8iSrYYuhv-xli9HV68dOGKBsojC-8iWJ"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "01-inshot/screenshot-08.jpg",
+        "alt": "InShot screenshot 8: Browser — video found (no caption)",
+        "label": "Screenshot 08",
+        "w": 875,
+        "h": 1400,
+        "caption": "Browser — video found (no caption)",
+        "src": "https://play-lh.googleusercontent.com/ptR_jkjvK244mVyx3FAnK27AOXDT_VLe28BoWu7ACUBGLrNq5OWbpkmX8Ca5xX35fSyTftIgVH71rXC1vLiEJmQ"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "01-inshot/screenshot-09.jpg",
+        "alt": "InShot screenshot 9: Progress list (no caption)",
+        "label": "Screenshot 09",
+        "w": 875,
+        "h": 1400,
+        "caption": "Progress list (no caption)",
+        "src": "https://play-lh.googleusercontent.com/ikeGVPFcD4aTDVAaVbpkZiQObefirUMBUm_6AgzOrqCe7Yk7VD3E0zhd3AUx4H0iveBg0GJkK3m29VoGanM4"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "01-inshot/screenshot-10.jpg",
+        "alt": "InShot screenshot 10: Finished list (no caption)",
+        "label": "Screenshot 10",
+        "w": 875,
+        "h": 1400,
+        "caption": "Finished list (no caption)",
+        "src": "https://play-lh.googleusercontent.com/pAAwl_n-Aotk9MTG417Iw7ngs5PmqrAAATFfDkZ1A3XIeXFrLfRdH44tZikXJDd1vLBa5zNlcszU2E5YWiCo68k"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "01-inshot/screenshot-11.jpg",
+        "alt": "InShot screenshot 11: Private videos PIN (no caption)",
+        "label": "Screenshot 11",
+        "w": 875,
+        "h": 1400,
+        "caption": "Private videos PIN (no caption)",
+        "src": "https://play-lh.googleusercontent.com/SHIVzBVSqh4A_SMeJN_i2ytNEfptgaBB7cT_SV7FeLKrrdxuYUmL3QQ2nZvWP8aXnMG8qWqUg5-RbsYF7c6J"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "01-inshot/screenshot-12.jpg",
+        "alt": "InShot screenshot 12: Browser menu (no caption)",
+        "label": "Screenshot 12",
+        "w": 875,
+        "h": 1400,
+        "caption": "Browser menu (no caption)",
+        "src": "https://play-lh.googleusercontent.com/mpczvO0kyudX2Q489yz1KszXfvG5LtSe5aARGtlQe-NwbYtEDlyQ3AIadsKD6ByiN1-FHkLTs_0KKGmc86A1"
+      }
+    ]
+  },
+  {
+    "id": "02-story-saver",
+    "num": "02",
+    "name": "Story Saver",
+    "title": "Video downloader - Story Saver",
+    "publisher": "Video Downloader Story Saver",
+    "downloads": "50M+",
+    "playUrl": "https://play.google.com/store/apps/details?id=instagram.video.downloader.story.saver.ig&hl=en&gl=US",
+    "notes": {
+      "Icon": "A magenta-to-pink gradient square holding a white ring with a download arrow inside. One of three circle-and-arrow icons here; the magenta is what separates it.",
+      "Feature graphic": "Red banner, “Download Videos & Photos / Save Stories” in white at the left, a fan of tilted phone screens at the right. Direct and readable.",
+      "Screenshot system": "Six frames on white, each with a pink heading in a heavy rounded face and a device below showing a real social feed. The run is copy-link, share-to-save, story saver & repost, auto save, save reels, history management.",
+      "Design assessment": "Sells the workflow rather than the feature list — every frame shows the user's actual next tap, with arrows and numbered steps drawn over the UI. That is a stronger idea than most of this category manages. It also ships a visible typo in frame 1, “Video downlaoder”, on a 50M-install listing with 1.4M ratings."
+    },
+    "tags": ["magenta circle icon","workflow arrows","numbered steps","typo: downlaoder","third-party UI on screen"],
+    "noLandscape": true,
+    "assets": [
+      {
+        "kind": "icon",
+        "orient": "square",
+        "file": "02-story-saver/icon-01.jpg",
+        "alt": "A magenta-to-pink gradient square holding a white ring with a download arrow inside. One of three circle-and-arrow icons here; the magenta is what separates it.",
+        "label": "Icon 01",
+        "w": 512,
+        "h": 512,
+        "caption": "Listing icon, original file",
+        "src": "https://play-lh.googleusercontent.com/TBQtIR4nBImNflXpt21UXPoOX_JykpbhIVoAjjwcJeJBVi5PKmV6_Gi4pul-aqz78ntdpUl8dvWN_yzBOvYcJA"
+      },
+      {
+        "kind": "feature-graphic",
+        "orient": "landscape",
+        "file": "02-story-saver/feature-graphic-01.jpg",
+        "alt": "Red banner, “Download Videos & Photos / Save Stories” in white at the left, a fan of tilted phone screens at the right. Direct and readable.",
+        "label": "Feature Graphic 01",
+        "w": 1024,
+        "h": 500,
+        "caption": "Feature graphic, original file",
+        "src": "https://play-lh.googleusercontent.com/bsU9OfF1Q7vV2d-wAAYS9VzvgknS78ba7C5WRqDFzkRlkG-j3PZJwCLP-6RpJC725CRrlf3gBya-HOMuSTqY"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "02-story-saver/screenshot-01.jpg",
+        "alt": "Story Saver screenshot 1: Video downlaoder — copy link to save (typo as published)",
+        "label": "Screenshot 01",
+        "w": 788,
+        "h": 1400,
+        "caption": "Video downlaoder — copy link to save (typo as published)",
+        "src": "https://play-lh.googleusercontent.com/026cg7-gFtD7o6Huk7RRt0AX56Pho4N_OK2a3W2i1Sx6yN6V-CI3dicRji9-3lNDK8OduffOWDuNwcxqDw8zDA"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "02-story-saver/screenshot-02.jpg",
+        "alt": "Story Saver screenshot 2: Insaver — share to save",
+        "label": "Screenshot 02",
+        "w": 788,
+        "h": 1400,
+        "caption": "Insaver — share to save",
+        "src": "https://play-lh.googleusercontent.com/kRXnbqX2ikWH9Hr5r92D-ZaxQDYKLaAtYVb1pcuYoOw8hRBBFB-tIZfEh5Jl22BBXJ75UTxBJj9z-kNCZpTQgA4"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "02-story-saver/screenshot-03.jpg",
+        "alt": "Story Saver screenshot 3: Story saver & repost",
+        "label": "Screenshot 03",
+        "w": 788,
+        "h": 1400,
+        "caption": "Story saver & repost",
+        "src": "https://play-lh.googleusercontent.com/0BANSyqcpXrMs3wGfHuXTMwP4PjpfPz3uu3lAcE0GXJVAhAxNsoEzxEOPGxBZuUzDT64oPGzPiklgOJr-MH3nA"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "02-story-saver/screenshot-04.jpg",
+        "alt": "Story Saver screenshot 4: Auto save",
+        "label": "Screenshot 04",
+        "w": 788,
+        "h": 1400,
+        "caption": "Auto save",
+        "src": "https://play-lh.googleusercontent.com/wMrHNUsStVRWicsBS6jrk4crq1u7B01RriIUDLDKQnF1eS-zrkuRXk6kpBQZ2SBZlQbuKRoTyqgEMG-0PmQU"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "02-story-saver/screenshot-05.jpg",
+        "alt": "Story Saver screenshot 5: Save reels",
+        "label": "Screenshot 05",
+        "w": 788,
+        "h": 1400,
+        "caption": "Save reels",
+        "src": "https://play-lh.googleusercontent.com/AP6qmSQOmzOPjwG1sAjrmxgEln8od8asGg5OcbmZSTqXbuunF3s5fKzmzrArDWOT7YrvGGovYB5uSeDzUp2txw"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "02-story-saver/screenshot-06.jpg",
+        "alt": "Story Saver screenshot 6: History management",
+        "label": "Screenshot 06",
+        "w": 788,
+        "h": 1400,
+        "caption": "History management",
+        "src": "https://play-lh.googleusercontent.com/F3MAJkAegk90GfaH7Xx_bKFuANXKpkrGkfNr-LWqFIMV-ukuobqpS-bHbf30oDX801ImXu67uO9FeYOn-XaHvQ"
+      }
+    ]
+  },
+  {
+    "id": "03-insaver",
+    "num": "03",
+    "name": "InSaver",
+    "title": "InSaver: All Video Downloader",
+    "publisher": "Video Downloader Story Saver",
+    "downloads": "10M+",
+    "playUrl": "https://play.google.com/store/apps/details?id=instagram.video.downloader.story.saver.ig.insaver&hl=en&gl=US",
+    "notes": {
+      "Icon": "An orange-to-pink gradient square with a white ring and download arrow — the same construction as its sibling app above, recoloured. Same publisher, two listings, two near-identical marks.",
+      "Feature graphic": "Dark banner with “Save Stories / All Video Downloader” in red and white, three round chips reading Fast · Easy · Safe, and a phone showing a grid of platform marks.",
+      "Screenshot system": "Seven frames on white with coral headings and a device below: Instsaver Video Downloader, Story Saver & Repost, No Watermark, Live Wallpapers & Ringtones, History Management, Batch Download, Auto Save.",
+      "Design assessment": "The widest feature spread in the library — wallpapers and ringtones appear nowhere else — which makes the listing feel generous but unfocused. Frame 1 carries a typo in the brand name itself (“Instsaver”), and frame 3 promises “No Watermark”, a claim our own rules forbid us from making."
+    },
+    "tags": ["gradient circle icon","sibling of 02","no-watermark claim","wallpapers & ringtones","typo: Instsaver"],
+    "noLandscape": true,
+    "assets": [
+      {
+        "kind": "icon",
+        "orient": "square",
+        "file": "03-insaver/icon-01.jpg",
+        "alt": "An orange-to-pink gradient square with a white ring and download arrow — the same construction as its sibling app above, recoloured. Same publisher, two listings, two near-identical marks.",
+        "label": "Icon 01",
+        "w": 512,
+        "h": 512,
+        "caption": "Listing icon, original file",
+        "src": "https://play-lh.googleusercontent.com/Gxa3y2D4_k3xVRi4GcEoCz2VOJodVWgcLdCyUQY67w6_bier_KwRrqxVtGauUlciDHRfVdSgh3VO7UPAo7sS"
+      },
+      {
+        "kind": "feature-graphic",
+        "orient": "landscape",
+        "file": "03-insaver/feature-graphic-01.jpg",
+        "alt": "Dark banner with “Save Stories / All Video Downloader” in red and white, three round chips reading Fast · Easy · Safe, and a phone showing a grid of platform marks.",
+        "label": "Feature Graphic 01",
+        "w": 1024,
+        "h": 500,
+        "caption": "Feature graphic, original file",
+        "src": "https://play-lh.googleusercontent.com/NkXnlgo7Vi5rm86MfQLfW-gLoucel_vkCuCXJUi6aFpaU-iHpBN5ihBw2QREGPsCfFrwefFBnqO-zq2C3LMW"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "03-insaver/screenshot-01.jpg",
+        "alt": "InSaver screenshot 1: Instsaver Video Downloader (typo as published)",
+        "label": "Screenshot 01",
+        "w": 788,
+        "h": 1400,
+        "caption": "Instsaver Video Downloader (typo as published)",
+        "src": "https://play-lh.googleusercontent.com/EJJGQ0VKtrjO-ZIjF9_T4g6INHFpPUYBsGXGPnxD9hDsJyHXxZOUoi3j3mIAxJqXLWhW0b40UNwi25pqB6CiAkE"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "03-insaver/screenshot-02.jpg",
+        "alt": "InSaver screenshot 2: Story Saver & Repost",
+        "label": "Screenshot 02",
+        "w": 788,
+        "h": 1400,
+        "caption": "Story Saver & Repost",
+        "src": "https://play-lh.googleusercontent.com/YBRzMwVxKSM2fZQRcmBx_dD_NhZ7O8qXN38lpuWBI1NyKDdIeO13XMc9ti61N6Utcp3H1tR5wFYF_0GXZqG80w"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "03-insaver/screenshot-03.jpg",
+        "alt": "InSaver screenshot 3: No Watermark",
+        "label": "Screenshot 03",
+        "w": 788,
+        "h": 1400,
+        "caption": "No Watermark",
+        "src": "https://play-lh.googleusercontent.com/98xatWrG5bp7YKrJa-fRtUl0An0LnhxthLRpwGG2n0j0zH1cxNX--wUjecRmEM8yuxs8hpcPKEzpJo_xOOzCvg"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "03-insaver/screenshot-04.jpg",
+        "alt": "InSaver screenshot 4: Live Wallpapers & Ringtones",
+        "label": "Screenshot 04",
+        "w": 788,
+        "h": 1400,
+        "caption": "Live Wallpapers & Ringtones",
+        "src": "https://play-lh.googleusercontent.com/Wx30ELh6zRRnVV8NUwVC6JDVKPEncYwVMVommknCxGtO93BGhEyncQ28wIlEj0mDsRB3LG4T4iQ9HLMWkC4-uw"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "03-insaver/screenshot-05.jpg",
+        "alt": "InSaver screenshot 5: History Management",
+        "label": "Screenshot 05",
+        "w": 788,
+        "h": 1400,
+        "caption": "History Management",
+        "src": "https://play-lh.googleusercontent.com/m-M-0Rjcfdhq4qj_zA997K9ruIVkhZlTc_7sxKS_9hCuy-HTPNuwk8d-VwB4g8i_BvuPoSylvK2YeWS7-HAVmw"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "03-insaver/screenshot-06.jpg",
+        "alt": "InSaver screenshot 6: Batch Download",
+        "label": "Screenshot 06",
+        "w": 788,
+        "h": 1400,
+        "caption": "Batch Download",
+        "src": "https://play-lh.googleusercontent.com/z83FRL3aZlli1YRKP-rO6i-30hDdz9CsuQJEGamsQlVms0wmPieHfGpxoB9sdP9s8hARFn8hdGWU9zoyX5waJA"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "03-insaver/screenshot-07.jpg",
+        "alt": "InSaver screenshot 7: Auto Save",
+        "label": "Screenshot 07",
+        "w": 788,
+        "h": 1400,
+        "caption": "Auto Save",
+        "src": "https://play-lh.googleusercontent.com/WSluN0ZeZrsz-xz2SSOjz1HgwYhrs-PfQ0s1drpZw9NX8CG_PRBt5oUzBwYNcvC1Ihqage-j80pvS9kyPiXcXA"
+      }
+    ]
+  },
+  {
+    "id": "04-gamma-play",
+    "num": "04",
+    "name": "Gamma Play",
+    "title": "Video Downloader - without ads",
+    "publisher": "Gamma Play",
+    "downloads": "100K+",
+    "playUrl": "https://play.google.com/store/apps/details?id=com.gamma.videodownloader&hl=en&gl=US",
+    "notes": {
+      "Icon": "A black rounded square with a white download arrow over a yellow bar — very nearly InShot's icon, from an unrelated 100K-install developer. Side by side at 48 px the two are hard to tell apart.",
+      "Feature graphic": "A pale ice-blue field with an abstract blue play-and-arrow glyph and no text whatsoever. The only wordless banner in the library, and at listing size it says nothing about the app.",
+      "Screenshot system": "Seven frames: white ground, a dark two-line heading, a device below. Download Any Video in One Tap, Choose Video Quality Before Downloading, Built-in Ad Blocker, Built-in Video Player, Instant Story Downloader, Download to Private Vault, Track Progress in Real Time.",
+      "Design assessment": "**The one listing in this library that shows no third-party branding at all.** Every device frame runs an invented source app — “TravelHub”, “FREEVIDEOS” — so the screenshots demonstrate the download flow without borrowing anyone's logo or UI. That is the compliant pattern, and it comes from the smallest app here. The headings are also full sentences rather than category labels."
+    },
+    "tags": ["icon collides with InShot","wordless banner","invented source apps","no third-party branding","private vault frame"],
+    "noLandscape": true,
+    "assets": [
+      {
+        "kind": "icon",
+        "orient": "square",
+        "file": "04-gamma-play/icon-01.jpg",
+        "alt": "A black rounded square with a white download arrow over a yellow bar — very nearly InShot's icon, from an unrelated 100K-install developer. Side by side at 48 px the two are hard to tell apart.",
+        "label": "Icon 01",
+        "w": 512,
+        "h": 512,
+        "caption": "Listing icon, original file",
+        "src": "https://play-lh.googleusercontent.com/RvHeqNSaT1XdrxNeTuPMUi9ijxcZbApZtdpYeMrfuvTIGzWG3aliheg7xa1szlX5pObYgtVDwl_WaP0FAxYxrw"
+      },
+      {
+        "kind": "feature-graphic",
+        "orient": "landscape",
+        "file": "04-gamma-play/feature-graphic-01.jpg",
+        "alt": "A pale ice-blue field with an abstract blue play-and-arrow glyph and no text whatsoever. The only wordless banner in the library, and at listing size it says nothing about the app.",
+        "label": "Feature Graphic 01",
+        "w": 1024,
+        "h": 500,
+        "caption": "Feature graphic, original file",
+        "src": "https://play-lh.googleusercontent.com/R0RPcCkjGrOrSY69hOH5SMKaE0FH6do2bOYNETkwJWq-qAkSpsUQYdGDfB0Zg2qGFd_oYq515kOks7_ZqcT4-9E"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "04-gamma-play/screenshot-01.jpg",
+        "alt": "Gamma Play screenshot 1: Download Any Video in One Tap",
+        "label": "Screenshot 01",
+        "w": 788,
+        "h": 1400,
+        "caption": "Download Any Video in One Tap",
+        "src": "https://play-lh.googleusercontent.com/oYsZpI4a3bXy5PbjVvfXCNfa9uvjpRSzMPr6iHvCAs4Fcw8jisHC7JG--wymBT16ilE48aawj91WqS2L5oSiQQ"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "04-gamma-play/screenshot-02.jpg",
+        "alt": "Gamma Play screenshot 2: Choose Video Quality Before Downloading",
+        "label": "Screenshot 02",
+        "w": 788,
+        "h": 1400,
+        "caption": "Choose Video Quality Before Downloading",
+        "src": "https://play-lh.googleusercontent.com/2wyStNfqs-_WeoJN3myADhm2536ljQO1XfJTADIb2fti1C66_Ia8eDkdA36tphFW_oZArzXX1oAorvH9GQcRNQ"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "04-gamma-play/screenshot-03.jpg",
+        "alt": "Gamma Play screenshot 3: Built-in Ad Blocker",
+        "label": "Screenshot 03",
+        "w": 788,
+        "h": 1400,
+        "caption": "Built-in Ad Blocker",
+        "src": "https://play-lh.googleusercontent.com/PHM_AsD1T-vmvI1t2QmItglgPnyxKaFJKfqctNHBhql_XxeUo_FMLMy-YC511hwkIiIajvjvXVfZeGYBa4ZdO_M"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "04-gamma-play/screenshot-04.jpg",
+        "alt": "Gamma Play screenshot 4: Built-in Video Player",
+        "label": "Screenshot 04",
+        "w": 788,
+        "h": 1400,
+        "caption": "Built-in Video Player",
+        "src": "https://play-lh.googleusercontent.com/UusxHAzNEV8BuEh3c_-xrvq0w_a_BUGLMdckReTxj0TIAy5PXBhFHjKbaP2Z2EGfgk9qfwztPlQ0nlwsZ7XVIA"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "04-gamma-play/screenshot-05.jpg",
+        "alt": "Gamma Play screenshot 5: Instant Story Downloader",
+        "label": "Screenshot 05",
+        "w": 788,
+        "h": 1400,
+        "caption": "Instant Story Downloader",
+        "src": "https://play-lh.googleusercontent.com/wwa2IirJgbOfkGQFlC50jSdmi0XG9mgUCpkurSGWJwNh0Smyt2PsXatdcQWqz5_G_DTngVJmERmH4ZD7I7VzRA"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "04-gamma-play/screenshot-06.jpg",
+        "alt": "Gamma Play screenshot 6: Download to Private Vault",
+        "label": "Screenshot 06",
+        "w": 788,
+        "h": 1400,
+        "caption": "Download to Private Vault",
+        "src": "https://play-lh.googleusercontent.com/SitItRmkfJlFZ5E1xN3AxV4c4CEPG85ssKC0iNFqT95YEsC2cOnVWvKPviBrekNnksp-nz8gvhAJCTBbqJhTdg"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "04-gamma-play/screenshot-07.jpg",
+        "alt": "Gamma Play screenshot 7: Track Progress in Real Time",
+        "label": "Screenshot 07",
+        "w": 788,
+        "h": 1400,
+        "caption": "Track Progress in Real Time",
+        "src": "https://play-lh.googleusercontent.com/nzhAI2kUzKou3srM38WSe2XEEsYPhPqmINP8Mtkb51iNk1E0CkPTPNNHGNF4uoQLg9oiwNwNqz6mszeoURztaQA"
+      }
+    ]
+  },
+  {
+    "id": "05-qr-code-scanner",
+    "num": "05",
+    "name": "QR Code Scanner",
+    "title": "All Video Downloader & Player",
+    "publisher": "QR Code Scanner.",
+    "downloads": "100M+",
+    "playUrl": "https://play.google.com/store/apps/details?id=videoplayer.videodownloader.downloader&hl=en&gl=US",
+    "notes": {
+      "Icon": "A red-orange gradient square holding a white filmstrip “V” with a download arrow. The first of seven red “V” marks in this library.",
+      "Feature graphic": "An orange grid of media tiles with “ALL Video Downloader” in white italic — the same tile-grid idea as InShot, AppTool and Sky Vision, in a different colour.",
+      "Screenshot system": "Eight frames on white, black two-line headings, dark device shots: All Video Downloader, Download All You See, Built-in Video Player, Block Ads, Best Story Downloader, 3x Faster Download, Download Manager, Share With Friends.",
+      "Design assessment": "Highly legible and well paced, and it uses all the slots the category rewards. It leans on a speed claim (“3x Faster”) we cannot copy, and frame 2 shows a red play button and video UI that reads unmistakably as a specific platform — the exact thing our rules keep us away from."
+    },
+    "tags": ["red V icon","tile-grid banner","3x speed claim","ad-block frame","recognisable platform UI"],
+    "noLandscape": true,
+    "assets": [
+      {
+        "kind": "icon",
+        "orient": "square",
+        "file": "05-qr-code-scanner/icon-01.png",
+        "alt": "A red-orange gradient square holding a white filmstrip “V” with a download arrow. The first of seven red “V” marks in this library.",
+        "label": "Icon 01",
+        "w": 512,
+        "h": 512,
+        "caption": "Listing icon, original file",
+        "src": "https://play-lh.googleusercontent.com/4v1gAVBRKoO9aUUOhYJLY-aa8FytPXj0LRNJbV8CT743B3sajF54fcEbvQjfE6kuJrS9ddaFkbo7PDcWZ-iQBcI"
+      },
+      {
+        "kind": "feature-graphic",
+        "orient": "landscape",
+        "file": "05-qr-code-scanner/feature-graphic-01.jpg",
+        "alt": "An orange grid of media tiles with “ALL Video Downloader” in white italic — the same tile-grid idea as InShot, AppTool and Sky Vision, in a different colour.",
+        "label": "Feature Graphic 01",
+        "w": 1024,
+        "h": 500,
+        "caption": "Feature graphic, original file",
+        "src": "https://play-lh.googleusercontent.com/NnxBVfBMclFKOfLXSwK39BbujWhkjBAyZrx0-zQ6sLgxWFGivXetTkR1oBBxRDrXylf90EzuLoDG-FegNkG6-Zs"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "05-qr-code-scanner/screenshot-01.jpg",
+        "alt": "QR Code Scanner screenshot 1: All Video Downloader",
+        "label": "Screenshot 01",
+        "w": 710,
+        "h": 1400,
+        "caption": "All Video Downloader",
+        "src": "https://play-lh.googleusercontent.com/aX4xYn_taZd_4YZVsNwfLauu8GCvJYLhyACRLQg_NL-y5wglpBnmbaG5QmUddK08k_2YKjv-mhETraz9kqg6Tw"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "05-qr-code-scanner/screenshot-02.jpg",
+        "alt": "QR Code Scanner screenshot 2: Download All You See",
+        "label": "Screenshot 02",
+        "w": 710,
+        "h": 1400,
+        "caption": "Download All You See",
+        "src": "https://play-lh.googleusercontent.com/f4SN_7jfp2haU4WQppjFz40nxZlI-ioLEuNXOw88Ez0c0q0D2zr7w5w5rj3NAhFZkdSvXfJRCjoigMEbIOJ7SzE"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "05-qr-code-scanner/screenshot-03.jpg",
+        "alt": "QR Code Scanner screenshot 3: Built-in Video Player",
+        "label": "Screenshot 03",
+        "w": 710,
+        "h": 1400,
+        "caption": "Built-in Video Player",
+        "src": "https://play-lh.googleusercontent.com/ZeWwBC7stXyThNLVA6jwWJeUeBdLbNfobRp3lcMLxFXLLJd-bRUGloCHHT9E-mOaieqoBj13233uyIJ5fHcdFA"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "05-qr-code-scanner/screenshot-04.jpg",
+        "alt": "QR Code Scanner screenshot 4: Block Ads",
+        "label": "Screenshot 04",
+        "w": 710,
+        "h": 1400,
+        "caption": "Block Ads",
+        "src": "https://play-lh.googleusercontent.com/dcMlodih4_w17vIeCyCa8w7CzoUrL_9nvW_cWI_DakHdmCnEOVKJmR9_5ryJktF9f07LLWZn9m0IcH6i-YNEDlI"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "05-qr-code-scanner/screenshot-05.jpg",
+        "alt": "QR Code Scanner screenshot 5: Best Story Downloader",
+        "label": "Screenshot 05",
+        "w": 710,
+        "h": 1400,
+        "caption": "Best Story Downloader",
+        "src": "https://play-lh.googleusercontent.com/eynwx6KX7Cn9uZeZpR1JLtduygRZwkgvxjpa8dR_kWk9cUK4KOjC4fMISk9UuQYfbyglGibNdVbnczOVMWRKZVs"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "05-qr-code-scanner/screenshot-06.jpg",
+        "alt": "QR Code Scanner screenshot 6: 3x Faster Download",
+        "label": "Screenshot 06",
+        "w": 710,
+        "h": 1400,
+        "caption": "3x Faster Download",
+        "src": "https://play-lh.googleusercontent.com/-Y2BOATxlPIwOJNqNqseBsbounIndJzehNDpjGBu9s3RJh5Uh5s5nOhWfskVmMSyjrHtP-ZMiqMMkypoqZ4"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "05-qr-code-scanner/screenshot-07.jpg",
+        "alt": "QR Code Scanner screenshot 7: Download Manager",
+        "label": "Screenshot 07",
+        "w": 710,
+        "h": 1400,
+        "caption": "Download Manager",
+        "src": "https://play-lh.googleusercontent.com/QN-RvL8-G1boEFQDukxqdcRPEvnW2QIoLiybSKVFhLNobtVRYBxbHYaLmdZv9ZdVMYdn4OIgTiv1dRV0xMw_3Q"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "05-qr-code-scanner/screenshot-08.jpg",
+        "alt": "QR Code Scanner screenshot 8: Share With Friends",
+        "label": "Screenshot 08",
+        "w": 710,
+        "h": 1400,
+        "caption": "Share With Friends",
+        "src": "https://play-lh.googleusercontent.com/hedBnHNe5y-8YGVb5SDVFcNYx2V-CjKjeA1RsKUHFt1RPoC-5QIaFs9Y8FMm_GtB6V1C4jb2AX-YoLKzRb0O4Dk"
+      }
+    ]
+  },
+  {
+    "id": "06-dosa-hub",
+    "num": "06",
+    "name": "Hub (DOSA)",
+    "title": "Hub Video Downloader",
+    "publisher": "DOSA Apps",
+    "downloads": "10M+",
+    "playUrl": "https://play.google.com/store/apps/details?id=hub.browser.video.downloader.saver&hl=en&gl=US",
+    "notes": {
+      "Icon": "A black square carrying the wordmark “Browser hub”, “hub” reversed out of an orange block. One of only two wordmark icons here, and the only one that names a browser rather than a downloader.",
+      "Feature graphic": "The same wordmark on black, nothing else. Consistent with the icon and completely silent about what the app does.",
+      "Screenshot system": "Five creatives on black with orange-and-white two-tone headings and an orange-outlined device: All Websites Video Downloader, Social Media Video Downloader, Private Browser, Multiple Resolution, 3x Faster Private Downloader.",
+      "Design assessment": "Positions itself as a browser first, which is a real differentiator in a category of paste-link apps. The execution undercuts it: the carousel publishes the same five creatives twice over, the frames show a search engine and four platform logos outright, and the sample content is adult-adjacent. A clear case of a good idea let down by the assets."
+    },
+    "tags": ["wordmark icon","browser-first positioning","duplicate set removed","search engine + platform logos","3x speed claim"],
+    "noLandscape": true,
+    "assets": [
+      {
+        "kind": "icon",
+        "orient": "square",
+        "file": "06-dosa-hub/icon-01.png",
+        "alt": "A black square carrying the wordmark “Browser hub”, “hub” reversed out of an orange block. One of only two wordmark icons here, and the only one that names a browser rather than a downloader.",
+        "label": "Icon 01",
+        "w": 512,
+        "h": 512,
+        "caption": "Listing icon, original file",
+        "src": "https://play-lh.googleusercontent.com/KM2DCIFpt8qc_1150CumeH5rXCqgABmFVXFfQwQKC8wh8V5mF05R_8QNoX_wTNIWrytBpWP9ayRJ7_ayLM6jbws"
+      },
+      {
+        "kind": "feature-graphic",
+        "orient": "landscape",
+        "file": "06-dosa-hub/feature-graphic-01.jpg",
+        "alt": "The same wordmark on black, nothing else. Consistent with the icon and completely silent about what the app does.",
+        "label": "Feature Graphic 01",
+        "w": 1024,
+        "h": 500,
+        "caption": "Feature graphic, original file",
+        "src": "https://play-lh.googleusercontent.com/sSno7wEWk_kU4ec840CSjwmZSj1lMgdecvg86sn3Ne2tUdB1rcBWmVxwpaCN1OFWG28DTTiiROnxq2-LnQCI8NA"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "06-dosa-hub/screenshot-01.jpg",
+        "alt": "Hub (DOSA) screenshot 1: All Websites Video Downloader",
+        "label": "Screenshot 01",
+        "w": 788,
+        "h": 1400,
+        "caption": "All Websites Video Downloader",
+        "src": "https://play-lh.googleusercontent.com/afj_Z-9anpIZVKelRKnkQejs3RK4l_1nnzUSfpW48FvnMG_kx0jBVV6DMdVlZxHYjtqoE6VXUCe7uf8kgjR8tz4"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "06-dosa-hub/screenshot-02.jpg",
+        "alt": "Hub (DOSA) screenshot 2: Social Media Video Downloader",
+        "label": "Screenshot 02",
+        "w": 788,
+        "h": 1400,
+        "caption": "Social Media Video Downloader",
+        "src": "https://play-lh.googleusercontent.com/VkWpMEmastGGS-Pxks4_6hCXfU9BPCx9K_dWni4WpYITCIDZgUK_32HduUK9EEbFVGPQIISkImueXHNn0zP1ajQ"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "06-dosa-hub/screenshot-03.jpg",
+        "alt": "Hub (DOSA) screenshot 3: Private Browser",
+        "label": "Screenshot 03",
+        "w": 788,
+        "h": 1400,
+        "caption": "Private Browser",
+        "src": "https://play-lh.googleusercontent.com/DjdzA6nlXknddQAUfnT3qSLC2mXZkPIUl9Ji25aOGO_m1PrgMgBVX9QVbN4B2Gm5y-6sOfoC6fthsyMyb50R9g"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "06-dosa-hub/screenshot-04.jpg",
+        "alt": "Hub (DOSA) screenshot 4: Multiple Resolution",
+        "label": "Screenshot 04",
+        "w": 788,
+        "h": 1400,
+        "caption": "Multiple Resolution",
+        "src": "https://play-lh.googleusercontent.com/67eOVQpe-Rbi_64OI3Q8Dj0LvVQA8Y3E7e0HtkTIAU59ps-FRJ6yNWDmutySVv2EomkgF6ntfIT3hjE9e06Iiw"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "06-dosa-hub/screenshot-05.jpg",
+        "alt": "Hub (DOSA) screenshot 5: 3x Faster Private Downloader",
+        "label": "Screenshot 05",
+        "w": 788,
+        "h": 1400,
+        "caption": "3x Faster Private Downloader",
+        "src": "https://play-lh.googleusercontent.com/G7e8fu2fjs8R8wgS6Xexzi-1tnL6j7xRgbGUhxfwGUDmjp2RBioMaD8NYljuWoAo0yn56duJk29zoRNmfDaPGtY"
+      }
+    ]
+  },
+  {
+    "id": "07-fast-saver",
+    "num": "07",
+    "name": "Fast Saver",
+    "title": "Video Downloader & Story Saver",
+    "publisher": "Video Downloader & Fast Saver",
+    "downloads": "10M+",
+    "playUrl": "https://play.google.com/store/apps/details?id=videodownloader.instagram.videosaver&hl=en&gl=US",
+    "notes": {
+      "Icon": "A flat red square with a white ring and a red download arrow. No gradient, no depth — the plainest circle-and-arrow of the three.",
+      "Feature graphic": "White with a red diagonal wedge, the wordmark “Rposty” and a line of small type. The banner brands the app as Rposty while the listing title says Video Downloader & Story Saver — the only name mismatch in the library.",
+      "Screenshot system": "Five frames on flat red with white headings and a dark device: Super Easy Steps, Auto save, Share and Repost, Build-in Player, Dark Theme Mode.",
+      "Design assessment": "The highest-rated app in the library — 4.80★ from 377K ratings — on five screenshots, a name that does not match its banner, and a typo in frame 4 (“Build-in Player”). Together with InShot at the top of search, it is the clearest evidence here that listing craft and user rating are independent."
+    },
+    "tags": ["flat red circle icon","name mismatch (Rposty)","fewest frames","typo: Build-in","highest rated"],
+    "noLandscape": true,
+    "assets": [
+      {
+        "kind": "icon",
+        "orient": "square",
+        "file": "07-fast-saver/icon-01.png",
+        "alt": "A flat red square with a white ring and a red download arrow. No gradient, no depth — the plainest circle-and-arrow of the three.",
+        "label": "Icon 01",
+        "w": 512,
+        "h": 512,
+        "caption": "Listing icon, original file",
+        "src": "https://play-lh.googleusercontent.com/wLtr4WqAcE6CWJkmK7sTpBds7m8rnv3V7lEmpo0IPsknqgSaYWQvk3L8cdmyM37aDIAkGHpemmjBUdu9pPlMjQ"
+      },
+      {
+        "kind": "feature-graphic",
+        "orient": "landscape",
+        "file": "07-fast-saver/feature-graphic-01.jpg",
+        "alt": "White with a red diagonal wedge, the wordmark “Rposty” and a line of small type. The banner brands the app as Rposty while the listing title says Video Downloader & Story Saver — the only name mismatch in the library.",
+        "label": "Feature Graphic 01",
+        "w": 1024,
+        "h": 500,
+        "caption": "Feature graphic, original file",
+        "src": "https://play-lh.googleusercontent.com/YnHVhcTPX5dm8XVwrEbqgTISNXdkTNmJsTC42u1ZpQB6E7Zy2VqDfIenSDaKR69q5UJVjgunWY_mwx26F13oGg"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "07-fast-saver/screenshot-01.jpg",
+        "alt": "Fast Saver screenshot 1: Super Easy Steps",
+        "label": "Screenshot 01",
+        "w": 788,
+        "h": 1400,
+        "caption": "Super Easy Steps",
+        "src": "https://play-lh.googleusercontent.com/J6pkKwqFaZOljdiVyz4-AkJJ6D9m2qHVrJR2uSicX1DbSOTwKsM-bQlwU_J1p2m9uM6Vh0fmoA6iFsrYay-BBbc"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "07-fast-saver/screenshot-02.jpg",
+        "alt": "Fast Saver screenshot 2: Auto save",
+        "label": "Screenshot 02",
+        "w": 788,
+        "h": 1400,
+        "caption": "Auto save",
+        "src": "https://play-lh.googleusercontent.com/cAaZ9N7-yf5_nECpM5RMMlWE0GqubpxAUqLtNkuadd9XK_vGOoCzngfXwq3FHkO1FEYDVPzwoNqjrw-7mSJRUJ8"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "07-fast-saver/screenshot-03.jpg",
+        "alt": "Fast Saver screenshot 3: Share and Repost",
+        "label": "Screenshot 03",
+        "w": 788,
+        "h": 1400,
+        "caption": "Share and Repost",
+        "src": "https://play-lh.googleusercontent.com/9cu6wZIYGYKLxLcKHWudlwxYrnLUgnluyWtuxlTLYAoE8DC9vw4ZutHHbL5vGduY6KHu-c5x-4f3pkZHhaUo"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "07-fast-saver/screenshot-04.jpg",
+        "alt": "Fast Saver screenshot 4: Build-in Player (typo as published)",
+        "label": "Screenshot 04",
+        "w": 788,
+        "h": 1400,
+        "caption": "Build-in Player (typo as published)",
+        "src": "https://play-lh.googleusercontent.com/TE7hWi__T-3ahcuFlL5LNf6jN81Y1U9LEuO2Dz1AkP7BVLiVHSDLf6ZBD2IvBakUiOKgxCgq7jNZnE3FoSyfpig"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "07-fast-saver/screenshot-05.jpg",
+        "alt": "Fast Saver screenshot 5: Dark Theme Mode",
+        "label": "Screenshot 05",
+        "w": 788,
+        "h": 1400,
+        "caption": "Dark Theme Mode",
+        "src": "https://play-lh.googleusercontent.com/n-oMAA-YNRQYp2sLL3uy-zpBitcgfg-q7WqdjS8bTcjXJiIhgslQg3tI8rEP2mzB0eTGdlkwik4em_C1nBNI-w"
+      }
+    ]
+  },
+  {
+    "id": "08-apptool",
+    "num": "08",
+    "name": "AppTool",
+    "title": "All Video Downloader & Player",
+    "publisher": "AppTool-Browser-Video",
+    "downloads": "10M+",
+    "playUrl": "https://play.google.com/store/apps/details?id=com.videodownload.browser.videodownloader&hl=en&gl=US",
+    "notes": {
+      "Icon": "A yellow-amber rounded square with a white download arrow — the third arrow-on-a-square in the library, differing from InShot and Gamma only in ground colour.",
+      "Feature graphic": "A dark maroon grid of media tiles with “Download Videos From All Media” and a “Simple & Fast” chip. Fourth app using the tile-grid construction.",
+      "Screenshot system": "Six portrait frames on white with black-and-orange two-tone headings, plus one landscape frame. Download Any Video In One Tap, Download Video HD & 4K, Auto Detect Videos Online, 3X Faster Download Speed, Keep Your Videos Private, Download From Popular Sites.",
+      "Design assessment": "One of only two listings in the library that publish a landscape frame at all, which matches what the 21 Sep visual review found. The set is tidy but generic, and it carries both a speed claim and a row of platform logos. “Auto Detect Videos Online” is the one heading here that describes a mechanism rather than a category."
+    },
+    "tags": ["yellow arrow icon","tile-grid banner","landscape frame","3x speed claim","platform logos"],
+    "noLandscape": false,
+    "assets": [
+      {
+        "kind": "icon",
+        "orient": "square",
+        "file": "08-apptool/icon-01.png",
+        "alt": "A yellow-amber rounded square with a white download arrow — the third arrow-on-a-square in the library, differing from InShot and Gamma only in ground colour.",
+        "label": "Icon 01",
+        "w": 512,
+        "h": 512,
+        "caption": "Listing icon, original file",
+        "src": "https://play-lh.googleusercontent.com/5O3gW0o1MoJbI-z7ZxbzFkip1a74LSqN6xrL9U61lTg8FVAg6YX50zVbQHis2Bi1SAHX7VJ8hq2B2K_gVo6k-aw"
+      },
+      {
+        "kind": "feature-graphic",
+        "orient": "landscape",
+        "file": "08-apptool/feature-graphic-01.jpg",
+        "alt": "A dark maroon grid of media tiles with “Download Videos From All Media” and a “Simple & Fast” chip. Fourth app using the tile-grid construction.",
+        "label": "Feature Graphic 01",
+        "w": 1024,
+        "h": 500,
+        "caption": "Feature graphic, original file",
+        "src": "https://play-lh.googleusercontent.com/oBpdy9TOIkDchxD_mO2tgPWcnB_RvXhiYbrTHckeWZZEWWJWPCqnM9rvOO5RJGCi39ISI_VRy3kTQrHy-EF4og"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "08-apptool/screenshot-01.jpg",
+        "alt": "AppTool screenshot 1: Download Any Video In One Tap",
+        "label": "Screenshot 01",
+        "w": 788,
+        "h": 1400,
+        "caption": "Download Any Video In One Tap",
+        "src": "https://play-lh.googleusercontent.com/OpcFaGD48-58GHzVcBgimTrDUCrTEmX-bHoDhsAdaR7fpQ8PT9eoz-klcKYMoKWUDA3NsezwvraO_rLhL15um2w"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "08-apptool/screenshot-02.jpg",
+        "alt": "AppTool screenshot 2: Download Video HD & 4K",
+        "label": "Screenshot 02",
+        "w": 788,
+        "h": 1400,
+        "caption": "Download Video HD & 4K",
+        "src": "https://play-lh.googleusercontent.com/RF8OPAx4EWstRwWeO-ZrFe-vI2feAArSuwbDYQb3a8lvPU7z5TyasEzO-v8XJYEsjaGShsgsUvloEf1L0KyuOg"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "08-apptool/screenshot-03.jpg",
+        "alt": "AppTool screenshot 3: Auto Detect Videos Online",
+        "label": "Screenshot 03",
+        "w": 788,
+        "h": 1400,
+        "caption": "Auto Detect Videos Online",
+        "src": "https://play-lh.googleusercontent.com/CjhrwLPGN0lPRtNH7JUeeEXOLRvzKv2PG5USudp8xCJe4HGjFZdu6yPSD3An-1tfpnERxiWniQBoHi7dNHfgTg"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "08-apptool/screenshot-04.jpg",
+        "alt": "AppTool screenshot 4: 3X Faster Download Speed",
+        "label": "Screenshot 04",
+        "w": 788,
+        "h": 1400,
+        "caption": "3X Faster Download Speed",
+        "src": "https://play-lh.googleusercontent.com/D_HYsn8jMovccoF_JUXtq8UZ4SmKDqS6vLejpJ9AMb5k4X4NOwy3DtjNf2F2XZmMoVgfJVNMxltsiAWp4AzUdg"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "08-apptool/screenshot-05.jpg",
+        "alt": "AppTool screenshot 5: Keep Your Videos Private",
+        "label": "Screenshot 05",
+        "w": 788,
+        "h": 1400,
+        "caption": "Keep Your Videos Private",
+        "src": "https://play-lh.googleusercontent.com/n99cFkZHSHKev4n4abr96GxOwXU6Yx-CAOUiDdAyuzC96hm7Jal9M0AJDnERy6vjs79FjaM2qMAhf0l_pQo3P9E"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "08-apptool/screenshot-06.jpg",
+        "alt": "AppTool screenshot 6: Download From Popular Sites",
+        "label": "Screenshot 06",
+        "w": 788,
+        "h": 1400,
+        "caption": "Download From Popular Sites",
+        "src": "https://play-lh.googleusercontent.com/m_yBshSMLsibiVn6mcr3D-OLcuU_31YM4LWpapNKNbfP5p6BUzna_FjLb8vTzxNhp2eeIgdofBX7iPTk08lWhg"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "landscape",
+        "file": "08-apptool/screenshot-07.jpg",
+        "alt": "AppTool screenshot 7: Built-in Video Player (landscape)",
+        "label": "Screenshot 07",
+        "w": 1400,
+        "h": 788,
+        "caption": "Built-in Video Player (landscape)",
+        "src": "https://play-lh.googleusercontent.com/QQ_U3Wu00kgZpTmMWQDFgs0KKk2GQQ3M_23rr6sb6iTLi-XSYuSbgo1QxbnG_BqMdazsy8KGpuORrCMrU6C4l0M"
+      }
+    ]
+  },
+  {
+    "id": "09-saver-player-studio",
+    "num": "09",
+    "name": "Saver & Player Studio",
+    "title": "Video Downloader & Video Saver",
+    "publisher": "All Video Downloader, Saver & Player Studio",
+    "downloads": "50M+",
+    "playUrl": "https://play.google.com/store/apps/details?id=downloader.video.download.free&hl=en&gl=US",
+    "notes": {
+      "Icon": "A black square with “All” in white above “Downloader” reversed out of an orange block — the second wordmark icon, and the only one that spells out the category.",
+      "Feature graphic": "Black with a faint pattern of download arrows, a circular orange badge at the centre and “Video Downloader & File Saver” beneath.",
+      "Screenshot system": "Seven creatives on black with orange chevrons bleeding in from the sides, italic two-tone headings and a device between them: Social Media Downloader, Download Videos with One Tap, Fast & Safe, Built-in Video Player, Share & Repost, Dark Theme Enjoy at Night, 4x Faster Download Speed.",
+      "Design assessment": "The chevron frame is the most recognisable container in the library — you could identify this listing from a thumbnail. Behind it, the same seven creatives are published at four different pixel sizes, so the raw carousel runs to twenty-one entries for seven ideas. Tidy art, careless listing hygiene."
+    },
+    "tags": ["wordmark icon","orange chevrons","strong container","four duplicate size sets","4x speed claim"],
+    "noLandscape": true,
+    "assets": [
+      {
+        "kind": "icon",
+        "orient": "square",
+        "file": "09-saver-player-studio/icon-01.jpg",
+        "alt": "A black square with “All” in white above “Downloader” reversed out of an orange block — the second wordmark icon, and the only one that spells out the category.",
+        "label": "Icon 01",
+        "w": 512,
+        "h": 512,
+        "caption": "Listing icon, original file",
+        "src": "https://play-lh.googleusercontent.com/Ljy0jnX79twImhfJgIS4T2pNk_4by-em_C1r_dldfvTSbTdqqKO4PsxsezJhIZGcLAnc03l1d62QyX9FaBCy"
+      },
+      {
+        "kind": "feature-graphic",
+        "orient": "landscape",
+        "file": "09-saver-player-studio/feature-graphic-01.jpg",
+        "alt": "Black with a faint pattern of download arrows, a circular orange badge at the centre and “Video Downloader & File Saver” beneath.",
+        "label": "Feature Graphic 01",
+        "w": 1024,
+        "h": 500,
+        "caption": "Feature graphic, original file",
+        "src": "https://play-lh.googleusercontent.com/nqzrNRvz5GxCC5EMcfiv1xQfe0u41JUeXKFbEeHHzf0UIaEimWsqqCTL8iExgJ2XvaY9tzsTwfgdFotO9MIGkw"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "09-saver-player-studio/screenshot-01.jpg",
+        "alt": "Saver & Player Studio screenshot 1: Social Media Downloader",
+        "label": "Screenshot 01",
+        "w": 1050,
+        "h": 1400,
+        "caption": "Social Media Downloader",
+        "src": "https://play-lh.googleusercontent.com/RXJ6uThTRU833VpnqIm7iA7JvkKsrOlyzGB_vRxqe-m0AA8aL4GkuIzZ_2JXO2vYgzVwGa3GWEkHzMM9CuAh"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "09-saver-player-studio/screenshot-02.jpg",
+        "alt": "Saver & Player Studio screenshot 2: Download Videos with One Tap",
+        "label": "Screenshot 02",
+        "w": 1050,
+        "h": 1400,
+        "caption": "Download Videos with One Tap",
+        "src": "https://play-lh.googleusercontent.com/_tKtzsjklEko2W5tN3qInXgCFSF4Cd4kYni3Dl3a-KouWHSZepykMajcTgTaL1d5nAJeUqbjjuz72ZHYWXnYTQ"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "09-saver-player-studio/screenshot-03.jpg",
+        "alt": "Saver & Player Studio screenshot 3: Fast & Safe",
+        "label": "Screenshot 03",
+        "w": 1050,
+        "h": 1400,
+        "caption": "Fast & Safe",
+        "src": "https://play-lh.googleusercontent.com/0-T1GJz50-x4vEDs32fq_aICbnRVhCf3UbbTwSCsKf-03QtWMaOHWw5I3XLEmiGxMEOtfG8AdIr8rpL5ZuPo"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "09-saver-player-studio/screenshot-04.jpg",
+        "alt": "Saver & Player Studio screenshot 4: Built-in Video Player",
+        "label": "Screenshot 04",
+        "w": 1050,
+        "h": 1400,
+        "caption": "Built-in Video Player",
+        "src": "https://play-lh.googleusercontent.com/3_3JkIAM9oPDV40gcw8FpjAa3w4eTQVS-nPmfD8CU1g54_l8z9rv_D8BXfm5IRS-HFNHYjAOxxJqMb_GHglQNg"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "09-saver-player-studio/screenshot-05.jpg",
+        "alt": "Saver & Player Studio screenshot 5: Share & Repost",
+        "label": "Screenshot 05",
+        "w": 1050,
+        "h": 1400,
+        "caption": "Share & Repost",
+        "src": "https://play-lh.googleusercontent.com/2a2yG1B0cAjsgs9SsKiw5bdDszJbfc0v7As7kXwrcWXl5Mt8WYv5AUa3MJaN4StLj1fwBHy0ZGKy0ncmhj6U"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "09-saver-player-studio/screenshot-06.jpg",
+        "alt": "Saver & Player Studio screenshot 6: Dark Theme — Enjoy at Night",
+        "label": "Screenshot 06",
+        "w": 1050,
+        "h": 1400,
+        "caption": "Dark Theme — Enjoy at Night",
+        "src": "https://play-lh.googleusercontent.com/QqD9lWPyLRy_x9ROnctPdsp8SfPOnGw3KvdQ2ClO0tcwpxvzTOwfAbBSjIeSumjzkubkqvbgHxETd_wqb8ah"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "09-saver-player-studio/screenshot-07.jpg",
+        "alt": "Saver & Player Studio screenshot 7: 4x Faster Download Speed",
+        "label": "Screenshot 07",
+        "w": 1050,
+        "h": 1400,
+        "caption": "4x Faster Download Speed",
+        "src": "https://play-lh.googleusercontent.com/eHAxgPvzSkXms-X_rPwAzTchKrUHxDwQ8DRCqCRA2HSK2Y1waFXw1EQLhUeRJIiHImqykvCRBpXy2i7IYgWXtw"
+      }
+    ]
+  },
+  {
+    "id": "10-devbay",
+    "num": "10",
+    "name": "DevBay",
+    "title": "All Video Downloader & Browser",
+    "publisher": "Fast Video Downloader & Story Saver - DevBay",
+    "downloads": "50M+",
+    "playUrl": "https://play.google.com/store/apps/details?id=instasaver.videodownloader.photodownloader.repost&hl=en&gl=US",
+    "notes": {
+      "Icon": "A red-to-pink gradient squircle with a white download arrow. Closest of all sixteen competitor icons to our own construction, minus the rainbow.",
+      "Feature graphic": "White, two phone mocks at the left, “All Video Downloader App / Save Photos & Videos” at the right. Clean, quiet, forgettable.",
+      "Screenshot system": "Seven frames with a pale blue-grey top fading to white, pink-and-dark two-tone headings and a device: All Video Downloader, HD Video Downloader App, Fast Video Downloader, Built-In Video Player, Manage All Saved Videos, Download Short Videos, Download In High Quality.",
+      "Design assessment": "The lightest, most modern-looking set in the library, and it belongs to the **lowest-rated** large app here — 3.89★ across 649K ratings. Three of its seven headings are just the app's own name reworded, which wastes slots, and frame 1 lists eight platforms by name as buttons."
+    },
+    "tags": ["gradient arrow icon","pale palette","repetitive headings","lowest rated","platform names as buttons"],
+    "noLandscape": true,
+    "assets": [
+      {
+        "kind": "icon",
+        "orient": "square",
+        "file": "10-devbay/icon-01.png",
+        "alt": "A red-to-pink gradient squircle with a white download arrow. Closest of all sixteen competitor icons to our own construction, minus the rainbow.",
+        "label": "Icon 01",
+        "w": 512,
+        "h": 512,
+        "caption": "Listing icon, original file",
+        "src": "https://play-lh.googleusercontent.com/8nlpQOLVFaDrO7HjaY3k09WhRgJCVelbHF3groZbL9zj7ZaM2RRDvOeb_G6ydASZd2UAGtMoux0iZL9zemXq1Q"
+      },
+      {
+        "kind": "feature-graphic",
+        "orient": "landscape",
+        "file": "10-devbay/feature-graphic-01.jpg",
+        "alt": "White, two phone mocks at the left, “All Video Downloader App / Save Photos & Videos” at the right. Clean, quiet, forgettable.",
+        "label": "Feature Graphic 01",
+        "w": 1024,
+        "h": 500,
+        "caption": "Feature graphic, original file",
+        "src": "https://play-lh.googleusercontent.com/dsB1ZAkEauERXsS4EJ9Xs-41JbAo0qaaOtCawqlJCIO2CBGkivNy8bPyT5X5bg1tbcMWkfptjMVxOK_7Z8vNdA"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "10-devbay/screenshot-01.jpg",
+        "alt": "DevBay screenshot 1: All Video Downloader",
+        "label": "Screenshot 01",
+        "w": 756,
+        "h": 1400,
+        "caption": "All Video Downloader",
+        "src": "https://play-lh.googleusercontent.com/fLJClOftqkkO9dqAvudwMP1iBF-NG0jv0DVhPnbG563BLq94xlVwX2FtFj00VsaZcX6Two7xxNQurGgEevW6oA"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "10-devbay/screenshot-02.jpg",
+        "alt": "DevBay screenshot 2: HD Video Downloader App",
+        "label": "Screenshot 02",
+        "w": 756,
+        "h": 1400,
+        "caption": "HD Video Downloader App",
+        "src": "https://play-lh.googleusercontent.com/KB1_2FN5EwzqR34bU5fEsz7cCUgAnhIHtKSMengBToq2aF5zQ-lWY2C3ClSxrhg56cJplqM5GGIXKJRXCHa8xw"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "10-devbay/screenshot-03.jpg",
+        "alt": "DevBay screenshot 3: Fast Video Downloader",
+        "label": "Screenshot 03",
+        "w": 756,
+        "h": 1400,
+        "caption": "Fast Video Downloader",
+        "src": "https://play-lh.googleusercontent.com/K_gM9kwcnOpvVVZeBNlJLsq_m-3s1-RApVgpxfSKwJGh8_ASHmvtIzwVfOUf_9RVKgQ5CkGDoSzkR1gzJOSJkA"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "10-devbay/screenshot-04.jpg",
+        "alt": "DevBay screenshot 4: Built-In Video Player",
+        "label": "Screenshot 04",
+        "w": 756,
+        "h": 1400,
+        "caption": "Built-In Video Player",
+        "src": "https://play-lh.googleusercontent.com/nEe3_iWAEp_gk0TZnB0JohgHPwL_qoQCQrFngw2GmajI5srTGgL0IR0ykqA8u08rAaQ61cIMbsdMIg2aXFYbGQ"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "10-devbay/screenshot-05.jpg",
+        "alt": "DevBay screenshot 5: Manage All Saved Videos",
+        "label": "Screenshot 05",
+        "w": 756,
+        "h": 1400,
+        "caption": "Manage All Saved Videos",
+        "src": "https://play-lh.googleusercontent.com/hIz0SJIcuegdmkLsFb5hdr3MGSvp8I1JXXKEkctddeuUVphHfiuPJGIo_SUsE-d-47MyxTannIS3f7zqYqWLRQ"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "10-devbay/screenshot-06.jpg",
+        "alt": "DevBay screenshot 6: Download Short Videos",
+        "label": "Screenshot 06",
+        "w": 756,
+        "h": 1400,
+        "caption": "Download Short Videos",
+        "src": "https://play-lh.googleusercontent.com/V0XSNBa6VyqR0CFMSrBV_MX8N-TdnpC42HJsye7RGsLKc2EHI0ZJApb-IccRlEgqitoyEtdVbrmMuVvhi80n2A"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "10-devbay/screenshot-07.jpg",
+        "alt": "DevBay screenshot 7: Download In High Quality",
+        "label": "Screenshot 07",
+        "w": 756,
+        "h": 1400,
+        "caption": "Download In High Quality",
+        "src": "https://play-lh.googleusercontent.com/8RQjUlpDiAny09Dv768DnvKNedj--xekG67YXhlCC-kc-IwpLFAdBVaBsRHw3463PiFDAEc6xpU_ZR-W6Gbcpw"
+      }
+    ]
+  },
+  {
+    "id": "11-sky-vision",
+    "num": "11",
+    "name": "Sky Vision",
+    "title": "All Video Downloader & Saver",
+    "publisher": "Sky Vision Apps Lab",
+    "downloads": "10M+",
+    "playUrl": "https://play.google.com/store/apps/details?id=com.allvideodownloader.hdvideodownloader.savevideos&hl=en&gl=US",
+    "notes": {
+      "Icon": "A flat red square with a white “V”. Identical in idea to Attractive Apps, Markhoor, Mobile Notepad and Vidow — five listings, one mark.",
+      "Feature graphic": "An orange tile grid with “All Video Downloader” in white. The tile-grid family again.",
+      "Screenshot system": "Seven frames on white with a coral swoosh at the foot and two-tone headings: Paste the Link & Download Now, Fast Video Downloader, Save Video With High Resolution, Watch Trending Videos, Support All Video Format, Easy To Manage & Share, All Video Downloader.",
+      "Design assessment": "**This listing's title is word-for-word our own current title**, on a 10M-install app. That alone is worth more attention than its graphics, which are competent and entirely generic — a red V, a tile grid and seven headings that could belong to any app in this library."
+    },
+    "tags": ["red V icon","same title as ours","tile-grid banner","coral swoosh","generic headings"],
+    "noLandscape": true,
+    "assets": [
+      {
+        "kind": "icon",
+        "orient": "square",
+        "file": "11-sky-vision/icon-01.png",
+        "alt": "A flat red square with a white “V”. Identical in idea to Attractive Apps, Markhoor, Mobile Notepad and Vidow — five listings, one mark.",
+        "label": "Icon 01",
+        "w": 512,
+        "h": 512,
+        "caption": "Listing icon, original file",
+        "src": "https://play-lh.googleusercontent.com/WYDfh31pnGcXOA47UxNqxtpja_wGFI7WoCSaaJ2ds5dP26aem1U0vT0oL6UIUIAeqac26Gb72y4be9VLRDpOfQ"
+      },
+      {
+        "kind": "feature-graphic",
+        "orient": "landscape",
+        "file": "11-sky-vision/feature-graphic-01.jpg",
+        "alt": "An orange tile grid with “All Video Downloader” in white. The tile-grid family again.",
+        "label": "Feature Graphic 01",
+        "w": 1024,
+        "h": 500,
+        "caption": "Feature graphic, original file",
+        "src": "https://play-lh.googleusercontent.com/C2PO4WH7Gv29t-ooMW1PPM9A9-cbIqGvEAG9s6_9d3DMkonhbur9en9_JdkS3tRyHCS_UlJtFSK2EEKWimefVQ"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "11-sky-vision/screenshot-01.jpg",
+        "alt": "Sky Vision screenshot 1: Paste the Link & Download Now",
+        "label": "Screenshot 01",
+        "w": 788,
+        "h": 1400,
+        "caption": "Paste the Link & Download Now",
+        "src": "https://play-lh.googleusercontent.com/hcyKV8VTN9lfqV1F-8eav-4FeVQrRiFg8K5Nbzi0NxpJHvZWE8OzrnDuLDLYebFjFnJQBQXqwMaQDzgXqb6J"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "11-sky-vision/screenshot-02.jpg",
+        "alt": "Sky Vision screenshot 2: Fast Video Downloader",
+        "label": "Screenshot 02",
+        "w": 788,
+        "h": 1400,
+        "caption": "Fast Video Downloader",
+        "src": "https://play-lh.googleusercontent.com/UUPCqAJrAAajYHdRapIAu5-c4Mfcc5MLYW_c98CSASpvdgdEAh1_3rwpWspFnAs3A9URushu62VocmxIXtZ4"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "11-sky-vision/screenshot-03.jpg",
+        "alt": "Sky Vision screenshot 3: Save Video With High Resolution",
+        "label": "Screenshot 03",
+        "w": 788,
+        "h": 1400,
+        "caption": "Save Video With High Resolution",
+        "src": "https://play-lh.googleusercontent.com/DNu3H-FPml2vRXNenl1EJQT7xe8ysQL4X0-FhF-_PzNOKeqsk9ZblE9cG8gVgRDczTsnMJAmQjoCQBn3khtD7w"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "11-sky-vision/screenshot-04.jpg",
+        "alt": "Sky Vision screenshot 4: Watch Trending Videos",
+        "label": "Screenshot 04",
+        "w": 788,
+        "h": 1400,
+        "caption": "Watch Trending Videos",
+        "src": "https://play-lh.googleusercontent.com/n0dZrGexmt38O6Tri6Ery8tboaddJdJm63INAyY9J7gNCBHXeLAnsuvkNJ9Sio3kd-1xNU7pZYGxXt0NE4y9aoQ"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "11-sky-vision/screenshot-05.jpg",
+        "alt": "Sky Vision screenshot 5: Support All Video Format",
+        "label": "Screenshot 05",
+        "w": 788,
+        "h": 1400,
+        "caption": "Support All Video Format",
+        "src": "https://play-lh.googleusercontent.com/UyAnf-fFtQ1wgzLhUvs1fQowweZnopqFRUQedfDI6KcHqZ1Ipn3x6Iqxu9nIUjUnj8GD15_sNsFhXgcKMu38sA"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "11-sky-vision/screenshot-06.jpg",
+        "alt": "Sky Vision screenshot 6: Easy To Manage & Share",
+        "label": "Screenshot 06",
+        "w": 788,
+        "h": 1400,
+        "caption": "Easy To Manage & Share",
+        "src": "https://play-lh.googleusercontent.com/ikNKUKyBcSpH4vtNsu8Rbh7H3iZj8HaDkssa0qFpYGanNRT87IHopvnFta-rD0oZ6ahuFHukwKAUthtlXYMH"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "11-sky-vision/screenshot-07.jpg",
+        "alt": "Sky Vision screenshot 7: All Video Downloader",
+        "label": "Screenshot 07",
+        "w": 788,
+        "h": 1400,
+        "caption": "All Video Downloader",
+        "src": "https://play-lh.googleusercontent.com/RsVRXErJmSD97Vhb_Ab3Kv69ozw_hhDiL2kouwWhCy8N6LRm27-9fPUIgOsowfTCte7cM5I15aXqYEeIeYvh2g"
+      }
+    ]
+  },
+  {
+    "id": "12-attractive-apps",
+    "num": "12",
+    "name": "Attractive Apps",
+    "title": "All video downloader and saver",
+    "publisher": "Attractive Apps Valley",
+    "downloads": "10M+",
+    "playUrl": "https://play.google.com/store/apps/details?id=allinone.videodownloader.savevideos&hl=en&gl=US",
+    "notes": {
+      "Icon": "A flat red square with a white “V” — the same mark as Sky Vision, Markhoor, Mobile Notepad and Vidow.",
+      "Feature graphic": "A pink-to-orange gradient with “Video Downloader” and a line of small supporting type beside a phone mock. The brightest banner in the library.",
+      "Screenshot system": "Six frames on solid orange with white two-tone headings and a device: All Video Downloader, Download All You Watch, Built-In Video Player, High Resolution Video Downloader, Secure & Fast Downloader, Social Media Downloader.",
+      "Design assessment": "Warm and consistent, and the orange ground does more to separate it in a result strip than its icon ever will. Two frames show grids of named platform buttons, one of them with a misspelling (“Instgram”), and the headings restate the title four times over."
+    },
+    "tags": ["red V icon","gradient banner","solid orange frames","platform buttons","repetitive headings"],
+    "noLandscape": true,
+    "assets": [
+      {
+        "kind": "icon",
+        "orient": "square",
+        "file": "12-attractive-apps/icon-01.png",
+        "alt": "A flat red square with a white “V” — the same mark as Sky Vision, Markhoor, Mobile Notepad and Vidow.",
+        "label": "Icon 01",
+        "w": 512,
+        "h": 512,
+        "caption": "Listing icon, original file",
+        "src": "https://play-lh.googleusercontent.com/N77NqpfhamAt-kjsqbI-JkmYQRjUiHUFuyArYqEBGAwPOR_8NMHXgJlrcr5HQSTLilOfWqGt83J_ihpnPWExILI"
+      },
+      {
+        "kind": "feature-graphic",
+        "orient": "landscape",
+        "file": "12-attractive-apps/feature-graphic-01.jpg",
+        "alt": "A pink-to-orange gradient with “Video Downloader” and a line of small supporting type beside a phone mock. The brightest banner in the library.",
+        "label": "Feature Graphic 01",
+        "w": 1024,
+        "h": 500,
+        "caption": "Feature graphic, original file",
+        "src": "https://play-lh.googleusercontent.com/5r0E7gFgJq3qBZMhHLZiXfdAWVrfY5uAgDOxzjo748IXGoaOqb6qONlQ1vzWg67i90uSp0jCSt3cPv2oJ7SQgA"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "12-attractive-apps/screenshot-01.jpg",
+        "alt": "Attractive Apps screenshot 1: All Video Downloader",
+        "label": "Screenshot 01",
+        "w": 788,
+        "h": 1400,
+        "caption": "All Video Downloader",
+        "src": "https://play-lh.googleusercontent.com/uxK7mKZUTzy45V1_Lz-Dg7Ipwf8NzE4jQr_dIedo043xckmst0ism4hXlE1MzF7oKzGe38FxZyKxM2Fepz36"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "12-attractive-apps/screenshot-02.jpg",
+        "alt": "Attractive Apps screenshot 2: Download All You Watch",
+        "label": "Screenshot 02",
+        "w": 788,
+        "h": 1400,
+        "caption": "Download All You Watch",
+        "src": "https://play-lh.googleusercontent.com/U_ZMWxVaNm339SvHpDwBY-dYD0-ONmwU7F32ITsvEO-q9ZasUJhSnJQBGGhbkDNGi8E9AYH1_ySFqTY_V0Wr"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "12-attractive-apps/screenshot-03.jpg",
+        "alt": "Attractive Apps screenshot 3: Built-In Video Player",
+        "label": "Screenshot 03",
+        "w": 788,
+        "h": 1400,
+        "caption": "Built-In Video Player",
+        "src": "https://play-lh.googleusercontent.com/QOfY8a2u8I6sGDfyJS5xxn5LV62PvYbfNtRsFcgGPcsr738FAqpnicENhAGBuOq44x0U9ZmaAWvEpJYfpx59"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "12-attractive-apps/screenshot-04.jpg",
+        "alt": "Attractive Apps screenshot 4: High Resolution Video Downloader",
+        "label": "Screenshot 04",
+        "w": 788,
+        "h": 1400,
+        "caption": "High Resolution Video Downloader",
+        "src": "https://play-lh.googleusercontent.com/qycURS3fte4w4kXirs7hcdPqV_XCucRfXLNhCibJsiC3a0_-OuoWpb0aH3Rgo_pdJWL4R5I2mRp1xy-GPXoSBw"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "12-attractive-apps/screenshot-05.jpg",
+        "alt": "Attractive Apps screenshot 5: Secure & Fast Downloader",
+        "label": "Screenshot 05",
+        "w": 788,
+        "h": 1400,
+        "caption": "Secure & Fast Downloader",
+        "src": "https://play-lh.googleusercontent.com/Malrw9bpDCIhpmGMi_JZvM9SrIb5oqkyHUpo5gp6LtcHTzlBWTRR0-xjiZ11ny0bzGGPGeje542hmqMBlgR1Tns"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "12-attractive-apps/screenshot-06.jpg",
+        "alt": "Attractive Apps screenshot 6: Social Media Downloader",
+        "label": "Screenshot 06",
+        "w": 788,
+        "h": 1400,
+        "caption": "Social Media Downloader",
+        "src": "https://play-lh.googleusercontent.com/Iu_xtDmhcKvvEcf5_aCUEQLN7ZjwwQMm9kx005iuPrlDdZSRmK6qZtqypnXybKv-4dEkIN1nDy5bHHJ7q6zCE3s"
+      }
+    ]
+  },
+  {
+    "id": "13-markhoor",
+    "num": "13",
+    "name": "Markhoor",
+    "title": "Video Downloader & Save Video",
+    "publisher": "Markhoor Studio",
+    "downloads": "10M+",
+    "playUrl": "https://play.google.com/store/apps/details?id=com.videosaver.savevideos.story.saverapp&hl=en&gl=US",
+    "notes": {
+      "Icon": "A flat red square with a white “V” — indistinguishable from Sky Vision's and Mobile Notepad's at any size.",
+      "Feature graphic": "White and orange, “Video Downloader” in red beside a phone mock, with platform marks scattered around it.",
+      "Screenshot system": "**Two different systems in one carousel.** Frames 1-7 sit on white with dark headings; frames 8-13 sit on an orange field with a white swoosh and orange headings. The topics overlap — both sets cover link-pasting, resolution options and browsing.",
+      "Design assessment": "The clearest example in the library of what not to do: a shopper swiping this carousel meets two different apps. Mid-stream redesigns are normal; leaving both live is what causes the damage. It also carries a 4x speed claim and a visible third-party feed in frame 9."
+    },
+    "tags": ["red V icon","two visual systems in one carousel","4x speed claim","third-party feed","lowest review count"],
+    "noLandscape": true,
+    "assets": [
+      {
+        "kind": "icon",
+        "orient": "square",
+        "file": "13-markhoor/icon-01.jpg",
+        "alt": "A flat red square with a white “V” — indistinguishable from Sky Vision's and Mobile Notepad's at any size.",
+        "label": "Icon 01",
+        "w": 512,
+        "h": 512,
+        "caption": "Listing icon, original file",
+        "src": "https://play-lh.googleusercontent.com/PwdmwGsCYAewdUgshkWt8fMbOfYPOszRT-L7k0NunbyBL0UU_iPQsPkxEvgLOMHh1KC1SEjqW4Iys1ib9rQOPNk"
+      },
+      {
+        "kind": "feature-graphic",
+        "orient": "landscape",
+        "file": "13-markhoor/feature-graphic-01.jpg",
+        "alt": "White and orange, “Video Downloader” in red beside a phone mock, with platform marks scattered around it.",
+        "label": "Feature Graphic 01",
+        "w": 1024,
+        "h": 500,
+        "caption": "Feature graphic, original file",
+        "src": "https://play-lh.googleusercontent.com/y2Eu9k8uHLfd4kJh9Oeyoz0oVaFA_j1vxz33AeA9e0AU6ojg1TVokD-TaUtSsiyO1a7AnVG6UPf3yYE0d9vL"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "13-markhoor/screenshot-01.jpg",
+        "alt": "Markhoor screenshot 1: All Video Downloader",
+        "label": "Screenshot 01",
+        "w": 788,
+        "h": 1400,
+        "caption": "All Video Downloader",
+        "src": "https://play-lh.googleusercontent.com/WTs1fV9jbtCTuWkWSzeFoH-YDL3FFGy4_Y0JaxClW059YEGFjnZRzkNsGoEXXX73RQPIQoUiCHFSpyGvlUCHYtI"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "13-markhoor/screenshot-02.jpg",
+        "alt": "Markhoor screenshot 2: Paste Link & Download Now",
+        "label": "Screenshot 02",
+        "w": 788,
+        "h": 1400,
+        "caption": "Paste Link & Download Now",
+        "src": "https://play-lh.googleusercontent.com/mxiKrmMB_C34OwHo6aebNbUIM3gxuaQrd7cKlOATG6so5Fds6DnIYbmTSsgA9zlevRLkC2003XpwIHlW24aW0w"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "13-markhoor/screenshot-03.jpg",
+        "alt": "Markhoor screenshot 3: Browser Video Downloader",
+        "label": "Screenshot 03",
+        "w": 788,
+        "h": 1400,
+        "caption": "Browser Video Downloader",
+        "src": "https://play-lh.googleusercontent.com/6CKhIJp4Lf3uqGBXENMI1OsjQL0_7bnUkZ3LXqhjfbIU0MpRrOUVbujO4Zh5a83vLfNw-8SShQYQ1Q022CA0Vg"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "13-markhoor/screenshot-04.jpg",
+        "alt": "Markhoor screenshot 4: HD / SD / mp3 Resolution Options",
+        "label": "Screenshot 04",
+        "w": 788,
+        "h": 1400,
+        "caption": "HD / SD / mp3 Resolution Options",
+        "src": "https://play-lh.googleusercontent.com/ESMs7OfP2yyl_AgRrVItBHTs9wYiorZ9gSlLx5aw7lcfjmKuIQY5xLQuS_LjgZwOjcFRQB3cF10bjsW3vLN-LZQ"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "13-markhoor/screenshot-05.jpg",
+        "alt": "Markhoor screenshot 5: All Sites Video Downloader",
+        "label": "Screenshot 05",
+        "w": 788,
+        "h": 1400,
+        "caption": "All Sites Video Downloader",
+        "src": "https://play-lh.googleusercontent.com/o2VfZOqMx8cbB3RhZfTPQmU4S5bcZmRt77fq0NsPC_nRR9L2RZKRp3JImPYygKBB4J1QP-BCCdNPdLbTsWaVCDo"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "13-markhoor/screenshot-06.jpg",
+        "alt": "Markhoor screenshot 6: Quick Video Downloader",
+        "label": "Screenshot 06",
+        "w": 788,
+        "h": 1400,
+        "caption": "Quick Video Downloader",
+        "src": "https://play-lh.googleusercontent.com/bwS0Fcn6BdurMEKOS5VT4URGALG1ID-LGSG-D3bNXNUmLLEaXpK8x_vXolUQXWgEWpWNKDQSLzICoIWaaEMBmw"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "13-markhoor/screenshot-07.jpg",
+        "alt": "Markhoor screenshot 7: Private Gallery — Photos & Videos",
+        "label": "Screenshot 07",
+        "w": 788,
+        "h": 1400,
+        "caption": "Private Gallery — Photos & Videos",
+        "src": "https://play-lh.googleusercontent.com/ZyDlMM2JmWg4p9xEKqCZdhQSXb-fjZkr_wp1Pzhozdogtd0iZY5yqse-CpK08l07jUjD5b_t4o9sU-UAY2u3cg"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "13-markhoor/screenshot-08.jpg",
+        "alt": "Markhoor screenshot 8: Video & Music Downloader",
+        "label": "Screenshot 08",
+        "w": 788,
+        "h": 1400,
+        "caption": "Video & Music Downloader",
+        "src": "https://play-lh.googleusercontent.com/j9EIWHS2P11EIgIdDUzAuzaiobSuka4G-2GCFKZHbunbMAaRHzueUU7nt-BojNuN_lzLbZEiIQh6iPxFJrG7RA"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "13-markhoor/screenshot-09.jpg",
+        "alt": "Markhoor screenshot 9: Download Videos With Link",
+        "label": "Screenshot 09",
+        "w": 788,
+        "h": 1400,
+        "caption": "Download Videos With Link",
+        "src": "https://play-lh.googleusercontent.com/KH62Q_h4TpBCNHMiJKN1UxtP3QBpE1UY-mfibPZcvXlTwsUUsbFT2Rn-mxGlBRbOu5PLbTsG1fxUVPid8bRONUk"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "13-markhoor/screenshot-10.jpg",
+        "alt": "Markhoor screenshot 10: HD / SD / MP3 — Save With Options",
+        "label": "Screenshot 10",
+        "w": 788,
+        "h": 1400,
+        "caption": "HD / SD / MP3 — Save With Options",
+        "src": "https://play-lh.googleusercontent.com/Vt8vfWMKKtUTYuuqQsX30AjhrUIwxLP2-8YeyFRDZLtXmfgEf7uOnsqU50mlrbqjGglbzmPqe6yw3819qQ9Z"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "13-markhoor/screenshot-11.jpg",
+        "alt": "Markhoor screenshot 11: 4x Faster Download Speed",
+        "label": "Screenshot 11",
+        "w": 788,
+        "h": 1400,
+        "caption": "4x Faster Download Speed",
+        "src": "https://play-lh.googleusercontent.com/3eME3YM0pcytNqvVjGeXJ2hf7TT73LuSzW4rFf130Dk7ZiLRMxzMwqw1Ocvq4wpAO6rJvKY-cVAy5AFWZIZHTQ"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "13-markhoor/screenshot-12.jpg",
+        "alt": "Markhoor screenshot 12: Supported With Sd Card",
+        "label": "Screenshot 12",
+        "w": 788,
+        "h": 1400,
+        "caption": "Supported With Sd Card",
+        "src": "https://play-lh.googleusercontent.com/fNyoFDM0_K3S4Awqzr54JYfFy4rq_El1PSQ9RJ9xHx5rOM1mhCm216bt8of_8YVIm0YNATQWkE_ZJncDYAISsw"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "13-markhoor/screenshot-13.jpg",
+        "alt": "Markhoor screenshot 13: Do Downloading While Browsing",
+        "label": "Screenshot 13",
+        "w": 788,
+        "h": 1400,
+        "caption": "Do Downloading While Browsing",
+        "src": "https://play-lh.googleusercontent.com/jPJGIcBJdXESB53KgxGft5bVoMhPheURPQ9rxUBcXu69yzGW3IALT9dkOadQD1FYTwyponb2JxD2ATaVSDKmLQ"
+      }
+    ]
+  },
+  {
+    "id": "14-mobile-notepad",
+    "num": "14",
+    "name": "Mobile Notepad",
+    "title": "Video Downloader - Player",
+    "publisher": "Mobile Notepad Apps",
+    "downloads": "5M+",
+    "playUrl": "https://play.google.com/store/apps/details?id=com.videodownloder.alldownloadvideos&hl=en&gl=US",
+    "notes": {
+      "Icon": "A flat red square with a white “V”, again. Five listings in this library share it.",
+      "Feature graphic": "A dark orange banner with “VIDEO DOWNLOADER / Download All video Easy and Fast” and a pair of phone mocks.",
+      "Screenshot system": "Sixteen frames: two complete eight-frame sets built on the same device art with different headings. Set A uses two-tone colour headings (All Video Downloader, Save HD Videos, Shorts/Reels Downloader, Fast Video Browser, Social Media Downloader, Light/Dark Themes, Protect Your Videos, Save & Share Easily); set B restates them in plain white (Download Videos from Anywhere, Ultra-Fast Video Downloads, Instant Shorts Saver, and so on).",
+      "Design assessment": "The largest carousel here and a genuine copy A/B — same pictures, two different sets of words — which is worth watching, because whichever set survives tells you which phrasing this developer found worked. It is also the lowest-rated app in the library at 3.83★, and it names platforms in both a heading and a button grid."
+    },
+    "tags": ["red V icon","A/B copy test","16 frames","shorts/reels wording","platform grid","lowest rated"],
+    "noLandscape": true,
+    "assets": [
+      {
+        "kind": "icon",
+        "orient": "square",
+        "file": "14-mobile-notepad/icon-01.png",
+        "alt": "A flat red square with a white “V”, again. Five listings in this library share it.",
+        "label": "Icon 01",
+        "w": 512,
+        "h": 512,
+        "caption": "Listing icon, original file",
+        "src": "https://play-lh.googleusercontent.com/gUlLctSBw65S29hN4PVjRgblYBI40x4HYw5hjwGYp75c34jL_d9yUoD1OqrPmsYtvKIfCcbZN_YQMuXxrHNq"
+      },
+      {
+        "kind": "feature-graphic",
+        "orient": "landscape",
+        "file": "14-mobile-notepad/feature-graphic-01.jpg",
+        "alt": "A dark orange banner with “VIDEO DOWNLOADER / Download All video Easy and Fast” and a pair of phone mocks.",
+        "label": "Feature Graphic 01",
+        "w": 1024,
+        "h": 500,
+        "caption": "Feature graphic, original file",
+        "src": "https://play-lh.googleusercontent.com/qWfVvWHKmTRQ2vXnnUpzNP9abfuuFfV5onKZB9na02OqXtzX9T_2bGQf3eO_5p-a52OVjhATv-nYfccf_KTVlW4"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "14-mobile-notepad/screenshot-01.jpg",
+        "alt": "Mobile Notepad screenshot 1: All Video Downloader",
+        "label": "Screenshot 01",
+        "w": 788,
+        "h": 1400,
+        "caption": "All Video Downloader",
+        "src": "https://play-lh.googleusercontent.com/7CDQaUcBx-kBNUKxJEYmrYX977DxE77iKvTQDO5siBNkfIVz7wMoZSQXZZnndHA0F7D40bPOrBbeiw1XkeR9"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "14-mobile-notepad/screenshot-02.jpg",
+        "alt": "Mobile Notepad screenshot 2: Save HD Videos",
+        "label": "Screenshot 02",
+        "w": 788,
+        "h": 1400,
+        "caption": "Save HD Videos",
+        "src": "https://play-lh.googleusercontent.com/bdQutHXHv_72AO7j0ITmUKdv0Fw0Gf-NEwVjQfNW1nTC7cvfNw7m7ScfNTuv7u0Me8egoEOJxVUky4zFkAL0Q3s"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "14-mobile-notepad/screenshot-03.jpg",
+        "alt": "Mobile Notepad screenshot 3: Shorts / Reels Downloader",
+        "label": "Screenshot 03",
+        "w": 788,
+        "h": 1400,
+        "caption": "Shorts / Reels Downloader",
+        "src": "https://play-lh.googleusercontent.com/kYRtECXa0V-IoPNv-Oxa_2VXeKAsyuQw8qwVCz1vinb48DvxHZ8VEgwUichcS7XQ-rnAhGyUxdPbxRAJv8VdA4A"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "14-mobile-notepad/screenshot-04.jpg",
+        "alt": "Mobile Notepad screenshot 4: Fast Video Browser",
+        "label": "Screenshot 04",
+        "w": 788,
+        "h": 1400,
+        "caption": "Fast Video Browser",
+        "src": "https://play-lh.googleusercontent.com/fKHTdH9zNKC6btIBncFXf5O_5F95kdk6zUoy5Pc_80uuOyryR7JNjfNQPupz_GlZKySBybNKGUXpS59Q0MT9lw"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "14-mobile-notepad/screenshot-05.jpg",
+        "alt": "Mobile Notepad screenshot 5: Social Media Downloader",
+        "label": "Screenshot 05",
+        "w": 788,
+        "h": 1400,
+        "caption": "Social Media Downloader",
+        "src": "https://play-lh.googleusercontent.com/qCaDZQFxmzhc-rJyyCqfMvUh6a4URpQRVfRL8I7qea40G4bMvawqKgRysL0sMdFmwAyMmLIp2axe4w9ErY65Ug"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "14-mobile-notepad/screenshot-06.jpg",
+        "alt": "Mobile Notepad screenshot 6: Light / Dark Themes",
+        "label": "Screenshot 06",
+        "w": 788,
+        "h": 1400,
+        "caption": "Light / Dark Themes",
+        "src": "https://play-lh.googleusercontent.com/QL0azP3q03X2ucXdyufN59Mdh2xQxoTuypUoeH4cpvl7ZnCNIkNLagtHkpsNZPPLAe8yPDkOHqCalH2ubFai"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "14-mobile-notepad/screenshot-07.jpg",
+        "alt": "Mobile Notepad screenshot 7: Protect Your Videos",
+        "label": "Screenshot 07",
+        "w": 788,
+        "h": 1400,
+        "caption": "Protect Your Videos",
+        "src": "https://play-lh.googleusercontent.com/w34Tlfzc2wA5WGvz7jFAhqy0geEcJOC7jT701VQMGL4mLiQEo_ctLU5IYdCb5vZF-ioeVM6eFEH4cfleAFXFyA"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "14-mobile-notepad/screenshot-08.jpg",
+        "alt": "Mobile Notepad screenshot 8: Save & Share Easily",
+        "label": "Screenshot 08",
+        "w": 788,
+        "h": 1400,
+        "caption": "Save & Share Easily",
+        "src": "https://play-lh.googleusercontent.com/v2CFUFMBuZ0hyLgxNqXPD3NqMrHQj9fYkDaK9fmBWb9w8nAXtANN3ECXEgrFjS_mqR34dwyMyTkDjYv6xCAJLQ"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "14-mobile-notepad/screenshot-09.jpg",
+        "alt": "Mobile Notepad screenshot 9: Download Videos from Anywhere",
+        "label": "Screenshot 09",
+        "w": 788,
+        "h": 1400,
+        "caption": "Download Videos from Anywhere",
+        "src": "https://play-lh.googleusercontent.com/5__BZk1Pon79FPr1FYnp_N8ywI9c7lII5_NaAQy7M3mYDANBjSIS6-UO2dETVQjuJGgf_YhUOLg0fXMsgRJzAg"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "14-mobile-notepad/screenshot-10.jpg",
+        "alt": "Mobile Notepad screenshot 10: Ultra-Fast Video Downloads",
+        "label": "Screenshot 10",
+        "w": 788,
+        "h": 1400,
+        "caption": "Ultra-Fast Video Downloads",
+        "src": "https://play-lh.googleusercontent.com/ZaU1B8k2f0cM3zlgVVqChyUTcMuxK79Nd_g2ngtq3mxFTNI_3DcLWeevYuoBeqf_XfbLURhnZT7AVJst0_cA58c"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "14-mobile-notepad/screenshot-11.jpg",
+        "alt": "Mobile Notepad screenshot 11: Instant Shorts Saver",
+        "label": "Screenshot 11",
+        "w": 788,
+        "h": 1400,
+        "caption": "Instant Shorts Saver",
+        "src": "https://play-lh.googleusercontent.com/2jYD4ZfBwDt4efq1CKUo6dKFMuROfMf9nkhQXnnNWwZAoGw6SL_w4d-k94BJHDGILuzX7SyE0WNfEzMAyrp4eA"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "14-mobile-notepad/screenshot-12.jpg",
+        "alt": "Mobile Notepad screenshot 12: Fast Video Browser (variant)",
+        "label": "Screenshot 12",
+        "w": 788,
+        "h": 1400,
+        "caption": "Fast Video Browser (variant)",
+        "src": "https://play-lh.googleusercontent.com/hBQGK1_PvT9HnSjXaxr--nLP9fAHmu-IpVxZfJiVnO7qXU4A0_GJogkdKJ2FUZaolSXd0_Ik0WvYTx2a7b3tog"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "14-mobile-notepad/screenshot-13.jpg",
+        "alt": "Mobile Notepad screenshot 13: Light & Dark Mode",
+        "label": "Screenshot 13",
+        "w": 788,
+        "h": 1400,
+        "caption": "Light & Dark Mode",
+        "src": "https://play-lh.googleusercontent.com/TMlTj-dqW4frXwN0l845HKcQaa4aZJ7n6xFWfXKmpwKYGuY73yzKT82Gp1R14SnVWRjCqF9NKlxlT6dEhlMe"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "14-mobile-notepad/screenshot-14.jpg",
+        "alt": "Mobile Notepad screenshot 14: Download from Social Apps",
+        "label": "Screenshot 14",
+        "w": 788,
+        "h": 1400,
+        "caption": "Download from Social Apps",
+        "src": "https://play-lh.googleusercontent.com/mm__kZlBuunVHJab3DHLZUNg6K-E8fK-3chYjLVUtRXOjXOvVfwxsFfmSXLaw6oZ1dX_ZXNZ01Dw1QH1YxcR3g"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "14-mobile-notepad/screenshot-15.jpg",
+        "alt": "Mobile Notepad screenshot 15: Secure Your Videos",
+        "label": "Screenshot 15",
+        "w": 788,
+        "h": 1400,
+        "caption": "Secure Your Videos",
+        "src": "https://play-lh.googleusercontent.com/Mj0wzq2aLTdUjri9ECQkJyX_5qEIwY3KBW7Yeico2BfOelL1aMYZT_tidODIWrQ2VwxB2Z9QioaAfu9DlLzToA"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "14-mobile-notepad/screenshot-16.jpg",
+        "alt": "Mobile Notepad screenshot 16: Share Videos Easily",
+        "label": "Screenshot 16",
+        "w": 788,
+        "h": 1400,
+        "caption": "Share Videos Easily",
+        "src": "https://play-lh.googleusercontent.com/l5-CRTyeR2T9LJw8Mh6MIx8H_tT_ok2R9NtMRdxYo6g_ZZjUT5WfF-o7e_AQt0rfvQ0yL3K9tlDs_-oUnoDjSw"
+      }
+    ]
+  },
+  {
+    "id": "15-vidow",
+    "num": "15",
+    "name": "Vidow",
+    "title": "Video Downloader HD - Vidow",
+    "publisher": "Vidow™",
+    "downloads": "100M+",
+    "playUrl": "https://play.google.com/store/apps/details?id=com.hdvideodownloader.downloaderapp&hl=en&gl=US",
+    "notes": {
+      "Icon": "A red square with a white “V” and a small download badge at the corner — the badge is the only thing separating it from the other four red Vs.",
+      "Feature graphic": "Black banner, “Fast Video Downloader” in yellow with “Download All Videos Fast & Without Login” beneath, phone mocks and platform marks at the right.",
+      "Screenshot system": "Six frames on black with a yellow stripe down the left edge and yellow-and-white headings: Easy Video Downloader, Download & Cast Video, Fast & Easy To Use, High Quality Video View, Download In Multiple Quality, Share With Friends.",
+      "Design assessment": "The only listing that gives casting to a TV its own frame, which is a real feature difference rather than a restatement of the title. The black-and-yellow treatment is also one of the few that would survive being shrunk. At 100M installs it carries a 3.96★ rating — the weakest of the three 100M apps here."
+    },
+    "tags": ["red V icon with badge","black & yellow","cast to TV frame","without-login claim","100M installs"],
+    "noLandscape": true,
+    "assets": [
+      {
+        "kind": "icon",
+        "orient": "square",
+        "file": "15-vidow/icon-01.png",
+        "alt": "A red square with a white “V” and a small download badge at the corner — the badge is the only thing separating it from the other four red Vs.",
+        "label": "Icon 01",
+        "w": 512,
+        "h": 512,
+        "caption": "Listing icon, original file",
+        "src": "https://play-lh.googleusercontent.com/uFifs8KnukfNhGtIVf3NVSy2x6_pV3J_wkx5Uo1h5YxooDGn5mrUxaDFrRlbBDvKhv9CisADZ7ksZeH0M9OaHw"
+      },
+      {
+        "kind": "feature-graphic",
+        "orient": "landscape",
+        "file": "15-vidow/feature-graphic-01.jpg",
+        "alt": "Black banner, “Fast Video Downloader” in yellow with “Download All Videos Fast & Without Login” beneath, phone mocks and platform marks at the right.",
+        "label": "Feature Graphic 01",
+        "w": 1024,
+        "h": 500,
+        "caption": "Feature graphic, original file",
+        "src": "https://play-lh.googleusercontent.com/ril_T7cBwEpev8WrRQwHByvNfT9Up3cm4e4enIU9INgTS5Ly4PhchS0ydj8Pu80Dm-xMn4e1-vk1WDHAk47VFA"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "15-vidow/screenshot-01.jpg",
+        "alt": "Vidow screenshot 1: Easy Video Downloader",
+        "label": "Screenshot 01",
+        "w": 788,
+        "h": 1400,
+        "caption": "Easy Video Downloader",
+        "src": "https://play-lh.googleusercontent.com/4Xv2pwHlA0d624K_iI5mt1xV_vicz4-Rw6GoMY-2_GF-wmFlAOuUCjP4FWF9qEbX-pp0kosADqBIQ69DlrxOSw"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "15-vidow/screenshot-02.jpg",
+        "alt": "Vidow screenshot 2: Download & Cast Video",
+        "label": "Screenshot 02",
+        "w": 788,
+        "h": 1400,
+        "caption": "Download & Cast Video",
+        "src": "https://play-lh.googleusercontent.com/OuwWTU3ash0ZQ7m6Ca8kp5IEpp4HJrJ2N-lLRuWJclj6ik-QvRCWE-rVuV0SjTdOkrV8IH4hlF0SZnderf4b"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "15-vidow/screenshot-03.jpg",
+        "alt": "Vidow screenshot 3: Fast & Easy To Use",
+        "label": "Screenshot 03",
+        "w": 788,
+        "h": 1400,
+        "caption": "Fast & Easy To Use",
+        "src": "https://play-lh.googleusercontent.com/PuOBAJh-w1CTXtW359PFIcxTbS247a5SXgHobKHPs4pEGGdMiGm9xj5Cmn4xsFAo6rWgPIHWq3xJeDj91QUo"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "15-vidow/screenshot-04.jpg",
+        "alt": "Vidow screenshot 4: High Quality Video View",
+        "label": "Screenshot 04",
+        "w": 788,
+        "h": 1400,
+        "caption": "High Quality Video View",
+        "src": "https://play-lh.googleusercontent.com/LcUomZFpR_QvB4REc8XBaGk9UgsbkJtKuppePVJNjB3E3XI6vp0TfcZ6eTcPk52-vvY0haLWEvYBtUxbV5z022Y"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "15-vidow/screenshot-05.jpg",
+        "alt": "Vidow screenshot 5: Download In Multiple Quality",
+        "label": "Screenshot 05",
+        "w": 788,
+        "h": 1400,
+        "caption": "Download In Multiple Quality",
+        "src": "https://play-lh.googleusercontent.com/23zrJcHN5KDiA74tFKt91--b_VnSQDelemy8g3j8x1Ej7vDjt1ycedTZVoprS515_ZrGp453QREoIrw6Sf5F-Q"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "15-vidow/screenshot-06.jpg",
+        "alt": "Vidow screenshot 6: Share With Friends",
+        "label": "Screenshot 06",
+        "w": 788,
+        "h": 1400,
+        "caption": "Share With Friends",
+        "src": "https://play-lh.googleusercontent.com/0Koebc4oYf7fnjJ-ytCOIsm5ev27bj3JcA0s58mlXGrpvb-tThnklztkJtqC0hF1ACv9ewll1MKpXeazWumFI5o"
+      }
+    ]
+  },
+  {
+    "id": "16-vidpal",
+    "num": "16",
+    "name": "Vidpal",
+    "title": "Video Downloader and 4k Player",
+    "publisher": "Vidpal Apps Studio",
+    "downloads": "50M+",
+    "playUrl": "https://play.google.com/store/apps/details?id=free.video.downloader.freevideodownloader2021.video.saver.videosaverlite&hl=en&gl=US",
+    "notes": {
+      "Icon": "An orange-to-red gradient square with a large white serif “V”. A seventh V in the library, though the gradient and the serif give it more character than the flat red ones.",
+      "Feature graphic": "A dark red banner filled with a grid of platform logos above “Fast and Private / video downloader”. It is the most brand-dense image in the library — close to two dozen third-party marks in one asset.",
+      "Screenshot system": "Seven creatives on a peach-to-cream gradient with red two-tone headings and a floating device: HD Video Downloader, Download Videos Instantly, Watch Movies, Videos in HD Quality, Floating Video Play, Download Management, Built-In Video Player.",
+      "Design assessment": "The softest palette here and the only one that reads as a consumer media app rather than a utility. “Floating Video Play” and “Watch Movies” push it toward entertainment rather than downloading. The same seven creatives are also published as 1080×1080 squares, and the feature graphic's logo wall is the single clearest example of what our own rules forbid."
+    },
+    "tags": ["gradient serif V icon","peach palette","logo-wall banner","floating player","square duplicate set removed"],
+    "noLandscape": true,
+    "assets": [
+      {
+        "kind": "icon",
+        "orient": "square",
+        "file": "16-vidpal/icon-01.png",
+        "alt": "An orange-to-red gradient square with a large white serif “V”. A seventh V in the library, though the gradient and the serif give it more character than the flat red ones.",
+        "label": "Icon 01",
+        "w": 512,
+        "h": 512,
+        "caption": "Listing icon, original file",
+        "src": "https://play-lh.googleusercontent.com/-WK5MPf7RSP-MV6t_a5WJw9RGoPPuGOW6U1FVYXLtNPdwESR7Gi6HGKQKtsrhYxw1eHkgRfgBSYqCmPC5UbF"
+      },
+      {
+        "kind": "feature-graphic",
+        "orient": "landscape",
+        "file": "16-vidpal/feature-graphic-01.jpg",
+        "alt": "A dark red banner filled with a grid of platform logos above “Fast and Private / video downloader”. It is the most brand-dense image in the library — close to two dozen third-party marks in one asset.",
+        "label": "Feature Graphic 01",
+        "w": 1024,
+        "h": 500,
+        "caption": "Feature graphic, original file",
+        "src": "https://play-lh.googleusercontent.com/Ye-23wxIpXrZZEUTOGuDHyQRXVoo5_aQWbe1oQsdXpXmbdony9s9g4tx1flagohZFCfjvAWRkZ_ruu_1vntR"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "16-vidpal/screenshot-01.jpg",
+        "alt": "Vidpal screenshot 1: HD Video Downloader",
+        "label": "Screenshot 01",
+        "w": 788,
+        "h": 1400,
+        "caption": "HD Video Downloader",
+        "src": "https://play-lh.googleusercontent.com/D2Jt5zosr9Xcd8HQ-7fiK7W1r1rKqO_MNEJ4dQPzVF85fw_35gZ3gBGIgGWQPnckm3H1AKXguZ71kA6XGpUK5EM"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "16-vidpal/screenshot-02.jpg",
+        "alt": "Vidpal screenshot 2: Download Videos Instantly",
+        "label": "Screenshot 02",
+        "w": 788,
+        "h": 1400,
+        "caption": "Download Videos Instantly",
+        "src": "https://play-lh.googleusercontent.com/qZwXsUQpYZklkcCxpOJ9M7BY-0ooKPdvczFE1F0TPWhXlrX04k3ykScXdQuKeskELaiGpb0HdQzdBIAuH5rtbQ"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "16-vidpal/screenshot-03.jpg",
+        "alt": "Vidpal screenshot 3: Watch Movies",
+        "label": "Screenshot 03",
+        "w": 788,
+        "h": 1400,
+        "caption": "Watch Movies",
+        "src": "https://play-lh.googleusercontent.com/oABTlUbtumGBwoBKhdBDoM_jmHcV1rJvgPl2hS_LbhwihFJAvc8eVmJvi4QBHPFb0JyLfxj7NddNSJvpaV-kxw"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "16-vidpal/screenshot-04.jpg",
+        "alt": "Vidpal screenshot 4: Videos in HD Quality",
+        "label": "Screenshot 04",
+        "w": 788,
+        "h": 1400,
+        "caption": "Videos in HD Quality",
+        "src": "https://play-lh.googleusercontent.com/Ql9XVGkB8vE-LSnuZTFA6lv7stksKOFrjC7PZCjqXkvndH_nAh-9XZ15qvmDJzWXPAz04oECQkvX0Fd0zNaob-4"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "16-vidpal/screenshot-05.jpg",
+        "alt": "Vidpal screenshot 5: Floating Video Play",
+        "label": "Screenshot 05",
+        "w": 788,
+        "h": 1400,
+        "caption": "Floating Video Play",
+        "src": "https://play-lh.googleusercontent.com/31Vs57e4ua4ecChJ0ItE9JrMO6gvyQJpqpdDGASGo_-gw7HpZsjvxGJREAnp4_vGWrWI0DKz-XgiNzkq6KA5"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "16-vidpal/screenshot-06.jpg",
+        "alt": "Vidpal screenshot 6: Download Management",
+        "label": "Screenshot 06",
+        "w": 788,
+        "h": 1400,
+        "caption": "Download Management",
+        "src": "https://play-lh.googleusercontent.com/61q2wb7lOmClCEZLgQLZNGSvrpAXmKpofQymjU3c0ut0gNUjBUGnjqeg15npkbGWF8nMUrjcmueNjTU01y0KqQ"
+      },
+      {
+        "kind": "screenshot",
+        "orient": "portrait",
+        "file": "16-vidpal/screenshot-07.jpg",
+        "alt": "Vidpal screenshot 7: Built-In Video Player",
+        "label": "Screenshot 07",
+        "w": 788,
+        "h": 1400,
+        "caption": "Built-In Video Player",
+        "src": "https://play-lh.googleusercontent.com/zUKENVTFyxVCRn2HCelx1XTf9j91sT9cXsTuOWEhNtHlKO75hXa5G1WRJvOSi9LV20l7cmpHeA_xIGTgzlClQw"
+      }
+    ]
+  }
 ]
 ```
 
-### features
+### graphics.captureNote
 
 ```json
-{
-  "audit": {
-    "apps": [
-      {"n":"All Video Downloader","dev":"Our app","installs":"5+","ours":true,"comp":-1},
-      {"n":"All Video Downloader & Saver","dev":"Sky Vision","installs":"10M+","comp":10},
-      {"n":"All video downloader and saver","dev":"Attractive Apps Valley","installs":"10M+","comp":11},
-      {"n":"Video Downloader & Save Video","dev":"Markhoor Studio","installs":"5M+","comp":12},
-      {"n":"Video Downloader · Player","dev":"Mobile Notepad","installs":"5M+","comp":13},
-      {"n":"Video Downloader HD","dev":"Vidow (VIDOXE)","installs":"100M+","comp":14},
-      {"n":"4K Downloader","dev":"Vidpal","installs":"50M+","comp":15}
-    ],
-    "groups": [
-      {
-        "g": "Downloading",
-        "rows": [
-          {"f":"WebView browser + link sniffer","v":"FFFFFFF"},
-          {"f":"HLS / DASH stream download","v":"FFFFFNF"},
-          {"f":"Clipboard paste-to-download","v":"FFNFFNF"},
-          {"f":"Offline library + background downloads","v":"FFFFFFF"},
-          {"f":"Batch downloads","v":"FNNNNNN"}
-        ]
-      },
-      {
-        "g": "Saving & audio",
-        "rows": [
-          {"f":"WhatsApp status saver (+ WA Business)","v":"FNNFFNF"},
-          {"f":"MP3 / audio extraction","v":"FNNNNNN"}
-        ]
-      },
-      {
-        "g": "Privacy",
-        "rows": [{"f":"Private vault + biometric / PIN lock","v":"FNNNNNN"}]
-      },
-      {
-        "g": "Playback & experience",
-        "rows": [
-          {"f":"Media3 / ExoPlayer player","v":"FFFFFFF"},
-          {"f":"Onboarding + dark mode","v":"FFFFFFF"}
-        ]
-      }
-    ],
-    "excluded": "The slide also lists “Jetpack Compose modern UI” with our app marked ✓. The Product Dossier’s spec, read from app/build.gradle, shows Android Views + ViewBinding, so the row is left out rather than shown with a claim the build does not support."
+"Asset URLs come from the 16 September 2026 Google Play scrape behind the ASO Playbook; every image file was downloaded on 23 September 2026 and is stored in this repository. Requested listing locale: English / United States. Click an image to view it large; each caption links to the full-resolution original on Google Play."
+```
+
+### graphics.guidance
+
+```json
+[
+  {
+    "h": "Fill the empty slots before redrawing anything",
+    "html": "We use four of eight phone slots; the category median is seven and the leaders run twelve to sixteen. Four more frames is the cheapest gain available, and we already have the material: the nine-tool editor, the PIN/biometric vault, MP3 extraction and background batch downloads are things <b>no audited competitor ships</b> and none of them has a frame of its own today."
   },
-  "oursOnly": [
-    {
-      "h": "A 9-tool video editor",
-      "p": "Trim, split, crop, merge, aspect ratio, add audio, extract audio, filters & effects and watermark — built on Media3 Transformer and checked frame by frame on a device."
-    },
-    {
-      "h": "A private vault with PIN and biometrics",
-      "p": "Hide videos, pictures and audio behind a 4-digit PIN with fingerprint unlock and a security question to reset. None of the six audited competitors ships a locked vault."
-    },
-    {"h":"MP3 and audio extraction","p":"Pick a range and save the audio. The only app in the audit that extracts audio."},
-    {
-      "h": "Batch downloads that survive the background",
-      "p": "Parallel downloads with pause, resume and retry, kept alive by a foreground service. The only app in the audit with batch downloading."
-    },
-    {
-      "h": "Nine languages, including right-to-left",
-      "p": "English, Urdu, Arabic, Hindi, Turkish, German, French, Brazilian Portuguese and Chinese, with mirrored layouts for Urdu and Arabic."
-    }
-  ],
-  "ourClaims": {"paste":1,"browser":1,"quality":1,"background":1,"multi":1,"story":1,"status":1,"mp3":1,"private":1,"editor":1,"player":1,"languages":1},
-  "inventory": [
-    {
-      "screen": "Download",
-      "items": [
-        "Paste a link, share into the app, or pick from Quick Platforms",
-        "Quick Platforms: Facebook, Instagram, TikTok, LinkedIn, X, Dailymotion, Likee, Snapchat, WhatsApp and WhatsApp Business",
-        "Quality picker (for example 720p, 360p, 240p)", "Parallel downloads with pause, resume and retry",
-        "Foreground service keeps large downloads alive"
-      ]
-    },
-    {
-      "screen": "Video cutter · 9 tools",
-      "items": [
-        "Cut & compress, crop, split and merge", "Aspect ratio with colour or blur fill", "Add audio and extract MP3", "Filters & effects",
-        "Add watermark with image or styled text", "Trim start, trim middle, trim end, volume and speed"
-      ]
-    },
-    {
-      "screen": "Vault",
-      "items": ["Hidden videos, pictures and audio","4-digit PIN with biometric unlock","Security question to reset the PIN","Change PIN"]
-    },
-    {
-      "screen": "Manage & settings",
-      "items": [
-        "Rename, share, delete and favourite", "WhatsApp and WhatsApp Business status saver", "Download location and subscription settings",
-        "Nine languages with right-to-left layouts"
-      ]
-    },
-    {
-      "screen": "Verified on a real phone",
-      "items": [
-        "TikTok, Facebook, Instagram (reels, videos, carousels), LinkedIn, X, Dailymotion and Vimeo downloaded end to end",
-        "0 crashes and 0 ANRs across the device rounds", "QA score 95 / 100"
-      ]
-    }
-  ],
-  "edges": [
-    {
-      "h": "InShot · Video Downloader",
-      "p": "The category leader: 100M+ installs, a 4.7 rating from about 2.7M ratings, a browser with auto-detect and a password-protected folder."
-    },
-    {"h":"Vidow · Video Downloader HD","p":"100M+ installs with a resolution picker and casting to a TV."},
-    {"h":"Vidpal · 4K Downloader","p":"50M+ installs, paste-link downloading and a 4K player."}
-  ],
-  "plans": {
-    "note": "Premium removes all ads. Prices as Google Play shows them in Pakistan.",
-    "items": [
-      {"p":"Weekly","price":"Rs 1,400","sku":"weekly_plan"},
-      {"p":"Monthly","price":"Rs 5,600","sku":"monthly_plan"}
-    ]
+  {
+    "h": "Take the platform marks out of frame 1",
+    "html": "Thirteen competitors show platform logos and our screenshot 1 currently does too. Our own rules forbid brand names in listing copy, and Play treats implied affiliation seriously. Gamma Play shows the way out: invent the source app in the mock-up and the download flow still reads perfectly."
+  },
+  {
+    "h": "Keep the gradient icon",
+    "html": "It is the one asset where we are already the most distinctive listing in the library. Any redraw should keep the rainbow ground and work on the arrow, not the other way round."
+  },
+  {
+    "h": "Replace speed claims with capability claims",
+    "html": "The category sells “3x” and “4x”. We cannot, and we do not need to: a vault, an editor and audio extraction are concrete, demonstrable and unique in this audit. Show the result, not a multiplier."
+  },
+  {
+    "h": "Say something specific in every heading",
+    "html": "Our four headings are already benefit-led, which puts us ahead of most of this list. Hold that line as frames are added — the failure mode visible here is spending a slot restating the app's own name."
+  },
+  {
+    "h": "Do not run two visual systems at once",
+    "html": "Markhoor's carousel switches design halfway through and reads as two different apps. If our graphics are reworked, replace the whole set in one go rather than leaving old and new frames side by side."
+  },
+  {
+    "h": "Landscape is optional, and differentiating",
+    "html": "Only two of sixteen competitors publish a landscape frame. If we add one it needs its own composition rather than a letterboxed phone shot — but filling the portrait slots comes first."
   }
-}
+]
 ```
 
-### graphics
+### graphics.overview
 
 ```json
-{
-  "ours": "00-our-app",
-  "overview": [
-    "Our own store listing set against 16 competitors, asset for asset: 17 icons, 17 feature graphics and 130 screenshots, 164 files in all. Our app leads every section — the icon lineup, the feature graphics and the app-by-app library — so the comparison reads in one direction.",
-    "The 16 are the deduplicated union of three tabs: the competitors annotated on the ASO Playbook, the sixteen-listing audit behind Features Comparison, and the apps named in the Video Downloader dossier. Every asset is stored in the repository, so the set stays stable even when a listing changes.",
-    "The category has no brand wall and almost no visual identity. Seven of the seventeen icons are a red “V”, five are a download arrow on a flat square (ours among them) and three are a ring-and-arrow on a gradient — fifteen of seventeen in three families. Four feature graphics are the same dark grid of media tiles.",
-    "Where we already differ: our rainbow-gradient icon is the most distinctive mark in the library, and our screenshot headings state outcomes rather than repeating the title. Where we do not: we publish four screenshots against a category median of seven, and our best-evidenced features — the vault, the editor, MP3 extraction — are barely shown."
-  ],
-  "captureNote": "Asset URLs come from the 16 September 2026 Google Play scrape behind the ASO Playbook; every image file was downloaded on 23 September 2026 and is stored in this repository. Requested listing locale: English / United States. Click an image to view it large; each caption links to the full-resolution original on Google Play.",
-  "table": [
-    {"id":"00-our-app","name":"Our app","publisher":"Cell Cave","downloads":"5+","rating":"too few ratings","portrait":4,"landscape":0,"ours":true},
-    {"id":"01-inshot","name":"InShot","publisher":"InShot Inc.","downloads":"100M+","rating":"4.72 (2.7M)","portrait":11,"landscape":1},
-    {
-      "id": "02-story-saver",
-      "name": "Story Saver",
-      "publisher": "Video Downloader Story Saver",
-      "downloads": "50M+",
-      "rating": "4.74 (1.4M)",
-      "portrait": 6,
-      "landscape": 0
-    },
-    {
-      "id": "03-insaver",
-      "name": "InSaver",
-      "publisher": "Video Downloader Story Saver",
-      "downloads": "10M+",
-      "rating": "4.74 (295K)",
-      "portrait": 7,
-      "landscape": 0
-    },
-    {"id":"04-gamma-play","name":"Gamma Play","publisher":"Gamma Play","downloads":"100K+","rating":"4.63 (3.1K)","portrait":7,"landscape":0},
-    {
-      "id": "05-qr-code-scanner",
-      "name": "QR Code Scanner",
-      "publisher": "QR Code Scanner.",
-      "downloads": "100M+",
-      "rating": "4.52 (1.9M)",
-      "portrait": 8,
-      "landscape": 0
-    },
-    {"id":"06-dosa-hub","name":"Hub (DOSA)","publisher":"DOSA Apps","downloads":"10M+","rating":"4.36 (82K)","portrait":5,"landscape":0},
-    {
-      "id": "07-fast-saver",
-      "name": "Fast Saver",
-      "publisher": "Video Downloader & Fast Saver",
-      "downloads": "10M+",
-      "rating": "4.80 (377K)",
-      "portrait": 5,
-      "landscape": 0
-    },
-    {"id":"08-apptool","name":"AppTool","publisher":"AppTool-Browser-Video","downloads":"10M+","rating":"4.36 (66K)","portrait":6,"landscape":1},
-    {
-      "id": "09-saver-player-studio",
-      "name": "Saver & Player Studio",
-      "publisher": "All Video Downloader, Saver & Player Studio",
-      "downloads": "50M+",
-      "rating": "4.42 (357K)",
-      "portrait": 7,
-      "landscape": 0
-    },
-    {
-      "id": "10-devbay",
-      "name": "DevBay",
-      "publisher": "Fast Video Downloader & Story Saver - DevBay",
-      "downloads": "50M+",
-      "rating": "3.89 (649K)",
-      "portrait": 7,
-      "landscape": 0
-    },
-    {"id":"11-sky-vision","name":"Sky Vision","publisher":"Sky Vision Apps Lab","downloads":"10M+","rating":"4.09 (24K)","portrait":7,"landscape":0},
-    {
-      "id": "12-attractive-apps",
-      "name": "Attractive Apps",
-      "publisher": "Attractive Apps Valley",
-      "downloads": "10M+",
-      "rating": "3.99 (23K)",
-      "portrait": 6,
-      "landscape": 0
-    },
-    {"id":"13-markhoor","name":"Markhoor","publisher":"Markhoor Studio","downloads":"10M+","rating":"4.00 (9.5K)","portrait":13,"landscape":0},
-    {
-      "id": "14-mobile-notepad",
-      "name": "Mobile Notepad",
-      "publisher": "Mobile Notepad Apps",
-      "downloads": "5M+",
-      "rating": "3.83 (7.5K)",
-      "portrait": 16,
-      "landscape": 0
-    },
-    {"id":"15-vidow","name":"Vidow","publisher":"Vidow™","downloads":"100M+","rating":"3.96 (335K)","portrait":6,"landscape":0},
-    {"id":"16-vidpal","name":"Vidpal","publisher":"Vidpal Apps Studio","downloads":"50M+","rating":"4.25 (402K)","portrait":7,"landscape":0}
-  ],
-  "scope": [
-    "Seventeen listings: our own, plus the sixteen competitors that appear across the Video Downloader dossier, the ASO Playbook and the Features Comparison audit. The three source lists overlap heavily — the ASO Playbook alone repeats several links — and the deduplicated set of sixteen matches the one recorded in research/competitor-visual-memory on 21 September 2026.",
-    "Duplicate assets were removed in two passes. First by URL: Google Play serves the same screenshot across several device slots, which collapsed 288 raw references to 156. Then by inspection, which removed 26 more — DOSA publishes the same five creatives twice at identical size, Saver & Player Studio publishes seven creatives at four different pixel sizes, and Vidpal publishes its seven as both portrait and 1080 × 1080 squares.",
-    "Two listings genuinely run two sets rather than duplicates, and both are kept: Markhoor mixes two different visual systems in one carousel, and Mobile Notepad runs the same device art under two different sets of headings. InShot's unlabelled device captures are also kept, because they are a different composition rather than a resize.",
-    "Our own entry is the four phone screenshots, icon and feature graphic that Google Play serves today — the same assets shown under PlayStore Metadata. The listing uses four of the eight phone slots Play allows.",
-    "Screenshots and feature graphics are stored as JPEG at up to 1400 px on the long side so the whole library fits in one page; icons are the original 512 px files. Every caption links to the full-resolution original on Google Play."
-  ],
-  "apps": [
-    {
-      "id": "00-our-app",
-      "num": "00",
-      "name": "Our app",
-      "title": "All Video Downloader & Saver",
-      "publisher": "Cell Cave",
-      "downloads": "5+",
-      "playUrl": "https://play.google.com/store/apps/details?id=com.video.downloader.instagram.videosaver&hl=en&gl=US",
-      "notes": {
-        "Icon": "A rainbow gradient square — magenta through orange, yellow and green to blue — carrying a heavy black download arrow over a tray. In a category where seven icons are a red “V” and five more are an arrow on a flat square, the gradient is the most distinctive thing we own. The arrow itself is the category default; the colour is not.",
-        "Feature graphic": "Black banner with “VIDEO DOWNLOADER” split white/red, “DOWNLOAD YOUR ALL FAVOURITE VIDEOS” beneath it, a phone mock on the right and a small rocket. Three chips read Fast · Simple · Secure. It sits in the same dark-banner family as four competitors, and the headline is a category label rather than a reason to install.",
-        "Screenshot system": "Four frames, one template: a white band carrying a bold dark all-caps heading and a grey sub-line, an orange gradient panel holding the device, and a black pill strip at the foot listing three feature words. The run is download, manage, quality, private vault. It is clean, consistent and legible at thumbnail size.",
-        "Design assessment": "The template is sound and the copy is benefit-led — but we ship **four** screenshots where the category median is seven and the leaders ship twelve to sixteen, so four of eight phone slots sit empty. The vault, the editor and MP3 extraction — the three things the feature audit says no audited competitor has — are represented by one frame between them. Screenshot 1 also shows a row of platform brand marks, which is the one thing on this page our own rules tell us not to do."
-      },
-      "tags": ["ours","rainbow gradient icon","benefit-led headings","4 of 8 slots used","platform icons in frame 1","no editor frame"],
-      "noLandscape": true,
-      "assets": [
-        {
-          "kind": "icon",
-          "orient": "square",
-          "file": "00-our-app/icon-01.png",
-          "alt": "A rainbow gradient square — magenta through orange, yellow and green to blue — carrying a heavy black download arrow over a tray. In a category where seven icons are a red “V” and five more are an arrow on a flat square, the gradient is the most distinctive thing we own. The arrow itself is the category default; the colour is not.",
-          "label": "Icon 01",
-          "w": 512,
-          "h": 512,
-          "caption": "Listing icon, original file",
-          "src": "https://play-lh.googleusercontent.com/qLNXtLkR4z4KiAhmkwjlXx1TpuC4aaH6qsMoZgkWzjg1-ZaXUh-KMfdG1gXfayu_gkStOl6S1w4tCfe2WMPBbQ"
-        },
-        {
-          "kind": "feature-graphic",
-          "orient": "landscape",
-          "file": "00-our-app/feature-graphic-01.jpg",
-          "alt": "Black banner with “VIDEO DOWNLOADER” split white/red, “DOWNLOAD YOUR ALL FAVOURITE VIDEOS” beneath it, a phone mock on the right and a small rocket. Three chips read Fast · Simple · Secure. It sits in the same dark-banner family as four competitors, and the headline is a category label rather than a reason to install.",
-          "label": "Feature Graphic 01",
-          "w": 1024,
-          "h": 500,
-          "caption": "Feature graphic, original file",
-          "src": "https://play-lh.googleusercontent.com/q4weOoYNzbX0TD4RtvgBm1VsiywteBuYuZsb5Rr0JzQPEFYto2uU7Taj_ueFgCp65xXjCQ9zFHSZ9jwTq7lk8Q"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "00-our-app/screenshot-01.jpg",
-          "alt": "Our app screenshot 1: Download videos in seconds",
-          "label": "Screenshot 01",
-          "w": 788,
-          "h": 1400,
-          "caption": "Download videos in seconds",
-          "src": "https://play-lh.googleusercontent.com/j2_25nIZRvSsEN0BlWJSIIRtIx-N1I7ugFgLUo5rDuBOnNTugt1bnMxlZt9p-RnjyAXdCFKK5KMAYzsaqTK8VA"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "00-our-app/screenshot-02.jpg",
-          "alt": "Our app screenshot 2: Manage downloads easily",
-          "label": "Screenshot 02",
-          "w": 788,
-          "h": 1400,
-          "caption": "Manage downloads easily",
-          "src": "https://play-lh.googleusercontent.com/TDaaCxqjFa48ZfwV0k4SNIeBK-v0Cwt33ue3sNB5cqdlGlK4sYIZGuNKiKX2zGtm62hpnf9h3Zmc8ajaon7LXg"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "00-our-app/screenshot-03.jpg",
-          "alt": "Our app screenshot 3: Download in HD quality",
-          "label": "Screenshot 03",
-          "w": 788,
-          "h": 1400,
-          "caption": "Download in HD quality",
-          "src": "https://play-lh.googleusercontent.com/iWFuKpcYqHVHeGgYoYhIrSjIrlR9FcRwAaGP1dZaP3WYRiq5zov4dfdatnjVHXoBdObNVJClXxRpLiWW2OhOTw"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "00-our-app/screenshot-04.jpg",
-          "alt": "Our app screenshot 4: Keep files private & secure",
-          "label": "Screenshot 04",
-          "w": 788,
-          "h": 1400,
-          "caption": "Keep files private & secure",
-          "src": "https://play-lh.googleusercontent.com/3n20NxyQhoOWJOgRndJyj48dCylpmBu1lIGTP9GG5lS89ovMzjfum-Ps_cLIDr_54bKevER-jTLc-Um63vy_nw"
-        }
-      ],
-      "ours": true
-    },
-    {
-      "id": "01-inshot",
-      "num": "01",
-      "name": "InShot",
-      "title": "Video Downloader",
-      "publisher": "InShot Inc.",
-      "downloads": "100M+",
-      "playUrl": "https://play.google.com/store/apps/details?id=video.downloader.videodownloader&hl=en&gl=US",
-      "notes": {
-        "Icon": "A black rounded square with a white download arrow resting on a yellow bar. Nothing but the mark — no wordmark, no gradient, no device. It is the most reduced icon in the library and it holds at 32 px better than anything else here.",
-        "Feature graphic": "A dark grid of faint media-type tiles with “Simple & Fast Downloader” set in yellow and white at the centre. Three competitors use almost exactly this tile-grid construction.",
-        "Screenshot system": "Two systems in one carousel. Frames 2-7 are marketing panels: white ground, a two-tone heading, a device below (One-click Download, Social Media Downloader, Download Management, SD Card Supported, Keep Video Safe, Powerful Downloader). Frames 8-12 are bare device captures with no heading at all, and frame 1 is a landscape composite.",
-        "Design assessment": "The category leader by search visibility — 51 US top-10 placements, 4.72★ from 2.7M ratings — and its listing is not especially polished: half the carousel is unlabelled screen grabs. Evidence that in this category ranking is won on keywords and install base, not on store art. The icon, though, is the one asset here worth studying."
-      },
-      "tags": ["black arrow icon","tile-grid banner","mixed labelled/unlabelled frames","landscape frame","category leader"],
-      "noLandscape": false,
-      "assets": [
-        {
-          "kind": "icon",
-          "orient": "square",
-          "file": "01-inshot/icon-01.png",
-          "alt": "A black rounded square with a white download arrow resting on a yellow bar. Nothing but the mark — no wordmark, no gradient, no device. It is the most reduced icon in the library and it holds at 32 px better than anything else here.",
-          "label": "Icon 01",
-          "w": 512,
-          "h": 512,
-          "caption": "Listing icon, original file",
-          "src": "https://play-lh.googleusercontent.com/oju7a2AuqaQSc_l5O-2yRw8F_M0rUlHnBHjp_MqHNSAT3CXq7xbSqRVL7VSPNhMRjzaM2ft-LBoA05-q9hqmhg"
-        },
-        {
-          "kind": "feature-graphic",
-          "orient": "landscape",
-          "file": "01-inshot/feature-graphic-01.jpg",
-          "alt": "A dark grid of faint media-type tiles with “Simple & Fast Downloader” set in yellow and white at the centre. Three competitors use almost exactly this tile-grid construction.",
-          "label": "Feature Graphic 01",
-          "w": 1024,
-          "h": 500,
-          "caption": "Feature graphic, original file",
-          "src": "https://play-lh.googleusercontent.com/QrAO-trY2kMBozJxNbFVwlmHb6y4SyYaTsLlAOVW2na_Th8ED1XOKFJecVhVpj9hXeIaezkfd2Xmep1DQB2DSno"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "landscape",
-          "file": "01-inshot/screenshot-01.jpg",
-          "alt": "InShot screenshot 1: Video Downloader promo (landscape)",
-          "label": "Screenshot 01",
-          "w": 1400,
-          "h": 788,
-          "caption": "Video Downloader promo (landscape)",
-          "src": "https://play-lh.googleusercontent.com/NSGdsgwWRfwmx4fvTHQxemryYBrNUhWqMU2V8kQsrPQ9s3Z7d_X4x1SSyYZQ4f11L2-lD-3N-X8bKzW009-G"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "01-inshot/screenshot-02.jpg",
-          "alt": "InShot screenshot 2: One-click Download",
-          "label": "Screenshot 02",
-          "w": 788,
-          "h": 1400,
-          "caption": "One-click Download",
-          "src": "https://play-lh.googleusercontent.com/gxUnDNwvtp0vd7HJX01UVlWG3OdKYfLHeSLUBcsRp3fe_ncRvXBTxjYs7-i19VEYvrXiqbzDDOaaXCHPoYtjxSA"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "01-inshot/screenshot-03.jpg",
-          "alt": "InShot screenshot 3: Social Media Downloader",
-          "label": "Screenshot 03",
-          "w": 788,
-          "h": 1400,
-          "caption": "Social Media Downloader",
-          "src": "https://play-lh.googleusercontent.com/WFcH-IvsVpbLiJQx1pQC0Tr147jjjJNgmwvXbfeqC8MJRDPtgb68Yr6IFA-oOlY_Psa_U_8H4_bDW-ECltzt2g"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "01-inshot/screenshot-04.jpg",
-          "alt": "InShot screenshot 4: Download Management",
-          "label": "Screenshot 04",
-          "w": 788,
-          "h": 1400,
-          "caption": "Download Management",
-          "src": "https://play-lh.googleusercontent.com/bUQFlAGdBI4UIMq2062v2WsBvk11Qb-v0JpULDAOmEonf54RZ9tapaeny4QYk0bS3shGIivg__F2bl3JbId7"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "01-inshot/screenshot-05.jpg",
-          "alt": "InShot screenshot 5: SD Card Supported",
-          "label": "Screenshot 05",
-          "w": 788,
-          "h": 1400,
-          "caption": "SD Card Supported",
-          "src": "https://play-lh.googleusercontent.com/Uy3NFS-H0YcvUyv2n48dyX76CpLJbhOH8GfhhiXIWtpL1lHitb_gl99KtWrnH4Nk7qkngPekNJaUpY59Gp7yKg"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "01-inshot/screenshot-06.jpg",
-          "alt": "InShot screenshot 6: Keep Video Safe",
-          "label": "Screenshot 06",
-          "w": 788,
-          "h": 1400,
-          "caption": "Keep Video Safe",
-          "src": "https://play-lh.googleusercontent.com/DLcnkImZEA7COuU2OJa2EAYTPWZnHVWWLDsY8fzqeOQvZRcIpoe_4L1_KWxgpPKcWlpY8quDIccYF7LFMHdkwg"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "01-inshot/screenshot-07.jpg",
-          "alt": "InShot screenshot 7: Powerful Downloader",
-          "label": "Screenshot 07",
-          "w": 788,
-          "h": 1400,
-          "caption": "Powerful Downloader",
-          "src": "https://play-lh.googleusercontent.com/S3DOf7z5V0srj0YNUghtWNSJ9czeUIPsHKJrNDKbbb_4i7W1yfdC8iSrYYuhv-xli9HV68dOGKBsojC-8iWJ"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "01-inshot/screenshot-08.jpg",
-          "alt": "InShot screenshot 8: Browser — video found (no caption)",
-          "label": "Screenshot 08",
-          "w": 875,
-          "h": 1400,
-          "caption": "Browser — video found (no caption)",
-          "src": "https://play-lh.googleusercontent.com/ptR_jkjvK244mVyx3FAnK27AOXDT_VLe28BoWu7ACUBGLrNq5OWbpkmX8Ca5xX35fSyTftIgVH71rXC1vLiEJmQ"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "01-inshot/screenshot-09.jpg",
-          "alt": "InShot screenshot 9: Progress list (no caption)",
-          "label": "Screenshot 09",
-          "w": 875,
-          "h": 1400,
-          "caption": "Progress list (no caption)",
-          "src": "https://play-lh.googleusercontent.com/ikeGVPFcD4aTDVAaVbpkZiQObefirUMBUm_6AgzOrqCe7Yk7VD3E0zhd3AUx4H0iveBg0GJkK3m29VoGanM4"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "01-inshot/screenshot-10.jpg",
-          "alt": "InShot screenshot 10: Finished list (no caption)",
-          "label": "Screenshot 10",
-          "w": 875,
-          "h": 1400,
-          "caption": "Finished list (no caption)",
-          "src": "https://play-lh.googleusercontent.com/pAAwl_n-Aotk9MTG417Iw7ngs5PmqrAAATFfDkZ1A3XIeXFrLfRdH44tZikXJDd1vLBa5zNlcszU2E5YWiCo68k"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "01-inshot/screenshot-11.jpg",
-          "alt": "InShot screenshot 11: Private videos PIN (no caption)",
-          "label": "Screenshot 11",
-          "w": 875,
-          "h": 1400,
-          "caption": "Private videos PIN (no caption)",
-          "src": "https://play-lh.googleusercontent.com/SHIVzBVSqh4A_SMeJN_i2ytNEfptgaBB7cT_SV7FeLKrrdxuYUmL3QQ2nZvWP8aXnMG8qWqUg5-RbsYF7c6J"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "01-inshot/screenshot-12.jpg",
-          "alt": "InShot screenshot 12: Browser menu (no caption)",
-          "label": "Screenshot 12",
-          "w": 875,
-          "h": 1400,
-          "caption": "Browser menu (no caption)",
-          "src": "https://play-lh.googleusercontent.com/mpczvO0kyudX2Q489yz1KszXfvG5LtSe5aARGtlQe-NwbYtEDlyQ3AIadsKD6ByiN1-FHkLTs_0KKGmc86A1"
-        }
-      ]
-    },
-    {
-      "id": "02-story-saver",
-      "num": "02",
-      "name": "Story Saver",
-      "title": "Video downloader - Story Saver",
-      "publisher": "Video Downloader Story Saver",
-      "downloads": "50M+",
-      "playUrl": "https://play.google.com/store/apps/details?id=instagram.video.downloader.story.saver.ig&hl=en&gl=US",
-      "notes": {
-        "Icon": "A magenta-to-pink gradient square holding a white ring with a download arrow inside. One of three circle-and-arrow icons here; the magenta is what separates it.",
-        "Feature graphic": "Red banner, “Download Videos & Photos / Save Stories” in white at the left, a fan of tilted phone screens at the right. Direct and readable.",
-        "Screenshot system": "Six frames on white, each with a pink heading in a heavy rounded face and a device below showing a real social feed. The run is copy-link, share-to-save, story saver & repost, auto save, save reels, history management.",
-        "Design assessment": "Sells the workflow rather than the feature list — every frame shows the user's actual next tap, with arrows and numbered steps drawn over the UI. That is a stronger idea than most of this category manages. It also ships a visible typo in frame 1, “Video downlaoder”, on a 50M-install listing with 1.4M ratings."
-      },
-      "tags": ["magenta circle icon","workflow arrows","numbered steps","typo: downlaoder","third-party UI on screen"],
-      "noLandscape": true,
-      "assets": [
-        {
-          "kind": "icon",
-          "orient": "square",
-          "file": "02-story-saver/icon-01.jpg",
-          "alt": "A magenta-to-pink gradient square holding a white ring with a download arrow inside. One of three circle-and-arrow icons here; the magenta is what separates it.",
-          "label": "Icon 01",
-          "w": 512,
-          "h": 512,
-          "caption": "Listing icon, original file",
-          "src": "https://play-lh.googleusercontent.com/TBQtIR4nBImNflXpt21UXPoOX_JykpbhIVoAjjwcJeJBVi5PKmV6_Gi4pul-aqz78ntdpUl8dvWN_yzBOvYcJA"
-        },
-        {
-          "kind": "feature-graphic",
-          "orient": "landscape",
-          "file": "02-story-saver/feature-graphic-01.jpg",
-          "alt": "Red banner, “Download Videos & Photos / Save Stories” in white at the left, a fan of tilted phone screens at the right. Direct and readable.",
-          "label": "Feature Graphic 01",
-          "w": 1024,
-          "h": 500,
-          "caption": "Feature graphic, original file",
-          "src": "https://play-lh.googleusercontent.com/bsU9OfF1Q7vV2d-wAAYS9VzvgknS78ba7C5WRqDFzkRlkG-j3PZJwCLP-6RpJC725CRrlf3gBya-HOMuSTqY"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "02-story-saver/screenshot-01.jpg",
-          "alt": "Story Saver screenshot 1: Video downlaoder — copy link to save (typo as published)",
-          "label": "Screenshot 01",
-          "w": 788,
-          "h": 1400,
-          "caption": "Video downlaoder — copy link to save (typo as published)",
-          "src": "https://play-lh.googleusercontent.com/026cg7-gFtD7o6Huk7RRt0AX56Pho4N_OK2a3W2i1Sx6yN6V-CI3dicRji9-3lNDK8OduffOWDuNwcxqDw8zDA"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "02-story-saver/screenshot-02.jpg",
-          "alt": "Story Saver screenshot 2: Insaver — share to save",
-          "label": "Screenshot 02",
-          "w": 788,
-          "h": 1400,
-          "caption": "Insaver — share to save",
-          "src": "https://play-lh.googleusercontent.com/kRXnbqX2ikWH9Hr5r92D-ZaxQDYKLaAtYVb1pcuYoOw8hRBBFB-tIZfEh5Jl22BBXJ75UTxBJj9z-kNCZpTQgA4"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "02-story-saver/screenshot-03.jpg",
-          "alt": "Story Saver screenshot 3: Story saver & repost",
-          "label": "Screenshot 03",
-          "w": 788,
-          "h": 1400,
-          "caption": "Story saver & repost",
-          "src": "https://play-lh.googleusercontent.com/0BANSyqcpXrMs3wGfHuXTMwP4PjpfPz3uu3lAcE0GXJVAhAxNsoEzxEOPGxBZuUzDT64oPGzPiklgOJr-MH3nA"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "02-story-saver/screenshot-04.jpg",
-          "alt": "Story Saver screenshot 4: Auto save",
-          "label": "Screenshot 04",
-          "w": 788,
-          "h": 1400,
-          "caption": "Auto save",
-          "src": "https://play-lh.googleusercontent.com/wMrHNUsStVRWicsBS6jrk4crq1u7B01RriIUDLDKQnF1eS-zrkuRXk6kpBQZ2SBZlQbuKRoTyqgEMG-0PmQU"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "02-story-saver/screenshot-05.jpg",
-          "alt": "Story Saver screenshot 5: Save reels",
-          "label": "Screenshot 05",
-          "w": 788,
-          "h": 1400,
-          "caption": "Save reels",
-          "src": "https://play-lh.googleusercontent.com/AP6qmSQOmzOPjwG1sAjrmxgEln8od8asGg5OcbmZSTqXbuunF3s5fKzmzrArDWOT7YrvGGovYB5uSeDzUp2txw"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "02-story-saver/screenshot-06.jpg",
-          "alt": "Story Saver screenshot 6: History management",
-          "label": "Screenshot 06",
-          "w": 788,
-          "h": 1400,
-          "caption": "History management",
-          "src": "https://play-lh.googleusercontent.com/F3MAJkAegk90GfaH7Xx_bKFuANXKpkrGkfNr-LWqFIMV-ukuobqpS-bHbf30oDX801ImXu67uO9FeYOn-XaHvQ"
-        }
-      ]
-    },
-    {
-      "id": "03-insaver",
-      "num": "03",
-      "name": "InSaver",
-      "title": "InSaver: All Video Downloader",
-      "publisher": "Video Downloader Story Saver",
-      "downloads": "10M+",
-      "playUrl": "https://play.google.com/store/apps/details?id=instagram.video.downloader.story.saver.ig.insaver&hl=en&gl=US",
-      "notes": {
-        "Icon": "An orange-to-pink gradient square with a white ring and download arrow — the same construction as its sibling app above, recoloured. Same publisher, two listings, two near-identical marks.",
-        "Feature graphic": "Dark banner with “Save Stories / All Video Downloader” in red and white, three round chips reading Fast · Easy · Safe, and a phone showing a grid of platform marks.",
-        "Screenshot system": "Seven frames on white with coral headings and a device below: Instsaver Video Downloader, Story Saver & Repost, No Watermark, Live Wallpapers & Ringtones, History Management, Batch Download, Auto Save.",
-        "Design assessment": "The widest feature spread in the library — wallpapers and ringtones appear nowhere else — which makes the listing feel generous but unfocused. Frame 1 carries a typo in the brand name itself (“Instsaver”), and frame 3 promises “No Watermark”, a claim our own rules forbid us from making."
-      },
-      "tags": ["gradient circle icon","sibling of 02","no-watermark claim","wallpapers & ringtones","typo: Instsaver"],
-      "noLandscape": true,
-      "assets": [
-        {
-          "kind": "icon",
-          "orient": "square",
-          "file": "03-insaver/icon-01.jpg",
-          "alt": "An orange-to-pink gradient square with a white ring and download arrow — the same construction as its sibling app above, recoloured. Same publisher, two listings, two near-identical marks.",
-          "label": "Icon 01",
-          "w": 512,
-          "h": 512,
-          "caption": "Listing icon, original file",
-          "src": "https://play-lh.googleusercontent.com/Gxa3y2D4_k3xVRi4GcEoCz2VOJodVWgcLdCyUQY67w6_bier_KwRrqxVtGauUlciDHRfVdSgh3VO7UPAo7sS"
-        },
-        {
-          "kind": "feature-graphic",
-          "orient": "landscape",
-          "file": "03-insaver/feature-graphic-01.jpg",
-          "alt": "Dark banner with “Save Stories / All Video Downloader” in red and white, three round chips reading Fast · Easy · Safe, and a phone showing a grid of platform marks.",
-          "label": "Feature Graphic 01",
-          "w": 1024,
-          "h": 500,
-          "caption": "Feature graphic, original file",
-          "src": "https://play-lh.googleusercontent.com/NkXnlgo7Vi5rm86MfQLfW-gLoucel_vkCuCXJUi6aFpaU-iHpBN5ihBw2QREGPsCfFrwefFBnqO-zq2C3LMW"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "03-insaver/screenshot-01.jpg",
-          "alt": "InSaver screenshot 1: Instsaver Video Downloader (typo as published)",
-          "label": "Screenshot 01",
-          "w": 788,
-          "h": 1400,
-          "caption": "Instsaver Video Downloader (typo as published)",
-          "src": "https://play-lh.googleusercontent.com/EJJGQ0VKtrjO-ZIjF9_T4g6INHFpPUYBsGXGPnxD9hDsJyHXxZOUoi3j3mIAxJqXLWhW0b40UNwi25pqB6CiAkE"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "03-insaver/screenshot-02.jpg",
-          "alt": "InSaver screenshot 2: Story Saver & Repost",
-          "label": "Screenshot 02",
-          "w": 788,
-          "h": 1400,
-          "caption": "Story Saver & Repost",
-          "src": "https://play-lh.googleusercontent.com/YBRzMwVxKSM2fZQRcmBx_dD_NhZ7O8qXN38lpuWBI1NyKDdIeO13XMc9ti61N6Utcp3H1tR5wFYF_0GXZqG80w"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "03-insaver/screenshot-03.jpg",
-          "alt": "InSaver screenshot 3: No Watermark",
-          "label": "Screenshot 03",
-          "w": 788,
-          "h": 1400,
-          "caption": "No Watermark",
-          "src": "https://play-lh.googleusercontent.com/98xatWrG5bp7YKrJa-fRtUl0An0LnhxthLRpwGG2n0j0zH1cxNX--wUjecRmEM8yuxs8hpcPKEzpJo_xOOzCvg"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "03-insaver/screenshot-04.jpg",
-          "alt": "InSaver screenshot 4: Live Wallpapers & Ringtones",
-          "label": "Screenshot 04",
-          "w": 788,
-          "h": 1400,
-          "caption": "Live Wallpapers & Ringtones",
-          "src": "https://play-lh.googleusercontent.com/Wx30ELh6zRRnVV8NUwVC6JDVKPEncYwVMVommknCxGtO93BGhEyncQ28wIlEj0mDsRB3LG4T4iQ9HLMWkC4-uw"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "03-insaver/screenshot-05.jpg",
-          "alt": "InSaver screenshot 5: History Management",
-          "label": "Screenshot 05",
-          "w": 788,
-          "h": 1400,
-          "caption": "History Management",
-          "src": "https://play-lh.googleusercontent.com/m-M-0Rjcfdhq4qj_zA997K9ruIVkhZlTc_7sxKS_9hCuy-HTPNuwk8d-VwB4g8i_BvuPoSylvK2YeWS7-HAVmw"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "03-insaver/screenshot-06.jpg",
-          "alt": "InSaver screenshot 6: Batch Download",
-          "label": "Screenshot 06",
-          "w": 788,
-          "h": 1400,
-          "caption": "Batch Download",
-          "src": "https://play-lh.googleusercontent.com/z83FRL3aZlli1YRKP-rO6i-30hDdz9CsuQJEGamsQlVms0wmPieHfGpxoB9sdP9s8hARFn8hdGWU9zoyX5waJA"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "03-insaver/screenshot-07.jpg",
-          "alt": "InSaver screenshot 7: Auto Save",
-          "label": "Screenshot 07",
-          "w": 788,
-          "h": 1400,
-          "caption": "Auto Save",
-          "src": "https://play-lh.googleusercontent.com/WSluN0ZeZrsz-xz2SSOjz1HgwYhrs-PfQ0s1drpZw9NX8CG_PRBt5oUzBwYNcvC1Ihqage-j80pvS9kyPiXcXA"
-        }
-      ]
-    },
-    {
-      "id": "04-gamma-play",
-      "num": "04",
-      "name": "Gamma Play",
-      "title": "Video Downloader - without ads",
-      "publisher": "Gamma Play",
-      "downloads": "100K+",
-      "playUrl": "https://play.google.com/store/apps/details?id=com.gamma.videodownloader&hl=en&gl=US",
-      "notes": {
-        "Icon": "A black rounded square with a white download arrow over a yellow bar — very nearly InShot's icon, from an unrelated 100K-install developer. Side by side at 48 px the two are hard to tell apart.",
-        "Feature graphic": "A pale ice-blue field with an abstract blue play-and-arrow glyph and no text whatsoever. The only wordless banner in the library, and at listing size it says nothing about the app.",
-        "Screenshot system": "Seven frames: white ground, a dark two-line heading, a device below. Download Any Video in One Tap, Choose Video Quality Before Downloading, Built-in Ad Blocker, Built-in Video Player, Instant Story Downloader, Download to Private Vault, Track Progress in Real Time.",
-        "Design assessment": "**The one listing in this library that shows no third-party branding at all.** Every device frame runs an invented source app — “TravelHub”, “FREEVIDEOS” — so the screenshots demonstrate the download flow without borrowing anyone's logo or UI. That is the compliant pattern, and it comes from the smallest app here. The headings are also full sentences rather than category labels."
-      },
-      "tags": ["icon collides with InShot","wordless banner","invented source apps","no third-party branding","private vault frame"],
-      "noLandscape": true,
-      "assets": [
-        {
-          "kind": "icon",
-          "orient": "square",
-          "file": "04-gamma-play/icon-01.jpg",
-          "alt": "A black rounded square with a white download arrow over a yellow bar — very nearly InShot's icon, from an unrelated 100K-install developer. Side by side at 48 px the two are hard to tell apart.",
-          "label": "Icon 01",
-          "w": 512,
-          "h": 512,
-          "caption": "Listing icon, original file",
-          "src": "https://play-lh.googleusercontent.com/RvHeqNSaT1XdrxNeTuPMUi9ijxcZbApZtdpYeMrfuvTIGzWG3aliheg7xa1szlX5pObYgtVDwl_WaP0FAxYxrw"
-        },
-        {
-          "kind": "feature-graphic",
-          "orient": "landscape",
-          "file": "04-gamma-play/feature-graphic-01.jpg",
-          "alt": "A pale ice-blue field with an abstract blue play-and-arrow glyph and no text whatsoever. The only wordless banner in the library, and at listing size it says nothing about the app.",
-          "label": "Feature Graphic 01",
-          "w": 1024,
-          "h": 500,
-          "caption": "Feature graphic, original file",
-          "src": "https://play-lh.googleusercontent.com/R0RPcCkjGrOrSY69hOH5SMKaE0FH6do2bOYNETkwJWq-qAkSpsUQYdGDfB0Zg2qGFd_oYq515kOks7_ZqcT4-9E"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "04-gamma-play/screenshot-01.jpg",
-          "alt": "Gamma Play screenshot 1: Download Any Video in One Tap",
-          "label": "Screenshot 01",
-          "w": 788,
-          "h": 1400,
-          "caption": "Download Any Video in One Tap",
-          "src": "https://play-lh.googleusercontent.com/oYsZpI4a3bXy5PbjVvfXCNfa9uvjpRSzMPr6iHvCAs4Fcw8jisHC7JG--wymBT16ilE48aawj91WqS2L5oSiQQ"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "04-gamma-play/screenshot-02.jpg",
-          "alt": "Gamma Play screenshot 2: Choose Video Quality Before Downloading",
-          "label": "Screenshot 02",
-          "w": 788,
-          "h": 1400,
-          "caption": "Choose Video Quality Before Downloading",
-          "src": "https://play-lh.googleusercontent.com/2wyStNfqs-_WeoJN3myADhm2536ljQO1XfJTADIb2fti1C66_Ia8eDkdA36tphFW_oZArzXX1oAorvH9GQcRNQ"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "04-gamma-play/screenshot-03.jpg",
-          "alt": "Gamma Play screenshot 3: Built-in Ad Blocker",
-          "label": "Screenshot 03",
-          "w": 788,
-          "h": 1400,
-          "caption": "Built-in Ad Blocker",
-          "src": "https://play-lh.googleusercontent.com/PHM_AsD1T-vmvI1t2QmItglgPnyxKaFJKfqctNHBhql_XxeUo_FMLMy-YC511hwkIiIajvjvXVfZeGYBa4ZdO_M"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "04-gamma-play/screenshot-04.jpg",
-          "alt": "Gamma Play screenshot 4: Built-in Video Player",
-          "label": "Screenshot 04",
-          "w": 788,
-          "h": 1400,
-          "caption": "Built-in Video Player",
-          "src": "https://play-lh.googleusercontent.com/UusxHAzNEV8BuEh3c_-xrvq0w_a_BUGLMdckReTxj0TIAy5PXBhFHjKbaP2Z2EGfgk9qfwztPlQ0nlwsZ7XVIA"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "04-gamma-play/screenshot-05.jpg",
-          "alt": "Gamma Play screenshot 5: Instant Story Downloader",
-          "label": "Screenshot 05",
-          "w": 788,
-          "h": 1400,
-          "caption": "Instant Story Downloader",
-          "src": "https://play-lh.googleusercontent.com/wwa2IirJgbOfkGQFlC50jSdmi0XG9mgUCpkurSGWJwNh0Smyt2PsXatdcQWqz5_G_DTngVJmERmH4ZD7I7VzRA"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "04-gamma-play/screenshot-06.jpg",
-          "alt": "Gamma Play screenshot 6: Download to Private Vault",
-          "label": "Screenshot 06",
-          "w": 788,
-          "h": 1400,
-          "caption": "Download to Private Vault",
-          "src": "https://play-lh.googleusercontent.com/SitItRmkfJlFZ5E1xN3AxV4c4CEPG85ssKC0iNFqT95YEsC2cOnVWvKPviBrekNnksp-nz8gvhAJCTBbqJhTdg"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "04-gamma-play/screenshot-07.jpg",
-          "alt": "Gamma Play screenshot 7: Track Progress in Real Time",
-          "label": "Screenshot 07",
-          "w": 788,
-          "h": 1400,
-          "caption": "Track Progress in Real Time",
-          "src": "https://play-lh.googleusercontent.com/nzhAI2kUzKou3srM38WSe2XEEsYPhPqmINP8Mtkb51iNk1E0CkPTPNNHGNF4uoQLg9oiwNwNqz6mszeoURztaQA"
-        }
-      ]
-    },
-    {
-      "id": "05-qr-code-scanner",
-      "num": "05",
-      "name": "QR Code Scanner",
-      "title": "All Video Downloader & Player",
-      "publisher": "QR Code Scanner.",
-      "downloads": "100M+",
-      "playUrl": "https://play.google.com/store/apps/details?id=videoplayer.videodownloader.downloader&hl=en&gl=US",
-      "notes": {
-        "Icon": "A red-orange gradient square holding a white filmstrip “V” with a download arrow. The first of seven red “V” marks in this library.",
-        "Feature graphic": "An orange grid of media tiles with “ALL Video Downloader” in white italic — the same tile-grid idea as InShot, AppTool and Sky Vision, in a different colour.",
-        "Screenshot system": "Eight frames on white, black two-line headings, dark device shots: All Video Downloader, Download All You See, Built-in Video Player, Block Ads, Best Story Downloader, 3x Faster Download, Download Manager, Share With Friends.",
-        "Design assessment": "Highly legible and well paced, and it uses all the slots the category rewards. It leans on a speed claim (“3x Faster”) we cannot copy, and frame 2 shows a red play button and video UI that reads unmistakably as a specific platform — the exact thing our rules keep us away from."
-      },
-      "tags": ["red V icon","tile-grid banner","3x speed claim","ad-block frame","recognisable platform UI"],
-      "noLandscape": true,
-      "assets": [
-        {
-          "kind": "icon",
-          "orient": "square",
-          "file": "05-qr-code-scanner/icon-01.png",
-          "alt": "A red-orange gradient square holding a white filmstrip “V” with a download arrow. The first of seven red “V” marks in this library.",
-          "label": "Icon 01",
-          "w": 512,
-          "h": 512,
-          "caption": "Listing icon, original file",
-          "src": "https://play-lh.googleusercontent.com/4v1gAVBRKoO9aUUOhYJLY-aa8FytPXj0LRNJbV8CT743B3sajF54fcEbvQjfE6kuJrS9ddaFkbo7PDcWZ-iQBcI"
-        },
-        {
-          "kind": "feature-graphic",
-          "orient": "landscape",
-          "file": "05-qr-code-scanner/feature-graphic-01.jpg",
-          "alt": "An orange grid of media tiles with “ALL Video Downloader” in white italic — the same tile-grid idea as InShot, AppTool and Sky Vision, in a different colour.",
-          "label": "Feature Graphic 01",
-          "w": 1024,
-          "h": 500,
-          "caption": "Feature graphic, original file",
-          "src": "https://play-lh.googleusercontent.com/NnxBVfBMclFKOfLXSwK39BbujWhkjBAyZrx0-zQ6sLgxWFGivXetTkR1oBBxRDrXylf90EzuLoDG-FegNkG6-Zs"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "05-qr-code-scanner/screenshot-01.jpg",
-          "alt": "QR Code Scanner screenshot 1: All Video Downloader",
-          "label": "Screenshot 01",
-          "w": 710,
-          "h": 1400,
-          "caption": "All Video Downloader",
-          "src": "https://play-lh.googleusercontent.com/aX4xYn_taZd_4YZVsNwfLauu8GCvJYLhyACRLQg_NL-y5wglpBnmbaG5QmUddK08k_2YKjv-mhETraz9kqg6Tw"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "05-qr-code-scanner/screenshot-02.jpg",
-          "alt": "QR Code Scanner screenshot 2: Download All You See",
-          "label": "Screenshot 02",
-          "w": 710,
-          "h": 1400,
-          "caption": "Download All You See",
-          "src": "https://play-lh.googleusercontent.com/f4SN_7jfp2haU4WQppjFz40nxZlI-ioLEuNXOw88Ez0c0q0D2zr7w5w5rj3NAhFZkdSvXfJRCjoigMEbIOJ7SzE"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "05-qr-code-scanner/screenshot-03.jpg",
-          "alt": "QR Code Scanner screenshot 3: Built-in Video Player",
-          "label": "Screenshot 03",
-          "w": 710,
-          "h": 1400,
-          "caption": "Built-in Video Player",
-          "src": "https://play-lh.googleusercontent.com/ZeWwBC7stXyThNLVA6jwWJeUeBdLbNfobRp3lcMLxFXLLJd-bRUGloCHHT9E-mOaieqoBj13233uyIJ5fHcdFA"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "05-qr-code-scanner/screenshot-04.jpg",
-          "alt": "QR Code Scanner screenshot 4: Block Ads",
-          "label": "Screenshot 04",
-          "w": 710,
-          "h": 1400,
-          "caption": "Block Ads",
-          "src": "https://play-lh.googleusercontent.com/dcMlodih4_w17vIeCyCa8w7CzoUrL_9nvW_cWI_DakHdmCnEOVKJmR9_5ryJktF9f07LLWZn9m0IcH6i-YNEDlI"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "05-qr-code-scanner/screenshot-05.jpg",
-          "alt": "QR Code Scanner screenshot 5: Best Story Downloader",
-          "label": "Screenshot 05",
-          "w": 710,
-          "h": 1400,
-          "caption": "Best Story Downloader",
-          "src": "https://play-lh.googleusercontent.com/eynwx6KX7Cn9uZeZpR1JLtduygRZwkgvxjpa8dR_kWk9cUK4KOjC4fMISk9UuQYfbyglGibNdVbnczOVMWRKZVs"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "05-qr-code-scanner/screenshot-06.jpg",
-          "alt": "QR Code Scanner screenshot 6: 3x Faster Download",
-          "label": "Screenshot 06",
-          "w": 710,
-          "h": 1400,
-          "caption": "3x Faster Download",
-          "src": "https://play-lh.googleusercontent.com/-Y2BOATxlPIwOJNqNqseBsbounIndJzehNDpjGBu9s3RJh5Uh5s5nOhWfskVmMSyjrHtP-ZMiqMMkypoqZ4"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "05-qr-code-scanner/screenshot-07.jpg",
-          "alt": "QR Code Scanner screenshot 7: Download Manager",
-          "label": "Screenshot 07",
-          "w": 710,
-          "h": 1400,
-          "caption": "Download Manager",
-          "src": "https://play-lh.googleusercontent.com/QN-RvL8-G1boEFQDukxqdcRPEvnW2QIoLiybSKVFhLNobtVRYBxbHYaLmdZv9ZdVMYdn4OIgTiv1dRV0xMw_3Q"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "05-qr-code-scanner/screenshot-08.jpg",
-          "alt": "QR Code Scanner screenshot 8: Share With Friends",
-          "label": "Screenshot 08",
-          "w": 710,
-          "h": 1400,
-          "caption": "Share With Friends",
-          "src": "https://play-lh.googleusercontent.com/hedBnHNe5y-8YGVb5SDVFcNYx2V-CjKjeA1RsKUHFt1RPoC-5QIaFs9Y8FMm_GtB6V1C4jb2AX-YoLKzRb0O4Dk"
-        }
-      ]
-    },
-    {
-      "id": "06-dosa-hub",
-      "num": "06",
-      "name": "Hub (DOSA)",
-      "title": "Hub Video Downloader",
-      "publisher": "DOSA Apps",
-      "downloads": "10M+",
-      "playUrl": "https://play.google.com/store/apps/details?id=hub.browser.video.downloader.saver&hl=en&gl=US",
-      "notes": {
-        "Icon": "A black square carrying the wordmark “Browser hub”, “hub” reversed out of an orange block. One of only two wordmark icons here, and the only one that names a browser rather than a downloader.",
-        "Feature graphic": "The same wordmark on black, nothing else. Consistent with the icon and completely silent about what the app does.",
-        "Screenshot system": "Five creatives on black with orange-and-white two-tone headings and an orange-outlined device: All Websites Video Downloader, Social Media Video Downloader, Private Browser, Multiple Resolution, 3x Faster Private Downloader.",
-        "Design assessment": "Positions itself as a browser first, which is a real differentiator in a category of paste-link apps. The execution undercuts it: the carousel publishes the same five creatives twice over, the frames show a search engine and four platform logos outright, and the sample content is adult-adjacent. A clear case of a good idea let down by the assets."
-      },
-      "tags": ["wordmark icon","browser-first positioning","duplicate set removed","search engine + platform logos","3x speed claim"],
-      "noLandscape": true,
-      "assets": [
-        {
-          "kind": "icon",
-          "orient": "square",
-          "file": "06-dosa-hub/icon-01.png",
-          "alt": "A black square carrying the wordmark “Browser hub”, “hub” reversed out of an orange block. One of only two wordmark icons here, and the only one that names a browser rather than a downloader.",
-          "label": "Icon 01",
-          "w": 512,
-          "h": 512,
-          "caption": "Listing icon, original file",
-          "src": "https://play-lh.googleusercontent.com/KM2DCIFpt8qc_1150CumeH5rXCqgABmFVXFfQwQKC8wh8V5mF05R_8QNoX_wTNIWrytBpWP9ayRJ7_ayLM6jbws"
-        },
-        {
-          "kind": "feature-graphic",
-          "orient": "landscape",
-          "file": "06-dosa-hub/feature-graphic-01.jpg",
-          "alt": "The same wordmark on black, nothing else. Consistent with the icon and completely silent about what the app does.",
-          "label": "Feature Graphic 01",
-          "w": 1024,
-          "h": 500,
-          "caption": "Feature graphic, original file",
-          "src": "https://play-lh.googleusercontent.com/sSno7wEWk_kU4ec840CSjwmZSj1lMgdecvg86sn3Ne2tUdB1rcBWmVxwpaCN1OFWG28DTTiiROnxq2-LnQCI8NA"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "06-dosa-hub/screenshot-01.jpg",
-          "alt": "Hub (DOSA) screenshot 1: All Websites Video Downloader",
-          "label": "Screenshot 01",
-          "w": 788,
-          "h": 1400,
-          "caption": "All Websites Video Downloader",
-          "src": "https://play-lh.googleusercontent.com/afj_Z-9anpIZVKelRKnkQejs3RK4l_1nnzUSfpW48FvnMG_kx0jBVV6DMdVlZxHYjtqoE6VXUCe7uf8kgjR8tz4"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "06-dosa-hub/screenshot-02.jpg",
-          "alt": "Hub (DOSA) screenshot 2: Social Media Video Downloader",
-          "label": "Screenshot 02",
-          "w": 788,
-          "h": 1400,
-          "caption": "Social Media Video Downloader",
-          "src": "https://play-lh.googleusercontent.com/VkWpMEmastGGS-Pxks4_6hCXfU9BPCx9K_dWni4WpYITCIDZgUK_32HduUK9EEbFVGPQIISkImueXHNn0zP1ajQ"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "06-dosa-hub/screenshot-03.jpg",
-          "alt": "Hub (DOSA) screenshot 3: Private Browser",
-          "label": "Screenshot 03",
-          "w": 788,
-          "h": 1400,
-          "caption": "Private Browser",
-          "src": "https://play-lh.googleusercontent.com/DjdzA6nlXknddQAUfnT3qSLC2mXZkPIUl9Ji25aOGO_m1PrgMgBVX9QVbN4B2Gm5y-6sOfoC6fthsyMyb50R9g"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "06-dosa-hub/screenshot-04.jpg",
-          "alt": "Hub (DOSA) screenshot 4: Multiple Resolution",
-          "label": "Screenshot 04",
-          "w": 788,
-          "h": 1400,
-          "caption": "Multiple Resolution",
-          "src": "https://play-lh.googleusercontent.com/67eOVQpe-Rbi_64OI3Q8Dj0LvVQA8Y3E7e0HtkTIAU59ps-FRJ6yNWDmutySVv2EomkgF6ntfIT3hjE9e06Iiw"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "06-dosa-hub/screenshot-05.jpg",
-          "alt": "Hub (DOSA) screenshot 5: 3x Faster Private Downloader",
-          "label": "Screenshot 05",
-          "w": 788,
-          "h": 1400,
-          "caption": "3x Faster Private Downloader",
-          "src": "https://play-lh.googleusercontent.com/G7e8fu2fjs8R8wgS6Xexzi-1tnL6j7xRgbGUhxfwGUDmjp2RBioMaD8NYljuWoAo0yn56duJk29zoRNmfDaPGtY"
-        }
-      ]
-    },
-    {
-      "id": "07-fast-saver",
-      "num": "07",
-      "name": "Fast Saver",
-      "title": "Video Downloader & Story Saver",
-      "publisher": "Video Downloader & Fast Saver",
-      "downloads": "10M+",
-      "playUrl": "https://play.google.com/store/apps/details?id=videodownloader.instagram.videosaver&hl=en&gl=US",
-      "notes": {
-        "Icon": "A flat red square with a white ring and a red download arrow. No gradient, no depth — the plainest circle-and-arrow of the three.",
-        "Feature graphic": "White with a red diagonal wedge, the wordmark “Rposty” and a line of small type. The banner brands the app as Rposty while the listing title says Video Downloader & Story Saver — the only name mismatch in the library.",
-        "Screenshot system": "Five frames on flat red with white headings and a dark device: Super Easy Steps, Auto save, Share and Repost, Build-in Player, Dark Theme Mode.",
-        "Design assessment": "The highest-rated app in the library — 4.80★ from 377K ratings — on five screenshots, a name that does not match its banner, and a typo in frame 4 (“Build-in Player”). Together with InShot at the top of search, it is the clearest evidence here that listing craft and user rating are independent."
-      },
-      "tags": ["flat red circle icon","name mismatch (Rposty)","fewest frames","typo: Build-in","highest rated"],
-      "noLandscape": true,
-      "assets": [
-        {
-          "kind": "icon",
-          "orient": "square",
-          "file": "07-fast-saver/icon-01.png",
-          "alt": "A flat red square with a white ring and a red download arrow. No gradient, no depth — the plainest circle-and-arrow of the three.",
-          "label": "Icon 01",
-          "w": 512,
-          "h": 512,
-          "caption": "Listing icon, original file",
-          "src": "https://play-lh.googleusercontent.com/wLtr4WqAcE6CWJkmK7sTpBds7m8rnv3V7lEmpo0IPsknqgSaYWQvk3L8cdmyM37aDIAkGHpemmjBUdu9pPlMjQ"
-        },
-        {
-          "kind": "feature-graphic",
-          "orient": "landscape",
-          "file": "07-fast-saver/feature-graphic-01.jpg",
-          "alt": "White with a red diagonal wedge, the wordmark “Rposty” and a line of small type. The banner brands the app as Rposty while the listing title says Video Downloader & Story Saver — the only name mismatch in the library.",
-          "label": "Feature Graphic 01",
-          "w": 1024,
-          "h": 500,
-          "caption": "Feature graphic, original file",
-          "src": "https://play-lh.googleusercontent.com/YnHVhcTPX5dm8XVwrEbqgTISNXdkTNmJsTC42u1ZpQB6E7Zy2VqDfIenSDaKR69q5UJVjgunWY_mwx26F13oGg"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "07-fast-saver/screenshot-01.jpg",
-          "alt": "Fast Saver screenshot 1: Super Easy Steps",
-          "label": "Screenshot 01",
-          "w": 788,
-          "h": 1400,
-          "caption": "Super Easy Steps",
-          "src": "https://play-lh.googleusercontent.com/J6pkKwqFaZOljdiVyz4-AkJJ6D9m2qHVrJR2uSicX1DbSOTwKsM-bQlwU_J1p2m9uM6Vh0fmoA6iFsrYay-BBbc"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "07-fast-saver/screenshot-02.jpg",
-          "alt": "Fast Saver screenshot 2: Auto save",
-          "label": "Screenshot 02",
-          "w": 788,
-          "h": 1400,
-          "caption": "Auto save",
-          "src": "https://play-lh.googleusercontent.com/cAaZ9N7-yf5_nECpM5RMMlWE0GqubpxAUqLtNkuadd9XK_vGOoCzngfXwq3FHkO1FEYDVPzwoNqjrw-7mSJRUJ8"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "07-fast-saver/screenshot-03.jpg",
-          "alt": "Fast Saver screenshot 3: Share and Repost",
-          "label": "Screenshot 03",
-          "w": 788,
-          "h": 1400,
-          "caption": "Share and Repost",
-          "src": "https://play-lh.googleusercontent.com/9cu6wZIYGYKLxLcKHWudlwxYrnLUgnluyWtuxlTLYAoE8DC9vw4ZutHHbL5vGduY6KHu-c5x-4f3pkZHhaUo"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "07-fast-saver/screenshot-04.jpg",
-          "alt": "Fast Saver screenshot 4: Build-in Player (typo as published)",
-          "label": "Screenshot 04",
-          "w": 788,
-          "h": 1400,
-          "caption": "Build-in Player (typo as published)",
-          "src": "https://play-lh.googleusercontent.com/TE7hWi__T-3ahcuFlL5LNf6jN81Y1U9LEuO2Dz1AkP7BVLiVHSDLf6ZBD2IvBakUiOKgxCgq7jNZnE3FoSyfpig"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "07-fast-saver/screenshot-05.jpg",
-          "alt": "Fast Saver screenshot 5: Dark Theme Mode",
-          "label": "Screenshot 05",
-          "w": 788,
-          "h": 1400,
-          "caption": "Dark Theme Mode",
-          "src": "https://play-lh.googleusercontent.com/n-oMAA-YNRQYp2sLL3uy-zpBitcgfg-q7WqdjS8bTcjXJiIhgslQg3tI8rEP2mzB0eTGdlkwik4em_C1nBNI-w"
-        }
-      ]
-    },
-    {
-      "id": "08-apptool",
-      "num": "08",
-      "name": "AppTool",
-      "title": "All Video Downloader & Player",
-      "publisher": "AppTool-Browser-Video",
-      "downloads": "10M+",
-      "playUrl": "https://play.google.com/store/apps/details?id=com.videodownload.browser.videodownloader&hl=en&gl=US",
-      "notes": {
-        "Icon": "A yellow-amber rounded square with a white download arrow — the third arrow-on-a-square in the library, differing from InShot and Gamma only in ground colour.",
-        "Feature graphic": "A dark maroon grid of media tiles with “Download Videos From All Media” and a “Simple & Fast” chip. Fourth app using the tile-grid construction.",
-        "Screenshot system": "Six portrait frames on white with black-and-orange two-tone headings, plus one landscape frame. Download Any Video In One Tap, Download Video HD & 4K, Auto Detect Videos Online, 3X Faster Download Speed, Keep Your Videos Private, Download From Popular Sites.",
-        "Design assessment": "One of only two listings in the library that publish a landscape frame at all, which matches what the 21 Sep visual review found. The set is tidy but generic, and it carries both a speed claim and a row of platform logos. “Auto Detect Videos Online” is the one heading here that describes a mechanism rather than a category."
-      },
-      "tags": ["yellow arrow icon","tile-grid banner","landscape frame","3x speed claim","platform logos"],
-      "noLandscape": false,
-      "assets": [
-        {
-          "kind": "icon",
-          "orient": "square",
-          "file": "08-apptool/icon-01.png",
-          "alt": "A yellow-amber rounded square with a white download arrow — the third arrow-on-a-square in the library, differing from InShot and Gamma only in ground colour.",
-          "label": "Icon 01",
-          "w": 512,
-          "h": 512,
-          "caption": "Listing icon, original file",
-          "src": "https://play-lh.googleusercontent.com/5O3gW0o1MoJbI-z7ZxbzFkip1a74LSqN6xrL9U61lTg8FVAg6YX50zVbQHis2Bi1SAHX7VJ8hq2B2K_gVo6k-aw"
-        },
-        {
-          "kind": "feature-graphic",
-          "orient": "landscape",
-          "file": "08-apptool/feature-graphic-01.jpg",
-          "alt": "A dark maroon grid of media tiles with “Download Videos From All Media” and a “Simple & Fast” chip. Fourth app using the tile-grid construction.",
-          "label": "Feature Graphic 01",
-          "w": 1024,
-          "h": 500,
-          "caption": "Feature graphic, original file",
-          "src": "https://play-lh.googleusercontent.com/oBpdy9TOIkDchxD_mO2tgPWcnB_RvXhiYbrTHckeWZZEWWJWPCqnM9rvOO5RJGCi39ISI_VRy3kTQrHy-EF4og"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "08-apptool/screenshot-01.jpg",
-          "alt": "AppTool screenshot 1: Download Any Video In One Tap",
-          "label": "Screenshot 01",
-          "w": 788,
-          "h": 1400,
-          "caption": "Download Any Video In One Tap",
-          "src": "https://play-lh.googleusercontent.com/OpcFaGD48-58GHzVcBgimTrDUCrTEmX-bHoDhsAdaR7fpQ8PT9eoz-klcKYMoKWUDA3NsezwvraO_rLhL15um2w"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "08-apptool/screenshot-02.jpg",
-          "alt": "AppTool screenshot 2: Download Video HD & 4K",
-          "label": "Screenshot 02",
-          "w": 788,
-          "h": 1400,
-          "caption": "Download Video HD & 4K",
-          "src": "https://play-lh.googleusercontent.com/RF8OPAx4EWstRwWeO-ZrFe-vI2feAArSuwbDYQb3a8lvPU7z5TyasEzO-v8XJYEsjaGShsgsUvloEf1L0KyuOg"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "08-apptool/screenshot-03.jpg",
-          "alt": "AppTool screenshot 3: Auto Detect Videos Online",
-          "label": "Screenshot 03",
-          "w": 788,
-          "h": 1400,
-          "caption": "Auto Detect Videos Online",
-          "src": "https://play-lh.googleusercontent.com/CjhrwLPGN0lPRtNH7JUeeEXOLRvzKv2PG5USudp8xCJe4HGjFZdu6yPSD3An-1tfpnERxiWniQBoHi7dNHfgTg"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "08-apptool/screenshot-04.jpg",
-          "alt": "AppTool screenshot 4: 3X Faster Download Speed",
-          "label": "Screenshot 04",
-          "w": 788,
-          "h": 1400,
-          "caption": "3X Faster Download Speed",
-          "src": "https://play-lh.googleusercontent.com/D_HYsn8jMovccoF_JUXtq8UZ4SmKDqS6vLejpJ9AMb5k4X4NOwy3DtjNf2F2XZmMoVgfJVNMxltsiAWp4AzUdg"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "08-apptool/screenshot-05.jpg",
-          "alt": "AppTool screenshot 5: Keep Your Videos Private",
-          "label": "Screenshot 05",
-          "w": 788,
-          "h": 1400,
-          "caption": "Keep Your Videos Private",
-          "src": "https://play-lh.googleusercontent.com/n99cFkZHSHKev4n4abr96GxOwXU6Yx-CAOUiDdAyuzC96hm7Jal9M0AJDnERy6vjs79FjaM2qMAhf0l_pQo3P9E"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "08-apptool/screenshot-06.jpg",
-          "alt": "AppTool screenshot 6: Download From Popular Sites",
-          "label": "Screenshot 06",
-          "w": 788,
-          "h": 1400,
-          "caption": "Download From Popular Sites",
-          "src": "https://play-lh.googleusercontent.com/m_yBshSMLsibiVn6mcr3D-OLcuU_31YM4LWpapNKNbfP5p6BUzna_FjLb8vTzxNhp2eeIgdofBX7iPTk08lWhg"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "landscape",
-          "file": "08-apptool/screenshot-07.jpg",
-          "alt": "AppTool screenshot 7: Built-in Video Player (landscape)",
-          "label": "Screenshot 07",
-          "w": 1400,
-          "h": 788,
-          "caption": "Built-in Video Player (landscape)",
-          "src": "https://play-lh.googleusercontent.com/QQ_U3Wu00kgZpTmMWQDFgs0KKk2GQQ3M_23rr6sb6iTLi-XSYuSbgo1QxbnG_BqMdazsy8KGpuORrCMrU6C4l0M"
-        }
-      ]
-    },
-    {
-      "id": "09-saver-player-studio",
-      "num": "09",
-      "name": "Saver & Player Studio",
-      "title": "Video Downloader & Video Saver",
-      "publisher": "All Video Downloader, Saver & Player Studio",
-      "downloads": "50M+",
-      "playUrl": "https://play.google.com/store/apps/details?id=downloader.video.download.free&hl=en&gl=US",
-      "notes": {
-        "Icon": "A black square with “All” in white above “Downloader” reversed out of an orange block — the second wordmark icon, and the only one that spells out the category.",
-        "Feature graphic": "Black with a faint pattern of download arrows, a circular orange badge at the centre and “Video Downloader & File Saver” beneath.",
-        "Screenshot system": "Seven creatives on black with orange chevrons bleeding in from the sides, italic two-tone headings and a device between them: Social Media Downloader, Download Videos with One Tap, Fast & Safe, Built-in Video Player, Share & Repost, Dark Theme Enjoy at Night, 4x Faster Download Speed.",
-        "Design assessment": "The chevron frame is the most recognisable container in the library — you could identify this listing from a thumbnail. Behind it, the same seven creatives are published at four different pixel sizes, so the raw carousel runs to twenty-one entries for seven ideas. Tidy art, careless listing hygiene."
-      },
-      "tags": ["wordmark icon","orange chevrons","strong container","four duplicate size sets","4x speed claim"],
-      "noLandscape": true,
-      "assets": [
-        {
-          "kind": "icon",
-          "orient": "square",
-          "file": "09-saver-player-studio/icon-01.jpg",
-          "alt": "A black square with “All” in white above “Downloader” reversed out of an orange block — the second wordmark icon, and the only one that spells out the category.",
-          "label": "Icon 01",
-          "w": 512,
-          "h": 512,
-          "caption": "Listing icon, original file",
-          "src": "https://play-lh.googleusercontent.com/Ljy0jnX79twImhfJgIS4T2pNk_4by-em_C1r_dldfvTSbTdqqKO4PsxsezJhIZGcLAnc03l1d62QyX9FaBCy"
-        },
-        {
-          "kind": "feature-graphic",
-          "orient": "landscape",
-          "file": "09-saver-player-studio/feature-graphic-01.jpg",
-          "alt": "Black with a faint pattern of download arrows, a circular orange badge at the centre and “Video Downloader & File Saver” beneath.",
-          "label": "Feature Graphic 01",
-          "w": 1024,
-          "h": 500,
-          "caption": "Feature graphic, original file",
-          "src": "https://play-lh.googleusercontent.com/nqzrNRvz5GxCC5EMcfiv1xQfe0u41JUeXKFbEeHHzf0UIaEimWsqqCTL8iExgJ2XvaY9tzsTwfgdFotO9MIGkw"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "09-saver-player-studio/screenshot-01.jpg",
-          "alt": "Saver & Player Studio screenshot 1: Social Media Downloader",
-          "label": "Screenshot 01",
-          "w": 1050,
-          "h": 1400,
-          "caption": "Social Media Downloader",
-          "src": "https://play-lh.googleusercontent.com/RXJ6uThTRU833VpnqIm7iA7JvkKsrOlyzGB_vRxqe-m0AA8aL4GkuIzZ_2JXO2vYgzVwGa3GWEkHzMM9CuAh"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "09-saver-player-studio/screenshot-02.jpg",
-          "alt": "Saver & Player Studio screenshot 2: Download Videos with One Tap",
-          "label": "Screenshot 02",
-          "w": 1050,
-          "h": 1400,
-          "caption": "Download Videos with One Tap",
-          "src": "https://play-lh.googleusercontent.com/_tKtzsjklEko2W5tN3qInXgCFSF4Cd4kYni3Dl3a-KouWHSZepykMajcTgTaL1d5nAJeUqbjjuz72ZHYWXnYTQ"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "09-saver-player-studio/screenshot-03.jpg",
-          "alt": "Saver & Player Studio screenshot 3: Fast & Safe",
-          "label": "Screenshot 03",
-          "w": 1050,
-          "h": 1400,
-          "caption": "Fast & Safe",
-          "src": "https://play-lh.googleusercontent.com/0-T1GJz50-x4vEDs32fq_aICbnRVhCf3UbbTwSCsKf-03QtWMaOHWw5I3XLEmiGxMEOtfG8AdIr8rpL5ZuPo"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "09-saver-player-studio/screenshot-04.jpg",
-          "alt": "Saver & Player Studio screenshot 4: Built-in Video Player",
-          "label": "Screenshot 04",
-          "w": 1050,
-          "h": 1400,
-          "caption": "Built-in Video Player",
-          "src": "https://play-lh.googleusercontent.com/3_3JkIAM9oPDV40gcw8FpjAa3w4eTQVS-nPmfD8CU1g54_l8z9rv_D8BXfm5IRS-HFNHYjAOxxJqMb_GHglQNg"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "09-saver-player-studio/screenshot-05.jpg",
-          "alt": "Saver & Player Studio screenshot 5: Share & Repost",
-          "label": "Screenshot 05",
-          "w": 1050,
-          "h": 1400,
-          "caption": "Share & Repost",
-          "src": "https://play-lh.googleusercontent.com/2a2yG1B0cAjsgs9SsKiw5bdDszJbfc0v7As7kXwrcWXl5Mt8WYv5AUa3MJaN4StLj1fwBHy0ZGKy0ncmhj6U"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "09-saver-player-studio/screenshot-06.jpg",
-          "alt": "Saver & Player Studio screenshot 6: Dark Theme — Enjoy at Night",
-          "label": "Screenshot 06",
-          "w": 1050,
-          "h": 1400,
-          "caption": "Dark Theme — Enjoy at Night",
-          "src": "https://play-lh.googleusercontent.com/QqD9lWPyLRy_x9ROnctPdsp8SfPOnGw3KvdQ2ClO0tcwpxvzTOwfAbBSjIeSumjzkubkqvbgHxETd_wqb8ah"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "09-saver-player-studio/screenshot-07.jpg",
-          "alt": "Saver & Player Studio screenshot 7: 4x Faster Download Speed",
-          "label": "Screenshot 07",
-          "w": 1050,
-          "h": 1400,
-          "caption": "4x Faster Download Speed",
-          "src": "https://play-lh.googleusercontent.com/eHAxgPvzSkXms-X_rPwAzTchKrUHxDwQ8DRCqCRA2HSK2Y1waFXw1EQLhUeRJIiHImqykvCRBpXy2i7IYgWXtw"
-        }
-      ]
-    },
-    {
-      "id": "10-devbay",
-      "num": "10",
-      "name": "DevBay",
-      "title": "All Video Downloader & Browser",
-      "publisher": "Fast Video Downloader & Story Saver - DevBay",
-      "downloads": "50M+",
-      "playUrl": "https://play.google.com/store/apps/details?id=instasaver.videodownloader.photodownloader.repost&hl=en&gl=US",
-      "notes": {
-        "Icon": "A red-to-pink gradient squircle with a white download arrow. Closest of all sixteen competitor icons to our own construction, minus the rainbow.",
-        "Feature graphic": "White, two phone mocks at the left, “All Video Downloader App / Save Photos & Videos” at the right. Clean, quiet, forgettable.",
-        "Screenshot system": "Seven frames with a pale blue-grey top fading to white, pink-and-dark two-tone headings and a device: All Video Downloader, HD Video Downloader App, Fast Video Downloader, Built-In Video Player, Manage All Saved Videos, Download Short Videos, Download In High Quality.",
-        "Design assessment": "The lightest, most modern-looking set in the library, and it belongs to the **lowest-rated** large app here — 3.89★ across 649K ratings. Three of its seven headings are just the app's own name reworded, which wastes slots, and frame 1 lists eight platforms by name as buttons."
-      },
-      "tags": ["gradient arrow icon","pale palette","repetitive headings","lowest rated","platform names as buttons"],
-      "noLandscape": true,
-      "assets": [
-        {
-          "kind": "icon",
-          "orient": "square",
-          "file": "10-devbay/icon-01.png",
-          "alt": "A red-to-pink gradient squircle with a white download arrow. Closest of all sixteen competitor icons to our own construction, minus the rainbow.",
-          "label": "Icon 01",
-          "w": 512,
-          "h": 512,
-          "caption": "Listing icon, original file",
-          "src": "https://play-lh.googleusercontent.com/8nlpQOLVFaDrO7HjaY3k09WhRgJCVelbHF3groZbL9zj7ZaM2RRDvOeb_G6ydASZd2UAGtMoux0iZL9zemXq1Q"
-        },
-        {
-          "kind": "feature-graphic",
-          "orient": "landscape",
-          "file": "10-devbay/feature-graphic-01.jpg",
-          "alt": "White, two phone mocks at the left, “All Video Downloader App / Save Photos & Videos” at the right. Clean, quiet, forgettable.",
-          "label": "Feature Graphic 01",
-          "w": 1024,
-          "h": 500,
-          "caption": "Feature graphic, original file",
-          "src": "https://play-lh.googleusercontent.com/dsB1ZAkEauERXsS4EJ9Xs-41JbAo0qaaOtCawqlJCIO2CBGkivNy8bPyT5X5bg1tbcMWkfptjMVxOK_7Z8vNdA"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "10-devbay/screenshot-01.jpg",
-          "alt": "DevBay screenshot 1: All Video Downloader",
-          "label": "Screenshot 01",
-          "w": 756,
-          "h": 1400,
-          "caption": "All Video Downloader",
-          "src": "https://play-lh.googleusercontent.com/fLJClOftqkkO9dqAvudwMP1iBF-NG0jv0DVhPnbG563BLq94xlVwX2FtFj00VsaZcX6Two7xxNQurGgEevW6oA"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "10-devbay/screenshot-02.jpg",
-          "alt": "DevBay screenshot 2: HD Video Downloader App",
-          "label": "Screenshot 02",
-          "w": 756,
-          "h": 1400,
-          "caption": "HD Video Downloader App",
-          "src": "https://play-lh.googleusercontent.com/KB1_2FN5EwzqR34bU5fEsz7cCUgAnhIHtKSMengBToq2aF5zQ-lWY2C3ClSxrhg56cJplqM5GGIXKJRXCHa8xw"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "10-devbay/screenshot-03.jpg",
-          "alt": "DevBay screenshot 3: Fast Video Downloader",
-          "label": "Screenshot 03",
-          "w": 756,
-          "h": 1400,
-          "caption": "Fast Video Downloader",
-          "src": "https://play-lh.googleusercontent.com/K_gM9kwcnOpvVVZeBNlJLsq_m-3s1-RApVgpxfSKwJGh8_ASHmvtIzwVfOUf_9RVKgQ5CkGDoSzkR1gzJOSJkA"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "10-devbay/screenshot-04.jpg",
-          "alt": "DevBay screenshot 4: Built-In Video Player",
-          "label": "Screenshot 04",
-          "w": 756,
-          "h": 1400,
-          "caption": "Built-In Video Player",
-          "src": "https://play-lh.googleusercontent.com/nEe3_iWAEp_gk0TZnB0JohgHPwL_qoQCQrFngw2GmajI5srTGgL0IR0ykqA8u08rAaQ61cIMbsdMIg2aXFYbGQ"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "10-devbay/screenshot-05.jpg",
-          "alt": "DevBay screenshot 5: Manage All Saved Videos",
-          "label": "Screenshot 05",
-          "w": 756,
-          "h": 1400,
-          "caption": "Manage All Saved Videos",
-          "src": "https://play-lh.googleusercontent.com/hIz0SJIcuegdmkLsFb5hdr3MGSvp8I1JXXKEkctddeuUVphHfiuPJGIo_SUsE-d-47MyxTannIS3f7zqYqWLRQ"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "10-devbay/screenshot-06.jpg",
-          "alt": "DevBay screenshot 6: Download Short Videos",
-          "label": "Screenshot 06",
-          "w": 756,
-          "h": 1400,
-          "caption": "Download Short Videos",
-          "src": "https://play-lh.googleusercontent.com/V0XSNBa6VyqR0CFMSrBV_MX8N-TdnpC42HJsye7RGsLKc2EHI0ZJApb-IccRlEgqitoyEtdVbrmMuVvhi80n2A"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "10-devbay/screenshot-07.jpg",
-          "alt": "DevBay screenshot 7: Download In High Quality",
-          "label": "Screenshot 07",
-          "w": 756,
-          "h": 1400,
-          "caption": "Download In High Quality",
-          "src": "https://play-lh.googleusercontent.com/8RQjUlpDiAny09Dv768DnvKNedj--xekG67YXhlCC-kc-IwpLFAdBVaBsRHw3463PiFDAEc6xpU_ZR-W6Gbcpw"
-        }
-      ]
-    },
-    {
-      "id": "11-sky-vision",
-      "num": "11",
-      "name": "Sky Vision",
-      "title": "All Video Downloader & Saver",
-      "publisher": "Sky Vision Apps Lab",
-      "downloads": "10M+",
-      "playUrl": "https://play.google.com/store/apps/details?id=com.allvideodownloader.hdvideodownloader.savevideos&hl=en&gl=US",
-      "notes": {
-        "Icon": "A flat red square with a white “V”. Identical in idea to Attractive Apps, Markhoor, Mobile Notepad and Vidow — five listings, one mark.",
-        "Feature graphic": "An orange tile grid with “All Video Downloader” in white. The tile-grid family again.",
-        "Screenshot system": "Seven frames on white with a coral swoosh at the foot and two-tone headings: Paste the Link & Download Now, Fast Video Downloader, Save Video With High Resolution, Watch Trending Videos, Support All Video Format, Easy To Manage & Share, All Video Downloader.",
-        "Design assessment": "**This listing's title is word-for-word our own current title**, on a 10M-install app. That alone is worth more attention than its graphics, which are competent and entirely generic — a red V, a tile grid and seven headings that could belong to any app in this library."
-      },
-      "tags": ["red V icon","same title as ours","tile-grid banner","coral swoosh","generic headings"],
-      "noLandscape": true,
-      "assets": [
-        {
-          "kind": "icon",
-          "orient": "square",
-          "file": "11-sky-vision/icon-01.png",
-          "alt": "A flat red square with a white “V”. Identical in idea to Attractive Apps, Markhoor, Mobile Notepad and Vidow — five listings, one mark.",
-          "label": "Icon 01",
-          "w": 512,
-          "h": 512,
-          "caption": "Listing icon, original file",
-          "src": "https://play-lh.googleusercontent.com/WYDfh31pnGcXOA47UxNqxtpja_wGFI7WoCSaaJ2ds5dP26aem1U0vT0oL6UIUIAeqac26Gb72y4be9VLRDpOfQ"
-        },
-        {
-          "kind": "feature-graphic",
-          "orient": "landscape",
-          "file": "11-sky-vision/feature-graphic-01.jpg",
-          "alt": "An orange tile grid with “All Video Downloader” in white. The tile-grid family again.",
-          "label": "Feature Graphic 01",
-          "w": 1024,
-          "h": 500,
-          "caption": "Feature graphic, original file",
-          "src": "https://play-lh.googleusercontent.com/C2PO4WH7Gv29t-ooMW1PPM9A9-cbIqGvEAG9s6_9d3DMkonhbur9en9_JdkS3tRyHCS_UlJtFSK2EEKWimefVQ"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "11-sky-vision/screenshot-01.jpg",
-          "alt": "Sky Vision screenshot 1: Paste the Link & Download Now",
-          "label": "Screenshot 01",
-          "w": 788,
-          "h": 1400,
-          "caption": "Paste the Link & Download Now",
-          "src": "https://play-lh.googleusercontent.com/hcyKV8VTN9lfqV1F-8eav-4FeVQrRiFg8K5Nbzi0NxpJHvZWE8OzrnDuLDLYebFjFnJQBQXqwMaQDzgXqb6J"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "11-sky-vision/screenshot-02.jpg",
-          "alt": "Sky Vision screenshot 2: Fast Video Downloader",
-          "label": "Screenshot 02",
-          "w": 788,
-          "h": 1400,
-          "caption": "Fast Video Downloader",
-          "src": "https://play-lh.googleusercontent.com/UUPCqAJrAAajYHdRapIAu5-c4Mfcc5MLYW_c98CSASpvdgdEAh1_3rwpWspFnAs3A9URushu62VocmxIXtZ4"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "11-sky-vision/screenshot-03.jpg",
-          "alt": "Sky Vision screenshot 3: Save Video With High Resolution",
-          "label": "Screenshot 03",
-          "w": 788,
-          "h": 1400,
-          "caption": "Save Video With High Resolution",
-          "src": "https://play-lh.googleusercontent.com/DNu3H-FPml2vRXNenl1EJQT7xe8ysQL4X0-FhF-_PzNOKeqsk9ZblE9cG8gVgRDczTsnMJAmQjoCQBn3khtD7w"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "11-sky-vision/screenshot-04.jpg",
-          "alt": "Sky Vision screenshot 4: Watch Trending Videos",
-          "label": "Screenshot 04",
-          "w": 788,
-          "h": 1400,
-          "caption": "Watch Trending Videos",
-          "src": "https://play-lh.googleusercontent.com/n0dZrGexmt38O6Tri6Ery8tboaddJdJm63INAyY9J7gNCBHXeLAnsuvkNJ9Sio3kd-1xNU7pZYGxXt0NE4y9aoQ"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "11-sky-vision/screenshot-05.jpg",
-          "alt": "Sky Vision screenshot 5: Support All Video Format",
-          "label": "Screenshot 05",
-          "w": 788,
-          "h": 1400,
-          "caption": "Support All Video Format",
-          "src": "https://play-lh.googleusercontent.com/UyAnf-fFtQ1wgzLhUvs1fQowweZnopqFRUQedfDI6KcHqZ1Ipn3x6Iqxu9nIUjUnj8GD15_sNsFhXgcKMu38sA"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "11-sky-vision/screenshot-06.jpg",
-          "alt": "Sky Vision screenshot 6: Easy To Manage & Share",
-          "label": "Screenshot 06",
-          "w": 788,
-          "h": 1400,
-          "caption": "Easy To Manage & Share",
-          "src": "https://play-lh.googleusercontent.com/ikNKUKyBcSpH4vtNsu8Rbh7H3iZj8HaDkssa0qFpYGanNRT87IHopvnFta-rD0oZ6ahuFHukwKAUthtlXYMH"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "11-sky-vision/screenshot-07.jpg",
-          "alt": "Sky Vision screenshot 7: All Video Downloader",
-          "label": "Screenshot 07",
-          "w": 788,
-          "h": 1400,
-          "caption": "All Video Downloader",
-          "src": "https://play-lh.googleusercontent.com/RsVRXErJmSD97Vhb_Ab3Kv69ozw_hhDiL2kouwWhCy8N6LRm27-9fPUIgOsowfTCte7cM5I15aXqYEeIeYvh2g"
-        }
-      ]
-    },
-    {
-      "id": "12-attractive-apps",
-      "num": "12",
-      "name": "Attractive Apps",
-      "title": "All video downloader and saver",
-      "publisher": "Attractive Apps Valley",
-      "downloads": "10M+",
-      "playUrl": "https://play.google.com/store/apps/details?id=allinone.videodownloader.savevideos&hl=en&gl=US",
-      "notes": {
-        "Icon": "A flat red square with a white “V” — the same mark as Sky Vision, Markhoor, Mobile Notepad and Vidow.",
-        "Feature graphic": "A pink-to-orange gradient with “Video Downloader” and a line of small supporting type beside a phone mock. The brightest banner in the library.",
-        "Screenshot system": "Six frames on solid orange with white two-tone headings and a device: All Video Downloader, Download All You Watch, Built-In Video Player, High Resolution Video Downloader, Secure & Fast Downloader, Social Media Downloader.",
-        "Design assessment": "Warm and consistent, and the orange ground does more to separate it in a result strip than its icon ever will. Two frames show grids of named platform buttons, one of them with a misspelling (“Instgram”), and the headings restate the title four times over."
-      },
-      "tags": ["red V icon","gradient banner","solid orange frames","platform buttons","repetitive headings"],
-      "noLandscape": true,
-      "assets": [
-        {
-          "kind": "icon",
-          "orient": "square",
-          "file": "12-attractive-apps/icon-01.png",
-          "alt": "A flat red square with a white “V” — the same mark as Sky Vision, Markhoor, Mobile Notepad and Vidow.",
-          "label": "Icon 01",
-          "w": 512,
-          "h": 512,
-          "caption": "Listing icon, original file",
-          "src": "https://play-lh.googleusercontent.com/N77NqpfhamAt-kjsqbI-JkmYQRjUiHUFuyArYqEBGAwPOR_8NMHXgJlrcr5HQSTLilOfWqGt83J_ihpnPWExILI"
-        },
-        {
-          "kind": "feature-graphic",
-          "orient": "landscape",
-          "file": "12-attractive-apps/feature-graphic-01.jpg",
-          "alt": "A pink-to-orange gradient with “Video Downloader” and a line of small supporting type beside a phone mock. The brightest banner in the library.",
-          "label": "Feature Graphic 01",
-          "w": 1024,
-          "h": 500,
-          "caption": "Feature graphic, original file",
-          "src": "https://play-lh.googleusercontent.com/5r0E7gFgJq3qBZMhHLZiXfdAWVrfY5uAgDOxzjo748IXGoaOqb6qONlQ1vzWg67i90uSp0jCSt3cPv2oJ7SQgA"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "12-attractive-apps/screenshot-01.jpg",
-          "alt": "Attractive Apps screenshot 1: All Video Downloader",
-          "label": "Screenshot 01",
-          "w": 788,
-          "h": 1400,
-          "caption": "All Video Downloader",
-          "src": "https://play-lh.googleusercontent.com/uxK7mKZUTzy45V1_Lz-Dg7Ipwf8NzE4jQr_dIedo043xckmst0ism4hXlE1MzF7oKzGe38FxZyKxM2Fepz36"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "12-attractive-apps/screenshot-02.jpg",
-          "alt": "Attractive Apps screenshot 2: Download All You Watch",
-          "label": "Screenshot 02",
-          "w": 788,
-          "h": 1400,
-          "caption": "Download All You Watch",
-          "src": "https://play-lh.googleusercontent.com/U_ZMWxVaNm339SvHpDwBY-dYD0-ONmwU7F32ITsvEO-q9ZasUJhSnJQBGGhbkDNGi8E9AYH1_ySFqTY_V0Wr"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "12-attractive-apps/screenshot-03.jpg",
-          "alt": "Attractive Apps screenshot 3: Built-In Video Player",
-          "label": "Screenshot 03",
-          "w": 788,
-          "h": 1400,
-          "caption": "Built-In Video Player",
-          "src": "https://play-lh.googleusercontent.com/QOfY8a2u8I6sGDfyJS5xxn5LV62PvYbfNtRsFcgGPcsr738FAqpnicENhAGBuOq44x0U9ZmaAWvEpJYfpx59"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "12-attractive-apps/screenshot-04.jpg",
-          "alt": "Attractive Apps screenshot 4: High Resolution Video Downloader",
-          "label": "Screenshot 04",
-          "w": 788,
-          "h": 1400,
-          "caption": "High Resolution Video Downloader",
-          "src": "https://play-lh.googleusercontent.com/qycURS3fte4w4kXirs7hcdPqV_XCucRfXLNhCibJsiC3a0_-OuoWpb0aH3Rgo_pdJWL4R5I2mRp1xy-GPXoSBw"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "12-attractive-apps/screenshot-05.jpg",
-          "alt": "Attractive Apps screenshot 5: Secure & Fast Downloader",
-          "label": "Screenshot 05",
-          "w": 788,
-          "h": 1400,
-          "caption": "Secure & Fast Downloader",
-          "src": "https://play-lh.googleusercontent.com/Malrw9bpDCIhpmGMi_JZvM9SrIb5oqkyHUpo5gp6LtcHTzlBWTRR0-xjiZ11ny0bzGGPGeje542hmqMBlgR1Tns"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "12-attractive-apps/screenshot-06.jpg",
-          "alt": "Attractive Apps screenshot 6: Social Media Downloader",
-          "label": "Screenshot 06",
-          "w": 788,
-          "h": 1400,
-          "caption": "Social Media Downloader",
-          "src": "https://play-lh.googleusercontent.com/Iu_xtDmhcKvvEcf5_aCUEQLN7ZjwwQMm9kx005iuPrlDdZSRmK6qZtqypnXybKv-4dEkIN1nDy5bHHJ7q6zCE3s"
-        }
-      ]
-    },
-    {
-      "id": "13-markhoor",
-      "num": "13",
-      "name": "Markhoor",
-      "title": "Video Downloader & Save Video",
-      "publisher": "Markhoor Studio",
-      "downloads": "10M+",
-      "playUrl": "https://play.google.com/store/apps/details?id=com.videosaver.savevideos.story.saverapp&hl=en&gl=US",
-      "notes": {
-        "Icon": "A flat red square with a white “V” — indistinguishable from Sky Vision's and Mobile Notepad's at any size.",
-        "Feature graphic": "White and orange, “Video Downloader” in red beside a phone mock, with platform marks scattered around it.",
-        "Screenshot system": "**Two different systems in one carousel.** Frames 1-7 sit on white with dark headings; frames 8-13 sit on an orange field with a white swoosh and orange headings. The topics overlap — both sets cover link-pasting, resolution options and browsing.",
-        "Design assessment": "The clearest example in the library of what not to do: a shopper swiping this carousel meets two different apps. Mid-stream redesigns are normal; leaving both live is what causes the damage. It also carries a 4x speed claim and a visible third-party feed in frame 9."
-      },
-      "tags": ["red V icon","two visual systems in one carousel","4x speed claim","third-party feed","lowest review count"],
-      "noLandscape": true,
-      "assets": [
-        {
-          "kind": "icon",
-          "orient": "square",
-          "file": "13-markhoor/icon-01.jpg",
-          "alt": "A flat red square with a white “V” — indistinguishable from Sky Vision's and Mobile Notepad's at any size.",
-          "label": "Icon 01",
-          "w": 512,
-          "h": 512,
-          "caption": "Listing icon, original file",
-          "src": "https://play-lh.googleusercontent.com/PwdmwGsCYAewdUgshkWt8fMbOfYPOszRT-L7k0NunbyBL0UU_iPQsPkxEvgLOMHh1KC1SEjqW4Iys1ib9rQOPNk"
-        },
-        {
-          "kind": "feature-graphic",
-          "orient": "landscape",
-          "file": "13-markhoor/feature-graphic-01.jpg",
-          "alt": "White and orange, “Video Downloader” in red beside a phone mock, with platform marks scattered around it.",
-          "label": "Feature Graphic 01",
-          "w": 1024,
-          "h": 500,
-          "caption": "Feature graphic, original file",
-          "src": "https://play-lh.googleusercontent.com/y2Eu9k8uHLfd4kJh9Oeyoz0oVaFA_j1vxz33AeA9e0AU6ojg1TVokD-TaUtSsiyO1a7AnVG6UPf3yYE0d9vL"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "13-markhoor/screenshot-01.jpg",
-          "alt": "Markhoor screenshot 1: All Video Downloader",
-          "label": "Screenshot 01",
-          "w": 788,
-          "h": 1400,
-          "caption": "All Video Downloader",
-          "src": "https://play-lh.googleusercontent.com/WTs1fV9jbtCTuWkWSzeFoH-YDL3FFGy4_Y0JaxClW059YEGFjnZRzkNsGoEXXX73RQPIQoUiCHFSpyGvlUCHYtI"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "13-markhoor/screenshot-02.jpg",
-          "alt": "Markhoor screenshot 2: Paste Link & Download Now",
-          "label": "Screenshot 02",
-          "w": 788,
-          "h": 1400,
-          "caption": "Paste Link & Download Now",
-          "src": "https://play-lh.googleusercontent.com/mxiKrmMB_C34OwHo6aebNbUIM3gxuaQrd7cKlOATG6so5Fds6DnIYbmTSsgA9zlevRLkC2003XpwIHlW24aW0w"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "13-markhoor/screenshot-03.jpg",
-          "alt": "Markhoor screenshot 3: Browser Video Downloader",
-          "label": "Screenshot 03",
-          "w": 788,
-          "h": 1400,
-          "caption": "Browser Video Downloader",
-          "src": "https://play-lh.googleusercontent.com/6CKhIJp4Lf3uqGBXENMI1OsjQL0_7bnUkZ3LXqhjfbIU0MpRrOUVbujO4Zh5a83vLfNw-8SShQYQ1Q022CA0Vg"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "13-markhoor/screenshot-04.jpg",
-          "alt": "Markhoor screenshot 4: HD / SD / mp3 Resolution Options",
-          "label": "Screenshot 04",
-          "w": 788,
-          "h": 1400,
-          "caption": "HD / SD / mp3 Resolution Options",
-          "src": "https://play-lh.googleusercontent.com/ESMs7OfP2yyl_AgRrVItBHTs9wYiorZ9gSlLx5aw7lcfjmKuIQY5xLQuS_LjgZwOjcFRQB3cF10bjsW3vLN-LZQ"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "13-markhoor/screenshot-05.jpg",
-          "alt": "Markhoor screenshot 5: All Sites Video Downloader",
-          "label": "Screenshot 05",
-          "w": 788,
-          "h": 1400,
-          "caption": "All Sites Video Downloader",
-          "src": "https://play-lh.googleusercontent.com/o2VfZOqMx8cbB3RhZfTPQmU4S5bcZmRt77fq0NsPC_nRR9L2RZKRp3JImPYygKBB4J1QP-BCCdNPdLbTsWaVCDo"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "13-markhoor/screenshot-06.jpg",
-          "alt": "Markhoor screenshot 6: Quick Video Downloader",
-          "label": "Screenshot 06",
-          "w": 788,
-          "h": 1400,
-          "caption": "Quick Video Downloader",
-          "src": "https://play-lh.googleusercontent.com/bwS0Fcn6BdurMEKOS5VT4URGALG1ID-LGSG-D3bNXNUmLLEaXpK8x_vXolUQXWgEWpWNKDQSLzICoIWaaEMBmw"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "13-markhoor/screenshot-07.jpg",
-          "alt": "Markhoor screenshot 7: Private Gallery — Photos & Videos",
-          "label": "Screenshot 07",
-          "w": 788,
-          "h": 1400,
-          "caption": "Private Gallery — Photos & Videos",
-          "src": "https://play-lh.googleusercontent.com/ZyDlMM2JmWg4p9xEKqCZdhQSXb-fjZkr_wp1Pzhozdogtd0iZY5yqse-CpK08l07jUjD5b_t4o9sU-UAY2u3cg"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "13-markhoor/screenshot-08.jpg",
-          "alt": "Markhoor screenshot 8: Video & Music Downloader",
-          "label": "Screenshot 08",
-          "w": 788,
-          "h": 1400,
-          "caption": "Video & Music Downloader",
-          "src": "https://play-lh.googleusercontent.com/j9EIWHS2P11EIgIdDUzAuzaiobSuka4G-2GCFKZHbunbMAaRHzueUU7nt-BojNuN_lzLbZEiIQh6iPxFJrG7RA"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "13-markhoor/screenshot-09.jpg",
-          "alt": "Markhoor screenshot 9: Download Videos With Link",
-          "label": "Screenshot 09",
-          "w": 788,
-          "h": 1400,
-          "caption": "Download Videos With Link",
-          "src": "https://play-lh.googleusercontent.com/KH62Q_h4TpBCNHMiJKN1UxtP3QBpE1UY-mfibPZcvXlTwsUUsbFT2Rn-mxGlBRbOu5PLbTsG1fxUVPid8bRONUk"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "13-markhoor/screenshot-10.jpg",
-          "alt": "Markhoor screenshot 10: HD / SD / MP3 — Save With Options",
-          "label": "Screenshot 10",
-          "w": 788,
-          "h": 1400,
-          "caption": "HD / SD / MP3 — Save With Options",
-          "src": "https://play-lh.googleusercontent.com/Vt8vfWMKKtUTYuuqQsX30AjhrUIwxLP2-8YeyFRDZLtXmfgEf7uOnsqU50mlrbqjGglbzmPqe6yw3819qQ9Z"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "13-markhoor/screenshot-11.jpg",
-          "alt": "Markhoor screenshot 11: 4x Faster Download Speed",
-          "label": "Screenshot 11",
-          "w": 788,
-          "h": 1400,
-          "caption": "4x Faster Download Speed",
-          "src": "https://play-lh.googleusercontent.com/3eME3YM0pcytNqvVjGeXJ2hf7TT73LuSzW4rFf130Dk7ZiLRMxzMwqw1Ocvq4wpAO6rJvKY-cVAy5AFWZIZHTQ"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "13-markhoor/screenshot-12.jpg",
-          "alt": "Markhoor screenshot 12: Supported With Sd Card",
-          "label": "Screenshot 12",
-          "w": 788,
-          "h": 1400,
-          "caption": "Supported With Sd Card",
-          "src": "https://play-lh.googleusercontent.com/fNyoFDM0_K3S4Awqzr54JYfFy4rq_El1PSQ9RJ9xHx5rOM1mhCm216bt8of_8YVIm0YNATQWkE_ZJncDYAISsw"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "13-markhoor/screenshot-13.jpg",
-          "alt": "Markhoor screenshot 13: Do Downloading While Browsing",
-          "label": "Screenshot 13",
-          "w": 788,
-          "h": 1400,
-          "caption": "Do Downloading While Browsing",
-          "src": "https://play-lh.googleusercontent.com/jPJGIcBJdXESB53KgxGft5bVoMhPheURPQ9rxUBcXu69yzGW3IALT9dkOadQD1FYTwyponb2JxD2ATaVSDKmLQ"
-        }
-      ]
-    },
-    {
-      "id": "14-mobile-notepad",
-      "num": "14",
-      "name": "Mobile Notepad",
-      "title": "Video Downloader - Player",
-      "publisher": "Mobile Notepad Apps",
-      "downloads": "5M+",
-      "playUrl": "https://play.google.com/store/apps/details?id=com.videodownloder.alldownloadvideos&hl=en&gl=US",
-      "notes": {
-        "Icon": "A flat red square with a white “V”, again. Five listings in this library share it.",
-        "Feature graphic": "A dark orange banner with “VIDEO DOWNLOADER / Download All video Easy and Fast” and a pair of phone mocks.",
-        "Screenshot system": "Sixteen frames: two complete eight-frame sets built on the same device art with different headings. Set A uses two-tone colour headings (All Video Downloader, Save HD Videos, Shorts/Reels Downloader, Fast Video Browser, Social Media Downloader, Light/Dark Themes, Protect Your Videos, Save & Share Easily); set B restates them in plain white (Download Videos from Anywhere, Ultra-Fast Video Downloads, Instant Shorts Saver, and so on).",
-        "Design assessment": "The largest carousel here and a genuine copy A/B — same pictures, two different sets of words — which is worth watching, because whichever set survives tells you which phrasing this developer found worked. It is also the lowest-rated app in the library at 3.83★, and it names platforms in both a heading and a button grid."
-      },
-      "tags": ["red V icon","A/B copy test","16 frames","shorts/reels wording","platform grid","lowest rated"],
-      "noLandscape": true,
-      "assets": [
-        {
-          "kind": "icon",
-          "orient": "square",
-          "file": "14-mobile-notepad/icon-01.png",
-          "alt": "A flat red square with a white “V”, again. Five listings in this library share it.",
-          "label": "Icon 01",
-          "w": 512,
-          "h": 512,
-          "caption": "Listing icon, original file",
-          "src": "https://play-lh.googleusercontent.com/gUlLctSBw65S29hN4PVjRgblYBI40x4HYw5hjwGYp75c34jL_d9yUoD1OqrPmsYtvKIfCcbZN_YQMuXxrHNq"
-        },
-        {
-          "kind": "feature-graphic",
-          "orient": "landscape",
-          "file": "14-mobile-notepad/feature-graphic-01.jpg",
-          "alt": "A dark orange banner with “VIDEO DOWNLOADER / Download All video Easy and Fast” and a pair of phone mocks.",
-          "label": "Feature Graphic 01",
-          "w": 1024,
-          "h": 500,
-          "caption": "Feature graphic, original file",
-          "src": "https://play-lh.googleusercontent.com/qWfVvWHKmTRQ2vXnnUpzNP9abfuuFfV5onKZB9na02OqXtzX9T_2bGQf3eO_5p-a52OVjhATv-nYfccf_KTVlW4"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "14-mobile-notepad/screenshot-01.jpg",
-          "alt": "Mobile Notepad screenshot 1: All Video Downloader",
-          "label": "Screenshot 01",
-          "w": 788,
-          "h": 1400,
-          "caption": "All Video Downloader",
-          "src": "https://play-lh.googleusercontent.com/7CDQaUcBx-kBNUKxJEYmrYX977DxE77iKvTQDO5siBNkfIVz7wMoZSQXZZnndHA0F7D40bPOrBbeiw1XkeR9"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "14-mobile-notepad/screenshot-02.jpg",
-          "alt": "Mobile Notepad screenshot 2: Save HD Videos",
-          "label": "Screenshot 02",
-          "w": 788,
-          "h": 1400,
-          "caption": "Save HD Videos",
-          "src": "https://play-lh.googleusercontent.com/bdQutHXHv_72AO7j0ITmUKdv0Fw0Gf-NEwVjQfNW1nTC7cvfNw7m7ScfNTuv7u0Me8egoEOJxVUky4zFkAL0Q3s"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "14-mobile-notepad/screenshot-03.jpg",
-          "alt": "Mobile Notepad screenshot 3: Shorts / Reels Downloader",
-          "label": "Screenshot 03",
-          "w": 788,
-          "h": 1400,
-          "caption": "Shorts / Reels Downloader",
-          "src": "https://play-lh.googleusercontent.com/kYRtECXa0V-IoPNv-Oxa_2VXeKAsyuQw8qwVCz1vinb48DvxHZ8VEgwUichcS7XQ-rnAhGyUxdPbxRAJv8VdA4A"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "14-mobile-notepad/screenshot-04.jpg",
-          "alt": "Mobile Notepad screenshot 4: Fast Video Browser",
-          "label": "Screenshot 04",
-          "w": 788,
-          "h": 1400,
-          "caption": "Fast Video Browser",
-          "src": "https://play-lh.googleusercontent.com/fKHTdH9zNKC6btIBncFXf5O_5F95kdk6zUoy5Pc_80uuOyryR7JNjfNQPupz_GlZKySBybNKGUXpS59Q0MT9lw"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "14-mobile-notepad/screenshot-05.jpg",
-          "alt": "Mobile Notepad screenshot 5: Social Media Downloader",
-          "label": "Screenshot 05",
-          "w": 788,
-          "h": 1400,
-          "caption": "Social Media Downloader",
-          "src": "https://play-lh.googleusercontent.com/qCaDZQFxmzhc-rJyyCqfMvUh6a4URpQRVfRL8I7qea40G4bMvawqKgRysL0sMdFmwAyMmLIp2axe4w9ErY65Ug"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "14-mobile-notepad/screenshot-06.jpg",
-          "alt": "Mobile Notepad screenshot 6: Light / Dark Themes",
-          "label": "Screenshot 06",
-          "w": 788,
-          "h": 1400,
-          "caption": "Light / Dark Themes",
-          "src": "https://play-lh.googleusercontent.com/QL0azP3q03X2ucXdyufN59Mdh2xQxoTuypUoeH4cpvl7ZnCNIkNLagtHkpsNZPPLAe8yPDkOHqCalH2ubFai"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "14-mobile-notepad/screenshot-07.jpg",
-          "alt": "Mobile Notepad screenshot 7: Protect Your Videos",
-          "label": "Screenshot 07",
-          "w": 788,
-          "h": 1400,
-          "caption": "Protect Your Videos",
-          "src": "https://play-lh.googleusercontent.com/w34Tlfzc2wA5WGvz7jFAhqy0geEcJOC7jT701VQMGL4mLiQEo_ctLU5IYdCb5vZF-ioeVM6eFEH4cfleAFXFyA"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "14-mobile-notepad/screenshot-08.jpg",
-          "alt": "Mobile Notepad screenshot 8: Save & Share Easily",
-          "label": "Screenshot 08",
-          "w": 788,
-          "h": 1400,
-          "caption": "Save & Share Easily",
-          "src": "https://play-lh.googleusercontent.com/v2CFUFMBuZ0hyLgxNqXPD3NqMrHQj9fYkDaK9fmBWb9w8nAXtANN3ECXEgrFjS_mqR34dwyMyTkDjYv6xCAJLQ"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "14-mobile-notepad/screenshot-09.jpg",
-          "alt": "Mobile Notepad screenshot 9: Download Videos from Anywhere",
-          "label": "Screenshot 09",
-          "w": 788,
-          "h": 1400,
-          "caption": "Download Videos from Anywhere",
-          "src": "https://play-lh.googleusercontent.com/5__BZk1Pon79FPr1FYnp_N8ywI9c7lII5_NaAQy7M3mYDANBjSIS6-UO2dETVQjuJGgf_YhUOLg0fXMsgRJzAg"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "14-mobile-notepad/screenshot-10.jpg",
-          "alt": "Mobile Notepad screenshot 10: Ultra-Fast Video Downloads",
-          "label": "Screenshot 10",
-          "w": 788,
-          "h": 1400,
-          "caption": "Ultra-Fast Video Downloads",
-          "src": "https://play-lh.googleusercontent.com/ZaU1B8k2f0cM3zlgVVqChyUTcMuxK79Nd_g2ngtq3mxFTNI_3DcLWeevYuoBeqf_XfbLURhnZT7AVJst0_cA58c"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "14-mobile-notepad/screenshot-11.jpg",
-          "alt": "Mobile Notepad screenshot 11: Instant Shorts Saver",
-          "label": "Screenshot 11",
-          "w": 788,
-          "h": 1400,
-          "caption": "Instant Shorts Saver",
-          "src": "https://play-lh.googleusercontent.com/2jYD4ZfBwDt4efq1CKUo6dKFMuROfMf9nkhQXnnNWwZAoGw6SL_w4d-k94BJHDGILuzX7SyE0WNfEzMAyrp4eA"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "14-mobile-notepad/screenshot-12.jpg",
-          "alt": "Mobile Notepad screenshot 12: Fast Video Browser (variant)",
-          "label": "Screenshot 12",
-          "w": 788,
-          "h": 1400,
-          "caption": "Fast Video Browser (variant)",
-          "src": "https://play-lh.googleusercontent.com/hBQGK1_PvT9HnSjXaxr--nLP9fAHmu-IpVxZfJiVnO7qXU4A0_GJogkdKJ2FUZaolSXd0_Ik0WvYTx2a7b3tog"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "14-mobile-notepad/screenshot-13.jpg",
-          "alt": "Mobile Notepad screenshot 13: Light & Dark Mode",
-          "label": "Screenshot 13",
-          "w": 788,
-          "h": 1400,
-          "caption": "Light & Dark Mode",
-          "src": "https://play-lh.googleusercontent.com/TMlTj-dqW4frXwN0l845HKcQaa4aZJ7n6xFWfXKmpwKYGuY73yzKT82Gp1R14SnVWRjCqF9NKlxlT6dEhlMe"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "14-mobile-notepad/screenshot-14.jpg",
-          "alt": "Mobile Notepad screenshot 14: Download from Social Apps",
-          "label": "Screenshot 14",
-          "w": 788,
-          "h": 1400,
-          "caption": "Download from Social Apps",
-          "src": "https://play-lh.googleusercontent.com/mm__kZlBuunVHJab3DHLZUNg6K-E8fK-3chYjLVUtRXOjXOvVfwxsFfmSXLaw6oZ1dX_ZXNZ01Dw1QH1YxcR3g"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "14-mobile-notepad/screenshot-15.jpg",
-          "alt": "Mobile Notepad screenshot 15: Secure Your Videos",
-          "label": "Screenshot 15",
-          "w": 788,
-          "h": 1400,
-          "caption": "Secure Your Videos",
-          "src": "https://play-lh.googleusercontent.com/Mj0wzq2aLTdUjri9ECQkJyX_5qEIwY3KBW7Yeico2BfOelL1aMYZT_tidODIWrQ2VwxB2Z9QioaAfu9DlLzToA"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "14-mobile-notepad/screenshot-16.jpg",
-          "alt": "Mobile Notepad screenshot 16: Share Videos Easily",
-          "label": "Screenshot 16",
-          "w": 788,
-          "h": 1400,
-          "caption": "Share Videos Easily",
-          "src": "https://play-lh.googleusercontent.com/l5-CRTyeR2T9LJw8Mh6MIx8H_tT_ok2R9NtMRdxYo6g_ZZjUT5WfF-o7e_AQt0rfvQ0yL3K9tlDs_-oUnoDjSw"
-        }
-      ]
-    },
-    {
-      "id": "15-vidow",
-      "num": "15",
-      "name": "Vidow",
-      "title": "Video Downloader HD - Vidow",
-      "publisher": "Vidow™",
-      "downloads": "100M+",
-      "playUrl": "https://play.google.com/store/apps/details?id=com.hdvideodownloader.downloaderapp&hl=en&gl=US",
-      "notes": {
-        "Icon": "A red square with a white “V” and a small download badge at the corner — the badge is the only thing separating it from the other four red Vs.",
-        "Feature graphic": "Black banner, “Fast Video Downloader” in yellow with “Download All Videos Fast & Without Login” beneath, phone mocks and platform marks at the right.",
-        "Screenshot system": "Six frames on black with a yellow stripe down the left edge and yellow-and-white headings: Easy Video Downloader, Download & Cast Video, Fast & Easy To Use, High Quality Video View, Download In Multiple Quality, Share With Friends.",
-        "Design assessment": "The only listing that gives casting to a TV its own frame, which is a real feature difference rather than a restatement of the title. The black-and-yellow treatment is also one of the few that would survive being shrunk. At 100M installs it carries a 3.96★ rating — the weakest of the three 100M apps here."
-      },
-      "tags": ["red V icon with badge","black & yellow","cast to TV frame","without-login claim","100M installs"],
-      "noLandscape": true,
-      "assets": [
-        {
-          "kind": "icon",
-          "orient": "square",
-          "file": "15-vidow/icon-01.png",
-          "alt": "A red square with a white “V” and a small download badge at the corner — the badge is the only thing separating it from the other four red Vs.",
-          "label": "Icon 01",
-          "w": 512,
-          "h": 512,
-          "caption": "Listing icon, original file",
-          "src": "https://play-lh.googleusercontent.com/uFifs8KnukfNhGtIVf3NVSy2x6_pV3J_wkx5Uo1h5YxooDGn5mrUxaDFrRlbBDvKhv9CisADZ7ksZeH0M9OaHw"
-        },
-        {
-          "kind": "feature-graphic",
-          "orient": "landscape",
-          "file": "15-vidow/feature-graphic-01.jpg",
-          "alt": "Black banner, “Fast Video Downloader” in yellow with “Download All Videos Fast & Without Login” beneath, phone mocks and platform marks at the right.",
-          "label": "Feature Graphic 01",
-          "w": 1024,
-          "h": 500,
-          "caption": "Feature graphic, original file",
-          "src": "https://play-lh.googleusercontent.com/ril_T7cBwEpev8WrRQwHByvNfT9Up3cm4e4enIU9INgTS5Ly4PhchS0ydj8Pu80Dm-xMn4e1-vk1WDHAk47VFA"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "15-vidow/screenshot-01.jpg",
-          "alt": "Vidow screenshot 1: Easy Video Downloader",
-          "label": "Screenshot 01",
-          "w": 788,
-          "h": 1400,
-          "caption": "Easy Video Downloader",
-          "src": "https://play-lh.googleusercontent.com/4Xv2pwHlA0d624K_iI5mt1xV_vicz4-Rw6GoMY-2_GF-wmFlAOuUCjP4FWF9qEbX-pp0kosADqBIQ69DlrxOSw"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "15-vidow/screenshot-02.jpg",
-          "alt": "Vidow screenshot 2: Download & Cast Video",
-          "label": "Screenshot 02",
-          "w": 788,
-          "h": 1400,
-          "caption": "Download & Cast Video",
-          "src": "https://play-lh.googleusercontent.com/OuwWTU3ash0ZQ7m6Ca8kp5IEpp4HJrJ2N-lLRuWJclj6ik-QvRCWE-rVuV0SjTdOkrV8IH4hlF0SZnderf4b"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "15-vidow/screenshot-03.jpg",
-          "alt": "Vidow screenshot 3: Fast & Easy To Use",
-          "label": "Screenshot 03",
-          "w": 788,
-          "h": 1400,
-          "caption": "Fast & Easy To Use",
-          "src": "https://play-lh.googleusercontent.com/PuOBAJh-w1CTXtW359PFIcxTbS247a5SXgHobKHPs4pEGGdMiGm9xj5Cmn4xsFAo6rWgPIHWq3xJeDj91QUo"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "15-vidow/screenshot-04.jpg",
-          "alt": "Vidow screenshot 4: High Quality Video View",
-          "label": "Screenshot 04",
-          "w": 788,
-          "h": 1400,
-          "caption": "High Quality Video View",
-          "src": "https://play-lh.googleusercontent.com/LcUomZFpR_QvB4REc8XBaGk9UgsbkJtKuppePVJNjB3E3XI6vp0TfcZ6eTcPk52-vvY0haLWEvYBtUxbV5z022Y"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "15-vidow/screenshot-05.jpg",
-          "alt": "Vidow screenshot 5: Download In Multiple Quality",
-          "label": "Screenshot 05",
-          "w": 788,
-          "h": 1400,
-          "caption": "Download In Multiple Quality",
-          "src": "https://play-lh.googleusercontent.com/23zrJcHN5KDiA74tFKt91--b_VnSQDelemy8g3j8x1Ej7vDjt1ycedTZVoprS515_ZrGp453QREoIrw6Sf5F-Q"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "15-vidow/screenshot-06.jpg",
-          "alt": "Vidow screenshot 6: Share With Friends",
-          "label": "Screenshot 06",
-          "w": 788,
-          "h": 1400,
-          "caption": "Share With Friends",
-          "src": "https://play-lh.googleusercontent.com/0Koebc4oYf7fnjJ-ytCOIsm5ev27bj3JcA0s58mlXGrpvb-tThnklztkJtqC0hF1ACv9ewll1MKpXeazWumFI5o"
-        }
-      ]
-    },
-    {
-      "id": "16-vidpal",
-      "num": "16",
-      "name": "Vidpal",
-      "title": "Video Downloader and 4k Player",
-      "publisher": "Vidpal Apps Studio",
-      "downloads": "50M+",
-      "playUrl": "https://play.google.com/store/apps/details?id=free.video.downloader.freevideodownloader2021.video.saver.videosaverlite&hl=en&gl=US",
-      "notes": {
-        "Icon": "An orange-to-red gradient square with a large white serif “V”. A seventh V in the library, though the gradient and the serif give it more character than the flat red ones.",
-        "Feature graphic": "A dark red banner filled with a grid of platform logos above “Fast and Private / video downloader”. It is the most brand-dense image in the library — close to two dozen third-party marks in one asset.",
-        "Screenshot system": "Seven creatives on a peach-to-cream gradient with red two-tone headings and a floating device: HD Video Downloader, Download Videos Instantly, Watch Movies, Videos in HD Quality, Floating Video Play, Download Management, Built-In Video Player.",
-        "Design assessment": "The softest palette here and the only one that reads as a consumer media app rather than a utility. “Floating Video Play” and “Watch Movies” push it toward entertainment rather than downloading. The same seven creatives are also published as 1080×1080 squares, and the feature graphic's logo wall is the single clearest example of what our own rules forbid."
-      },
-      "tags": ["gradient serif V icon","peach palette","logo-wall banner","floating player","square duplicate set removed"],
-      "noLandscape": true,
-      "assets": [
-        {
-          "kind": "icon",
-          "orient": "square",
-          "file": "16-vidpal/icon-01.png",
-          "alt": "An orange-to-red gradient square with a large white serif “V”. A seventh V in the library, though the gradient and the serif give it more character than the flat red ones.",
-          "label": "Icon 01",
-          "w": 512,
-          "h": 512,
-          "caption": "Listing icon, original file",
-          "src": "https://play-lh.googleusercontent.com/-WK5MPf7RSP-MV6t_a5WJw9RGoPPuGOW6U1FVYXLtNPdwESR7Gi6HGKQKtsrhYxw1eHkgRfgBSYqCmPC5UbF"
-        },
-        {
-          "kind": "feature-graphic",
-          "orient": "landscape",
-          "file": "16-vidpal/feature-graphic-01.jpg",
-          "alt": "A dark red banner filled with a grid of platform logos above “Fast and Private / video downloader”. It is the most brand-dense image in the library — close to two dozen third-party marks in one asset.",
-          "label": "Feature Graphic 01",
-          "w": 1024,
-          "h": 500,
-          "caption": "Feature graphic, original file",
-          "src": "https://play-lh.googleusercontent.com/Ye-23wxIpXrZZEUTOGuDHyQRXVoo5_aQWbe1oQsdXpXmbdony9s9g4tx1flagohZFCfjvAWRkZ_ruu_1vntR"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "16-vidpal/screenshot-01.jpg",
-          "alt": "Vidpal screenshot 1: HD Video Downloader",
-          "label": "Screenshot 01",
-          "w": 788,
-          "h": 1400,
-          "caption": "HD Video Downloader",
-          "src": "https://play-lh.googleusercontent.com/D2Jt5zosr9Xcd8HQ-7fiK7W1r1rKqO_MNEJ4dQPzVF85fw_35gZ3gBGIgGWQPnckm3H1AKXguZ71kA6XGpUK5EM"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "16-vidpal/screenshot-02.jpg",
-          "alt": "Vidpal screenshot 2: Download Videos Instantly",
-          "label": "Screenshot 02",
-          "w": 788,
-          "h": 1400,
-          "caption": "Download Videos Instantly",
-          "src": "https://play-lh.googleusercontent.com/qZwXsUQpYZklkcCxpOJ9M7BY-0ooKPdvczFE1F0TPWhXlrX04k3ykScXdQuKeskELaiGpb0HdQzdBIAuH5rtbQ"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "16-vidpal/screenshot-03.jpg",
-          "alt": "Vidpal screenshot 3: Watch Movies",
-          "label": "Screenshot 03",
-          "w": 788,
-          "h": 1400,
-          "caption": "Watch Movies",
-          "src": "https://play-lh.googleusercontent.com/oABTlUbtumGBwoBKhdBDoM_jmHcV1rJvgPl2hS_LbhwihFJAvc8eVmJvi4QBHPFb0JyLfxj7NddNSJvpaV-kxw"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "16-vidpal/screenshot-04.jpg",
-          "alt": "Vidpal screenshot 4: Videos in HD Quality",
-          "label": "Screenshot 04",
-          "w": 788,
-          "h": 1400,
-          "caption": "Videos in HD Quality",
-          "src": "https://play-lh.googleusercontent.com/Ql9XVGkB8vE-LSnuZTFA6lv7stksKOFrjC7PZCjqXkvndH_nAh-9XZ15qvmDJzWXPAz04oECQkvX0Fd0zNaob-4"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "16-vidpal/screenshot-05.jpg",
-          "alt": "Vidpal screenshot 5: Floating Video Play",
-          "label": "Screenshot 05",
-          "w": 788,
-          "h": 1400,
-          "caption": "Floating Video Play",
-          "src": "https://play-lh.googleusercontent.com/31Vs57e4ua4ecChJ0ItE9JrMO6gvyQJpqpdDGASGo_-gw7HpZsjvxGJREAnp4_vGWrWI0DKz-XgiNzkq6KA5"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "16-vidpal/screenshot-06.jpg",
-          "alt": "Vidpal screenshot 6: Download Management",
-          "label": "Screenshot 06",
-          "w": 788,
-          "h": 1400,
-          "caption": "Download Management",
-          "src": "https://play-lh.googleusercontent.com/61q2wb7lOmClCEZLgQLZNGSvrpAXmKpofQymjU3c0ut0gNUjBUGnjqeg15npkbGWF8nMUrjcmueNjTU01y0KqQ"
-        },
-        {
-          "kind": "screenshot",
-          "orient": "portrait",
-          "file": "16-vidpal/screenshot-07.jpg",
-          "alt": "Vidpal screenshot 7: Built-In Video Player",
-          "label": "Screenshot 07",
-          "w": 788,
-          "h": 1400,
-          "caption": "Built-In Video Player",
-          "src": "https://play-lh.googleusercontent.com/zUKENVTFyxVCRn2HCelx1XTf9j91sT9cXsTuOWEhNtHlKO75hXa5G1WRJvOSi9LV20l7cmpHeA_xIGTgzlClQw"
-        }
-      ]
-    }
-  ],
-  "patterns": [
-    {
-      "h": "Fifteen of seventeen icons sit in three families",
-      "html": "Seven are a red “V” (Sky Vision, Attractive Apps, Markhoor, Mobile Notepad and Vidow are nearly interchangeable; QR Code Scanner and Vidpal vary it), five are a download arrow on a flat square — <b>ours included</b>, alongside InShot, Gamma Play, AppTool and DevBay — and three are a ring and arrow on a gradient. Only the two wordmark icons, Hub and Saver &amp; Player Studio, stand outside. Our rainbow gradient is what keeps us legible in that crowd; the arrow is not."
-    },
-    {
-      "h": "Four banners are the same dark tile grid",
-      "html": "InShot, QR Code Scanner, AppTool and Sky Vision all use a dark grid of faint media-type tiles with a short line of type over it. Ours is a different construction but the same dark register. Gamma Play's banner carries no words at all, and Hub's carries only a wordmark — at listing size neither says what the app does."
-    },
-    {
-      "h": "Speed claims are everywhere, and we cannot use them",
-      "html": "“3x Faster”, “4x Faster”, “Ultra-Fast” and “100MB/s” appear across QR Code Scanner, Hub, AppTool, Saver &amp; Player Studio, DevBay, Markhoor and Mobile Notepad. Our own rules bar any claim the build cannot back, so this is a whole persuasive register the category uses and we have to replace with something else."
-    },
-    {
-      "h": "Almost everyone shows platform logos; one app does not",
-      "html": "Thirteen of the seventeen listings put recognisable platform marks or third-party app UI inside their screenshots, and Vidpal's feature graphic is close to two dozen logos in one image. <b>Gamma Play is the exception</b> — every device frame runs an invented source app, so the flow is shown without borrowing anyone's brand. That is the pattern our own rules point to, and it comes from the smallest app here. <b>Our own frame 1 currently shows a row of platform marks.</b>"
-    },
-    {
-      "h": "Headings mostly restate the title",
-      "html": "“All Video Downloader”, “HD Video Downloader” and “Fast Video Downloader” appear as screenshot headings again and again — DevBay and Attractive Apps each spend three or four frames restating their own name. The listings that say something specific instead (Gamma Play's “Choose Video Quality Before Downloading”, AppTool's “Auto Detect Videos Online”, Vidow's “Download &amp; Cast Video”) read as far more considered."
-    },
-    {
-      "h": "Carousel length has nothing to do with rating",
-      "html": "The highest-rated app here, Fast Saver at 4.80★ from 377K ratings, ships five screenshots, a typo and a banner branded with a different name. The largest carousel, Mobile Notepad's sixteen frames, belongs to the lowest-rated at 3.83★. InShot leads the category on search with half its carousel unlabelled. Store art is not what moves these numbers."
-    },
-    {
-      "h": "Landscape is almost unused",
-      "html": "Only InShot and AppTool publish a landscape frame at all, which is exactly what the 21 September visual review found and this capture confirms independently. Everything else in the category, ours included, is portrait-only."
-    }
-  ],
-  "guidance": [
-    {
-      "h": "Fill the empty slots before redrawing anything",
-      "html": "We use four of eight phone slots; the category median is seven and the leaders run twelve to sixteen. Four more frames is the cheapest gain available, and we already have the material: the nine-tool editor, the PIN/biometric vault, MP3 extraction and background batch downloads are things <b>no audited competitor ships</b> and none of them has a frame of its own today."
-    },
-    {
-      "h": "Take the platform marks out of frame 1",
-      "html": "Thirteen competitors show platform logos and our screenshot 1 currently does too. Our own rules forbid brand names in listing copy, and Play treats implied affiliation seriously. Gamma Play shows the way out: invent the source app in the mock-up and the download flow still reads perfectly."
-    },
-    {
-      "h": "Keep the gradient icon",
-      "html": "It is the one asset where we are already the most distinctive listing in the library. Any redraw should keep the rainbow ground and work on the arrow, not the other way round."
-    },
-    {
-      "h": "Replace speed claims with capability claims",
-      "html": "The category sells “3x” and “4x”. We cannot, and we do not need to: a vault, an editor and audio extraction are concrete, demonstrable and unique in this audit. Show the result, not a multiplier."
-    },
-    {
-      "h": "Say something specific in every heading",
-      "html": "Our four headings are already benefit-led, which puts us ahead of most of this list. Hold that line as frames are added — the failure mode visible here is spending a slot restating the app's own name."
-    },
-    {
-      "h": "Do not run two visual systems at once",
-      "html": "Markhoor's carousel switches design halfway through and reads as two different apps. If our graphics are reworked, replace the whole set in one go rather than leaving old and new frames side by side."
-    },
-    {
-      "h": "Landscape is optional, and differentiating",
-      "html": "Only two of sixteen competitors publish a landscape frame. If we add one it needs its own composition rather than a letterboxed phone shot — but filling the portrait slots comes first."
-    }
-  ],
-  "requirements": [
-    "<b>Icon</b> — 512 × 512 px, 32-bit PNG with alpha, under 1,024 KB. Google Play applies its own rounding and shadow; promotional text, price or “new” badges are not allowed on the icon.",
-    "<b>Feature graphic</b> — 1024 × 500 px, JPEG or 24-bit PNG with no alpha, under 15 MB. Required for the listing to be eligible for several Play surfaces.",
-    "<b>Phone screenshots</b> — between 2 and 8 per device type, JPEG or 24-bit PNG with no alpha, each side between 320 px and 3,840 px, and the long side no more than twice the short side. Our listing currently fills 4 of the 8 phone slots; the dossier's 720 × 1600 device captures are ratio 1:2.22 and must be reframed to 1:2 or tighter before they can be uploaded.",
-    "<b>Every asset in this library was captured from a live listing</b>, so the dimensions recorded on each figure are what that app actually publishes, not what Play recommends."
-  ],
-  "sources": [
-    "<a href=\"https://play.google.com/store/apps/details?id=com.video.downloader.instagram.videosaver&hl=en&gl=US\" target=\"_blank\" rel=\"noopener\">Our own Google Play listing</a> — the assets also shown under PlayStore Metadata.",
-    "Google Play listings for all sixteen competitors, English / United States locale — every figure links to its original file.",
-    "<a href=\"../01-video-downloader/\">Video Downloader</a> · <a href=\"../02-aso-playbook/\">ASO Playbook</a> · <a href=\"../04-features-comparison/\">Features Comparison</a> — the three tabs the competitor list is drawn from.",
-    "<code>research/competitor-visual-memory/</code> — the 21 September 2026 reference pass that first deduplicated these sixteen listings.",
-    "<code>research/aso-pipeline/raw.json</code> — the 16 September 2026 scrape that holds the asset URLs."
-  ]
-}
+[
+  "Our own store listing set against 16 competitors, asset for asset: 17 icons, 17 feature graphics and 130 screenshots, 164 files in all. Our app leads every section — the icon lineup, the feature graphics and the app-by-app library — so the comparison reads in one direction.",
+  "The 16 are the deduplicated union of three tabs: the competitors annotated on the ASO Playbook, the sixteen-listing audit behind Features Comparison, and the apps named in the Video Downloader dossier. Every asset is stored in the repository, so the set stays stable even when a listing changes.",
+  "The category has no brand wall and almost no visual identity. Seven of the seventeen icons are a red “V”, five are a download arrow on a flat square (ours among them) and three are a ring-and-arrow on a gradient — fifteen of seventeen in three families. Four feature graphics are the same dark grid of media tiles.",
+  "Where we already differ: our rainbow-gradient icon is the most distinctive mark in the library, and our screenshot headings state outcomes rather than repeating the title. Where we do not: we publish four screenshots against a category median of seven, and our best-evidenced features — the vault, the editor, MP3 extraction — are barely shown."
+]
 ```
 
-### listing
+### graphics.patterns
 
 ```json
-{
-  "current": {
-    "title": "All Video Downloader & Saver",
-    "summary": "Fast video downloader for HD videos, stories, clips and offline viewing",
-    "description": "Save the videos you love and enjoy them anytime with All Video Downloader & Saver, a simple, fast and convenient video downloader built for everyday use.\nCopy a supported video link, paste it into the app and save the video directly to your device. Whether you want to keep short videos, stories, status videos or useful clips, the built-in video saver makes downloading and managing media easy.\nKEY FEATURES\n• Fast Video Downloader\nSave supported online videos quickly with a smooth and straightforward download process.\n• HD Video Saver\nDownload available videos in clear, high-quality formats for a better offline viewing experience.\n• Simple Link-Based Downloading\nCopy a video link from a supported source, paste it into the app and start the download in just a few taps.\n• Story and Status Saver\nKeep supported stories, status videos and short clips on your device before they disappear.\n• Offline Video Access\nWatch downloaded videos whenever you want, even when an internet connection is unavailable.\n• Download Manager\nView download progress and keep your saved videos organised in one convenient place.\n• Easy Video Controls\nOpen, play, share or delete downloaded videos directly from the app.\n• Clean and User-Friendly Design\nA simple interface helps you save videos without complicated steps.\nHOW TO DOWNLOAD A VIDEO\nCopy the link of the video you have permission to save.\nOpen All Video Downloader & Saver.\nPaste the link into the download field.\nTap the download button.\nOpen the saved video and enjoy it offline.\nWHY USE ALL VIDEO DOWNLOADER & SAVER?\nAll Video Downloader & Saver combines a fast video downloader, HD video saver, story saver and offline media manager in one practical app.\nIt is designed for users who want a quick way to save supported social media videos and keep their favourite clips available on their device.\nUse the app for personal videos, educational clips, creative references, memorable stories and other content that you own or are authorised to download.\nIMPORTANT\nFeatures, supported websites and downloadable formats may vary depending on the source and content availability.\nPlease respect copyright and intellectual property rights. Download or share only content that you own, content in the public domain, or content for which you have permission from the owner.\nAll Video Downloader & Saver is an independent application and is not affiliated with, endorsed by or sponsored by any social media platform.",
-    "iap": "$4.99 - $19.99 per item",
-    "ads": true,
-    "privacy": "https://cellcave.github.io/cell-cave-website/apps/all-video-downloader-saver/privacy/",
-    "site": "https://cellcave.github.io/cell-cave-website/",
-    "developer": "Cell Cave",
-    "installs": "5+",
-    "url": "https://play.google.com/store/apps/details?id=com.video.downloader.instagram.videosaver&hl=en&gl=US",
-    "id": "com.video.downloader.instagram.videosaver",
-    "genre": "Productivity",
-    "privacyStatus": 200
+[
+  {
+    "h": "Fifteen of seventeen icons sit in three families",
+    "html": "Seven are a red “V” (Sky Vision, Attractive Apps, Markhoor, Mobile Notepad and Vidow are nearly interchangeable; QR Code Scanner and Vidpal vary it), five are a download arrow on a flat square — <b>ours included</b>, alongside InShot, Gamma Play, AppTool and DevBay — and three are a ring and arrow on a gradient. Only the two wordmark icons, Hub and Saver &amp; Player Studio, stand outside. Our rainbow gradient is what keeps us legible in that crowd; the arrow is not."
   },
-  "titles": [
-    {
-      "t": "All Video Downloader & Saver",
-      "len": 28,
-      "taken": true,
-      "current": true,
-      "score": 729,
-      "hits": [
-        "video downloader", "all video downloader", "video saver - video downloader", "video saver", "video saver downloader",
-        "video downloader and saver", "all video downloader and saver", "downloader"
-      ],
-      "exact": ["video downloader","all video downloader","video downloader and saver","all video downloader and saver","downloader"]
-    },
-    {
-      "t": "HD Video Downloader & Saver",
-      "len": 27,
-      "taken": false,
-      "current": false,
-      "score": 634,
-      "hits": [
-        "video downloader", "hd video downloader", "video saver - video downloader", "video saver", "video saver downloader",
-        "video downloader and saver", "downloader"
-      ],
-      "exact": ["video downloader","hd video downloader","video downloader and saver","downloader"]
-    },
-    {
-      "t": "Fast Video Downloader & Saver",
-      "len": 29,
-      "taken": false,
-      "current": false,
-      "score": 627,
-      "hits": [
-        "video downloader", "fast video downloader", "video saver - video downloader", "video saver", "video saver downloader",
-        "video downloader and saver", "downloader"
-      ],
-      "exact": ["video downloader","fast video downloader","video downloader and saver","downloader"]
-    },
-    {
-      "t": "All Video Downloader: HD Saver",
-      "len": 30,
-      "taken": true,
-      "current": false,
-      "score": 617,
-      "hits": [
-        "video downloader", "hd video downloader", "all video downloader", "video saver - video downloader", "video saver", "video saver downloader",
-        "downloader"
-      ],
-      "exact": ["video downloader","all video downloader","downloader"]
-    },
-    {
-      "t": "Video Downloader & Saver: HD",
-      "len": 28,
-      "taken": false,
-      "current": false,
-      "score": 594,
-      "hits": [
-        "video downloader", "hd video downloader", "video saver - video downloader", "video saver", "video saver downloader",
-        "video downloader and saver", "downloader"
-      ],
-      "exact": ["video downloader","video downloader and saver","downloader"]
-    },
-    {
-      "t": "Video Saver: HD Downloader",
-      "len": 26,
-      "taken": false,
-      "current": false,
-      "score": 491,
-      "hits": ["video downloader","hd video downloader","video saver - video downloader","video saver","video saver downloader","downloader"],
-      "exact": ["video saver","downloader"]
-    },
-    {
-      "t": "HD Video Downloader: Save Link",
-      "len": 30,
-      "taken": false,
-      "current": false,
-      "score": 452,
-      "hits": ["video downloader","hd video downloader","video save","save video","downloader"],
-      "exact": ["video downloader","hd video downloader","downloader"]
-    },
-    {
-      "t": "Private Video Downloader: HD",
-      "len": 28,
-      "taken": false,
-      "current": false,
-      "score": 406,
-      "hits": ["video downloader","hd video downloader","private video downloader","downloader"],
-      "exact": ["video downloader","private video downloader","downloader"]
-    },
-    {
-      "t": "Video Downloader: HD & Private",
-      "len": 30,
-      "taken": false,
-      "current": false,
-      "score": 367,
-      "hits": ["video downloader","hd video downloader","private video downloader","downloader"],
-      "exact": ["video downloader","downloader"]
-    },
-    {
-      "t": "HD Video Downloader & Cutter",
-      "len": 28,
-      "taken": false,
-      "current": false,
-      "score": 345,
-      "hits": ["video downloader","hd video downloader","downloader","video cutter"],
-      "exact": ["video downloader","hd video downloader","downloader"]
-    },
-    {
-      "t": "All Video Downloader & Cutter",
-      "len": 29,
-      "taken": false,
-      "current": false,
-      "score": 344,
-      "hits": ["video downloader","all video downloader","downloader","video cutter"],
-      "exact": ["video downloader","all video downloader","downloader"]
-    },
-    {
-      "t": "Video Downloader: Save & Cut",
-      "len": 28,
-      "taken": false,
-      "current": false,
-      "score": 332,
-      "hits": ["video downloader","video save","save video","downloader"],
-      "exact": ["video downloader","downloader"]
-    },
-    {
-      "t": "All Video Downloader & Vault",
-      "len": 28,
-      "taken": false,
-      "current": false,
-      "score": 329,
-      "hits": ["video downloader","all video downloader","downloader"],
-      "exact": ["video downloader","all video downloader","downloader"]
-    },
-    {
-      "t": "Video Downloader & Cutter",
-      "len": 25,
-      "taken": false,
-      "current": false,
-      "score": 225,
-      "hits": ["video downloader","downloader","video cutter"],
-      "exact": ["video downloader","downloader"]
-    }
-  ],
-  "rec": [
-    {
-      "t": "HD Video Downloader & Saver",
-      "len": 27,
-      "taken": false,
-      "current": false,
-      "score": 634,
-      "hits": [
-        "video downloader", "hd video downloader", "video saver - video downloader", "video saver", "video saver downloader",
-        "video downloader and saver", "downloader"
-      ],
-      "exact": ["video downloader","hd video downloader","video downloader and saver","downloader"]
-    },
-    {
-      "t": "Fast Video Downloader & Saver",
-      "len": 29,
-      "taken": false,
-      "current": false,
-      "score": 627,
-      "hits": [
-        "video downloader", "fast video downloader", "video saver - video downloader", "video saver", "video saver downloader",
-        "video downloader and saver", "downloader"
-      ],
-      "exact": ["video downloader","fast video downloader","video downloader and saver","downloader"]
-    },
-    {
-      "t": "Video Downloader & Saver: HD",
-      "len": 28,
-      "taken": false,
-      "current": false,
-      "score": 594,
-      "hits": [
-        "video downloader", "hd video downloader", "video saver - video downloader", "video saver", "video saver downloader",
-        "video downloader and saver", "downloader"
-      ],
-      "exact": ["video downloader","video downloader and saver","downloader"]
-    }
-  ],
-  "shorts": [
-    {
-      "s": "Download videos from links in HD. Video cutter, MP3 extractor and private vault.",
-      "len": 80,
-      "score": 911,
-      "hits": [
-        "video downloader", "hd video downloader", "private video downloader", "video saver - video downloader", "download video", "video saver",
-        "video saver downloader", "video downloader and saver", "download videos", "downloader", "private video vault", "video cutter"
-      ],
-      "exact": ["video downloader","hd video downloader","video downloader and saver","download videos","downloader","video cutter"]
-    },
-    {
-      "s": "Fast video saver: download HD videos, cut clips, extract MP3 and hide videos",
-      "len": 76,
-      "score": 899,
-      "hits": [
-        "video downloader", "hd video downloader", "fast video downloader", "video saver - video downloader", "download video", "video saver",
-        "video saver downloader", "video downloader and saver", "download videos", "downloader", "hide videos"
-      ],
-      "exact": ["video downloader","hd video downloader","video saver","video downloader and saver","downloader","hide videos"]
-    }
-  ],
-  "long": "{name} saves videos from a link in the quality you choose, with a built-in video cutter and a private vault. Copy a video link, paste it into the app and download video straight to your phone — then trim it, extract the audio or lock it away behind a PIN.\n\n## Download videos from a link\n• Paste a link or share it straight into the app to download video in one step\n• Choose the quality before you save, from HD down to smaller files\n• Download several videos at once with pause, resume and retry\n• Downloads keep running in the background, even for large files\n• Works with links from Facebook, Instagram, TikTok, X, LinkedIn, Dailymotion and Vimeo\n\n## HD video saver and player\n• All video downloader and player in one app\n• Watch saved videos offline with the built-in video player\n• Rename, share, delete or favourite any download\n• Status saver for statuses you are allowed to keep\n\n## Video cutter and editor · 9 tools\n• Trim, split, crop and merge videos\n• Change the aspect ratio with a colour or blur background\n• Add music to a video, or extract audio and save it as MP3\n• Filters and effects, plus an image or text watermark\n\n## Private video downloader with a vault\n• Hide videos, pictures and audio in a PIN-locked vault\n• Unlock with your fingerprint, and reset your PIN with a security question\n• Keep private downloads out of your gallery\n\n## Made for everyone\n• 9 languages: English, Urdu, Arabic, Hindi, Turkish, German, French, Portuguese and Chinese\n• Right-to-left layouts for Urdu and Arabic\n• A clean app built for fast, simple saving\n\n## How to download a video\nCopy the link of a video you have permission to save.\nOpen {name} and paste the link, or share the link into the app.\nPick the quality and tap Download.\nOpen the saved video to watch, cut or move it to the vault.\n\n## Questions people ask\nWhere are my downloads saved? In the app, sorted into a folder for each platform. Move any video to the vault in one tap.\nWill a large download stop if I leave the app? No. Downloads keep running in the background and resume after a network drop.\nWhat does Premium change? Premium removes ads. Downloads work the same way with or without it.\n\n## Important\nDownload only videos you own, videos in the public domain, or videos the owner lets you save. Please respect copyright.\n{name} is an independent app and is not affiliated with, endorsed by or sponsored by any of the platforms named above."
-}
+  {
+    "h": "Four banners are the same dark tile grid",
+    "html": "InShot, QR Code Scanner, AppTool and Sky Vision all use a dark grid of faint media-type tiles with a short line of type over it. Ours is a different construction but the same dark register. Gamma Play's banner carries no words at all, and Hub's carries only a wordmark — at listing size neither says what the app does."
+  },
+  {
+    "h": "Speed claims are everywhere, and we cannot use them",
+    "html": "“3x Faster”, “4x Faster”, “Ultra-Fast” and “100MB/s” appear across QR Code Scanner, Hub, AppTool, Saver &amp; Player Studio, DevBay, Markhoor and Mobile Notepad. Our own rules bar any claim the build cannot back, so this is a whole persuasive register the category uses and we have to replace with something else."
+  },
+  {
+    "h": "Almost everyone shows platform logos; one app does not",
+    "html": "Thirteen of the seventeen listings put recognisable platform marks or third-party app UI inside their screenshots, and Vidpal's feature graphic is close to two dozen logos in one image. <b>Gamma Play is the exception</b> — every device frame runs an invented source app, so the flow is shown without borrowing anyone's brand. That is the pattern our own rules point to, and it comes from the smallest app here. <b>Our own frame 1 currently shows a row of platform marks.</b>"
+  },
+  {
+    "h": "Headings mostly restate the title",
+    "html": "“All Video Downloader”, “HD Video Downloader” and “Fast Video Downloader” appear as screenshot headings again and again — DevBay and Attractive Apps each spend three or four frames restating their own name. The listings that say something specific instead (Gamma Play's “Choose Video Quality Before Downloading”, AppTool's “Auto Detect Videos Online”, Vidow's “Download &amp; Cast Video”) read as far more considered."
+  },
+  {
+    "h": "Carousel length has nothing to do with rating",
+    "html": "The highest-rated app here, Fast Saver at 4.80★ from 377K ratings, ships five screenshots, a typo and a banner branded with a different name. The largest carousel, Mobile Notepad's sixteen frames, belongs to the lowest-rated at 3.83★. InShot leads the category on search with half its carousel unlabelled. Store art is not what moves these numbers."
+  },
+  {
+    "h": "Landscape is almost unused",
+    "html": "Only InShot and AppTool publish a landscape frame at all, which is exactly what the 21 September visual review found and this capture confirms independently. Everything else in the category, ours included, is portrait-only."
+  }
+]
 ```
 
-### offersChecked
+### graphics.requirements
 
 ```json
-{
-  "video.downloader.videodownloader": false,
-  "com.gamma.videodownloader": false,
-  "videoplayer.videodownloader.downloader": false,
-  "instagram.video.downloader.story.saver.ig": false,
-  "instagram.video.downloader.story.saver.ig.insaver": false,
-  "hub.browser.video.downloader.saver": false,
-  "videodownloader.instagram.videosaver": false,
-  "com.videodownload.browser.videodownloader": false,
-  "downloader.video.download.free": false,
-  "instasaver.videodownloader.photodownloader.repost": false,
-  "com.allvideodownloader.hdvideodownloader.savevideos": false,
-  "allinone.videodownloader.savevideos": false,
-  "com.videosaver.savevideos.story.saverapp": false,
-  "com.videodownloder.alldownloadvideos": false,
-  "com.hdvideodownloader.downloaderapp": false,
-  "free.video.downloader.freevideodownloader2021.video.saver.videosaverlite": false,
-  "com.video.downloader.instagram.videosaver": false
-}
+[
+  "<b>Icon</b> — 512 × 512 px, 32-bit PNG with alpha, under 1,024 KB. Google Play applies its own rounding and shadow; promotional text, price or “new” badges are not allowed on the icon.",
+  "<b>Feature graphic</b> — 1024 × 500 px, JPEG or 24-bit PNG with no alpha, under 15 MB. Required for the listing to be eligible for several Play surfaces.",
+  "<b>Phone screenshots</b> — between 2 and 8 per device type, JPEG or 24-bit PNG with no alpha, each side between 320 px and 3,840 px, and the long side no more than twice the short side. Our listing currently fills 4 of the 8 phone slots; the dossier's 720 × 1600 device captures are ratio 1:2.22 and must be reframed to 1:2 or tighter before they can be uploaded.",
+  "<b>Every asset in this library was captured from a live listing</b>, so the dimensions recorded on each figure are what that app actually publishes, not what Play recommends."
+]
 ```
 
-### tiksta.long
+### graphics.scope
 
 ```json
-"Tiksta is a reels downloader and social video downloader in one fast app. Copy the link of a reel, a story or any public video, paste it into Tiksta and save video files straight to your phone in HD.\n\nDownload video from link in one tap, or share the link into the app. Built as an online video downloader for Android, Tiksta is also a private video downloader and video saver: keep downloads in a locked vault, watch them offline or cut them with the built-in editor.\n\nSAVE REELS AND VIDEOS\n• Paste a link or share it into Tiksta to download videos and reels\n• Video downloader browser: open a page and Tiksta finds the video\n• Choose the quality before you save, from HD 720p to smaller files\n• Photo downloader too: saves every photo and video in a multi-item post\n• Download several videos at once with pause, resume and retry\n• Downloads keep running in the background, even for large files\n\nREEL SAVER, STORY SAVER AND STATUS SAVER\n• A story saver app for stories you are allowed to keep\n• A status saver app for statuses shared with you, including business accounts\n• Every download is filed in its own folder by source\n\nHD VIDEO PLAYER AND DOWNLOAD MANAGER\n• An all video downloader and player for everything you save\n• Offline video player: watch saved videos without a connection\n• Download manager to rename, share, delete or favourite any file\n\nVIDEO DOWNLOADER WITH EDITOR\n• Video cutter and video trimmer: trim the start, middle or end\n• Video merger: split clips or join them into one\n• Crop video and change the aspect ratio with a colour or blur fill\n• Add music to video, or extract audio from video as MP3\n• Filters, effects, speed and volume controls\n• Watermark video with an image or styled text\n• Video compressor: cut and compress files to save space\n\nPRIVATE VIDEO VAULT\n• Video locker with a 4-digit PIN for videos, pictures and audio\n• Hide videos, unlock with your fingerprint and reset the PIN with a security question\n• Private downloads stay out of your gallery\n\nMADE FOR EVERYONE\n• 9 languages, with right-to-left layouts for Urdu and Arabic\n• A fast video downloader with dark mode and a clean, simple design\n\nHOW TO DOWNLOAD REELS AND VIDEOS\n1. Copy the link of a reel or video you have permission to save.\n2. Open Tiksta and paste the link, or share the link into the app.\n3. Pick the quality and tap Download.\n4. Watch the video, cut it or move it to the vault.\n\nQUESTIONS PEOPLE ASK\nWhere are my downloads saved? In Tiksta, sorted into a folder for each source. Move any video to the vault in one tap.\nWill a large download stop if I leave the app? No. Downloads keep running in the background and resume after a network drop.\nWhat does Premium change? Premium removes all ads, including the one shown before a download. Quality and speed stay the same.\n\nIMPORTANT\nDownload only videos you own, videos in the public domain, or videos the owner lets you save. Please respect copyright.\nTiksta is an independent app and is not affiliated with, endorsed by or sponsored by any social media platform."
+[
+  "Seventeen listings: our own, plus the sixteen competitors that appear across the Video Downloader dossier, the ASO Playbook and the Features Comparison audit. The three source lists overlap heavily — the ASO Playbook alone repeats several links — and the deduplicated set of sixteen matches the one recorded in research/competitor-visual-memory on 21 September 2026.",
+  "Duplicate assets were removed in two passes. First by URL: Google Play serves the same screenshot across several device slots, which collapsed 288 raw references to 156. Then by inspection, which removed 26 more — DOSA publishes the same five creatives twice at identical size, Saver & Player Studio publishes seven creatives at four different pixel sizes, and Vidpal publishes its seven as both portrait and 1080 × 1080 squares.",
+  "Two listings genuinely run two sets rather than duplicates, and both are kept: Markhoor mixes two different visual systems in one carousel, and Mobile Notepad runs the same device art under two different sets of headings. InShot's unlabelled device captures are also kept, because they are a different composition rather than a resize.",
+  "Our own entry is the four phone screenshots, icon and feature graphic that Google Play serves today — the same assets shown under PlayStore Metadata. The listing uses four of the eight phone slots Play allows.",
+  "Screenshots and feature graphics are stored as JPEG at up to 1400 px on the long side so the whole library fits in one page; icons are the original 512 px files. Every caption links to the full-resolution original on Google Play."
+]
 ```
 
-### tiksta.pc
+### graphics.sources
 
 ```json
-{
-  "collectedAt": "2026-09-16T11:41:23.7794628Z",
-  "queries": [
-    "reels downloader", "reels video downloader", "reels saver", "video downloader for reels", "insta downloader", "insta saver", "tiktok downloader",
-    "tik tok video downloader", "video downloader for tiktok", "instagram downloader", "video downloader for instagram", "tiksta",
-    "reels downloader app", "social video downloader", "private video downloader", "save video"
-  ],
-  "apps": 143,
-  "terms": [
-    {
-      "key": "reels",
-      "label": "Reels / Reel",
-      "n": 22,
-      "m1": 1,
-      "y2": 6,
-      "both": 1,
-      "ex": [
-        {"t":"Story Saver & Reels Downloader","b":"1M+","d":"PinKaal","f":"2024-03-16"},
-        {"t":"Copy Caption Reels Downloader","b":"50K+","d":"Infast Video Downloader & Story Saver","f":"2023-05-02"},
-        {"t":"All Video Downloader & Reels","b":"50K+","d":"Nubivio Apps","f":"2026-07-23"},
-        {"t":"Reels Downloader","b":"50K+","d":"MobileByteSensei","f":"2025-02-24"}
-      ]
-    },
-    {
-      "key": "story",
-      "label": "Story (generic baseline)",
-      "n": 18,
-      "m1": 7,
-      "y2": 11,
-      "both": 7,
-      "ex": [
-        {"t":"Video downloader - Story Saver","b":"50M+","d":"Video Downloader Story Saver","f":"2023-10-13"},
-        {"t":"Video Downloader : Story Saver","b":"10M+","d":"Video Downloader & Photo Downloader & Saver","f":"2020-12-07"},
-        {"t":"Video Downloader & Story Saver","b":"10M+","d":"Video Downloader & Fast Saver","f":"2024-03-28"},
-        {"t":"Story Saver - Video Downloader","b":"5M+","d":"Story Saver&Video Downloader","f":"2023-02-09"}
-      ]
-    },
-    {
-      "key": "tik",
-      "label": "Tik- prefix (the Tiksta name)",
-      "n": 8,
-      "m1": 3,
-      "y2": 7,
-      "both": 3,
-      "ex": [
-        {"t":"TikBoost - Followers & Likes","b":"1M+","d":"Stix LLC","f":"2021-08-12"},
-        {"t":"TikMate: Download No Watermark","b":"1M+","d":"Video Downloader & Voice Translator & Story Saver","f":"2023-12-13"},
-        {"t":"HD Tik Downloader No Watermark","b":"1M+","d":"TapGap Studio","f":"2022-11-20"},
-        {"t":"Tikget - Video Downloader","b":"500K+","d":"Spaple","f":"2023-08-16"}
-      ]
-    },
-    {
-      "key": "insta",
-      "label": "Insta",
-      "n": 4,
-      "m1": 0,
-      "y2": 0,
-      "both": 0,
-      "ex": [
-        {"t":"Insta Saver - Video Downloader","b":"1K+","d":"India apps","f":"2026-07-14"},
-        {"t":"Reels Downloader | Insta Saver","b":"1K+","d":"Code Multiverse","f":"2026-04-18"},
-        {"t":"Insta Reel Download & Organize","b":"100+","d":"Lan Apps","f":"2026-07-26"},
-        {"t":"Insta Saver: Reel Downloader","b":"0+","d":"Jawad108","f":"2026-09-11"}
-      ]
-    },
-    {
-      "key": "tiktok",
-      "label": "TikTok",
-      "n": 4,
-      "m1": 1,
-      "y2": 2,
-      "both": 1,
-      "ex": [
-        {"t":"Downloader for TikTok","b":"10M+","d":"application.development.studio","f":"2019-02-22"},
-        {"t":"TikVid - TikTok Downloader","b":"100K+","d":"MobilesWorld","f":"2023-06-04"},
-        {"t":"Video Downloader For Tiktok","b":"10K+","d":"IFM Project","f":"2025-06-15"},
-        {"t":"Video Downloader for TikTok","b":"100+","d":"Vd Brains","f":"2026-06-15"}
-      ]
-    },
-    {
-      "key": "instagram",
-      "label": "Instagram",
-      "n": 3,
-      "m1": 0,
-      "y2": 2,
-      "both": 0,
-      "ex": [
-        {"t":"Video Downloader for Instagram","b":"10K+","d":"Bytecode.one","f":"2024-08-21"},
-        {"t":"Instagram Video Downloader","b":"10K+","d":"Nazar Tech","f":"2026-07-05"},
-        {"t":"Video Downloader for Instagram","b":"1K+","d":"Hanif Abuvani","f":"2020-01-28"}
-      ]
-    }
-  ],
-  "serp": [
-    {"t":"InSaver: All Video Downloader","b":"10M+","f":"2024-05-29","has":false},
-    {"t":"Video downloader - Story Saver","b":"50M+","f":"2023-10-13","has":false},
-    {"t":"Reels Downloader","b":"50K+","f":"2025-02-24","has":true},
-    {"t":"Video Downloader","b":"100M+","f":"2018-03-16","has":false},
-    {"t":"ReelSave - Reels Downloader","b":"1K+","f":"2026-09-03","has":true},
-    {"t":"SaveReels - Reels Downloader","b":"1K+","f":"2026-05-08","has":true},
-    {"t":"Video Downloader & Story Saver","b":"10M+","f":"2024-03-28","has":false},
-    {"t":"Reel Saver - Video Downloader","b":"5K+","f":"2026-06-26","has":true},
-    {"t":"iReels Save – Reels Downloader","b":"100+","f":"2026-04-04","has":true},
-    {"t":"Social Video Downloader","b":"100K+","f":"2024-04-13","has":false}
-  ],
-  "tikstaSerp": [
-    "TikTok - Videos, Shop & LIVE", "TkStar - Followers Likes Views", "TikTok Lite - Faster TikTok", "TikBoost - Followers & Likes", "TikTok Studio",
-    "TikTok Pro - Events", "TickTick:To Do List & Calendar", "FanTick - Real Followers Likes", "TikBooster - Followers & Likes",
-    "TickViral Gain Likes Followers"
-  ],
-  "tikstaNamed": 0
-}
+[
+  "<a href=\"https://play.google.com/store/apps/details?id=com.video.downloader.instagram.videosaver&hl=en&gl=US\" target=\"_blank\" rel=\"noopener\">Our own Google Play listing</a> — the assets also shown under PlayStore Metadata.",
+  "Google Play listings for all sixteen competitors, English / United States locale — every figure links to its original file.",
+  "<a href=\"../01-video-downloader/\">Video Downloader</a> · <a href=\"../02-aso-playbook/\">ASO Playbook</a> · <a href=\"../04-features-comparison/\">Features Comparison</a> — the three tabs the competitor list is drawn from.",
+  "<code>research/competitor-visual-memory/</code> — the 21 September 2026 reference pass that first deduplicated these sixteen listings.",
+  "<code>research/aso-pipeline/raw.json</code> — the 16 September 2026 scrape that holds the asset URLs."
+]
 ```
 
-### tiksta.short
+### graphics.table
 
 ```json
-"Save & download reels & social videos in HD from a link. Private story saver app"
-```
-
-### tiksta.shortAlt
-
-```json
-"Save & download reels and social videos in HD from a link. Fast story saver app"
-```
-
-### tiksta.titles
-
-```json
-["Tiksta: Reels Video Downloader","Tiksta Social Video Downloader","Tiksta: Reels Downloader App"]
+[
+  {"id":"00-our-app","name":"Our app","publisher":"Cell Cave","downloads":"5+","rating":"too few ratings","portrait":4,"landscape":0,"ours":true},
+  {"id":"01-inshot","name":"InShot","publisher":"InShot Inc.","downloads":"100M+","rating":"4.72 (2.7M)","portrait":11,"landscape":1},
+  {
+    "id": "02-story-saver",
+    "name": "Story Saver",
+    "publisher": "Video Downloader Story Saver",
+    "downloads": "50M+",
+    "rating": "4.74 (1.4M)",
+    "portrait": 6,
+    "landscape": 0
+  },
+  {"id":"03-insaver","name":"InSaver","publisher":"Video Downloader Story Saver","downloads":"10M+","rating":"4.74 (295K)","portrait":7,"landscape":0},
+  {"id":"04-gamma-play","name":"Gamma Play","publisher":"Gamma Play","downloads":"100K+","rating":"4.63 (3.1K)","portrait":7,"landscape":0},
+  {
+    "id": "05-qr-code-scanner",
+    "name": "QR Code Scanner",
+    "publisher": "QR Code Scanner.",
+    "downloads": "100M+",
+    "rating": "4.52 (1.9M)",
+    "portrait": 8,
+    "landscape": 0
+  },
+  {"id":"06-dosa-hub","name":"Hub (DOSA)","publisher":"DOSA Apps","downloads":"10M+","rating":"4.36 (82K)","portrait":5,"landscape":0},
+  {
+    "id": "07-fast-saver",
+    "name": "Fast Saver",
+    "publisher": "Video Downloader & Fast Saver",
+    "downloads": "10M+",
+    "rating": "4.80 (377K)",
+    "portrait": 5,
+    "landscape": 0
+  },
+  {"id":"08-apptool","name":"AppTool","publisher":"AppTool-Browser-Video","downloads":"10M+","rating":"4.36 (66K)","portrait":6,"landscape":1},
+  {
+    "id": "09-saver-player-studio",
+    "name": "Saver & Player Studio",
+    "publisher": "All Video Downloader, Saver & Player Studio",
+    "downloads": "50M+",
+    "rating": "4.42 (357K)",
+    "portrait": 7,
+    "landscape": 0
+  },
+  {
+    "id": "10-devbay",
+    "name": "DevBay",
+    "publisher": "Fast Video Downloader & Story Saver - DevBay",
+    "downloads": "50M+",
+    "rating": "3.89 (649K)",
+    "portrait": 7,
+    "landscape": 0
+  },
+  {"id":"11-sky-vision","name":"Sky Vision","publisher":"Sky Vision Apps Lab","downloads":"10M+","rating":"4.09 (24K)","portrait":7,"landscape":0},
+  {
+    "id": "12-attractive-apps",
+    "name": "Attractive Apps",
+    "publisher": "Attractive Apps Valley",
+    "downloads": "10M+",
+    "rating": "3.99 (23K)",
+    "portrait": 6,
+    "landscape": 0
+  },
+  {"id":"13-markhoor","name":"Markhoor","publisher":"Markhoor Studio","downloads":"10M+","rating":"4.00 (9.5K)","portrait":13,"landscape":0},
+  {
+    "id": "14-mobile-notepad",
+    "name": "Mobile Notepad",
+    "publisher": "Mobile Notepad Apps",
+    "downloads": "5M+",
+    "rating": "3.83 (7.5K)",
+    "portrait": 16,
+    "landscape": 0
+  },
+  {"id":"15-vidow","name":"Vidow","publisher":"Vidow™","downloads":"100M+","rating":"3.96 (335K)","portrait":6,"landscape":0},
+  {"id":"16-vidpal","name":"Vidpal","publisher":"Vidpal Apps Studio","downloads":"50M+","rating":"4.25 (402K)","portrait":7,"landscape":0}
+]
 ```
 
