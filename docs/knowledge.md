@@ -75,12 +75,29 @@ The 6 feature-audit-only apps (Sky Vision Apps Lab, Attractive Apps Valley, Mark
 - **Competitor strengths**: InShot (100M+, 4.72★/2.7M ratings, browser with auto-detect, password-protected folder); Vidow (100M+, resolution picker, cast to TV); Vidpal (50M+, paste-link download, 4K player). InShot Inc. also owns search: 51 US top-10 placements.
 - **Listing claim gap**: the current live listing mentions only 4 of the 12 features this app ships. Missing from the listing copy: built-in browser with auto-detect, background downloads (pause & resume), multiple/batch downloads, MP3/audio extraction, private folder/vault/lock, built-in video editor, video player, multi-language interface.
 
+## Competitor graphics
+
+Tab 05 (`tabs/05-competitors-graphics/`), captured 23 Sep 2026: **our own listing plus 16 competitors, 164 assets** — 17 icons, 17 feature graphics, 130 screenshots (128 portrait, 2 landscape), stored in `tabs/05-competitors-graphics/graphics/<NN>-<slug>/` (20 MB; screenshots and feature graphics as JPEG up to 1400 px on the long side, icons at 512 px). **Our app is first in every section** — icon lineup, feature graphics, app-by-app library and summary table — marked with an "ours" pill (`00-our-app`, `PAYLOAD.graphics.ours`).
+
+**The list.** The deduplicated union of the Video Downloader dossier, the ASO Playbook annotations and the Features Comparison audit — the same 16 listings recorded in `research/competitor-visual-memory/` on 21 Sep 2026. Duplicate assets removed in two passes: by URL (288 raw references → 156, Play serves one screenshot across several device slots), then by inspection (26 more). DOSA publishes the same five creatives twice at identical size; Saver & Player Studio publishes seven creatives at four pixel sizes; Vidpal publishes its seven as both portrait and 1080×1080 squares. Markhoor's two visual systems and Mobile Notepad's two heading sets are genuine variants and both are kept, as are InShot's unlabelled device captures.
+
+**Where we stand.** *For us:* our rainbow-gradient icon is the most distinctive mark in the library, and our four headings state outcomes rather than restating the title — a failure mode visible in DevBay and Attractive Apps, which spend three or four frames repeating their own name. We carry no speed multiplier and no "no watermark" claim. *Against us:* we publish **4 screenshots against a category median of 7** (leaders run 12–16), so half our phone slots are empty; the vault, the 9-tool editor and MP3 extraction — the three things **0 of 6** audited competitors ship — have barely one frame between them; and **screenshot 1 shows a row of platform brand marks**, which our own no-brand-names rule points away from.
+
+**Category patterns.** 15 of 17 icons sit in three families: 7 red "V" marks (Sky Vision, Attractive Apps, Markhoor, Mobile Notepad and Vidow are near-interchangeable), 5 download arrows on a flat square (ours, InShot, Gamma Play, AppTool, DevBay — InShot's and Gamma Play's are almost identical to each other), 3 ring-and-arrow gradients. Only Hub and Saver & Player Studio use wordmarks. Four feature graphics are the same dark media-tile grid (InShot, QR Code Scanner, AppTool, Sky Vision). Speed claims ("3x", "4x", "Ultra-Fast", "100MB/s") run across seven listings — a register we cannot use. **13 of 17 listings show platform logos or third-party UI in their screenshots; Gamma Play is the only one that does not**, using invented source apps ("TravelHub", "FREEVIDEOS") — the compliant pattern, from the smallest app in the set. Only InShot and AppTool publish a landscape frame, confirming the 21 Sep finding independently.
+
+**Craft does not track rating.** Highest rated is Fast Saver at 4.80★/377K on five screenshots, a typo ("Build-in Player") and a banner branded "Rposty" rather than its listing name. Lowest is Mobile Notepad at 3.83★ with the largest carousel (16 frames). InShot leads the category on search with half its carousel unlabelled. Other published typos: "Video downlaoder" (Story Saver, 50M+), "Instsaver" (InSaver), "Instgram" (Attractive Apps).
+
+**Note:** Sky Vision Apps Lab's listing title is word-for-word our current title, "All Video Downloader & Saver", on a 10M-install app — already flagged under "The app" above.
+
+**Guidance recorded on the tab:** fill the four empty phone slots first (vault, editor, MP3, batch downloads); take the platform marks out of frame 1 and follow Gamma Play's invented-source-app pattern; keep the gradient icon; replace speed claims with capability claims; say something specific in every heading; never run two visual systems at once; landscape is optional and differentiating.
+
 ## Rules for any change
 
 - **No brand names** in store-listing copy: no TikTok, Instagram, Facebook, WhatsApp, YouTube, or "Insta". "Reels" may be used — checked live on Google Play, tolerated (see Tiksta relaunch above).
 - **No claim the app can't back**: no "free", no "without ads" (the app contains ads), no YouTube references (Play removes apps that facilitate YouTube downloads), no "no watermark" promise. Every feature claim in shipped copy must map to the device-tested build in the Product Dossier.
 - Every page on the site carries `<meta name="robots" content="noindex">` — keep it on new pages.
-- **Public repo — no secrets**: never commit API keys, `google-services.json`, AdMob unit IDs, signing keys, release `.aab`/`.apk` builds, personal email addresses, or copies of competitors' store images.
+- **Public repo — no secrets**: never commit API keys, `google-services.json`, AdMob unit IDs, signing keys, release `.aab`/`.apk` builds or personal email addresses.
+- **Competitors' store images** are kept in the repo for the Competitor's Graphics tab (`tabs/05-competitors-graphics/graphics/`), captured from public Play listings for research and credited to their original file on every figure. This replaces the earlier rule against storing them, which the 21 Sep 2026 visual review followed by linking to Play instead. Never use a competitor's artwork, UI, icon or wording in our own store assets.
 
 ## Where the detail is
 

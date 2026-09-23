@@ -321,6 +321,12 @@ img{max-width:100%}
   .g-filter .count{font-size:14px; color:var(--muted); margin-left:auto}
   .g-sources{margin:0; padding-left:22px; display:flex; flex-direction:column; gap:8px; color:var(--ink-2)}
   .g-req p + p{margin-top:10px}
+  /* our own listing, shown first in every section */
+  .g-app.is-ours{border-top:2px solid var(--accent)}
+  .g-app.is-ours .g-num{color:var(--accent); font-weight:700}
+  .iconwall th.is-ours a{color:var(--accent)}
+  .ourtag{font:600 10px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin-top:2px}
+  tr.is-ours td{background:var(--accent-soft)}
   /* ---------- playstore metadata ---------- */
   .m-app{display:flex; gap:18px; align-items:center; flex-wrap:wrap; margin-top:16px}
   .m-app > img{width:92px; height:92px; border-radius:22px; background:#FFFFFF; box-shadow:0 0 0 1px var(--line); flex:none}

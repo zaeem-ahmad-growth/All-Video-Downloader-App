@@ -37,6 +37,7 @@ tabs/
   02-aso-playbook/             data-driven (data-page="playbook")
   03-playstore-metadata/       data-driven (data-page="metadata")
   04-features-comparison/      data-driven (data-page="features")
+  05-competitors-graphics/     data-page="graphics"; our listing (00-our-app) first, then competitors, in graphics/<NN>-<slug>/
 docs/                          knowledge.md (always loaded) and README.md are written by hand; everything else is generated
   backend/                     per tab: the full code that draws it and the full data it reads; research.md: every research script
 .github/workflows/docs.yml     regenerates docs/ on GitHub after every push

@@ -1,5 +1,5 @@
 // Shared script for the ASO Playbook, PlayStore Metadata and Features Comparison pages.
-// Each page sets <body data-page="playbook|metadata|features"> and only that page's render functions run.
+// Each page sets <body data-page="playbook|metadata|features|graphics"> and only that page's render functions run.
 // The data comes from data.js (PAYLOAD), which every one of those pages loads first.
 (function () {
   const PAGE = document.body.dataset.page;
@@ -526,6 +526,124 @@
     ].map(p => `<p>${p}</p>`).join('');
   }
 
+  // ---------- TAB 5 · competitor's graphics ----------
+  // Self-contained: this block brings its own listener helper and image viewer, so the other
+  // pages are untouched. Elements referenced here exist only on the graphics page.
+  const G = PAYLOAD.graphics;
+  const gOn = (id, ev, fn) => { const el = document.getElementById(id); if (el) el.addEventListener(ev, fn); };
+  const GA = [];
+  if (G) G.apps.forEach(app => app.assets.forEach(a => { a.app = app; a.url = 'graphics/' + a.file; a.i = GA.length; GA.push(a); }));
+  const iconOf = app => app.assets.find(a => a.kind === 'icon');
+  const fgOf = app => app.assets.find(a => a.kind === 'feature-graphic');
+  const pkgOf = url => (url.match(/id=([\w.]+)/) || [])[1];
+
+  function gFigure(a, extra = '') {
+    const search = [a.app.name, a.app.title, a.app.publisher, a.app.tags.join(' '), a.label, a.caption, a.alt].join(' ').toLowerCase();
+    return `<figure class="shot" data-i="${a.i}" data-kind="${a.kind}" data-orient="${a.orient}" data-app="${a.app.id}" data-search="${esc(search)}">
+      <button type="button" class="frame" style="aspect-ratio:${a.w} / ${a.h}" data-open="${a.i}" aria-label="View ${esc(a.app.name)} ${esc(a.label)} large"><img loading="lazy" src="${a.url}" alt="${esc(a.alt)}" width="${a.w}" height="${a.h}"></button>
+      <figcaption>${extra}<span class="lab">${esc(a.label)}</span><span class="dim">${a.w} × ${a.h} · ${a.orient}</span><span>${esc(a.caption)}</span><a class="src" href="${esc(a.src)}" target="_blank" rel="noopener">Original image on Google Play ↗</a></figcaption></figure>`;
+  }
+
+  // Ties this tab back to the keyword board: how the listing ranks on the 100 US keywords.
+  function gVisibility(pkg) {
+    const p = D.profiles.find(x => x.id === pkg);
+    if (!p || !p.perMarket || !p.perMarket.US) return 'Not tracked on the US keyword board.';
+    const m = p.perMarket.US;
+    return `US keyword board (16 Sep): <b>${m.top10}</b> top-10 · <b>${m.any}</b> placements on 100 keywords · best #${m.best || '—'}`;
+  }
+
+  function renderGraphics() {
+    const shots = GA.filter(a => a.kind === 'screenshot');
+    document.getElementById('g-chips').innerHTML = [
+      `Our app + ${G.apps.length - 1} competitors`, `${GA.filter(a => a.kind === 'icon').length} icons`,
+      `${GA.filter(a => a.kind === 'feature-graphic').length} feature graphics`, `${shots.length} screenshots`,
+      `${shots.filter(a => a.orient === 'portrait').length} portrait · ${shots.filter(a => a.orient === 'landscape').length} landscape`
+    ].map(c => `<span class="chip">${c}</span>`).join('');
+    document.getElementById('g-overview-text').innerHTML = G.overview.map(p => `<p>${esc(p)}</p>`).join('');
+    document.getElementById('g-capture').textContent = G.captureNote;
+
+    const sizes = [96, 64, 48, 32];
+    document.getElementById('g-iconwall').innerHTML = `<thead><tr><th class="sz"></th>${G.apps.map(app => `<th${app.ours ? ' class="is-ours"' : ''}><a href="#g-${app.id}">${esc(app.name)}</a>${app.ours ? '<div class="ourtag">our app</div>' : ''}</th>`).join('')}</tr></thead><tbody>` +
+      sizes.map(s => `<tr><td class="sz">${s} px</td>${G.apps.map(app => { const ic = iconOf(app); return `<td><span class="icoplate" style="width:${s + 20}px;height:${s + 20}px"><img src="graphics/${ic.file}" width="${s}" height="${s}" alt="${s === 96 ? esc(app.name + ' icon') : ''}"></span></td>`; }).join('')}</tr>`).join('') +
+      `<tr><td class="sz">Downloads</td>${G.apps.map(app => `<td class="small"><b>${esc(app.downloads)}</b><div class="muted">${esc(app.publisher)}</div></td>`).join('')}</tr></tbody>`;
+
+    document.getElementById('g-fg').innerHTML = G.apps.map(app => gFigure(fgOf(app),
+      `<a class="lab" href="#g-${app.id}">${app.num} · ${esc(app.name)}</a><span class="small muted">${esc(app.publisher)} · ${esc(app.downloads)} downloads</span>`))
+      .join('').replace(/<span class="lab">Feature Graphic 01<\/span>/g, '');
+
+    document.getElementById('g-summary').innerHTML = `<thead><tr><th>#</th><th>App</th><th>Publisher</th><th class="num">Downloads</th><th class="num">Rating</th><th class="num">Portrait</th><th class="num">Landscape</th><th>Listing</th></tr></thead><tbody>` +
+      G.table.map(t => { const app = G.apps.find(a => a.id === t.id); return `<tr${t.ours ? ' class="is-ours"' : ''}><td class="num muted">${app.num}</td><td><a href="#g-${t.id}"><b>${esc(t.name)}</b></a>${t.ours ? ' <span class="pill p-acc">ours</span>' : ''}<div class="small muted">${esc(app.title)}</div></td><td>${esc(t.publisher)}</td><td class="num">${esc(t.downloads)}</td><td class="num">${esc(t.rating)}</td><td class="num">${t.portrait}</td><td class="num">${t.landscape}</td><td class="nowrap"><a href="${esc(app.playUrl)}" target="_blank" rel="noopener">Google Play ↗</a></td></tr>`; }).join('') + '</tbody>';
+
+    document.getElementById('g-app').innerHTML = `<option value="">All ${G.apps.length} listings</option>` + G.apps.map(app => `<option value="${app.id}">${app.num} · ${esc(app.name)}</option>`).join('');
+
+    document.getElementById('g-applist').innerHTML = G.apps.map(app => {
+      const row = G.table.find(t => t.id === app.id);
+      const portrait = app.assets.filter(a => a.kind === 'screenshot' && a.orient === 'portrait');
+      const landscape = app.assets.filter(a => a.kind === 'screenshot' && a.orient === 'landscape');
+      return `<article class="g-app${app.ours ? ' is-ours' : ''}" id="g-${app.id}" data-app="${app.id}">
+        <div class="g-apphead"><img src="graphics/${iconOf(app).file}" alt="" width="72" height="72">
+          <div class="g-appmeta"><div class="g-num">${app.ours ? 'Our app' : app.num + ' · ' + esc(app.publisher)}</div><h3>${esc(app.name)}${app.ours ? ' <span class="pill p-acc">ours</span>' : ''}</h3>
+            <div class="small muted">“${esc(app.title)}” · ${esc(app.downloads)} downloads · rating ${esc(row.rating)} · ${row.portrait} portrait and ${row.landscape} landscape screenshots</div>
+            <div class="small g-vis" style="margin-top:2px">${gVisibility(pkgOf(app.playUrl))}</div></div>
+          <a class="g-play" href="${esc(app.playUrl)}" target="_blank" rel="noopener">Open listing on Google Play ↗</a></div>
+        <div class="g-notes">${Object.entries(app.notes).map(([h, p]) => `<div class="g-note"><h4>${esc(h)}</h4><p>${esc(p)}</p></div>`).join('')}</div>
+        <div class="tagrow">${app.tags.map(t => `<span>${esc(t)}</span>`).join('')}</div>
+        <div class="g-group"><div class="g-row-label">Icon and feature graphic</div><div class="grid-lead">${gFigure(iconOf(app))}${gFigure(fgOf(app))}</div></div>
+        ${portrait.length ? `<div class="g-group"><div class="g-row-label">Portrait screenshots · ${portrait.length}</div><div class="grid-portrait">${portrait.map(a => gFigure(a)).join('')}</div></div>` : ''}
+        ${landscape.length ? `<div class="g-group"><div class="g-row-label">Landscape screenshots · ${landscape.length}</div><div class="grid-landscape">${landscape.map(a => gFigure(a)).join('')}</div></div>` : '<p class="note g-nolandscape">Landscape screenshots: not observed in this snapshot.</p>'}
+      </article>`;
+    }).join('');
+
+    document.getElementById('g-patterns-list').innerHTML = G.patterns.map(p => `<div class="card"><div class="tag">${esc(p.h)}</div><p>${p.html}</p></div>`).join('');
+    document.getElementById('g-guidance-list').innerHTML = G.guidance.map(p => `<div class="card"><div class="tag">${esc(p.h)}</div><p>${p.html}</p></div>`).join('');
+    document.getElementById('g-req').innerHTML = G.requirements.map(p => `<p>${p}</p>`).join('');
+    document.getElementById('g-scope-text').innerHTML = G.scope.map(p => `<p>${esc(p)}</p>`).join('');
+    document.getElementById('g-sources-list').innerHTML = G.sources.map(s => `<li>${s}</li>`).join('');
+    applyGraphicsFilter();
+  }
+
+  function applyGraphicsFilter() {
+    const q = document.getElementById('g-q').value.trim().toLowerCase();
+    const app = document.getElementById('g-app').value, kind = document.getElementById('g-kind').value, orient = document.getElementById('g-orient').value;
+    const list = document.getElementById('g-applist');
+    let n = 0;
+    list.querySelectorAll('figure.shot').forEach(f => {
+      const show = (!q || f.dataset.search.includes(q)) && (!app || f.dataset.app === app) && (!kind || f.dataset.kind === kind) && (!orient || f.dataset.orient === orient);
+      f.hidden = !show; if (show) n++;
+    });
+    list.querySelectorAll('.g-group').forEach(g => { g.hidden = !g.querySelector('figure.shot:not([hidden])'); });
+    list.querySelectorAll('.g-nolandscape').forEach(p => { p.hidden = !!(kind && kind !== 'screenshot') || orient === 'portrait' || orient === 'square'; });
+    list.querySelectorAll('.g-app').forEach(a => { a.hidden = !a.querySelector('figure.shot:not([hidden])'); });
+    document.getElementById('g-count').textContent = `${n} of ${GA.length} assets shown`;
+  }
+  ['g-q', 'g-app', 'g-kind', 'g-orient'].forEach(id => gOn(id, 'input', applyGraphicsFilter));
+
+  // ---------- image viewer (graphics page only) ----------
+  const lb = document.getElementById('lb'), lbImg = document.getElementById('lb-img'), lbCap = document.getElementById('lb-cap');
+  let lbList = [], lbPos = 0;
+  function lbShow() {
+    const a = GA[lbList[lbPos]];
+    lbImg.src = a.url; lbImg.alt = a.alt;
+    lbCap.innerHTML = `<b>${esc(a.app.num)} · ${esc(a.app.name)}</b> · ${esc(a.label)} · ${a.w} × ${a.h} ${a.orient} · ${esc(a.caption)}<br><a href="${esc(a.src)}" target="_blank" rel="noopener">Original image on Google Play ↗</a> · ${lbPos + 1} of ${lbList.length}`;
+  }
+  function lbStep(d) { if (!lbList.length) return; lbPos = (lbPos + d + lbList.length) % lbList.length; lbShow(); }
+  gOn('graphics', 'click', e => {
+    const b = e.target.closest('[data-open]'); if (!b) return;
+    const scope = b.closest('#g-fg, #g-applist');
+    lbList = [...scope.querySelectorAll('figure.shot:not([hidden])')].map(f => +f.dataset.i);
+    lbPos = Math.max(0, lbList.indexOf(+b.dataset.open));
+    lbShow();
+    if (typeof lb.showModal === 'function') lb.showModal(); else lb.setAttribute('open', '');
+  });
+  gOn('lb-close', 'click', () => lb.close());
+  gOn('lb-prev', 'click', () => lbStep(-1));
+  gOn('lb-next', 'click', () => lbStep(1));
+  if (lb) {
+    lb.addEventListener('click', e => { if (e.target === lb || e.target.id === 'lb-in') lb.close(); });
+    lb.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') lbStep(-1); if (e.key === 'ArrowRight') lbStep(1); });
+    lb.addEventListener('close', () => { lbImg.removeAttribute('src'); });
+  }
+
   // ---------- page ----------
   const bar = document.getElementById('bar');
   const syncBar = () => document.documentElement.style.setProperty('--barh', bar.offsetHeight + 'px');
@@ -547,6 +665,8 @@
       document.querySelectorAll('#mv [data-ver]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
       renderMetadata(b.dataset.ver);
     }));
+  } else if (PAGE === 'graphics') {
+    renderGraphics();
   } else if (PAGE === 'features') {
     renderFeatures();
   }
